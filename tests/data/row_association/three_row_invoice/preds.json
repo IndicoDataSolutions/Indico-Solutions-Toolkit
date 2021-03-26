@@ -1,0 +1,56 @@
+[
+    {
+        "start": "",
+        "end": "",
+        "label": "should be ignored",
+        "text": "should be ignored",
+        "confidence": {
+            "something else": 0.99
+        }
+    },
+    {
+        "start": 0,
+        "end": 6,
+        "label": "line_date",
+        "text": "row 1 line_date",
+        "confidence": {
+            "line_date": 0.99
+        }
+    },
+    {
+        "start": 25,
+        "end": 35,
+        "label": "work_order_tonnage",
+        "text": "row 1 work_order_tonnage",
+        "confidence": {
+            "line_date": 0.99
+        }
+    },
+    {
+        "start": 50,
+        "end": 70,
+        "label": "work_order_number",
+        "text": "row 2 work_order_number",
+        "confidence": {
+            "line_date": 0.99
+        }
+    },
+    {
+        "start": 80,
+        "end": 96,
+        "label": "line_date",
+        "text": "row 3 line_date",
+        "confidence": {
+            "line_date": 0.99
+        }
+    },
+    {
+        "start": 98,
+        "end": 105,
+        "label": "work_order_number",
+        "text": "row 3 work_order_number",
+        "confidence": {
+            "line_date": 0.99
+        }
+    }
+]
