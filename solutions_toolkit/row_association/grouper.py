@@ -7,6 +7,7 @@ import json
 
 # TODO: fix doc string format
 
+
 class Association:
     """
     Class for assigning row_number to line item fields given workflow predictions
@@ -23,6 +24,7 @@ class Association:
     # Get your updated predictions
     updated_preds: List[dict] = litems.updated_predictions
     """
+
     def __init__(self, line_item_fields: List[str], predictions: List[dict] = None):
         """
         Args:
@@ -104,14 +106,12 @@ class Association:
         if not in_place:
             return self.updated_predictions
 
-
     @staticmethod
     def sequences_overlap(x: dict, y: dict) -> bool:
         """
         Boolean return value indicates whether or not seqs overlap
         """
         return x["start"] < y["end"] and y["start"] < x["end"]
-
 
     def assign_row_number(self, in_place: bool = True):
         """
@@ -141,32 +141,17 @@ class Association:
         if not in_place:
             return self.updated_predictions
 
-
-    def get_workflow_predictions(
-        self,
-        workflow_result: dict,
-        pred_status: str = "final",
-        model_name: str = None,
-        in_place: bool = False,
-    ) -> List[dict]:
-        # TODO: assumes workflow json is post-review (i.e. key final / pre_review exists)
-        # add when without review
+    def remove_meta_keys_from_dict(self, keys_to_remove=("bbTop", "bbBot")):
         """
-        Gets the predictions and modelname from workflow result
+        Remove meta keys from prediction dictionaries. Other options that you might want 
+        to remove include: "page_num" and/or "row_number" 
         Args:
-        workflow_result (dict): Output from completed indico workflow submission
-        pred_status (string): get predictions from final or pre_review
-        in_place (bool): if False, returns predictions
-        model_name (string): optionally, specify the model name
-        Returns:
-        predictions (list of dicts): predictions from indico
+            keys_to_remove (tuple, optional): keys to remove from prediction dictionaries. 
+                                              Defaults to ("bbTop", "bbBot").
         """
-        if not isinstance(model_name, str):
-            model_name = list(workflow_result["results"]["document"]["results"])[0]
-        predictions = sorted(
-            workflow_result["results"]["document"]["results"][model_name][pred_status],
-            key=lambda x: x["start"],
-        )
-        self.predictions = predictions
-        if in_place:
-            return predictions
+        for remove_key in keys_to_remove:
+            for pred in self._line_item_predictions:
+                pred.pop(remove_key, None)
+            for pred in self._non_line_item_predictions:
+                pred.pop(remove_key, None)
+

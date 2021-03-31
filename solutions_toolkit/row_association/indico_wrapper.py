@@ -3,6 +3,7 @@ from indico.queries import RetrieveStorageObject
 from typing import List
 import os
 
+# TODO: Convert to WorkflowResult json object?
 
 class Tokens:
     """
