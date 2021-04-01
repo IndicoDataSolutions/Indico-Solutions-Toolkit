@@ -7,11 +7,6 @@ import json
 
 # TODO: fix doc string format
 
-def sequences_overlap(x: dict, y: dict) -> bool:
-    """
-    Boolean return value indicates whether or not seqs overlap
-    """
-    return x["start"] < y["end"] and y["start"] < x["end"]
 
 class Association:
     """
@@ -49,26 +44,37 @@ class Association:
         return self._line_item_predictions + self._non_line_item_predictions
 
     @staticmethod
-    def match_pred_to_token(pred: dict, ocr_tokens: List[dict], raise_for_no_match: bool = True):
+    def match_pred_to_token(
+        pred: dict, ocr_tokens: List[dict], raise_for_no_match: bool = True
+    ):
+        """
+        Match and add bounding box metadata to prediction.
+
+        Args:
+            pred (dict): Indico extraction model prediction 
+            ocr_tokens (List[dict]): List of OCR tokens
+            raise_for_no_match (bool, optional): Raise an exception if no matching token found. Defaults to True.
+
+        Raises:
+            Exception: No matching token was found
+
+        Returns:
+            [int]: index in ocr tokens where prediction matched
+        """
         no_match = True
-        for token in ocr_tokens:
+        match_token_index = 0
+        for ind, token in enumerate(ocr_tokens):
             if no_match and sequences_overlap(token["doc_offset"], pred):
-                pred["bbTop"] = token["position"]["bbTop"]
-                pred["bbBot"] = token["position"]["bbBot"]
-                pred["bbLeft"] = token["position"]["bbLeft"]
-                pred["bbRight"] = token["position"]["bbRight"]
-                pred["page_num"] = token["page_num"]
+                _add_bounding_metadata_to_pred(pred, token)
                 no_match = False
+                match_token_index = ind
             elif sequences_overlap(token["doc_offset"], pred):
-                pred["bbTop"] = min(token["position"]["bbTop"], pred["bbTop"])
-                pred["bbBot"] = max(token["position"]["bbBot"], pred["bbBot"])
-                pred["bbLeft"] = min(token["position"]["bbLeft"], pred["bbLeft"])
-                pred["bbRight"] = max(token["position"]["bbRight"], pred["bbRight"])
+                _update_bounding_metadata_for_pred(pred, token)
             elif token["doc_offset"]["start"] > pred["end"]:
                 break
         if "bbTop" not in pred and raise_for_no_match:
             raise Exception(f"Couldn't match a token to this predicition\n{pred}")
-        
+        return match_token_index
 
     def get_bounding_boxes(
         self,
@@ -91,15 +97,19 @@ class Association:
                 "Make sure you instantiated the class with a list of predictions"
             )
         predictions = deepcopy(self.predictions)
-        ocr_tokens = sorted(ocr_tokens, key=lambda x: x["doc_offset"]["start"])
+        match_index = 0
         for pred in predictions:
             if self.is_line_item_pred(pred):
-                self.match_pred_to_token(pred, ocr_tokens, raise_for_no_match)
+                match_index = self.match_pred_to_token(
+                    pred, ocr_tokens[match_index:], raise_for_no_match
+                )
                 self._line_item_predictions.append(pred)
             elif not add_boxes_to_all:
                 self._non_line_item_predictions.append(pred)
             else:
-                self.match_pred_to_token(pred, ocr_tokens, raise_for_no_match)
+                match_index = self.match_pred_to_token(
+                    pred, ocr_tokens[match_index:], raise_for_no_match
+                )
                 self._non_line_item_predictions.append(pred)
         if not in_place:
             return self.updated_predictions
@@ -137,7 +147,9 @@ class Association:
         if not in_place:
             return self.updated_predictions
 
-    def remove_meta_keys_from_dict(self, keys_to_remove=("bbTop", "bbBot", "bbLeft", "bbRight")):
+    def remove_meta_keys_from_dict(
+        self, keys_to_remove=("bbTop", "bbBot", "bbLeft", "bbRight")
+    ):
         """
         Remove meta keys from prediction dictionaries. Other options that you might want 
         to remove include: "page_num" and/or "row_number", "confidence", etc.
@@ -150,3 +162,24 @@ class Association:
             for pred in self._non_line_item_predictions:
                 pred.pop(remove_key, None)
 
+
+def sequences_overlap(x: dict, y: dict) -> bool:
+    """
+    Boolean return value indicates whether or not seqs overlap
+    """
+    return x["start"] < y["end"] and y["start"] < x["end"]
+
+
+def _add_bounding_metadata_to_pred(pred: dict, token: dict):
+    pred["bbTop"] = token["position"]["bbTop"]
+    pred["bbBot"] = token["position"]["bbBot"]
+    pred["bbLeft"] = token["position"]["bbLeft"]
+    pred["bbRight"] = token["position"]["bbRight"]
+    pred["page_num"] = token["page_num"]
+
+
+def _update_bounding_metadata_for_pred(pred: dict, token: dict):
+    pred["bbTop"] = min(token["position"]["bbTop"], pred["bbTop"])
+    pred["bbBot"] = max(token["position"]["bbBot"], pred["bbBot"])
+    pred["bbLeft"] = min(token["position"]["bbLeft"], pred["bbLeft"])
+    pred["bbRight"] = max(token["position"]["bbRight"], pred["bbRight"])
