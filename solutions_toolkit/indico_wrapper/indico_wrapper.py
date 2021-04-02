@@ -1,3 +1,4 @@
+from typing import List
 from indico.queries import (
     RetrieveStorageObject,
     SubmissionFilter,
@@ -11,8 +12,10 @@ from indico.queries import (
     GraphQLRequest,
     GetDataset,
     CreateExport,
-    DownloadExport
+    DownloadExport,
+    Submission
 )
+
 from indico import IndicoClient, IndicoConfig
 
 
@@ -21,22 +24,62 @@ class IndicoWrapper:
     Class to handle all indico api calls
     """
 
-    def __init__(self, host, api_token_path):
+    def __init__(
+        self, host: str, api_token_path: str=None, api_token: str=None, **kwargs
+    ):
+        """
+        Create indico client with user provided arguments
+        
+        args:
+            host (str): url of Indico environment
+            api_token_path (str): local path to Indico API token
+            api_token (str): Indico API token string
+            
+        """
         self.host = host
         self.api_token_path = api_token_path
+        self.api_token = api_token
+        
+        config = {"host": host}        
+        if self.api_token_path:
+            config["api_token_path"] = self.api_token_path
+        if self.api_token:
+            config["api_token"] = self.api_token
+            
+        for arg, value in kwargs.items():
+            config[arg] = value
+            
+        indico_config = IndicoConfig(**config)
+        self.indico_client = IndicoClient(config=indico_config)
 
-        with open(api_token_path) as f:
-            self.api_token = f.read().strip()
+    def get_submission(self, submission_id: int) -> Submission:
+        """
+        Submission object query by submission id
+        
+        args:
+            submission_id (str): id of submision to workflow
+        
+        returns:
+            [Submission]: Indico Submission object
+        """
+        submission_obj = self.indico_client.call(GetSubmission(submission_id))
+        return submission_obj
 
-        my_config = IndicoConfig(
-            host=self.host, api_token=self.api_token, verify_ssl=False
-        )
-        self.indico_client = IndicoClient(config=my_config)
-
-    def get_submission(self, submission_id):
-        return self.indico_client.call(GetSubmission(submission_id))
-
-    def get_submissions(self, workflow_id, submission_status=None, retrieved_flag=None):
+    def get_submissions_by_status(
+        self, workflow_id: int, submission_status: str=None, retrieved_flag: bool=None
+    ) -> List[Submission]:
+        """
+        Get a list of submission objects from a given workflow and filter by
+        submission status and retrieved flag
+        
+        workflow_id (int): id of workflow, can be found in the url of workflow page
+        submission_status (str): status to query submissions by, only 3 are valid:
+                                 COMPLETE, PENDING_REVIEW, PENDING_ADMIN_REVIEW, PENDING_AUTO_REVIEW
+        retrieved_flag (bool): if True, return retrieved values, if False return unretrieved values
+        
+        returns: 
+            List[Submission]: list of Submission objects
+        """
         sub_filter = SubmissionFilter(
             status=submission_status, retrieved=retrieved_flag
         )
