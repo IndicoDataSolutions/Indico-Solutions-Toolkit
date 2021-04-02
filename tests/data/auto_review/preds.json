@@ -1,0 +1,56 @@
+[
+    {
+        "start": 0,
+        "end": 3,
+        "label": "name",
+        "text": "match all with high confidence",
+        "confidence": {
+            "name": 0.99
+        }
+    },
+    {
+        "start": 4,
+        "end": 9,
+        "label": "name",
+        "text": "match all with high confidence",
+        "confidence": {
+            "name": 0.99
+        }
+    },
+    {
+        "start": 8,
+        "end": 20,
+        "label": "name",
+        "text": "match all with high confidence",
+        "confidence": {
+            "name": 0.99
+        }
+    },
+    {
+        "start": 50,
+        "end": 61,
+        "label": "price",
+        "text": "one,2,three",
+        "confidence": {
+            "price": 0.99
+        }
+    },
+    {
+        "start": 30,
+        "end": 40,
+        "label": "age",
+        "text": "low confidence",
+        "confidence": {
+            "age": 0.4
+        }
+    },
+    {
+        "start": 30,
+        "end": 40,
+        "label": "age",
+        "text": "low confidence 2",
+        "confidence": {
+            "age": 0.3
+        }
+    }
+]

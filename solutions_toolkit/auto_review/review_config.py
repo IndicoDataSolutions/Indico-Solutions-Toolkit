@@ -23,8 +23,9 @@ class ReviewConfiguration:
                                                 use in auto-review
         """
         self.custom_functions = custom_functions
-        self.field_config = validate_field_config(field_config)
+        self.field_config = self.validate_field_config(field_config)
 
+    @staticmethod
     def validate_field_config(field_config):
         for function_config in field_config:
             if not isinstance(function_config, dict):

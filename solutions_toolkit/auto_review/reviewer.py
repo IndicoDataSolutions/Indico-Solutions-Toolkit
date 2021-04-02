@@ -1,7 +1,8 @@
 from collections import defaultdict
+from typing import List
 
-from .auto_review.field_config import ReviewConfiguration
-from solutions_toolkit.auto_review.auto_review_functions import (
+from .review_config import ReviewConfiguration
+from .auto_review_functions import (
     accept_by_confidence,
     reject_by_confidence,
     reject_by_min_character_length,
@@ -35,21 +36,20 @@ class Reviewer:
     reviewer.apply_review()
 
     # Get your updated predictions
-    updated_predictions: Dict[str, List[dict]] = reviewer.updated_predictions
+    updated_predictions: List[dict] = reviewer.updated_predictions
     """
 
     def __init__(
         self,
-        predictions: Dict[str, List[dict]],
-        model_name: str,
+        predictions: List[dict],
         review_config: ReviewConfiguration,
     ):
         self.field_config = review_config.field_config
         self.reviewers = self.add_reviewers(review_config.custom_functions)
-        self.model_name = model_name
-        self.predictions = predictions[self.model_name]
-        self.updated_predictions = predictions[self.model_name]
+        self.predictions = predictions
+        self.updated_predictions = predictions
 
+    @staticmethod
     def add_reviewers(custom_functions):
         """
         Add custom functions into reviewers
@@ -68,5 +68,5 @@ class Reviewer:
                 raise KeyError(
                     f"{fn_name} function was not found, did you specify it in FieldConfiguration?"
                 )
-            kwargs = fn_config["kwargs"] if fn_config["kwargs"] else {}
-            self.updated_predictions = review_fn(**kwargs)
+            kwargs = fn_config["kwargs"] if fn_config.get("kwargs") else {}
+            self.updated_predictions = review_fn(self.updated_predictions, **kwargs)
