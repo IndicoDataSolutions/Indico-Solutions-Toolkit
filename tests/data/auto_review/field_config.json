@@ -1,0 +1,27 @@
+[
+    {
+        "function": "reject_by_confidence",
+        "kwargs": {
+            "conf_threshold": 0.7
+        }
+    },
+    {
+        "function": "accept_by_all_match_and_confidence",
+        "kwargs": {
+            "label": "name"
+        }
+    },
+    {
+        "function": "split_merged_values",
+        "kwargs": {
+            "split_filter": ","
+        }
+    },
+    {
+        "function": "accept_by_confidence",
+        "kwargs": {
+            "label": "price",
+            "conf_threshold": 0.8
+        }
+    }
+]

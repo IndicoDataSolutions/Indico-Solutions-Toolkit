@@ -15,9 +15,9 @@ def reject_by_confidence(
     """
     for prediction in predictions:
         if prediction.get(REJECTED) is None:
-            if label == None:
-                label = prediction["label"]
-            if prediction["confidence"][label] < conf_threshold:
+            if label != None and prediction["label"] != label:
+                continue
+            if prediction["confidence"][prediction["label"]] < conf_threshold:
                 prediction[REJECTED] = True
                 _ = prediction.pop(ACCEPTED, None)
     return predictions
@@ -32,9 +32,9 @@ def remove_by_confidence(
     """
     for prediction in predictions:
         if prediction.get(REJECTED) is None:
-            if label == None:
-                label = prediction["label"]
-            if prediction["confidence"][label] < conf_threshold:
+            if label != None and prediction["label"] != label:
+                continue
+            if prediction["confidence"][prediction["label"]] < conf_threshold:
                 predictions.remove(prediction)
     return predictions
 
@@ -49,7 +49,9 @@ def accept_by_confidence(
     """
     for prediction in predictions:
         if prediction.get(REJECTED) is None:
-            if prediction["confidence"][label] > conf_threshold:
+            if label != None and prediction["label"] != label:
+                continue
+            if prediction["confidence"][prediction["label"]] > conf_threshold:
                 prediction[ACCEPTED] = True
     return predictions
 
@@ -66,6 +68,8 @@ def accept_by_all_match_and_confidence(
     pred_values = set()
     for pred in predictions:
         if pred.get(REJECTED) is None:
+            if label != None and pred["label"] != label:
+                continue
             if pred["confidence"][label] > conf_threshold:
                 pred_values.add(pred["text"])
 
