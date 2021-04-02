@@ -54,17 +54,21 @@ def accept_by_confidence(
     return predictions
 
 
-def accept_by_all_match_and_confidence(predictions: List[dict], label: str, conf_threshold=0.98):
+def accept_by_all_match_and_confidence(
+    predictions: List[dict], label: str, conf_threshold=0.98
+):
     """
     Accepts all predictions for a class if all their values are all the same,
     and all their confidence is above conf_threshold
+    Returns:
+    predictions List[dict]: all predictions
     """
     pred_values = set()
     for pred in predictions:
-        if pred.get(REJECTED) is None: 
+        if pred.get(REJECTED) is None:
             if pred["confidence"][label] > conf_threshold:
                 pred_values.add(pred["text"])
-                           
+
     if len(pred_values) == 1:
         text = pred_values.pop()
         for pred in predictions:
@@ -108,7 +112,7 @@ def reject_by_max_character_length(
     return predictions
 
 
-def split_merged_values(predictions: List[dict], split_filter=None)-> List[dict]:
+def split_merged_values(predictions: List[dict], split_filter=None) -> List[dict]:
     """
     Splits merged predictions and updates indexes
     Returns:
