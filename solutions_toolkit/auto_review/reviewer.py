@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from solutions_toolkit.auto_review.field_config import ReviewConfiguration
+from .auto_review.field_config import ReviewConfiguration
 from solutions_toolkit.auto_review.auto_review_functions import (
     accept_by_confidence,
     reject_by_confidence,
@@ -11,7 +11,7 @@ from solutions_toolkit.auto_review.auto_review_functions import (
     remove_by_confidence,
 )
 
-# TODO: make it so people can add functions to REVIEWERS
+
 REVIEWERS = {
     "accept_by_confidence": accept_by_confidence,
     "reject_by_confidence": reject_by_confidence,
@@ -45,12 +45,12 @@ class Reviewer:
         review_config: ReviewConfiguration,
     ):
         self.field_config = review_config.field_config
-        self.reviewers = self.merge_dict(review_config.custom_functions)
+        self.reviewers = self.add_reviewers(review_config.custom_functions)
         self.model_name = model_name
         self.predictions = predictions[self.model_name]
         self.updated_predictions = predictions[self.model_name]
 
-    def merge_dict(custom_functions):
+    def add_reviewers(custom_functions):
         """
         Add custom functions into reviewers
         Overwrites any default reviewers if function names match

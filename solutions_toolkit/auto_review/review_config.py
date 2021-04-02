@@ -1,13 +1,16 @@
 from typing import Dict, List, Callable
 
 
-REQUIRED_CONF_ARGS = ["kwargs", "function"]
+REQUIRED_CONF_ARGS = ["function"]
 
 
-class ReviewConfiguration():
-    def __init__(self, field_config: List[dict], custom_functions: Dict[str, Callable]):
+class ReviewConfiguration:
+    def __init__(
+        self, field_config: List[dict], custom_functions: Dict[str, Callable] = {}
+    ):
         """
-        field_config is list of function configs
+        Args:
+        field_config (List[dict]): list of function config dictionaries
         function config:
         {
             "function": "reject_by_confidence",
@@ -16,6 +19,8 @@ class ReviewConfiguration():
                 "conf_threshold": 0.98
             },
         }
+        custom_functions (Dict[str, Callable]): Dictionary with custom functions to
+                                                use in auto-review
         """
         self.custom_functions = custom_functions
         self.field_config = validate_field_config(field_config)
