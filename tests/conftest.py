@@ -10,7 +10,6 @@ FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 def three_row_invoice_preds():
     with open(os.path.join(FILE_PATH, "data/row_association/three_row_invoice/preds.json"), "r") as f:
         preds = json.load(f)
-    print(preds)
     return preds
 
 

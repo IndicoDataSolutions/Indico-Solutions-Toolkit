@@ -2,55 +2,118 @@
     {
         "start": 0,
         "end": 3,
-        "label": "name",
+        "label": "accept_by_all_match_and_confidence",
         "text": "match all with high confidence",
         "confidence": {
-            "name": 0.99
+            "accept_by_all_match_and_confidence": 0.99
         }
     },
     {
         "start": 4,
         "end": 9,
-        "label": "name",
+        "label": "accept_by_all_match_and_confidence",
         "text": "match all with high confidence",
         "confidence": {
-            "name": 0.99
+            "accept_by_all_match_and_confidence": 0.98
         }
     },
     {
         "start": 8,
         "end": 20,
-        "label": "name",
+        "label": "accept_by_all_match_and_confidence",
         "text": "match all with high confidence",
         "confidence": {
-            "name": 0.99
+            "accept_by_all_match_and_confidence": 0.95
         }
     },
     {
         "start": 50,
         "end": 61,
-        "label": "price",
+        "label": "split_merged_values",
         "text": "one,2,three",
         "confidence": {
-            "price": 0.99
+            "split_merged_values": 0.99
+        }
+    },
+    {
+        "start": 50,
+        "end": 61,
+        "label": "split_merged_values",
+        "text": "should not be split",
+        "confidence": {
+            "split_merged_values": 0.99
         }
     },
     {
         "start": 30,
         "end": 40,
-        "label": "age",
-        "text": "low confidence",
+        "label": "reject_by_confidence",
+        "text": "low",
         "confidence": {
-            "age": 0.4
+            "reject_by_confidence": 0.4
         }
     },
     {
         "start": 30,
         "end": 40,
-        "label": "age",
-        "text": "low confidence 2",
+        "label": "reject_by_confidence",
+        "text": "low",
         "confidence": {
-            "age": 0.3
+            "reject_by_confidence": 0.3
+        }
+    },
+    {
+        "start": 30,
+        "end": 40,
+        "label": "reject_by_confidence",
+        "text": "high",
+        "confidence": {
+            "reject_by_confidence": 0.9
+        }
+    },
+    {
+        "start": 30,
+        "end": 40,
+        "label": "remove_by_confidence",
+        "text": "should be removed",
+        "confidence": {
+            "remove_by_confidence": 0.42
+        }
+    },
+    {
+        "start": 30,
+        "end": 40,
+        "label": "reject_by_min_character_length",
+        "text": "short",
+        "confidence": {
+            "reject_by_min_character_length": 0.88
+        }
+    },
+    {
+        "start": 30,
+        "end": 40,
+        "label": "reject_by_min_character_length",
+        "text": "should not be rejected",
+        "confidence": {
+            "reject_by_min_character_length": 0.86
+        }
+    },
+    {
+        "start": 30,
+        "end": 40,
+        "label": "reject_by_max_character_length",
+        "text": "should be rejected",
+        "confidence": {
+            "reject_by_min_character_length": 0.83
+        }
+    },
+    {
+        "start": 30,
+        "end": 40,
+        "label": "reject_by_max_character_length",
+        "text": "short",
+        "confidence": {
+            "reject_by_min_character_length": 0.74
         }
     }
 ]
