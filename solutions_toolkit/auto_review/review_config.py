@@ -15,7 +15,7 @@ class ReviewConfiguration:
         {
             "function": "reject_by_confidence",
             "kwargs": {
-                "label": "Check Amount",
+                "labels": ["Check Amount", "Name"],
                 "conf_threshold": 0.98
             },
         }

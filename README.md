@@ -26,7 +26,7 @@ field_config = [
     {
         "function": "accept_by_confidence",
         "kwargs": {
-            "label": "Name",
+            "label": ["Name"],
             "conf_threshold": 0.95
         }
     },

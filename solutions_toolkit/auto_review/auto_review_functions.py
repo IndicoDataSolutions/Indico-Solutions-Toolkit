@@ -6,7 +6,7 @@ REJECTED = "rejected"
 
 
 def reject_by_confidence(
-    predictions: List[dict], label=None, conf_threshold=0.50
+    predictions: List[dict], labels:List[str]=None, conf_threshold=0.50
 ) -> List[dict]:
     """
     Adds rejected:True kvp for predictions below conf_threshold
@@ -15,7 +15,7 @@ def reject_by_confidence(
     """
     for prediction in predictions:
         if prediction.get(REJECTED) is None:
-            if label != None and prediction["label"] != label:
+            if labels != None and prediction["label"] not in labels:
                 continue
             if prediction["confidence"][prediction["label"]] < conf_threshold:
                 prediction[REJECTED] = True
@@ -24,7 +24,7 @@ def reject_by_confidence(
 
 
 def remove_by_confidence(
-    predictions: List[dict], label=None, conf_threshold=0.50
+    predictions: List[dict], labels:List[str]=None, conf_threshold=0.50
 ) -> List[dict]:
     """
     Returns:
@@ -32,7 +32,7 @@ def remove_by_confidence(
     """
     for prediction in predictions:
         if prediction.get(REJECTED) is None:
-            if label != None and prediction["label"] != label:
+            if labels != None and prediction["label"] not in labels:
                 continue
             if prediction["confidence"][prediction["label"]] < conf_threshold:
                 predictions.remove(prediction)
@@ -40,7 +40,7 @@ def remove_by_confidence(
 
 
 def accept_by_confidence(
-    predictions: List[dict], label=None, conf_threshold=0.98
+    predictions: List[dict], labels:List[str]=None, conf_threshold=0.98
 ) -> List[dict]:
     """
     Adds accepted:True kvp for predictions above conf_threshold
@@ -49,7 +49,7 @@ def accept_by_confidence(
     """
     for prediction in predictions:
         if prediction.get(REJECTED) is None:
-            if label != None and prediction["label"] != label:
+            if labels != None and prediction["label"] not in labels:
                 continue
             if prediction["confidence"][prediction["label"]] > conf_threshold:
                 prediction[ACCEPTED] = True
@@ -57,7 +57,7 @@ def accept_by_confidence(
 
 
 def accept_by_all_match_and_confidence(
-    predictions: List[dict], label: str, conf_threshold=0.98
+    predictions: List[dict], labels: List[str]=None, conf_threshold=0.98
 ):
     """
     Accepts all predictions for a class if all their values are all the same,
@@ -68,16 +68,16 @@ def accept_by_all_match_and_confidence(
     pred_values = set()
     for pred in predictions:
         if pred.get(REJECTED) is None:
-            if label != None and pred["label"] != label:
+            if labels != None and pred["label"] not in labels:
                 continue
-            if pred["confidence"][label] > conf_threshold:
+            if pred["confidence"][pred["label"]] > conf_threshold:
                 pred_values.add(pred["text"])
 
     if len(pred_values) == 1:
         text = pred_values.pop()
         for pred in predictions:
             if pred["text"] == text:
-                if not pred["confidence"][label] > conf_threshold:
+                if not pred["confidence"][pred["label"]] > conf_threshold:
                     return predictions
 
         for pred in predictions:
@@ -87,7 +87,7 @@ def accept_by_all_match_and_confidence(
 
 
 def reject_by_min_character_length(
-    predictions: List[dict], label=None, min_length_threshold=3
+    predictions: List[dict], labels:List[str]=None, min_length_threshold=3
 ) -> List[dict]:
     """
     Adds rejected:True kvp for predictions shorter than min_length_threshold
@@ -95,14 +95,14 @@ def reject_by_min_character_length(
     predictions List[dict]: all predictions
     """
     for prediction in predictions:
-        if label == None or label == prediction["label"]:
+        if labels == None or prediction["label"] in labels:
             if len(prediction["text"]) < min_length_threshold:
                 prediction[REJECTED] = True
     return predictions
 
 
 def reject_by_max_character_length(
-    predictions: List[dict], label=None, max_length_threshold=10
+    predictions: List[dict], labels:List[str]=None, max_length_threshold=10
 ) -> List[dict]:
     """
     Adds rejected:True kvp for predictions longer than max_length_threshold
@@ -110,13 +110,13 @@ def reject_by_max_character_length(
     predictions List[dict]: all prediction
     """
     for prediction in predictions:
-        if label == None or label == prediction["label"]:
+        if labels == None or prediction["label"] in labels:
             if len(prediction["text"]) > max_length_threshold:
                 prediction[REJECTED] = True
     return predictions
 
 
-def split_merged_values(predictions: List[dict], split_filter=None) -> List[dict]:
+def split_merged_values(predictions: List[dict], labels:List[str]=None, split_filter=None) -> List[dict]:
     """
     Splits merged predictions and updates indexes
     Returns:
@@ -124,6 +124,9 @@ def split_merged_values(predictions: List[dict], split_filter=None) -> List[dict
     """
     updated_predictions = []
     for pred in predictions:
+        if labels and pred["label"] not in labels:
+            updated_predictions.append(pred)
+            continue
         merged_text = pred["text"]
         start = pred["start"]
         if split_filter:
