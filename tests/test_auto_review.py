@@ -7,8 +7,20 @@ ACCEPTED = "accepted"
 REJECTED = "rejected"
 
 
+def accept_if_match(predictions, match_text: str, labels: list = None):
+    """Custom function to pass into ReviewConfiguration"""
+    for pred in predictions:
+        if REJECTED not in pred:
+            if labels != None and pred["label"] not in labels:
+                continue
+            if pred["text"] == match_text:
+                pred["accepted"] = True
+    return predictions
+
+
 def test_reviewer(auto_review_field_config, auto_review_preds):
-    review_config = ReviewConfiguration(auto_review_field_config)
+    custom_functions = {"accept_if_match": accept_if_match}
+    review_config = ReviewConfiguration(auto_review_field_config, custom_functions)
     reviewer = Reviewer(auto_review_preds, review_config)
     reviewer.apply_reviews()
     preds = reviewer.updated_predictions
@@ -30,9 +42,6 @@ def test_reviewer(auto_review_field_config, auto_review_preds):
             assert pred[REJECTED] == True
         else:
             assert REJECTED not in pred.keys()
-    for pred in pred_map["split_merged_values"]:
-        assert pred[ACCEPTED] == True
-    assert len(pred_map["split_merged_values"]) == 4
+    for pred in pred_map["accept_if_match"]:
+        assert pred["accepted"] == True
     assert "remove_by_confidence" not in pred.keys()
-
-
