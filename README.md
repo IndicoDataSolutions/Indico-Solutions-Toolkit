@@ -17,3 +17,19 @@ litems.assign_row_number()
 
 updated_preds: List[dict] = litems.updated_predictions
 ```
+
+Example:
+How to use the IndicoWrapper
+```
+from solutions_toolkit.indico_wrapper import IndicoWrapper
+
+host = "app.indico.io"
+api_token_path = "/path/to/token.txt"
+workflow_id = 123
+
+indico_wrapper = IndicoWrapper(host, api_token_path)
+
+
+submissions = indico_wrapper.get_submissions(workflow_id, "COMPLETE")
+sub_results = indico_wrapper.get_submission_results(submissions[0])
+```
