@@ -36,6 +36,7 @@ def split_prediction_into_many(
             "start": overall_start + text_start_index,
             "end": overall_start + text_start_index + len(text),
             "text": text,
+            "label": prediction["label"],
             "confidence": prediction["confidence"],
         }
         split_predictions.append(new_pred)

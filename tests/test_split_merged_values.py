@@ -3,7 +3,7 @@ from solutions_toolkit.row_association import split_prediction_into_many
 
 
 def test_split_prediction_into_many_three_splits():
-    test_case = {"text": "a\nb\n\nc", "start": 10, "end": 16, "confidence": None}
+    test_case = {"text": "a\nb\n\nc", "start": 10, "end": 16, "confidence": None, "label": "test"}
     split_predictions = split_prediction_into_many(test_case, "\n")
     assert len(split_predictions) == 3
     assert split_predictions[0]["text"] == "a"
@@ -15,7 +15,7 @@ def test_split_prediction_into_many_three_splits():
 
 
 def test_split_prediction_into_many_no_splits():
-    test_case = {"text": "no line breaks", "start": 5, "end": 19, "confidence": None}
+    test_case = {"text": "no line breaks", "start": 5, "end": 19, "confidence": None, "label": "test"}
     split_predictions = split_prediction_into_many(test_case, "\n")
     assert len(split_predictions) == 1
     assert split_predictions[0]["text"] == "no line breaks"
@@ -24,7 +24,7 @@ def test_split_prediction_into_many_no_splits():
 
 
 def test_split_prediction_into_many_duplicate_test():
-    test_case = {"text": "a\n\n a", "start": 5, "end": 10, "confidence": None}
+    test_case = {"text": "a\n\n a", "start": 5, "end": 10, "confidence": None, "label": "test"}
     split_predictions = split_prediction_into_many(test_case, "\n")
     assert len(split_predictions) == 2
     assert split_predictions[0]["text"] == "a"
