@@ -1,8 +1,14 @@
 # Indico-Solutions-Toolkit
 A library to assist with Indico IPA development
 
+### Tests
+To see test coverage
+```
+coverage run --omit 'venv/*' -m pytest
+coverage report -m
+```
 
-Example: 
+### Examples 
 How to add row_number key to your predictions
 ```
 from solutions_toolkit.row_association import Association
