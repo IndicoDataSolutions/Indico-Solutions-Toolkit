@@ -1,4 +1,5 @@
 from typing import List
+from collections import defaultdict
 
 
 ACCEPTED = "accepted"
@@ -6,32 +7,33 @@ REJECTED = "rejected"
 
 
 def reject_by_confidence(
-    predictions: List[dict], labels:List[str]=None, conf_threshold=0.50
+    predictions: List[dict], labels: List[str] = None, conf_threshold=0.50
 ) -> List[dict]:
     """
-    Adds rejected:True kvp for predictions below conf_threshold
+    Rejects predictions below a given confidence threshold
     Returns:
     predictions List[dict]: all predictions
     """
     for prediction in predictions:
-        if prediction.get(REJECTED) is None:
+        if REJECTED not in prediction:
             if labels != None and prediction["label"] not in labels:
                 continue
             if prediction["confidence"][prediction["label"]] < conf_threshold:
                 prediction[REJECTED] = True
-                _ = prediction.pop(ACCEPTED, None)
+                prediction.pop(ACCEPTED, None)
     return predictions
 
 
 def remove_by_confidence(
-    predictions: List[dict], labels:List[str]=None, conf_threshold=0.50
+    predictions: List[dict], labels: List[str] = None, conf_threshold=0.50
 ) -> List[dict]:
     """
+    Removes predictions below a given confidence threshold
     Returns:
     updated_predictions List[dict]: predictions above conf_threshold
     """
     for prediction in predictions:
-        if prediction.get(REJECTED) is None:
+        if REJECTED not in prediction:
             if labels != None and prediction["label"] not in labels:
                 continue
             if prediction["confidence"][prediction["label"]] < conf_threshold:
@@ -40,15 +42,15 @@ def remove_by_confidence(
 
 
 def accept_by_confidence(
-    predictions: List[dict], labels:List[str]=None, conf_threshold=0.98
+    predictions: List[dict], labels: List[str] = None, conf_threshold=0.98
 ) -> List[dict]:
     """
-    Adds accepted:True kvp for predictions above conf_threshold
+    Accepts predictions above a given confidence threshold
     Returns:
     predictions List[dict]: all predictions
     """
     for prediction in predictions:
-        if prediction.get(REJECTED) is None:
+        if REJECTED not in prediction:
             if labels != None and prediction["label"] not in labels:
                 continue
             if prediction["confidence"][prediction["label"]] > conf_threshold:
@@ -57,40 +59,35 @@ def accept_by_confidence(
 
 
 def accept_by_all_match_and_confidence(
-    predictions: List[dict], labels: List[str]=None, conf_threshold=0.98
+    predictions: List[dict], labels: List[str] = None, conf_threshold=0.98
 ):
     """
-    Accepts all predictions for a class if all their values are all the same,
-    and all their confidence is above conf_threshold
+    Accepts all predictions for a class if all their values are the same,
+    and all confidence scores are above a given confidence threshold
     Returns:
     predictions List[dict]: all predictions
     """
-    pred_values = set()
+    pred_map = defaultdict(set)
     for pred in predictions:
-        if pred.get(REJECTED) is None:
+        if REJECTED not in pred:
             if labels != None and pred["label"] not in labels:
                 continue
             if pred["confidence"][pred["label"]] > conf_threshold:
-                pred_values.add(pred["text"])
-
-    if len(pred_values) == 1:
-        text = pred_values.pop()
-        for pred in predictions:
-            if pred["text"] == text:
-                if not pred["confidence"][pred["label"]] > conf_threshold:
-                    return predictions
-
-        for pred in predictions:
-            if pred["text"] == text:
+                pred_map[pred["label"]].add(pred["text"])
+            else:
+                pred_map[pred["label"]].update((1, 2))
+    for pred in predictions:
+        if pred["label"] in pred_map:
+            if len(pred_map[pred["label"]]) == 1:
                 pred[ACCEPTED] = True
     return predictions
 
 
 def reject_by_min_character_length(
-    predictions: List[dict], labels:List[str]=None, min_length_threshold=3
+    predictions: List[dict], labels: List[str] = None, min_length_threshold=3
 ) -> List[dict]:
     """
-    Adds rejected:True kvp for predictions shorter than min_length_threshold
+    Rejects predictions shorter than a given minimum length
     Returns:
     predictions List[dict]: all predictions
     """
@@ -102,10 +99,10 @@ def reject_by_min_character_length(
 
 
 def reject_by_max_character_length(
-    predictions: List[dict], labels:List[str]=None, max_length_threshold=10
+    predictions: List[dict], labels: List[str] = None, max_length_threshold=10
 ) -> List[dict]:
     """
-    Adds rejected:True kvp for predictions longer than max_length_threshold
+    Rejects predictions longer than a given maximum length
     Returns:
     predictions List[dict]: all prediction
     """
@@ -114,45 +111,3 @@ def reject_by_max_character_length(
             if len(prediction["text"]) > max_length_threshold:
                 prediction[REJECTED] = True
     return predictions
-
-
-def split_merged_values(predictions: List[dict], labels:List[str]=None, split_filter=None) -> List[dict]:
-    """
-    Splits merged predictions and updates indexes
-    Returns:
-    updated_predictions List[dict]: all predictions
-    """
-    updated_predictions = []
-    for pred in predictions:
-        if labels and pred["label"] not in labels:
-            updated_predictions.append(pred)
-            continue
-        merged_text = pred["text"]
-        start = pred["start"]
-        if split_filter:
-            split_text = merged_text.split(split_filter)
-        else:
-            split_text = merged_text.split()
-        if len(split_text) == 1 or pred.get("rejected"):
-            updated_predictions.append(pred)
-            continue
-
-        current_start = start
-        for text in split_text:
-            str_len = len(text)
-            if str_len == 0:
-                current_start += 1
-                continue
-
-            split_value_start = current_start
-            split_value_end = split_value_start + str_len
-            current_start = split_value_end + 1
-            split_val_pred_dict = {
-                "text": text,
-                "start": split_value_start,
-                "end": split_value_end,
-                "label": pred["label"],
-                "confidence": pred["confidence"],
-            }
-            updated_predictions.append(split_val_pred_dict)
-    return updated_predictions

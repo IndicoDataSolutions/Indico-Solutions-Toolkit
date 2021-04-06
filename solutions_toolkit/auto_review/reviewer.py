@@ -8,7 +8,6 @@ from .auto_review_functions import (
     reject_by_min_character_length,
     reject_by_max_character_length,
     accept_by_all_match_and_confidence,
-    split_merged_values,
     remove_by_confidence,
 )
 
@@ -19,7 +18,6 @@ REVIEWERS = {
     "reject_by_min_character_length": reject_by_min_character_length,
     "reject_by_max_character_length": reject_by_max_character_length,
     "accept_by_all_match_and_confidence": accept_by_all_match_and_confidence,
-    "split_merged_values": split_merged_values,
     "remove_by_confidence": remove_by_confidence,
 }
 

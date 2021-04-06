@@ -14,16 +14,9 @@
         }
     },
     {
-        "function": "split_merged_values",
-        "kwargs": {
-            "labels": ["split_merged_values"],
-            "split_filter": ","
-        }
-    },
-    {
         "function": "accept_by_confidence",
         "kwargs": {
-            "labels": ["accept_by_confidence", "reject_by_confidence", "split_merged_values"],
+            "labels": ["accept_by_confidence", "reject_by_confidence"],
             "conf_threshold": 0.8
         }
     },
@@ -46,6 +39,13 @@
         "kwargs": {
             "labels": ["reject_by_max_character_length"],
             "max_length_threshold": 6
+        }
+    },
+    {
+        "function": "accept_if_match",
+        "kwargs": {
+            "match_text": "matching text",
+            "labels": ["accept_if_match"]
         }
     }
 ]
