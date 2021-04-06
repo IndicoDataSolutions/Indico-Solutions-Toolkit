@@ -1,0 +1,323 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Row Association &mdash; Indico Solutions Toolkit  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/indicotheme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Indico Solutions Toolkit Library" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: linear-gradient(to right top,#2c4658,#2f5f76,#2b7992,#2094ad,#04b1c6)" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Indico Solutions Toolkit
+          
+
+          
+            
+            <img src="_static/logo-white.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Row Association</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-row_association.grouper">Association</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-row_association.indico_wrapper">Indico Wrapper</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Indico Solutions Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Row Association</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/row_association.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="row-association">
+<h1>Row Association<a class="headerlink" href="#row-association" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-row_association.grouper">
+<span id="association"></span><h2>Association<a class="headerlink" href="#module-row_association.grouper" title="Permalink to this headline">¶</a></h2>
+<p>Associate row items</p>
+<dl class="py class">
+<dt id="row_association.grouper.Association">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">row_association.grouper.</span></code><code class="sig-name descname"><span class="pre">Association</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line_item_fields</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predictions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#row_association.grouper.Association" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for assigning row_number to line item fields given workflow predictions</p>
+<p>Example Usage:</p>
+<dl>
+<dt>litems = Association(</dt><dd><blockquote>
+<div><p>line_item_fields=[“line_value”, “line_date”],
+predictions=[{“label”: “line_date”, “start”: 12, “text”: “1/2/2021”…..}]</p>
+</div></blockquote>
+<p>)</p>
+</dd>
+</dl>
+<p>litems.get_bounding_boxes(ocr_tokens=[{“postion”…,},])
+litems.assign_row_number()</p>
+<p># Get your updated predictions
+updated_preds: List[dict] = litems.updated_predictions</p>
+<dl class="py method">
+<dt id="row_association.grouper.Association.assign_row_number">
+<code class="sig-name descname"><span class="pre">assign_row_number</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_place</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#row_association.grouper.Association.assign_row_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a row_number:int key/val pair based on bounding box position and page
+Args:
+in_place (bool): if False, returns updated_predictions
+Updates:
+self._line_item_predictions (list of dicts): predictions with row_number added</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="row_association.grouper.Association.get_bounding_boxes">
+<code class="sig-name descname"><span class="pre">get_bounding_boxes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ocr_tokens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_boxes_to_all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_for_no_token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_place</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#row_association.grouper.Association.get_bounding_boxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds keys for bounding box top/bottom and page number to line item extraction predictions,
+and adds all preds to property self._line_item_predictions
+Args:
+ocr_tokens (list of dicts): OCR tokens from ‘ondocument’ config (workflow default)
+raise_for_no_token (bool): raise exception if a matching token isn’t found for a prediction
+add_boxes_to_all (bool): add bounding box and page number metadata to non line item predictions
+in_place (bool): if False, returns tokens with bounding boxes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="row_association.grouper.Association.get_workflow_predictions">
+<code class="sig-name descname"><span class="pre">get_workflow_predictions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workflow_result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_status</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'final'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_place</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#row_association.grouper.Association.get_workflow_predictions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the predictions and modelname from workflow result
+Args:
+workflow_result (dict): Output from completed indico workflow submission
+pred_status (string): get predictions from final or pre_review
+in_place (bool): if False, returns predictions
+model_name (string): optionally, specify the model name
+Returns:
+predictions (list of dicts): predictions from indico</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="row_association.grouper.Association.sequences_overlap">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">sequences_overlap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#row_association.grouper.Association.sequences_overlap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean return value indicates whether or not seqs overlap</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="row_association.grouper.Association.updated_predictions">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">updated_predictions</span></code><a class="headerlink" href="#row_association.grouper.Association.updated_predictions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-row_association.indico_wrapper">
+<span id="indico-wrapper"></span><h2>Indico Wrapper<a class="headerlink" href="#module-row_association.indico_wrapper" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="row_association.indico_wrapper.Tokens">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">row_association.indico_wrapper.</span></code><code class="sig-name descname"><span class="pre">Tokens</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#row_association.indico_wrapper.Tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for indico calls</p>
+<dl class="py method">
+<dt id="row_association.indico_wrapper.Tokens.get_ocr_tokens">
+<code class="sig-name descname"><span class="pre">get_ocr_tokens</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workflow_result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#row_association.indico_wrapper.Tokens.get_ocr_tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get ocr document tokens from etl file
+Args:
+workflow_result: Indico workflow result</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="index.html" class="btn btn-neutral float-left" title="Indico Solutions Toolkit Library" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Indico.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
