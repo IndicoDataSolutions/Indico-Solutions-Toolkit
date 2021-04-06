@@ -18,14 +18,15 @@ from indico.queries import (
 
 from indico import IndicoClient, IndicoConfig
 
-
+# TODO: Need unittesting for this class
+# Start with testing that kwargs adds to the config appropriately
 class IndicoWrapper:
     """
     Class to handle all indico api calls
     """
 
     def __init__(
-        self, host: str, api_token_path: str=None, api_token: str=None, **kwargs
+        self, host_url: str, api_token_path: str=None, api_token: str=None, **kwargs
     ):
         """
         Create indico client with user provided arguments
@@ -36,18 +37,18 @@ class IndicoWrapper:
             api_token (str): Indico API token string
             
         """
-        self.host = host
+        self.host_url = host_url
         self.api_token_path = api_token_path
         self.api_token = api_token
         
-        config = {"host": host}        
+        self.config = {"host": self.host_url}        
         if self.api_token_path:
-            config["api_token_path"] = self.api_token_path
+            self.config["api_token_path"] = self.api_token_path
         if self.api_token:
-            config["api_token"] = self.api_token
+            self.config["api_token"] = self.api_token
             
         for arg, value in kwargs.items():
-            config[arg] = value
+            self.config[arg] = value
             
         indico_config = IndicoConfig(**config)
         self.indico_client = IndicoClient(config=indico_config)
@@ -91,6 +92,8 @@ class IndicoWrapper:
     def get_workflow_output(self, submission):
         return self.indico_client.call(RetrieveStorageObject(submission.result_file))
 
+    # TODO: make this more of a helper function and create specfic download functions
+    # Ideally more functions like "get_submission_results" maybe "get_ocr_output?"
     def get_storage_object(self, storage_url):
         return self.indico_client.call(RetrieveStorageObject(storage_url))
 
