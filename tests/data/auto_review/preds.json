@@ -27,6 +27,42 @@
         }
     },
     {
+        "start": 4,
+        "end": 9,
+        "label": "no_match_accept_by_all_match_and_confidence",
+        "text": "not matching",
+        "confidence": {
+            "no_match_accept_by_all_match_and_confidence": 0.98
+        }
+    },
+    {
+        "start": 8,
+        "end": 20,
+        "label": "no_match_accept_by_all_match_and_confidence",
+        "text": "does not match",
+        "confidence": {
+            "no_match_accept_by_all_match_and_confidence": 0.95
+        }
+    },
+    {
+        "start": 8,
+        "end": 20,
+        "label": "low_conf_accept_by_all_match_and_confidence",
+        "text": "matching",
+        "confidence": {
+            "low_conf_accept_by_all_match_and_confidence": 0.2
+        }
+    },
+    {
+        "start": 8,
+        "end": 20,
+        "label": "low_conf_accept_by_all_match_and_confidence",
+        "text": "matching",
+        "confidence": {
+            "low_conf_accept_by_all_match_and_confidence": 0.95
+        }
+    },
+    {
         "start": 30,
         "end": 40,
         "label": "reject_by_confidence",
