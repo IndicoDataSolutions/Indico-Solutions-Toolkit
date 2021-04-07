@@ -13,7 +13,7 @@ from indico.queries import (
     GetDataset,
     CreateExport,
     DownloadExport,
-    Submission
+    Submission,
 )
 
 from indico import IndicoClient, IndicoConfig
@@ -26,7 +26,7 @@ class IndicoWrapper:
     """
 
     def __init__(
-        self, host_url: str, api_token_path: str=None, api_token: str=None, **kwargs
+        self, host_url: str, api_token_path: str = None, api_token: str = None, **kwargs
     ):
         """
         Create indico client with user provided arguments
@@ -40,17 +40,19 @@ class IndicoWrapper:
         self.host_url = host_url
         self.api_token_path = api_token_path
         self.api_token = api_token
-        
-        self.config = {"host": self.host_url}        
+
+        self.config = {"host": self.host_url}
+
         if self.api_token_path:
             self.config["api_token_path"] = self.api_token_path
-        if self.api_token:
+
+        elif self.api_token:
             self.config["api_token"] = self.api_token
-            
+
         for arg, value in kwargs.items():
             self.config[arg] = value
-            
-        indico_config = IndicoConfig(**config)
+
+        indico_config = IndicoConfig(**self.config)
         self.indico_client = IndicoClient(config=indico_config)
 
     def get_submission(self, submission_id: int) -> Submission:
@@ -67,7 +69,10 @@ class IndicoWrapper:
         return submission_obj
 
     def get_submissions_by_status(
-        self, workflow_id: int, submission_status: str=None, retrieved_flag: bool=None
+        self,
+        workflow_id: int,
+        submission_status: str = "COMPLETE",
+        retrieved_flag: bool = False,
     ) -> List[Submission]:
         """
         Get a list of submission objects from a given workflow and filter by
@@ -97,10 +102,10 @@ class IndicoWrapper:
     def get_storage_object(self, storage_url):
         return self.indico_client.call(RetrieveStorageObject(storage_url))
 
-    def get_submission_results(self, submission):
+    def get_submission_result(self, submission):
         sub_job = self.indico_client.call(SubmissionResult(submission.id, wait=True))
-        results = self.get_storage_object(sub_job.result)
-        return results
+        result = self.get_storage_object(sub_job.result)
+        return result
 
     def submit_updated_review(self, submission, updated_predictions):
         return self.indico_client.call(
@@ -132,9 +137,7 @@ class IndicoWrapper:
         return self.indico_client.call(GetDataset(dataset_id))
 
     def create_export(self, dataset_id, **kwargs):
-        return self.indico_client.call(
-            CreateExport(dataset_id=dataset_id, **kwargs)
-        )
+        return self.indico_client.call(CreateExport(dataset_id=dataset_id, **kwargs))
 
     def download_export(self, export_id):
-        return self.indico_wrapper.call(DownloadExport(export_id))
+        return self.indico_client.call(DownloadExport(export_id))
