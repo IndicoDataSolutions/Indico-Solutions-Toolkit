@@ -13,3 +13,6 @@ requests==2.25.1
 six==1.15.0
 urllib3==1.26.3
 pytest==6.2.2
+Sphinx==3.5.3
+sphinx-rtd-theme==0.5.2
+sphinx-autodoc-typehints==1.11.1

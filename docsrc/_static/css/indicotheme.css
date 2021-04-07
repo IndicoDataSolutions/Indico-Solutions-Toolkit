@@ -1,0 +1,54 @@
+/** css/indicotheme.css **/
+
+/* This line is theme specific - it includes the base theme CSS */
+@import 'theme.css';       /* for the Read the Docs theme */
+
+body {
+    color: #303b4d;
+}
+
+a {
+    color: #00bcd2;
+}
+
+a:hover {
+    color: #e54432;
+}
+
+a:visited {
+    color: #00bcd2;
+}
+
+.wy-nav-side {
+    background: #182432;
+    color: #fff;
+}
+
+/* Reset all the left menu background and link color styles to be simple white links with hover */
+.wy-menu-vertical header, .wy-menu-vertical p.caption {
+    color: #fff;
+}
+.wy-nav-side a {
+    color: #fff;
+}
+.wy-nav-side a:hover,
+.wy-menu-vertical a:hover,
+.wy-menu-vertical li.current a:hover {
+    color: #00bcd2;
+}
+.wy-menu-vertical li.current,
+.wy-menu-vertical a:hover,
+.wy-menu-vertical li.current a:hover,
+.wy-menu-vertical li.toctree-l1.current>a {
+    background-color: transparent;
+    border: none;
+}
+.wy-menu-vertical li.on a, .wy-menu-vertical li.current>a,
+.wy-menu-vertical li.on a span.toctree-expand, .wy-menu-vertical li.current>a span.toctree-expand,
+.wy-menu-vertical li.toctree-l2 a, .wy-menu-vertical li.toctree-l3 a, .wy-menu-vertical li.toctree-l4 a {
+    color: #fff;
+}
+
+.wy-side-nav-search>a:hover, .wy-side-nav-search .wy-dropdown>a:hover {
+    background: none;
+}
