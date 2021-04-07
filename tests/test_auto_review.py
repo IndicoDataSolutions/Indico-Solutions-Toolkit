@@ -27,6 +27,10 @@ def test_reviewer(auto_review_field_config, auto_review_preds):
     pred_map = create_pred_label_map(preds)
     for pred in pred_map["accept_by_all_match_and_confidence"]:
         assert pred[ACCEPTED] == True
+    for pred in pred_map["low_conf_accept_by_all_match_and_confidence"]:
+        assert ACCEPTED not in pred
+    for pred in pred_map["no_match_accept_by_all_match_and_confidence"]:
+        assert ACCEPTED not in pred
     for pred in pred_map["reject_by_confidence"]:
         if pred["text"] == "low":
             assert pred[REJECTED] == True
@@ -36,12 +40,12 @@ def test_reviewer(auto_review_field_config, auto_review_preds):
         if len(pred["text"]) < min_max_length:
             assert pred[REJECTED] == True
         else:
-            assert REJECTED not in pred.keys()
+            assert REJECTED not in pred
     for pred in pred_map["reject_by_max_character_length"]:
         if len(pred["text"]) > min_max_length:
             assert pred[REJECTED] == True
         else:
-            assert REJECTED not in pred.keys()
+            assert REJECTED not in pred
     for pred in pred_map["accept_if_match"]:
         assert pred["accepted"] == True
-    assert "remove_by_confidence" not in pred.keys()
+    assert "remove_by_confidence" not in pred

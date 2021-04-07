@@ -9,7 +9,11 @@
     {
         "function": "accept_by_all_match_and_confidence",
         "kwargs": {
-            "labels": ["accept_by_all_match_and_confidence"],
+            "labels": [
+                "accept_by_all_match_and_confidence", 
+                "no_match_accept_by_all_match_and_confidence", 
+                "low_conf_accept_by_all_match_and_confidence"
+            ],
             "conf_threshold": 0.9
         }
     },
