@@ -7,6 +7,7 @@ import json
 
 # TODO: fix doc string format
 
+
 class Association:
     """
     Class for assigning row_number to line item fields given workflow predictions
@@ -23,6 +24,7 @@ class Association:
     # Get your updated predictions
     updated_preds: List[dict] = litems.updated_predictions
     """
+
     def __init__(self, line_item_fields: List[str], predictions: List[dict] = None):
         """
         Args:
@@ -41,11 +43,44 @@ class Association:
     def updated_predictions(self):
         return self._line_item_predictions + self._non_line_item_predictions
 
+    @staticmethod
+    def match_pred_to_token(
+        pred: dict, ocr_tokens: List[dict], raise_for_no_match: bool = True
+    ):
+        """
+        Match and add bounding box metadata to prediction.
+
+        Args:
+            pred (dict): Indico extraction model prediction 
+            ocr_tokens (List[dict]): List of OCR tokens
+            raise_for_no_match (bool, optional): Raise an exception if no matching token found. Defaults to True.
+
+        Raises:
+            Exception: No matching token was found
+
+        Returns:
+            [int]: index in ocr tokens where prediction matched
+        """
+        no_match = True
+        match_token_index = 0
+        for ind, token in enumerate(ocr_tokens):
+            if no_match and sequences_overlap(token["doc_offset"], pred):
+                _add_bounding_metadata_to_pred(pred, token)
+                no_match = False
+                match_token_index = ind
+            elif sequences_overlap(token["doc_offset"], pred):
+                _update_bounding_metadata_for_pred(pred, token)
+            elif token["doc_offset"]["start"] > pred["end"]:
+                break
+        if "bbTop" not in pred and raise_for_no_match:
+            raise Exception(f"Couldn't match a token to this predicition\n{pred}")
+        return match_token_index
+
     def get_bounding_boxes(
         self,
         ocr_tokens: List[dict],
         add_boxes_to_all: bool = False,
-        raise_for_no_token: bool = True,
+        raise_for_no_match: bool = True,
         in_place: bool = True,
     ) -> List[dict]:
         """
@@ -53,65 +88,36 @@ class Association:
         and adds all preds to property self._line_item_predictions
         Args:
         ocr_tokens (list of dicts): OCR tokens from 'ondocument' config (workflow default)
-        raise_for_no_token (bool): raise exception if a matching token isn't found for a prediction
+        raise_for_no_match (bool): raise exception if a matching token isn't found for a prediction
         add_boxes_to_all (bool): add bounding box and page number metadata to non line item predictions
         in_place (bool): if False, returns tokens with bounding boxes
         """
         if len(self.predictions) == 0:
             raise Exception(
-                "No predictions gathered. Call get_workflow_predictions first."
+                "Make sure you instantiated the class with a list of predictions"
             )
         predictions = deepcopy(self.predictions)
-        ocr_tokens = sorted(ocr_tokens, key=lambda x: x["doc_offset"]["start"],)
-        _line_item_predictions = []
-        _non_line_item_predictions = []
+        match_index = 0
         for pred in predictions:
-            if pred["label"] not in self.line_item_fields:
-                if not add_boxes_to_all:
-                    _non_line_item_predictions.append(pred)
-                    continue
-                else:
-                    pred["header"] = True
-            new_prediction = True
-            for ind, token in enumerate(ocr_tokens):
-                if new_prediction and self.sequences_overlap(token["doc_offset"], pred):
-                    pred["bbTop"] = token["position"]["bbTop"]
-                    pred["bbBot"] = token["position"]["bbBot"]
-                    pred["page_num"] = token["page_num"]
-                    new_prediction = False
-                elif not new_prediction and self.sequences_overlap(
-                    token["doc_offset"], pred
-                ):
-                    pred["bbTop"] = min(token["position"]["bbTop"], pred["bbTop"])
-                    pred["bbBot"] = max(token["position"]["bbBot"], pred["bbBot"])
-
-                elif token["doc_offset"]["start"] > pred["end"]:
-                    # Next preds could share token, reindex ocr_tokens to not repeat, but jump back one
-                    if ind != 0:
-                        ocr_tokens = ocr_tokens[ind - 1 :]
-                    break
-            if raise_for_no_token and "bbTop" not in pred:
-                raise Exception(
-                    f"Something's wrong! Couldn't find the OCR token(s) for this prediction {pred}."
+            if self.is_line_item_pred(pred):
+                match_index = self.match_pred_to_token(
+                    pred, ocr_tokens[match_index:], raise_for_no_match
                 )
-            if "header" in pred:
-                del pred["header"]
-                _non_line_item_predictions.append(pred)
+                self._line_item_predictions.append(pred)
+            elif not add_boxes_to_all:
+                self._non_line_item_predictions.append(pred)
             else:
-                _line_item_predictions.append(pred)
-        self._line_item_predictions = _line_item_predictions
-        self._non_line_item_predictions = _non_line_item_predictions
+                match_index = self.match_pred_to_token(
+                    pred, ocr_tokens[match_index:], raise_for_no_match
+                )
+                self._non_line_item_predictions.append(pred)
         if not in_place:
             return self.updated_predictions
 
-
-    @staticmethod
-    def sequences_overlap(x: dict, y: dict) -> bool:
-        """
-        Boolean return value indicates whether or not seqs overlap
-        """
-        return x["start"] < y["end"] and y["start"] < x["end"]
-
+    def is_line_item_pred(self, pred: dict):
+        if pred["label"] in self.line_item_fields:
+            return True
+        return False
 
     def assign_row_number(self, in_place: bool = True):
         """
@@ -141,32 +147,39 @@ class Association:
         if not in_place:
             return self.updated_predictions
 
-
-    def get_workflow_predictions(
-        self,
-        workflow_result: dict,
-        pred_status: str = "final",
-        model_name: str = None,
-        in_place: bool = False,
-    ) -> List[dict]:
-        # TODO: assumes workflow json is post-review (i.e. key final / pre_review exists)
-        # add when without review
+    def remove_meta_keys_from_dict(
+        self, keys_to_remove=("bbTop", "bbBot", "bbLeft", "bbRight")
+    ):
         """
-        Gets the predictions and modelname from workflow result
+        Remove meta keys from prediction dictionaries. Other options that you might want 
+        to remove include: "page_num" and/or "row_number", "confidence", etc.
         Args:
-        workflow_result (dict): Output from completed indico workflow submission
-        pred_status (string): get predictions from final or pre_review
-        in_place (bool): if False, returns predictions
-        model_name (string): optionally, specify the model name
-        Returns:
-        predictions (list of dicts): predictions from indico
+            keys_to_remove (tuple, optional): keys to remove from prediction dictionaries. 
         """
-        if not isinstance(model_name, str):
-            model_name = list(workflow_result["results"]["document"]["results"])[0]
-        predictions = sorted(
-            workflow_result["results"]["document"]["results"][model_name][pred_status],
-            key=lambda x: x["start"],
-        )
-        self.predictions = predictions
-        if in_place:
-            return predictions
+        for remove_key in keys_to_remove:
+            for pred in self._line_item_predictions:
+                pred.pop(remove_key, None)
+            for pred in self._non_line_item_predictions:
+                pred.pop(remove_key, None)
+
+
+def sequences_overlap(x: dict, y: dict) -> bool:
+    """
+    Boolean return value indicates whether or not seqs overlap
+    """
+    return x["start"] < y["end"] and y["start"] < x["end"]
+
+
+def _add_bounding_metadata_to_pred(pred: dict, token: dict):
+    pred["bbTop"] = token["position"]["bbTop"]
+    pred["bbBot"] = token["position"]["bbBot"]
+    pred["bbLeft"] = token["position"]["bbLeft"]
+    pred["bbRight"] = token["position"]["bbRight"]
+    pred["page_num"] = token["page_num"]
+
+
+def _update_bounding_metadata_for_pred(pred: dict, token: dict):
+    pred["bbTop"] = min(token["position"]["bbTop"], pred["bbTop"])
+    pred["bbBot"] = max(token["position"]["bbBot"], pred["bbBot"])
+    pred["bbLeft"] = min(token["position"]["bbLeft"], pred["bbLeft"])
+    pred["bbRight"] = max(token["position"]["bbRight"], pred["bbRight"])

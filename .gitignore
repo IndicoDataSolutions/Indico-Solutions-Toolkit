@@ -1,6 +1,6 @@
 # Byte-compiled / optimized / DLL files
 .vscode/
-__pycache__/
+*__pycache__/
 *.py[cod]
 *$py.class
 
@@ -128,3 +128,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# document files
+*.pdf
