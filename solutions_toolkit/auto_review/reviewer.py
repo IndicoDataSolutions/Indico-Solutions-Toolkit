@@ -29,7 +29,7 @@ class Reviewer:
     Example Usage:
 
     reviewer = Reviewer(
-        predictions, model_name, review_config
+        predictions, review_config
     )
     reviewer.apply_review()
 

@@ -1,0 +1,29 @@
+solutions\_toolkit.row\_association package
+===========================================
+
+Submodules
+----------
+
+solutions\_toolkit.row\_association.grouper module
+--------------------------------------------------
+
+.. automodule:: solutions_toolkit.row_association.grouper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+solutions\_toolkit.row\_association.indico\_wrapper module
+----------------------------------------------------------
+
+.. automodule:: solutions_toolkit.row_association.indico_wrapper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: solutions_toolkit.row_association
+   :members:
+   :undoc-members:
+   :show-inheritance:
