@@ -1,8 +1,14 @@
 # Indico-Solutions-Toolkit
 A library to assist with Indico IPA development
 
+### Tests
+To see test coverage
+```
+coverage run --omit 'venv/*' -m pytest
+coverage report -m
+```
 
-Example: 
+### Examples 
 How to add row_number key to your predictions
 ```
 from solutions_toolkit.row_association import Association
@@ -18,7 +24,30 @@ litems.assign_row_number()
 updated_preds: List[dict] = litems.updated_predictions
 ```
 
-Example:
+How to auto-review predictions
+```
+from solutions_toolkit.auto_review import ReviewConfiguration, Reviewer
+
+field_config = [
+    {
+        "function": "accept_by_confidence",
+        "kwargs": {
+            "label": ["Name"],
+            "conf_threshold": 0.95
+        }
+    },
+    ...
+]
+review_config = ReviewConfiguration(field_config)
+
+reviewer = Reviewer(
+        predictions=[{"label": "Name", "start": 12, "text": "Jane Doe".....}],
+        review_config=review_config
+    )
+reviewer.apply_reviews()
+updated_preds: List[dict] = reviewer.updated_predictions
+```
+
 How to use the IndicoWrapper
 ```
 from solutions_toolkit.indico_wrapper import IndicoWrapper
