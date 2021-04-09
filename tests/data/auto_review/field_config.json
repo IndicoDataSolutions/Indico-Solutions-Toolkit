@@ -1,0 +1,55 @@
+[
+    {
+        "function": "reject_by_confidence",
+        "kwargs": {
+            "labels": ["reject_by_confidence"],
+            "conf_threshold": 0.7
+        }
+    },
+    {
+        "function": "accept_by_all_match_and_confidence",
+        "kwargs": {
+            "labels": [
+                "accept_by_all_match_and_confidence", 
+                "no_match_accept_by_all_match_and_confidence", 
+                "low_conf_accept_by_all_match_and_confidence"
+            ],
+            "conf_threshold": 0.9
+        }
+    },
+    {
+        "function": "accept_by_confidence",
+        "kwargs": {
+            "labels": ["accept_by_confidence", "reject_by_confidence"],
+            "conf_threshold": 0.8
+        }
+    },
+    {
+        "function": "remove_by_confidence",
+        "kwargs": {
+            "labels": ["remove_by_confidence"],
+            "conf_threshold": 0.8
+        }
+    },
+    {
+        "function": "reject_by_min_character_length",
+        "kwargs": {
+            "labels": ["reject_by_min_character_length"],
+            "min_length_threshold": 6
+        }
+    },
+    {
+        "function": "reject_by_max_character_length",
+        "kwargs": {
+            "labels": ["reject_by_max_character_length"],
+            "max_length_threshold": 6
+        }
+    },
+    {
+        "function": "accept_if_match",
+        "kwargs": {
+            "match_text": "matching text",
+            "labels": ["accept_if_match"]
+        }
+    }
+]
