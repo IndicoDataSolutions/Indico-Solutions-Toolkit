@@ -13,7 +13,7 @@ from indico.queries import (
     GetDataset,
     CreateExport,
     DownloadExport,
-    Submission
+    Submission,
 )
 
 from indico import IndicoClient, IndicoConfig
@@ -26,7 +26,7 @@ class IndicoWrapper:
     """
 
     def __init__(
-        self, host_url: str, api_token_path: str=None, api_token: str=None, **kwargs
+        self, host_url: str, api_token_path: str = None, api_token: str = None, **kwargs
     ):
         """
         Create indico client with user provided arguments
@@ -40,13 +40,15 @@ class IndicoWrapper:
         self.host_url = host_url
         self.api_token_path = api_token_path
         self.api_token = api_token
-        
-        self.config = {"host": self.host_url}        
+
+        self.config = {"host": self.host_url}
+
         if self.api_token_path:
             self.config["api_token_path"] = self.api_token_path
-        if self.api_token:
+
+        elif self.api_token:
             self.config["api_token"] = self.api_token
-            
+
         for arg, value in kwargs.items():
             self.config[arg] = value
             
@@ -70,9 +72,7 @@ class IndicoWrapper:
         return self.indico_client.call(GetDataset(dataset_id))
 
     def create_export(self, dataset_id, **kwargs):
-        return self.indico_client.call(
-            CreateExport(dataset_id=dataset_id, **kwargs)
-        )
+        return self.indico_client.call(CreateExport(dataset_id=dataset_id, **kwargs))
 
     def download_export(self, export_id):
         return self.indico_client.call(DownloadExport(export_id))
