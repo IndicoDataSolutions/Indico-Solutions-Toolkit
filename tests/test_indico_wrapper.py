@@ -17,9 +17,8 @@ def test_indico_wrapper_init():
     assert indico_wrapper.indico_client.config.requests_params == {"test":True}
 
 
-def test_get_storage_object(create_storage_urls):
+def test_get_storage_object(storage_urls):
     indico_wrapper = IndicoWrapper(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
-    storage_urls = create_storage_urls
     storage_object = indico_wrapper.get_storage_object(storage_urls[0])
     assert isinstance(storage_object, bytes)
 
@@ -52,8 +51,7 @@ def test_create_export():
     assert export.status == "COMPLETE"
 
 
-def test_download_export(create_export):
-    export_id = create_export
+def test_download_export(export_id):
     indico_wrapper = IndicoWrapper(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
     export_df = indico_wrapper.download_export(export_id)
     assert isinstance(export_df["text"][0], str)
