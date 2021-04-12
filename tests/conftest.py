@@ -9,11 +9,9 @@ from solutions_toolkit.indico_wrapper import IndicoWrapper
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 
-HOST_URL = os.environ.get("HOST_URL", "Missing HOST_URL environment variable")
-API_TOKEN_PATH = os.environ.get(
-    "API_TOKEN_PATH", "Missing API_TOKEN_PATH environment variable"
-)
-DATASET_ID = os.environ.get("DATASET_ID", "Missing DATASET_ID environment variable")
+HOST_URL = os.environ.get("HOST_URL")
+API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
+DATASET_ID = os.environ.get("DATASET_ID")
 WORKFLOW_ID = os.environ.get("WORKFLOW_ID")
 
 
@@ -52,12 +50,12 @@ def auto_review_field_config():
 
 
 @pytest.fixture(scope="session")
-def upload_to_workflow():
+def workflow_and_submission_ids():
     if not WORKFLOW_ID:
         # TODO: train a model, set WORKFLOW_ID
-        pass
+        raise NotImplementedError
     wrapper = IndicoWrapper(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
-    pdf_filepaths = ["data/pdf_samples/fin_disc.pdf"]  # TODO
+    pdf_filepaths = ["data/pdf_samples/fin_disc.pdf"]
     sub_ids = wrapper.upload_to_workflow(WORKFLOW_ID, pdf_filepaths)
     return WORKFLOW_ID, sub_ids
 
@@ -71,14 +69,14 @@ def create_pred_label_map(predictions):
 
 
 @pytest.fixture(scope="session")
-def create_export():
+def export_id():
     wrapper = IndicoWrapper(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
     export = wrapper.create_export(DATASET_ID)
     return export.id
 
 
 @pytest.fixture(scope="session")
-def create_storage_urls():
+def storage_urls():
     wrapper = IndicoWrapper(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
     storage_urls = wrapper.indico_client.call(
         CreateStorageURLs(files=["tests/data/pdf_samples/fin_disc.pdf"])
