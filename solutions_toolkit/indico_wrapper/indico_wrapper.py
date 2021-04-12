@@ -58,11 +58,6 @@ class IndicoWrapper:
     def get_storage_object(self, storage_url):
         return self.indico_client.call(RetrieveStorageObject(storage_url))
 
-    def submit_updated_review(self, submission, updated_predictions):
-        return self.indico_client.call(
-            SubmitReview(submission.id, changes=updated_predictions)
-        )
-
     def graphQL_request(self, graphql_query, variables):
         return self.indico_client.call(
             GraphQLRequest(query=graphql_query, variables=variables)

@@ -8,6 +8,7 @@ from indico.queries import (
     WorkflowSubmission,
     SubmissionResult,
     WaitForSubmissions,
+    SubmitReview,
 )
 
 from solutions_toolkit.indico_wrapper import IndicoWrapper
@@ -21,6 +22,7 @@ class Workflow(IndicoWrapper):
     """
     Class to support Workflow-related API calls
     """
+
     def __init__(self, host_url, api_token_path=None, api_token=None, **kwargs):
         super().__init__(
             host_url, api_token_path=api_token_path, api_token=api_token, **kwargs
@@ -56,31 +58,25 @@ class Workflow(IndicoWrapper):
         return OnDoc(ocr_result)
 
     def get_completed_submission_results(
-        self, workflow_id: int, submission_ids: List[int] = [], mark_as_retrieved=True
+        self, workflow_id: int, submission_ids: List[int] = []
     ) -> List[dict]:
         """
         Get list of completed and unretrieved workflow results 
         Args:
             workflow_id (int): workflow to get completed submissions from
             submission_ids (List[int], optional): Specific IDs to retrieve, if completed. Defaults to [].
-            mark_as_retrieved (bool, optional): Mark the submission objects as retrieved. Defaults to True.
 
         Returns:
             List[dict]: completed submission results
         """
-        submissions = self.get_complete_unretrieved_submission_objects(
-            workflow_id, submission_ids
-        )
+        submissions = self.get_complete_submission_objects(workflow_id, submission_ids)
         submission_results = self._get_submission_results(submissions)
-        if mark_as_retrieved:
-            for sub in submissions:
-                self.mark_submission_as_retreived(sub)
         return submission_results
 
-    def mark_submission_as_retreived(self, submission: Submission):
-        self.indico_client.call(UpdateSubmission(submission.id, retrieved=True))
+    def mark_submission_as_retreived(self, submission_id: int):
+        self.indico_client.call(UpdateSubmission(submission_id, retrieved=True))
 
-    def get_complete_unretrieved_submission_objects(
+    def get_complete_submission_objects(
         self, workflow_id: int, submission_ids: List[int] = []
     ) -> List[Submission]:
         return self._get_list_of_submissions(
@@ -90,7 +86,9 @@ class Workflow(IndicoWrapper):
     def get_submission_object(self, submission_id: int) -> Submission:
         return self.indico_client.call(GetSubmission(submission_id))
 
-    def get_and_submission_result_from_id(self, submission_id: int) -> dict:
+    def get_submission_result_from_id(
+        self, submission_id: int, timeout: int = 75
+    ) -> dict:
         """
         Wait for submission to pass through workflow models and get result. If Review is enabled,
         result may be retrieved prior to human review. 
@@ -100,7 +98,9 @@ class Workflow(IndicoWrapper):
         Returns:
             dict: workflow result object
         """
-        job = self.indico_client.call(SubmissionResult(submission_id, wait=True))
+        job = self.indico_client.call(
+            SubmissionResult(submission_id, wait=True, timeout=timeout)
+        )
         return self.get_storage_object(job.result)
 
     def wait_for_submissions_to_process(
@@ -111,6 +111,11 @@ class Workflow(IndicoWrapper):
         """
         return self.indico_client.call(
             WaitForSubmissions(submission_ids=submission_ids, timeout=timeout)
+        )
+
+    def submit_submission_review(self, submission_id: int, updated_predictions: dict):
+        return self.indico_client.call(
+            SubmitReview(submission_id, changes=updated_predictions)
         )
 
     def _get_submission_results(self, submissions: List[Submission]) -> List[dict]:
