@@ -131,3 +131,6 @@ dmypy.json
 
 # document files
 *.pdf
+
+# env vars
+*.sh
