@@ -4,7 +4,7 @@ import json
 from collections import defaultdict
 from indico.queries import CreateStorageURLs
 
-from solutions_toolkit.indico_wrapper import IndicoWrapper
+from solutions_toolkit.indico_wrapper import IndicoWrapper, Workflow
 
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -54,10 +54,22 @@ def workflow_and_submission_ids():
     if not WORKFLOW_ID:
         # TODO: train a model, set WORKFLOW_ID
         raise NotImplementedError
-    wrapper = IndicoWrapper(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
-    pdf_filepaths = ["data/pdf_samples/fin_disc.pdf"]
-    sub_ids = wrapper.upload_to_workflow(WORKFLOW_ID, pdf_filepaths)
+    workflow_wrapper = Workflow(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
+    pdf_filepaths = [os.path.join(FILE_PATH, "data/pdf_samples/fin_disc.pdf")]
+    sub_ids = workflow_wrapper.submit_documents_to_workflow(WORKFLOW_ID, pdf_filepaths)
     return WORKFLOW_ID, sub_ids
+
+
+@pytest.fixture(scope="session")
+def workflow_submission_results() -> dict:
+    if not WORKFLOW_ID:
+        # TODO: train a model, set WORKFLOW_ID
+        raise NotImplementedError
+    workflow_wrapper = Workflow(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
+    pdf_filepaths = [os.path.join(FILE_PATH, "data/pdf_samples/fin_disc.pdf")]
+    sub_ids = workflow_wrapper.submit_documents_to_workflow(WORKFLOW_ID, pdf_filepaths)
+    sub_result = workflow_wrapper.get_submission_result_from_id(sub_ids[0])
+    return sub_result
 
 
 def create_pred_label_map(predictions):
@@ -82,3 +94,23 @@ def storage_urls():
         CreateStorageURLs(files=["tests/data/pdf_samples/fin_disc.pdf"])
     )
     return storage_urls
+
+
+@pytest.fixture(scope="session")
+def indico_wrapper():
+    return IndicoWrapper(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
+
+
+@pytest.fixture(scope="session")
+def workflow_wrapper():
+    return Workflow(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
+
+
+@pytest.fixture(scope="session")
+def pdf_filepaths():
+    return [os.path.join(FILE_PATH, "data/pdf_samples/fin_disc.pdf")]
+
+
+@pytest.fixture(scope="session")
+def model_name():
+    return "Toolkit Test Financial Model"
