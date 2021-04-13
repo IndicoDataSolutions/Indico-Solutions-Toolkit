@@ -1,0 +1,489 @@
+{
+    "submission_id": "c9913738-9c5b-11eb-9b92-4e543323b561",
+    "etl_output": "indico-file:///storage/submission/1440/3bf675bc-ceaf-4def-990b-ce1eff958645/65f50deb-7be2-4f4c-9c39-756481cdaf6c_9c7a45d6-50f5-48c2-be44-350208fd38f5_etl_output.json",
+    "errors": [],
+    "results": {
+        "document": {
+            "results": {
+                "Toolkit Test Financial Model": [
+                    {
+                        "start": 225,
+                        "end": 239,
+                        "label": "Name",
+                        "text": "Berkowitz, Avi",
+                        "confidence": {
+                            "<PAD>": 8.815882779344975e-07,
+                            "Asset Value": 1.878555977441465e-08,
+                            "Date of Appointment": 1.0411763469164725e-06,
+                            "Department": 3.7827044252480846e-07,
+                            "Income Amount": 6.382884976119385e-08,
+                            "Liability Amount": 2.2314357295272202e-07,
+                            "Liability Type": 1.9724136279819504e-07,
+                            "Name": 0.9999955296516418,
+                            "Position": 1.2380979796944303e-06,
+                            "Previous Organization": 4.3050749809481204e-07,
+                            "Previous Position": 6.716353340152637e-08
+                        }
+                    },
+                    {
+                        "start": 241,
+                        "end": 268,
+                        "label": "Position",
+                        "text": "Assistant to Jared Kushner,",
+                        "confidence": {
+                            "<PAD>": 9.02981118997559e-05,
+                            "Asset Value": 1.9172925931343343e-06,
+                            "Date of Appointment": 1.1697626405293704e-06,
+                            "Department": 7.298191485460848e-05,
+                            "Income Amount": 2.210326329077361e-06,
+                            "Liability Amount": 6.41776841803221e-06,
+                            "Liability Type": 4.7021359250720707e-07,
+                            "Name": 1.5876494217081927e-05,
+                            "Position": 0.9998078346252441,
+                            "Previous Organization": 2.5624922272982076e-07,
+                            "Previous Position": 5.446512432172312e-07
+                        }
+                    },
+                    {
+                        "start": 269,
+                        "end": 280,
+                        "label": "Department",
+                        "text": "White House",
+                        "confidence": {
+                            "<PAD>": 8.377571248274762e-06,
+                            "Asset Value": 2.398410714476995e-08,
+                            "Date of Appointment": 3.0592951816288405e-07,
+                            "Department": 0.999979555606842,
+                            "Income Amount": 3.84081687343496e-07,
+                            "Liability Amount": 1.2995535598747665e-06,
+                            "Liability Type": 1.8002402839556453e-06,
+                            "Name": 9.636231652621063e-07,
+                            "Position": 5.499234248418361e-06,
+                            "Previous Organization": 1.2823340966860997e-06,
+                            "Previous Position": 5.039372013015964e-07
+                        }
+                    },
+                    {
+                        "start": 300,
+                        "end": 312,
+                        "label": "Date of Appointment",
+                        "text": ": 01/20/2017",
+                        "confidence": {
+                            "<PAD>": 4.477789843804203e-05,
+                            "Asset Value": 8.183874911082967e-07,
+                            "Date of Appointment": 0.9998917579650879,
+                            "Department": 1.52287275341223e-05,
+                            "Income Amount": 2.7837832021759823e-06,
+                            "Liability Amount": 5.990330009808531e-06,
+                            "Liability Type": 3.1083764042705297e-06,
+                            "Name": 2.3046110072755255e-05,
+                            "Position": 2.938460283985478e-06,
+                            "Previous Organization": 1.2339770592006971e-06,
+                            "Previous Position": 8.279273060907144e-06
+                        }
+                    },
+                    {
+                        "start": 1294,
+                        "end": 1305,
+                        "label": "Previous Organization",
+                        "text": "Gibson Dunn",
+                        "confidence": {
+                            "<PAD>": 1.5834513760637492e-05,
+                            "Asset Value": 1.011788075544473e-08,
+                            "Date of Appointment": 1.9287407226897813e-09,
+                            "Department": 3.1715273962618085e-07,
+                            "Income Amount": 1.545390371227029e-09,
+                            "Liability Amount": 5.809607461770838e-09,
+                            "Liability Type": 8.163814158024252e-08,
+                            "Name": 1.3317724096850725e-06,
+                            "Position": 1.1264427257628995e-07,
+                            "Previous Organization": 0.9999803304672241,
+                            "Previous Position": 1.9404135400691302e-06
+                        }
+                    },
+                    {
+                        "start": 1357,
+                        "end": 1367,
+                        "label": "Previous Position",
+                        "text": "Associate\n",
+                        "confidence": {
+                            "<PAD>": 0.10781315714120865,
+                            "Asset Value": 9.005652827909216e-07,
+                            "Date of Appointment": 5.832361580360157e-07,
+                            "Department": 9.014923421091225e-07,
+                            "Income Amount": 5.988444513604918e-07,
+                            "Liability Amount": 7.579486123177048e-07,
+                            "Liability Type": 1.6455211380161927e-06,
+                            "Name": 3.3527530831634067e-06,
+                            "Position": 7.090027338563232e-07,
+                            "Previous Organization": 7.791734969941899e-05,
+                            "Previous Position": 0.8920994400978088
+                        }
+                    },
+                    {
+                        "start": 1370,
+                        "end": 1385,
+                        "label": "Previous Organization",
+                        "text": "Harvard College",
+                        "confidence": {
+                            "<PAD>": 7.331740562221967e-06,
+                            "Asset Value": 4.682645382558803e-09,
+                            "Date of Appointment": 5.4793507509032224e-09,
+                            "Department": 3.2973460406537924e-07,
+                            "Income Amount": 8.989473609943843e-10,
+                            "Liability Amount": 5.136267411387507e-09,
+                            "Liability Type": 7.693050463331019e-08,
+                            "Name": 4.333075480644766e-07,
+                            "Position": 7.022548942359208e-08,
+                            "Previous Organization": 0.9999866485595703,
+                            "Previous Position": 5.031055025028763e-06
+                        }
+                    },
+                    {
+                        "start": 1414,
+                        "end": 1429,
+                        "label": "Previous Position",
+                        "text": "Teaching Fellow",
+                        "confidence": {
+                            "<PAD>": 1.6865049019543221e-06,
+                            "Asset Value": 1.8699443771197366e-08,
+                            "Date of Appointment": 5.97092224552398e-08,
+                            "Department": 3.560917960498955e-08,
+                            "Income Amount": 1.517343140022831e-09,
+                            "Liability Amount": 2.4047366764534672e-08,
+                            "Liability Type": 1.0374988335115631e-07,
+                            "Name": 1.7747683500601852e-07,
+                            "Position": 2.1672141770068265e-07,
+                            "Previous Organization": 5.0766111598932184e-06,
+                            "Previous Position": 0.9999926090240479
+                        }
+                    },
+                    {
+                        "start": 1451,
+                        "end": 1453,
+                        "label": "Previous Position",
+                        "text": "ge",
+                        "confidence": {
+                            "<PAD>": 0.4311341941356659,
+                            "Asset Value": 1.8265146763951634e-06,
+                            "Date of Appointment": 9.962426702259108e-06,
+                            "Department": 3.09611095872242e-05,
+                            "Income Amount": 3.6180756524117896e-06,
+                            "Liability Amount": 3.3955498111026827e-06,
+                            "Liability Type": 1.050894115905976e-05,
+                            "Name": 8.985726890387014e-05,
+                            "Position": 8.986031389213167e-06,
+                            "Previous Organization": 0.006573252845555544,
+                            "Previous Position": 0.5621334314346313
+                        }
+                    },
+                    {
+                        "start": 1465,
+                        "end": 1494,
+                        "label": "Previous Organization",
+                        "text": "Donald J. Trump for President",
+                        "confidence": {
+                            "<PAD>": 2.9235147280815e-07,
+                            "Asset Value": 4.651267815347637e-09,
+                            "Date of Appointment": 2.5398847469659813e-09,
+                            "Department": 1.3412424948455737e-07,
+                            "Income Amount": 2.2746056427269679e-10,
+                            "Liability Amount": 3.7794225526965874e-09,
+                            "Liability Type": 4.103857165205227e-08,
+                            "Name": 5.032615604250168e-07,
+                            "Position": 1.5711621870195813e-07,
+                            "Previous Organization": 0.9999949932098389,
+                            "Previous Position": 3.879495579894865e-06
+                        }
+                    },
+                    {
+                        "start": 1521,
+                        "end": 1530,
+                        "label": "Previous Position",
+                        "text": "Assistant",
+                        "confidence": {
+                            "<PAD>": 1.7112330397139885e-06,
+                            "Asset Value": 9.308671877761299e-08,
+                            "Date of Appointment": 3.6883986354041554e-07,
+                            "Department": 3.158322670060443e-07,
+                            "Income Amount": 1.924891135374196e-09,
+                            "Liability Amount": 9.455261817947758e-08,
+                            "Liability Type": 3.5838758094541845e-07,
+                            "Name": 2.9846682991774287e-06,
+                            "Position": 1.0152000868401956e-05,
+                            "Previous Organization": 0.0005091021885164082,
+                            "Previous Position": 0.999474823474884
+                        }
+                    },
+                    {
+                        "start": 1543,
+                        "end": 1569,
+                        "label": "Previous Position",
+                        "text": "Director of Data\nAnalytics",
+                        "confidence": {
+                            "<PAD>": 0.0014675683341920376,
+                            "Asset Value": 5.471736130857607e-07,
+                            "Date of Appointment": 1.587258907420619e-06,
+                            "Department": 6.062376542104175e-06,
+                            "Income Amount": 7.169582971755517e-08,
+                            "Liability Amount": 5.48944228739856e-07,
+                            "Liability Type": 3.983852820965694e-06,
+                            "Name": 7.2643597377464175e-06,
+                            "Position": 6.775105430278927e-05,
+                            "Previous Organization": 0.00018803465354721993,
+                            "Previous Position": 0.998256504535675
+                        }
+                    },
+                    {
+                        "start": 1582,
+                        "end": 1604,
+                        "label": "Previous Organization",
+                        "text": "Trump for America, Inc",
+                        "confidence": {
+                            "<PAD>": 7.827266017557122e-07,
+                            "Asset Value": 5.714501316589349e-09,
+                            "Date of Appointment": 2.689330536043144e-09,
+                            "Department": 1.534884006559878e-07,
+                            "Income Amount": 3.0533126027521007e-10,
+                            "Liability Amount": 4.814106890904668e-09,
+                            "Liability Type": 4.516092744211164e-08,
+                            "Name": 5.208991638028238e-07,
+                            "Position": 1.3775527918369335e-07,
+                            "Previous Organization": 0.9999932050704956,
+                            "Previous Position": 5.108808636578033e-06
+                        }
+                    },
+                    {
+                        "start": 1630,
+                        "end": 1639,
+                        "label": "Previous Position",
+                        "text": "Assistant",
+                        "confidence": {
+                            "<PAD>": 2.9897077183704823e-05,
+                            "Asset Value": 1.7371998239923414e-07,
+                            "Date of Appointment": 2.1685880824406922e-07,
+                            "Department": 1.4553880589573964e-07,
+                            "Income Amount": 4.186473390177525e-09,
+                            "Liability Amount": 6.485105075171305e-08,
+                            "Liability Type": 2.720018983382033e-07,
+                            "Name": 3.650913868114003e-06,
+                            "Position": 9.115619832300581e-07,
+                            "Previous Organization": 0.000234013277804479,
+                            "Previous Position": 0.99973064661026
+                        }
+                    },
+                    {
+                        "start": 1818,
+                        "end": 1825,
+                        "label": "Income Amount",
+                        "text": "$40,000",
+                        "confidence": {
+                            "<PAD>": 0.000956335396040231,
+                            "Asset Value": 0.00017251103417947888,
+                            "Date of Appointment": 7.775117296660028e-07,
+                            "Department": 1.5408812714667874e-06,
+                            "Income Amount": 0.9987979531288147,
+                            "Liability Amount": 6.341465632431209e-05,
+                            "Liability Type": 1.5066743799252436e-06,
+                            "Name": 7.79610331846925e-07,
+                            "Position": 2.3024422262096778e-06,
+                            "Previous Organization": 2.6505904315854423e-07,
+                            "Previous Position": 2.4639005005155923e-06
+                        }
+                    },
+                    {
+                        "start": 1858,
+                        "end": 1865,
+                        "label": "Income Amount",
+                        "text": "$31,200",
+                        "confidence": {
+                            "<PAD>": 0.00013757645501755178,
+                            "Asset Value": 6.554790161317214e-06,
+                            "Date of Appointment": 1.6200205266159173e-07,
+                            "Department": 1.7621650272303668e-07,
+                            "Income Amount": 0.9998509883880615,
+                            "Liability Amount": 3.6157050544716185e-06,
+                            "Liability Type": 1.5121801766326826e-07,
+                            "Name": 7.42255679142545e-08,
+                            "Position": 2.7861631224368466e-07,
+                            "Previous Organization": 2.9923775457518786e-08,
+                            "Previous Position": 2.7326353801981895e-07
+                        }
+                    },
+                    {
+                        "start": 1955,
+                        "end": 1962,
+                        "label": "Income Amount",
+                        "text": "$33,000",
+                        "confidence": {
+                            "<PAD>": 0.0004738413845188916,
+                            "Asset Value": 6.788147584302351e-05,
+                            "Date of Appointment": 6.725284720232594e-07,
+                            "Department": 8.468871328659588e-07,
+                            "Income Amount": 0.9994190335273743,
+                            "Liability Amount": 3.383756848052144e-05,
+                            "Liability Type": 9.002920933198766e-07,
+                            "Name": 4.2799979382834863e-07,
+                            "Position": 1.1210111097170739e-06,
+                            "Previous Organization": 1.168158689779375e-07,
+                            "Previous Position": 1.302282612414274e-06
+                        }
+                    },
+                    {
+                        "start": 2003,
+                        "end": 2010,
+                        "label": "Income Amount",
+                        "text": "$14,270",
+                        "confidence": {
+                            "<PAD>": 8.314660226460546e-05,
+                            "Asset Value": 8.004882374734734e-07,
+                            "Date of Appointment": 8.746079060983902e-08,
+                            "Department": 1.1915353326230615e-07,
+                            "Income Amount": 0.9999147653579712,
+                            "Liability Amount": 5.899248094465293e-07,
+                            "Liability Type": 5.261200897166418e-08,
+                            "Name": 2.6284311616109335e-08,
+                            "Position": 1.8189872719176492e-07,
+                            "Previous Organization": 1.8339406437917205e-08,
+                            "Previous Position": 1.2842615149111225e-07
+                        }
+                    },
+                    {
+                        "start": 2680,
+                        "end": 2690,
+                        "label": "Asset Value",
+                        "text": "$100,001 -",
+                        "confidence": {
+                            "<PAD>": 0.032430250197649,
+                            "Asset Value": 0.9675386548042297,
+                            "Date of Appointment": 6.599204311896756e-07,
+                            "Department": 3.822426606348017e-07,
+                            "Income Amount": 1.3085274076729547e-05,
+                            "Liability Amount": 6.721121735608904e-06,
+                            "Liability Type": 4.981075562682236e-06,
+                            "Name": 7.664785357519577e-07,
+                            "Position": 8.220021641136555e-07,
+                            "Previous Organization": 1.1898450793523807e-06,
+                            "Previous Position": 2.4916887468862114e-06
+                        }
+                    },
+                    {
+                        "start": 2701,
+                        "end": 2718,
+                        "label": "Income Amount",
+                        "text": "$2,501 - $5,000\n$",
+                        "confidence": {
+                            "<PAD>": 0.010147213004529476,
+                            "Asset Value": 0.07367488741874695,
+                            "Date of Appointment": 1.4550394098478137e-06,
+                            "Department": 2.449501835144474e-06,
+                            "Income Amount": 0.9159682989120483,
+                            "Liability Amount": 0.00018466122855897993,
+                            "Liability Type": 7.930125320854131e-06,
+                            "Name": 2.4377745830861386e-06,
+                            "Position": 4.472194632398896e-06,
+                            "Previous Organization": 2.0375498479552334e-06,
+                            "Previous Position": 4.280203938833438e-06
+                        }
+                    },
+                    {
+                        "start": 2718,
+                        "end": 2725,
+                        "label": "Asset Value",
+                        "text": "250,000",
+                        "confidence": {
+                            "<PAD>": 0.017676247283816338,
+                            "Asset Value": 0.5961567759513855,
+                            "Date of Appointment": 3.595164116632077e-06,
+                            "Department": 5.079075435787672e-06,
+                            "Income Amount": 0.3855176270008087,
+                            "Liability Amount": 0.0005805704277008772,
+                            "Liability Type": 1.4784532140765805e-05,
+                            "Name": 4.3045133679697756e-06,
+                            "Position": 1.7406695405952632e-05,
+                            "Previous Organization": 4.493620053835912e-06,
+                            "Previous Position": 1.9020164472749457e-05
+                        }
+                    },
+                    {
+                        "start": 2785,
+                        "end": 2801,
+                        "label": "Asset Value",
+                        "text": "$1,001 - $15,000",
+                        "confidence": {
+                            "<PAD>": 0.00030545738991349936,
+                            "Asset Value": 0.9996922612190247,
+                            "Date of Appointment": 5.024794447194836e-08,
+                            "Department": 5.426409188657999e-08,
+                            "Income Amount": 5.986464088891807e-07,
+                            "Liability Amount": 4.3941736294073053e-07,
+                            "Liability Type": 8.419428354500269e-08,
+                            "Name": 8.106066928803557e-09,
+                            "Position": 4.600888559025407e-08,
+                            "Previous Organization": 3.0922535643185256e-07,
+                            "Previous Position": 7.17497130153788e-07
+                        }
+                    },
+                    {
+                        "start": 2816,
+                        "end": 2840,
+                        "label": "Income Amount",
+                        "text": "None (or less\nthan $201)",
+                        "confidence": {
+                            "<PAD>": 0.00029370709671638906,
+                            "Asset Value": 1.6357971617253497e-05,
+                            "Date of Appointment": 5.2612826095810306e-08,
+                            "Department": 8.356661851394165e-08,
+                            "Income Amount": 0.9996885657310486,
+                            "Liability Amount": 7.946994173835265e-07,
+                            "Liability Type": 7.27757409890728e-08,
+                            "Name": 3.895533495779091e-08,
+                            "Position": 7.965860504555167e-08,
+                            "Previous Organization": 4.030765055063057e-08,
+                            "Previous Position": 9.896262298525471e-08
+                        }
+                    },
+                    {
+                        "start": 2879,
+                        "end": 2897,
+                        "label": "Asset Value",
+                        "text": "$50,001 -\n$100,000",
+                        "confidence": {
+                            "<PAD>": 0.00022799920407123864,
+                            "Asset Value": 0.9997683763504028,
+                            "Date of Appointment": 3.369521550666832e-08,
+                            "Department": 3.245068569412979e-08,
+                            "Income Amount": 1.3433916592475725e-06,
+                            "Liability Amount": 1.8588052626000717e-06,
+                            "Liability Type": 9.81069874228524e-08,
+                            "Name": 1.3133627518868707e-08,
+                            "Position": 3.722319874555069e-08,
+                            "Previous Organization": 7.50985833519735e-08,
+                            "Previous Position": 2.3497361212321266e-07
+                        }
+                    },
+                    {
+                        "start": 2899,
+                        "end": 2914,
+                        "label": "Income Amount",
+                        "text": "$1,001 - $2,500",
+                        "confidence": {
+                            "<PAD>": 0.0001418094034306705,
+                            "Asset Value": 9.29751058720285e-06,
+                            "Date of Appointment": 1.8477727792287624e-08,
+                            "Department": 2.0929579847006607e-08,
+                            "Income Amount": 0.999848484992981,
+                            "Liability Amount": 3.2935085414464993e-07,
+                            "Liability Type": 2.862239156797841e-08,
+                            "Name": 1.1570751468070739e-08,
+                            "Position": 5.2568484676385197e-08,
+                            "Previous Organization": 1.071957544951374e-08,
+                            "Previous Position": 3.922992775073908e-08
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "file_version": 1
+}
