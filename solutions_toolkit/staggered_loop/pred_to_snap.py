@@ -53,18 +53,19 @@ class StaggeredLoop:
         if self.model_name:
             self._check_is_valid_model_name(available_model_names)
         elif len(available_model_names) > 1:
-            raise Exception(
+            raise RuntimeError(
                 f"Multiple models available, you must set self.model_name to one of {available_model_names}"
             )
         else:
             self.model_name = available_model_names[0]
         return results[self.model_name]["final"]
 
-    def _check_is_valid_model_name(self, model_names: List[str]) -> bool:
-        if self.model_name not in model_names:
-            raise Exception(
-                f"{self.model_name} is an available model name. Options: {model_names}"
+    def _check_is_valid_model_name(self, available_model_names: List[str]) -> None:
+        if self.model_name not in available_model_names:
+            raise KeyError(
+                f"{self.model_name} is an available model name. Options: {available_model_names}"
             )
+        
 
     def _remove_unneeded_keys(self, prediction: dict):
         for key_to_remove in self._keys_to_remove_from_prediction:
