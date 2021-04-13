@@ -8,7 +8,10 @@ coverage run --omit 'venv/*' -m pytest
 coverage report -m
 ```
 
-### Examples 
+## Examples
+
+### Row Association / Line Items
+
 How to add row_number key to your predictions
 ```
 from solutions_toolkit.row_association import Association
@@ -23,6 +26,8 @@ litems.assign_row_number()
 
 updated_preds: List[dict] = litems.updated_predictions
 ```
+
+### Scripted/Auto Review
 
 How to auto-review predictions
 ```
@@ -48,17 +53,19 @@ reviewer.apply_reviews()
 updated_preds: List[dict] = reviewer.updated_predictions
 ```
 
-How to use the IndicoWrapper
+### Making API calls
+
+How to make workflow related API calls
 ```
-from solutions_toolkit.indico_wrapper import IndicoWrapper
+from solutions_toolkit.indico_wrapper import WorkFlow
 
 host = "app.indico.io"
-api_token_path = "/path/to/token.txt"
-workflow_id = 123
+api_token_path = "/path/to/indico_api_token.txt"
+workflow_id = 767
 
-indico_wrapper = IndicoWrapper(host, api_token_path)
-
-
-submissions = indico_wrapper.get_submissions(workflow_id, "COMPLETE")
-sub_results = indico_wrapper.get_submission_results(submissions[0])
+wflow = WorkFlow(host, api_token_path=api_token_path)
+# submit a batch of documents to a workflow
+submission_ids = wflow.submit_documents_to_workflow(workflow_id, ["./path/to/mydoc.pdf",...])
+# get predictions for a particular document
+wflow_result = wflow.get_submission_result_from_id(submission_ids[0])
 ```
