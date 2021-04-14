@@ -9,7 +9,7 @@ setup(
     author_email="engineering@indico.io",
     tests_require=["pytest>=5.2.1", "requests-mock>=1.7.0-7"],
     install_requires=[
-        "indico-client>=4.5.0",
+        "indico-client>=4.9.0",
         "msgpack-numpy==0.4.4.3",
         "numpy>=1.16.0",
         "Pillow>=6.2.0",
