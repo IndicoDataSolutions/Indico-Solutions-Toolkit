@@ -18,9 +18,9 @@ def test_indico_wrapper_init():
     assert indico_wrapper.indico_client.config.requests_params == {"test": True}
 
 
-def test_get_storage_object(indico_wrapper, pdf_filepaths):
+def test_get_storage_object(indico_wrapper, pdf_filepath):
     storage_urls = indico_wrapper.indico_client.call(
-        CreateStorageURLs(files=pdf_filepaths)
+        CreateStorageURLs(files=[pdf_filepath])
     )
     storage_object = indico_wrapper.get_storage_object(storage_urls[0])
     assert isinstance(storage_object, bytes)

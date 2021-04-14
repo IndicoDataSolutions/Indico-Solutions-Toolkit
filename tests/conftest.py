@@ -50,29 +50,29 @@ def auto_review_field_config():
 
 @pytest.fixture(scope="session")
 def dataset_id(indico_wrapper):
-    DATASET_ID = os.environ.get("DATASET_ID")
-    if not DATASET_ID:
+    dataset_id = os.environ.get("DATASET_ID")
+    if not dataset_id:
         dataset = indico_wrapper.indico_client.call(
             CreateDataset(
                 name="Solutions Toolkit Test Dataset",
                 files=[os.path.join(FILE_PATH, "data/samples/fin_disc_snapshot.csv")],
             )
         )
-        DATASET_ID = dataset.id
+        dataset_id = dataset.id
     else:
         try:
-            dataset = indico_wrapper.indico_client.call(GetDataset(id=DATASET_ID))
+            dataset = indico_wrapper.indico_client.call(GetDataset(id=dataset_id))
         except IndicoRequestError:
             raise ValueError(
-                f"Dataset with ID {DATASET_ID} does not exist or you do not have access to it"
+                f"Dataset with ID {dataset_id} does not exist or you do not have access to it"
             )
-    return DATASET_ID
+    return dataset_id
 
 
 @pytest.fixture(scope="session")
 def workflow_id(indico_wrapper, dataset_id):
-    WORKFLOW_ID = os.environ.get("WORKFLOW_ID")
-    if not WORKFLOW_ID:
+    workflow_id = os.environ.get("WORKFLOW_ID")
+    if not workflow_id:
         model_group = indico_wrapper.indico_client.call(
             CreateModelGroup(
                 name="Solutions Toolkit Test Model",
@@ -82,43 +82,39 @@ def workflow_id(indico_wrapper, dataset_id):
                 wait=True,
             )
         )
-        WORKFLOW_ID = model_group.selected_model.id
+        workflow_id = model_group.selected_model.id
     else:
         try:
-            indico_wrapper.indico_client.call(GetWorkflow(workflow_id=WORKFLOW_ID))
+            indico_wrapper.indico_client.call(GetWorkflow(workflow_id=workflow_id))
         except IndicoRequestError:
             raise ValueError(
-                f"Workflow with ID {WORKFLOW_ID} does not exist or you do not have access to it"
+                f"Workflow with ID {workflow_id} does not exist or you do not have access to it"
             )
-    return WORKFLOW_ID
+    return workflow_id
 
 
-@pytest.fixture(scope="session")
-def session_submission_ids(workflow_id, workflow_wrapper, pdf_filepaths):
-    sub_ids = workflow_wrapper.submit_documents_to_workflow(workflow_id, pdf_filepaths)
-    return sub_ids
+@pytest.fixture(scope="module")
+def module_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
+    return workflow_wrapper.submit_documents_to_workflow(workflow_id, [pdf_filepath])
 
 
-@pytest.fixture(scope="session")
-def session_submission_results(workflow_wrapper, session_submission_ids) -> dict:
-    sub_result = workflow_wrapper.get_submission_result_from_id(
-        session_submission_ids[0], timeout=90
+@pytest.fixture(scope="module")
+def module_submission_results(workflow_wrapper, module_submission_ids) -> dict:
+    return workflow_wrapper.get_submission_result_from_id(
+        module_submission_ids[0], timeout=90
     )
-    return sub_result
 
 
 @pytest.fixture(scope="function")
-def function_submission_ids(workflow_id, workflow_wrapper, pdf_filepaths):
-    sub_ids = workflow_wrapper.submit_documents_to_workflow(workflow_id, pdf_filepaths)
-    return sub_ids
+def function_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
+    return workflow_wrapper.submit_documents_to_workflow(workflow_id, [pdf_filepath])
 
 
 @pytest.fixture(scope="function")
 def function_submission_results(workflow_wrapper, function_submission_ids) -> dict:
-    sub_result = workflow_wrapper.get_submission_result_from_id(
+    return workflow_wrapper.get_submission_result_from_id(
         session_submission_ids[0], timeout=90
     )
-    return sub_result
 
 
 @pytest.fixture(scope="session")
@@ -132,5 +128,5 @@ def workflow_wrapper():
 
 
 @pytest.fixture(scope="session")
-def pdf_filepaths():
-    return [os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")]
+def pdf_filepath():
+    return os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")
