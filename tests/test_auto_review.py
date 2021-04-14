@@ -1,5 +1,6 @@
+from collections import defaultdict
+
 from solutions_toolkit.auto_review import ReviewConfiguration, Reviewer
-from tests.conftest import create_pred_label_map
 
 
 min_max_length = 6
@@ -16,6 +17,17 @@ def accept_if_match(predictions, match_text: str, labels: list = None):
             if pred["text"] == match_text:
                 pred["accepted"] = True
     return predictions
+
+
+def create_pred_label_map(predictions):
+    """ 
+    Create dict with labels keying to list of predictions with that label
+    """
+    prediction_label_map = defaultdict(list)
+    for pred in predictions:
+        label = pred["label"]
+        prediction_label_map[label].append(pred)
+    return prediction_label_map
 
 
 def test_reviewer(auto_review_field_config, auto_review_preds):
