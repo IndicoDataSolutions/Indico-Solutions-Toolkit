@@ -1,8 +1,8 @@
 import os
 import pytest
 import json
-from collections import defaultdict
-from indico.queries import CreateStorageURLs
+from indico.queries import CreateDataset, CreateModelGroup, GetWorkflow, GetDataset
+from indico.errors import IndicoRequestError
 
 from solutions_toolkit.indico_wrapper import IndicoWrapper, Workflow
 
@@ -11,8 +11,7 @@ FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 HOST_URL = os.environ.get("HOST_URL")
 API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
-DATASET_ID = os.environ.get("DATASET_ID")
-WORKFLOW_ID = os.environ.get("WORKFLOW_ID")
+MODEL_NAME = os.environ.get("MODEL_NAME")
 
 
 @pytest.fixture(scope="session")
@@ -50,50 +49,76 @@ def auto_review_field_config():
 
 
 @pytest.fixture(scope="session")
-def workflow_and_submission_ids():
-    if not WORKFLOW_ID:
-        # TODO: train a model, set WORKFLOW_ID
-        raise NotImplementedError
-    workflow_wrapper = Workflow(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
-    pdf_filepaths = [os.path.join(FILE_PATH, "data/pdf_samples/fin_disc.pdf")]
-    sub_ids = workflow_wrapper.submit_documents_to_workflow(WORKFLOW_ID, pdf_filepaths)
-    return WORKFLOW_ID, sub_ids
+def dataset_id(indico_wrapper):
+    DATASET_ID = os.environ.get("DATASET_ID")
+    if not DATASET_ID:
+        dataset = indico_wrapper.indico_client.call(
+            CreateDataset(
+                name="Solutions Toolkit Test Dataset",
+                files=[os.path.join(FILE_PATH, "data/samples/fin_disc_snapshot.csv")],
+            )
+        )
+        DATASET_ID = dataset.id
+    else:
+        try:
+            dataset = indico_wrapper.indico_client.call(GetDataset(id=DATASET_ID))
+        except IndicoRequestError:
+            raise ValueError(
+                f"Dataset with ID {DATASET_ID} does not exist or you do not have access to it"
+            )
+    return DATASET_ID
 
 
 @pytest.fixture(scope="session")
-def workflow_submission_results() -> dict:
+def workflow_id(indico_wrapper, dataset_id):
+    WORKFLOW_ID = os.environ.get("WORKFLOW_ID")
     if not WORKFLOW_ID:
-        # TODO: train a model, set WORKFLOW_ID
-        raise NotImplementedError
-    workflow_wrapper = Workflow(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
-    pdf_filepaths = [os.path.join(FILE_PATH, "data/pdf_samples/fin_disc.pdf")]
-    sub_ids = workflow_wrapper.submit_documents_to_workflow(WORKFLOW_ID, pdf_filepaths)
-    sub_result = workflow_wrapper.get_submission_result_from_id(sub_ids[0])
+        model_group = indico_wrapper.indico_client.call(
+            CreateModelGroup(
+                name="Solutions Toolkit Test Model",
+                dataset_id=dataset_id,
+                source_column_id=dataset.datacolumn_by_name("text").id,
+                labelset_id=dataset.labelset_by_name("question_1620").id,
+                wait=True,
+            )
+        )
+        WORKFLOW_ID = model_group.selected_model.id
+    else:
+        try:
+            indico_wrapper.indico_client.call(GetWorkflow(workflow_id=WORKFLOW_ID))
+        except IndicoRequestError:
+            raise ValueError(
+                f"Workflow with ID {WORKFLOW_ID} does not exist or you do not have access to it"
+            )
+    return WORKFLOW_ID
+
+
+@pytest.fixture(scope="session")
+def session_submission_ids(workflow_id, workflow_wrapper, pdf_filepaths):
+    sub_ids = workflow_wrapper.submit_documents_to_workflow(workflow_id, pdf_filepaths)
+    return sub_ids
+
+
+@pytest.fixture(scope="session")
+def session_submission_results(workflow_wrapper, session_submission_ids) -> dict:
+    sub_result = workflow_wrapper.get_submission_result_from_id(
+        session_submission_ids[0], timeout=90
+    )
     return sub_result
 
 
-def create_pred_label_map(predictions):
-    prediction_label_map = defaultdict(list)
-    for pred in predictions:
-        label = pred["label"]
-        prediction_label_map[label].append(pred)
-    return prediction_label_map
+@pytest.fixture(scope="function")
+def function_submission_ids(workflow_id, workflow_wrapper, pdf_filepaths):
+    sub_ids = workflow_wrapper.submit_documents_to_workflow(workflow_id, pdf_filepaths)
+    return sub_ids
 
 
-@pytest.fixture(scope="session")
-def export_id():
-    wrapper = IndicoWrapper(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
-    export = wrapper.create_export(DATASET_ID)
-    return export.id
-
-
-@pytest.fixture(scope="session")
-def storage_urls():
-    wrapper = IndicoWrapper(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
-    storage_urls = wrapper.indico_client.call(
-        CreateStorageURLs(files=["tests/data/pdf_samples/fin_disc.pdf"])
+@pytest.fixture(scope="function")
+def function_submission_results(workflow_wrapper, function_submission_ids) -> dict:
+    sub_result = workflow_wrapper.get_submission_result_from_id(
+        session_submission_ids[0], timeout=90
     )
-    return storage_urls
+    return sub_result
 
 
 @pytest.fixture(scope="session")
@@ -108,9 +133,4 @@ def workflow_wrapper():
 
 @pytest.fixture(scope="session")
 def pdf_filepaths():
-    return [os.path.join(FILE_PATH, "data/pdf_samples/fin_disc.pdf")]
-
-
-@pytest.fixture(scope="session")
-def model_name():
-    return "Toolkit Test Financial Model"
+    return [os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")]
