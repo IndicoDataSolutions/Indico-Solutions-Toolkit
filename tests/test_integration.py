@@ -1,14 +1,14 @@
 from solutions_toolkit.auto_review import ReviewConfiguration, Reviewer
+from tests.conftest import MODEL_NAME
 
 
-def test_submit_auto_review(workflow_wrapper, workflow_and_submission_ids, model_name):
+def test_submit_auto_review(workflow_wrapper, function_submission_ids):
     """
     Submit a document to a workflow, auto review the predictions, and retrieve the results
     """
     # Submit to workflow and get predictions
-    workflow_id, sub_ids = workflow_and_submission_ids
-    result = workflow_wrapper.get_submission_result_from_id(sub_ids[0])
-    predictions = result["results"]["document"]["results"][model_name]["pre_review"]
+    result = workflow_wrapper.get_submission_result_from_id(function_submission_ids[0])
+    predictions = result["results"]["document"]["results"][MODEL_NAME]["pre_review"]
     # Review the submission
     field_config = [
         {"function": "accept_by_confidence", "kwargs": {"conf_threshold": 0.99}},
@@ -25,10 +25,10 @@ def test_submit_auto_review(workflow_wrapper, workflow_and_submission_ids, model
     reviewer.apply_reviews()
     # Submit the changes and retrieve reviewed results
     workflow_wrapper.submit_submission_review(
-        sub_ids[0], {model_name: reviewer.updated_predictions}
+        function_submission_ids[0], {MODEL_NAME: reviewer.updated_predictions}
     )
-    result = workflow_wrapper.get_submission_result_from_id(sub_ids[0])
-    reviewed_preds = result["results"]["document"]["results"][model_name]["final"]
+    result = workflow_wrapper.get_submission_result_from_id(function_submission_ids[0])
+    reviewed_preds = result["results"]["document"]["results"][MODEL_NAME]["final"]
     for pred in reviewed_preds:
         label = pred["label"]
         if (
@@ -37,7 +37,6 @@ def test_submit_auto_review(workflow_wrapper, workflow_and_submission_ids, model
         ):
             assert pred["rejected"] == True
         elif pred["confidence"][label] > 0.99:
-            print(pred)
             assert pred["accepted"] == True
 
 

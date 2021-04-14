@@ -129,8 +129,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# document files
-*.pdf
-
 # env vars
 *.sh
