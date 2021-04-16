@@ -19,7 +19,7 @@ class StaggeredLoop:
         self.workflow_id = workflow_id
         self.submission_ids = submission_ids
         self.model_name = model_name
-        self.workflow_results: List[WorkflowResult] = []
+        self._workflow_results: List[WorkflowResult] = []
 
     def convert_predictions_for_snapshot(self, predictions: List[dict]):
         reformatted_predictions = []
@@ -44,7 +44,7 @@ class StaggeredLoop:
             predictions = self._get_nested_predictions(wf_results[i])
             text = workflow_api.get_ondoc_ocr_from_etl_url(wf_results[i]["etl_output"]).full_text
             filename = submissions[i].input_filename
-            self.workflow_results.append(WorkflowResult(predictions, text, filename))
+            self._workflow_results.append(WorkflowResult(predictions, text, filename))
 
 
     def _get_nested_predictions(self, wf_result: dict) -> List[dict]:
