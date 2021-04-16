@@ -40,3 +40,14 @@ def test_submit_auto_review(workflow_wrapper, function_submission_ids):
             assert pred["accepted"] == True
 
 
+def test_workflow_submit_wait_get_results(workflow_wrapper, workflow_id, pdf_filepath):
+    sub_ids = workflow_wrapper.submit_documents_to_workflow(
+        workflow_id=workflow_id, pdf_filepaths=[pdf_filepath]
+    )
+    workflow_wrapper.wait_for_submissions_to_process(sub_ids)
+    sub_result = workflow_wrapper.get_submission_result_from_id(submission_id=sub_ids[0])
+    predictions = sub_result["results"]["document"]["results"][MODEL_NAME][
+        "pre_review"
+    ]
+    assert isinstance(predictions, list)
+    assert isinstance(predictions[0], dict)

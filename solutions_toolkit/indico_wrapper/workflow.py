@@ -90,8 +90,7 @@ class Workflow(IndicoWrapper):
         self, submission_id: int, timeout: int = 75
     ) -> dict:
         """
-        Wait for submission to pass through workflow models and get result. If Review is enabled,
-        result may be retrieved prior to human review. 
+        Wait for submission to pass through workflow models and get result. If Review is enabled, result may be retrieved prior to human review.
         Args:
             submission_id (int): Id of submission predictions to retrieve
 
