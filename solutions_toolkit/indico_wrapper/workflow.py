@@ -61,7 +61,7 @@ class Workflow(IndicoWrapper):
         self, workflow_id: int, submission_ids: List[int] = []
     ) -> List[dict]:
         """
-        Get list of completed and unretrieved workflow results 
+        Get list of completed and unretrieved workflow results
         Args:
             workflow_id (int): workflow to get completed submissions from
             submission_ids (List[int], optional): Specific IDs to retrieve, if completed. Defaults to [].
@@ -91,7 +91,7 @@ class Workflow(IndicoWrapper):
     ) -> dict:
         """
         Wait for submission to pass through workflow models and get result. If Review is enabled,
-        result may be retrieved prior to human review. 
+        result may be retrieved prior to human review.
         Args:
             submission_id (int): Id of submission predictions to retrieve
 
