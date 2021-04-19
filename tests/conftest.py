@@ -14,7 +14,7 @@ API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
 MODEL_NAME = os.environ.get("MODEL_NAME")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def three_row_invoice_preds():
     with open(
         os.path.join(FILE_PATH, "data/row_association/three_row_invoice/preds.json"),
@@ -24,7 +24,7 @@ def three_row_invoice_preds():
     return preds
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def three_row_invoice_tokens():
     with open(
         os.path.join(FILE_PATH, "data/row_association/three_row_invoice/tokens.json"),
