@@ -62,12 +62,3 @@ class IndicoWrapper:
         return self.indico_client.call(
             GraphQLRequest(query=graphql_query, variables=variables)
         )
-
-    def get_dataset(self, dataset_id):
-        return self.indico_client.call(GetDataset(dataset_id))
-
-    def create_export(self, dataset_id, **kwargs):
-        return self.indico_client.call(CreateExport(dataset_id=dataset_id, **kwargs))
-
-    def download_export(self, export_id):
-        return self.indico_client.call(DownloadExport(export_id))
