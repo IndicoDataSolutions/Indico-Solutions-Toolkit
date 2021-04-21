@@ -25,7 +25,7 @@ def test_convert_predictions_for_snapshot():
         },
     ]
     stagger = StaggeredLoop(312)
-    formatted_predictions = stagger.convert_predictions_for_snapshot(predictions)
+    formatted_predictions = stagger._reformat_predictions(predictions)
     assert len(formatted_predictions) == 2
     for pred in formatted_predictions:
         assert set(pred.keys()) == set(["label", "start", "end"])

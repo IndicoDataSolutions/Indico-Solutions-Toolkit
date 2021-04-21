@@ -65,12 +65,16 @@ class StaggeredLoop:
     def _convert_predictions_to_snapshot_format(self) -> None:
         for predictions in self._workflow_results:
             predictions = self._get_nested_predictions(predictions)
-            reformatted_predictions = []
-            for pred in predictions:
-                if self._is_not_manually_added_prediction(pred):
-                    self._remove_unneeded_keys(pred)
-                    reformatted_predictions.append(pred)
-            self._snap_formatted_predictions.append(reformatted_predictions)
+            predictions = self._reformat_predictions(predictions)
+            self._snap_formatted_predictions.append(predictions)
+
+    def _reformat_predictions(self, predictions: List[dict]) -> List[dict]:
+        reformatted_predictions = []
+        for pred in predictions:
+            if self._is_not_manually_added_prediction(pred):
+                self._remove_unneeded_keys(pred)
+                reformatted_predictions.append(pred)
+        return reformatted_predictions
 
     def _get_nested_predictions(self, wf_result: dict) -> List[dict]:
         results = wf_result["results"]["document"]["results"]
