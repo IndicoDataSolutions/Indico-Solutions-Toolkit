@@ -1,7 +1,14 @@
 import os
 import pytest
 import json
-from indico.queries import CreateDataset, CreateModelGroup, GetWorkflow, GetDataset
+from indico.queries import (
+    CreateDataset,
+    CreateModelGroup,
+    GetWorkflow,
+    GetDataset,
+    UpdateWorkflowSettings,
+    ListWorkflows,
+)
 from indico.errors import IndicoRequestError
 
 from solutions_toolkit.indico_wrapper import IndicoWrapper, Workflow
@@ -81,7 +88,16 @@ def workflow_id(indico_wrapper, dataset):
                 wait=True,
             )
         )
-        workflow_id = model_group.selected_model.id
+        workflow_id = indico_wrapper.indico_client.call(
+            ListWorkflows(dataset_ids=[dataset.id])
+        )[0].id
+        _ = indico_wrapper.indico_client.call(
+            UpdateWorkflowSettings(
+                workflow_id,
+                enable_review=True,
+                enable_auto_review=True,
+            )
+        )
     else:
         try:
             indico_wrapper.indico_client.call(GetWorkflow(workflow_id=workflow_id))
