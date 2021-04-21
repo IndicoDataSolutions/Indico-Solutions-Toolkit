@@ -5,7 +5,7 @@ from copy import deepcopy
 import os
 import json
 
-# TODO: fix doc string format
+# TODO: separate line item predictions with no matching predictions from self._line_item_predictions
 
 
 class Association:
@@ -144,6 +144,17 @@ class Association:
         if not in_place:
             return self.updated_predictions
 
+    def get_line_items_in_groups(self) -> List[List[dict]]:
+        """
+        After row number has been assigned to predictions, returns line item predictions as a 
+        list of lists where each list is a row.
+        """
+        rows = defaultdict(list)
+        for pred in self._line_item_predictions:
+            if "error" not in pred:
+                rows[pred["row_number"]].append(pred)
+        return list(rows.values())
+        
     def _get_first_valid_line_item_pred(self) -> dict:
         if len(self._line_item_predictions) == 0:
             raise Exception(

@@ -45,3 +45,15 @@ def test_grouper_no_token_match_no_exception(three_row_invoice_preds, three_row_
     assert len(unmatched_prediction) == 1
     assert unmatched_prediction[0]["error"] == "No matching token found"
     assert unmatched_prediction[0]["row_number"] == None
+
+def test_get_line_items_in_groups(three_row_invoice_preds, three_row_invoice_tokens):
+    litems = Association(
+        ["work_order_number", "line_date", "work_order_tonnage"],
+        three_row_invoice_preds,
+    )
+    litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
+    litems.assign_row_number()
+    grouped_rows = litems.get_line_items_in_groups()
+    assert len(grouped_rows) == 3
+    assert isinstance(grouped_rows[0], list)
+    assert isinstance(grouped_rows[0][0], dict)
