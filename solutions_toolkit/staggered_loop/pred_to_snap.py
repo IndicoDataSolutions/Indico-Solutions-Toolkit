@@ -4,13 +4,18 @@ from solutions_toolkit.indico_wrapper import Workflow
 
 KEYS_TO_REMOVE_FROM_PREDICTION = ["confidence", "text"]
 
-# TODO: incorporate Workflow class -> i.e. get reviewed predictions for workflow/ submission IDs, OCR text,
-# and (optional) filename
-# TODO: add method to write to snapshot-like CSV
+# TODO: add method to write to snapshot-like CSV from workflow results
 
 
 class StaggeredLoop:
+    """
+    Use human reviewed prediction results to improve existing models
 
+    Example Usage:
+
+    stagger = StaggeredLoop(workflow_id=312,)
+    litems.get_bounding_boxes(ocr_tokens=[{"postion"...,},])
+    """
     _keys_to_remove_from_prediction = KEYS_TO_REMOVE_FROM_PREDICTION
 
     def __init__(
@@ -21,31 +26,31 @@ class StaggeredLoop:
         self.model_name = model_name
         self._workflow_results: List[WorkflowResult] = []
 
-    def convert_predictions_for_snapshot(self, predictions: List[dict]):
-        reformatted_predictions = []
-        for pred in predictions:
-            if self._is_not_manually_added_prediction(pred):
-                self._remove_unneeded_keys(pred)
-                reformatted_predictions.append(pred)
-        return reformatted_predictions
-
     def _is_not_manually_added_prediction(self, prediction: dict) -> bool:
         if isinstance(prediction["start"], int) and isinstance(prediction["end"], int):
             if prediction["end"] > prediction["start"]:
                 return True
         return False
 
-    def get_workflow_predictions(self, workflow_api: Workflow) -> None:
+    def get_reviewed_predictions(self, workflow_api: Workflow) -> None:
         submissions = workflow_api.get_complete_submission_objects(
             self.workflow_id, self.submission_ids
         )
         wf_results = workflow_api._get_submission_results(submissions)
         for i in range(len(wf_results)):
             predictions = self._get_nested_predictions(wf_results[i])
+            predictions = self._convert_predictions_to_snapshot_format(predictions)
             text = workflow_api.get_ondoc_ocr_from_etl_url(wf_results[i]["etl_output"]).full_text
             filename = submissions[i].input_filename
             self._workflow_results.append(WorkflowResult(predictions, text, filename))
 
+    def _convert_predictions_to_snapshot_format(self, predictions: List[dict]):
+        reformatted_predictions = []
+        for pred in predictions:
+            if self._is_not_manually_added_prediction(pred):
+                self._remove_unneeded_keys(pred)
+                reformatted_predictions.append(pred)
+        return reformatted_predictions
 
     def _get_nested_predictions(self, wf_result: dict) -> List[dict]:
         results = wf_result["results"]["document"]["results"]
