@@ -72,8 +72,7 @@ class Association:
                 _update_bounding_metadata_for_pred(pred, token)
             elif token["doc_offset"]["start"] > pred["end"]:
                 break
-        if "bbTop" not in pred and raise_for_no_match:
-            raise Exception(f"Couldn't match a token to this predicition\n{pred}")
+        _check_if_token_match_found(pred, raise_for_no_match)
         return match_token_index
 
     def get_bounding_boxes(
@@ -104,12 +103,11 @@ class Association:
                     pred, ocr_tokens[match_index:], raise_for_no_match
                 )
                 self._line_item_predictions.append(pred)
-            elif not add_boxes_to_all:
-                self._non_line_item_predictions.append(pred)
             else:
-                match_index = self.match_pred_to_token(
-                    pred, ocr_tokens[match_index:], raise_for_no_match
-                )
+                if add_boxes_to_all:
+                    match_index = self.match_pred_to_token(
+                        pred, ocr_tokens[match_index:], raise_for_no_match
+                    )
                 self._non_line_item_predictions.append(pred)
         if not in_place:
             return self.updated_predictions
@@ -127,16 +125,15 @@ class Association:
         Updates:
         self._line_item_predictions (list of dicts): predictions with row_number added
         """
-        if len(self._line_item_predictions) == 0:
-            raise Exception(
-                "Whoops! You have no line_item_fields predictions. Did you run get_bounding_boxes?"
-            )
-        max_top = self._line_item_predictions[0]["bbTop"]
-        min_bot = self._line_item_predictions[0]["bbBot"]
-        page_number = self._line_item_predictions[0]["page_num"]
+        starting_pred = self._get_first_valid_line_item_pred()
+        max_top = starting_pred["bbTop"]
+        min_bot = starting_pred["bbBot"]
+        page_number = starting_pred["page_num"]
         row_number = 1
         for pred in self._line_item_predictions:
-            if pred["bbTop"] > min_bot or pred["page_num"] != page_number:
+            if "error" in pred:
+                continue
+            elif pred["bbTop"] > min_bot or pred["page_num"] != page_number:
                 row_number += 1
                 page_number = pred["page_num"]
                 max_top, min_bot = pred["bbTop"], pred["bbBot"]
@@ -146,6 +143,20 @@ class Association:
             pred["row_number"] = row_number
         if not in_place:
             return self.updated_predictions
+
+    def _get_first_valid_line_item_pred(self) -> dict:
+        if len(self._line_item_predictions) == 0:
+            raise Exception(
+                "Whoops! You have no line_item_fields predictions. Did you run get_bounding_boxes?"
+            )
+        try:
+            return next(
+                pred for pred in self._line_item_predictions if "error" not in pred
+            )
+        except StopIteration:
+            raise Exception(
+                "No matching tokens were found for your line item predictions"
+            )
 
     def remove_meta_keys_from_dict(
         self, keys_to_remove=("bbTop", "bbBot", "bbLeft", "bbRight")
@@ -176,6 +187,29 @@ def _add_bounding_metadata_to_pred(pred: dict, token: dict):
     pred["bbLeft"] = token["position"]["bbLeft"]
     pred["bbRight"] = token["position"]["bbRight"]
     pred["page_num"] = token["page_num"]
+
+
+def _check_if_token_match_found(pred: dict, raise_for_no_match: bool = True):
+    if "bbTop" in pred:
+        return True
+    elif not raise_for_no_match:
+        _add_metadata_to_unmatched_pred(pred)
+    else:
+        raise Exception(f"Couldn't match a token to this predicition:\n{pred}")
+
+
+def _add_metadata_to_unmatched_pred(pred: dict):
+    """
+    If no token match found and not raising exception, add enough data to be able to process 
+    through assign_row_number
+    """
+    pred["error"] = "No matching token found"
+    pred["bbTop"] = None
+    pred["bbBot"] = None
+    pred["bbLeft"] = None
+    pred["bbRight"] = None
+    pred["page_num"] = None
+    pred["row_number"] = None
 
 
 def _update_bounding_metadata_for_pred(pred: dict, token: dict):
