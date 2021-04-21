@@ -1,6 +1,9 @@
 import pytest
 from solutions_toolkit.staggered_loop import StaggeredLoop
 
+def test_get_reviewed_predictions():
+    pass
+
 
 def test_convert_predictions_for_snapshot():
     predictions = [
