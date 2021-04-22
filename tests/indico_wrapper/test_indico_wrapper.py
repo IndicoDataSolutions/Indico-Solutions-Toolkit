@@ -1,6 +1,5 @@
 from indico import IndicoClient, types
 from indico.queries import CreateStorageURLs
-import pandas as pd
 
 from solutions_toolkit.indico_wrapper import IndicoWrapper
 from tests.conftest import HOST_URL, API_TOKEN_PATH
@@ -26,7 +25,7 @@ def test_get_storage_object(indico_wrapper, pdf_filepath):
     assert isinstance(storage_object, bytes)
 
 
-def test_graphQL_request(indico_wrapper, dataset_id):
+def test_graphQL_request(indico_wrapper, dataset):
     query = """
     query getSharknadoDataset($id: Int!) {
         dataset(id: $id) {
@@ -35,6 +34,19 @@ def test_graphQL_request(indico_wrapper, dataset_id):
         }
     }
     """
-    response = indico_wrapper.graphQL_request(query, {"id": dataset_id})
-    assert response["dataset"]["id"] == int(dataset_id)
+    response = indico_wrapper.graphQL_request(query, {"id": dataset.id})
+    assert response["dataset"]["id"] == int(dataset.id)
     assert response["dataset"]["status"] == "COMPLETE"
+
+
+def test_get_dataset(indico_wrapper, dataset):
+    dataset = indico_wrapper.get_dataset(dataset.id)
+    assert isinstance(dataset, types.dataset.Dataset)
+
+
+def test_create_and_download_export(indico_wrapper, dataset):
+    export = indico_wrapper.create_export(dataset.id)
+    assert isinstance(export.id, int)
+    assert export.status == "COMPLETE"
+    export_df = indico_wrapper.download_export(export.id)
+    assert isinstance(export_df["text"][0], str)
