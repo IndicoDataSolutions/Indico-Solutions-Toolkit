@@ -11,7 +11,7 @@ from indico.queries import (
 )
 from indico.errors import IndicoRequestError
 
-from solutions_toolkit.indico_wrapper import IndicoWrapper, Workflow
+from solutions_toolkit.indico_wrapper import IndicoWrapper, Workflow, Dataset
 
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -144,6 +144,11 @@ def indico_wrapper():
 @pytest.fixture(scope="session")
 def workflow_wrapper():
     return Workflow(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
+
+
+@pytest.fixture(scope="session")
+def dataset_wrapper(dataset_id):
+    return Dataset(host_url=HOST_URL, api_token_path=API_TOKEN_PATH, dataset_id=dataset_id)
 
 
 @pytest.fixture(scope="session")
