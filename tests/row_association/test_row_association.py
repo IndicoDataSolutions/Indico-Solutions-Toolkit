@@ -1,4 +1,5 @@
 import json
+import pytest
 from collections import defaultdict
 from solutions_toolkit.row_association import Association
 
@@ -28,3 +29,31 @@ def test_grouper_row_number_false_add_to_all(three_row_invoice_preds, three_row_
     assert 1 in row_count and set(row_count[1]) == set(["line_date", "work_order_tonnage"])
     assert 2 in row_count and set(row_count[2]) == set(["work_order_number"])
     assert 3 in row_count and set(row_count[3]) == set(["work_order_number", "line_date"])
+
+def test_grouper_no_token_match_raise_exception(three_row_invoice_preds, three_row_invoice_tokens):
+    three_row_invoice_tokens.pop()
+    litems = Association(["work_order_number", "line_date", "work_order_tonnage"], three_row_invoice_preds)
+    with pytest.raises(Exception):
+        litems.get_bounding_boxes(three_row_invoice_tokens)
+
+def test_grouper_no_token_match_no_exception(three_row_invoice_preds, three_row_invoice_tokens):
+    three_row_invoice_tokens.pop()
+    litems = Association(["work_order_number", "line_date", "work_order_tonnage"], three_row_invoice_preds)
+    litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
+    litems.assign_row_number()
+    unmatched_prediction = [i for i in litems.updated_predictions if "error" in i]
+    assert len(unmatched_prediction) == 1
+    assert unmatched_prediction[0]["error"] == "No matching token found"
+    assert unmatched_prediction[0]["row_number"] == None
+
+def test_get_line_items_in_groups(three_row_invoice_preds, three_row_invoice_tokens):
+    litems = Association(
+        ["work_order_number", "line_date", "work_order_tonnage"],
+        three_row_invoice_preds,
+    )
+    litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
+    litems.assign_row_number()
+    grouped_rows = litems.get_line_items_in_groups()
+    assert len(grouped_rows) == 3
+    assert isinstance(grouped_rows[0], list)
+    assert isinstance(grouped_rows[0][0], dict)

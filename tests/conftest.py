@@ -1,7 +1,14 @@
 import os
 import pytest
 import json
-from indico.queries import CreateDataset, CreateModelGroup, GetWorkflow, GetDataset
+from indico.queries import (
+    CreateDataset,
+    CreateModelGroup,
+    GetWorkflow,
+    GetDataset,
+    UpdateWorkflowSettings,
+    ListWorkflows,
+)
 from indico.errors import IndicoRequestError
 
 from solutions_toolkit.indico_wrapper import IndicoWrapper, Workflow, Dataset
@@ -11,10 +18,10 @@ FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 HOST_URL = os.environ.get("HOST_URL")
 API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
-MODEL_NAME = os.environ.get("MODEL_NAME")
+MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def three_row_invoice_preds():
     with open(
         os.path.join(FILE_PATH, "data/row_association/three_row_invoice/preds.json"),
@@ -24,7 +31,7 @@ def three_row_invoice_preds():
     return preds
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def three_row_invoice_tokens():
     with open(
         os.path.join(FILE_PATH, "data/row_association/three_row_invoice/tokens.json"),
@@ -49,7 +56,7 @@ def auto_review_field_config():
 
 
 @pytest.fixture(scope="session")
-def dataset_id(indico_wrapper):
+def dataset(indico_wrapper):
     dataset_id = os.environ.get("DATASET_ID")
     if not dataset_id:
         dataset = indico_wrapper.indico_client.call(
@@ -58,7 +65,6 @@ def dataset_id(indico_wrapper):
                 files=[os.path.join(FILE_PATH, "data/samples/fin_disc_snapshot.csv")],
             )
         )
-        dataset_id = dataset.id
     else:
         try:
             dataset = indico_wrapper.indico_client.call(GetDataset(id=dataset_id))
@@ -66,23 +72,32 @@ def dataset_id(indico_wrapper):
             raise ValueError(
                 f"Dataset with ID {dataset_id} does not exist or you do not have access to it"
             )
-    return dataset_id
+    return dataset
 
 
 @pytest.fixture(scope="session")
-def workflow_id(indico_wrapper, dataset_id):
+def workflow_id(indico_wrapper, dataset):
     workflow_id = os.environ.get("WORKFLOW_ID")
     if not workflow_id:
         model_group = indico_wrapper.indico_client.call(
             CreateModelGroup(
                 name="Solutions Toolkit Test Model",
-                dataset_id=dataset_id,
+                dataset_id=dataset.id,
                 source_column_id=dataset.datacolumn_by_name("text").id,
                 labelset_id=dataset.labelset_by_name("question_1620").id,
                 wait=True,
             )
         )
-        workflow_id = model_group.selected_model.id
+        workflow_id = indico_wrapper.indico_client.call(
+            ListWorkflows(dataset_ids=[dataset.id])
+        )[0].id
+        _ = indico_wrapper.indico_client.call(
+            UpdateWorkflowSettings(
+                workflow_id,
+                enable_review=True,
+                enable_auto_review=True,
+            )
+        )
     else:
         try:
             indico_wrapper.indico_client.call(GetWorkflow(workflow_id=workflow_id))
@@ -95,7 +110,9 @@ def workflow_id(indico_wrapper, dataset_id):
 
 @pytest.fixture(scope="module")
 def module_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
-    return workflow_wrapper.submit_documents_to_workflow(workflow_id, [pdf_filepath])
+    sub_ids = workflow_wrapper.submit_documents_to_workflow(workflow_id, [pdf_filepath])
+    workflow_wrapper.wait_for_submissions_to_process(sub_ids)
+    return sub_ids
 
 
 @pytest.fixture(scope="module")
@@ -107,13 +124,15 @@ def module_submission_results(workflow_wrapper, module_submission_ids) -> dict:
 
 @pytest.fixture(scope="function")
 def function_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
-    return workflow_wrapper.submit_documents_to_workflow(workflow_id, [pdf_filepath])
+    sub_ids = workflow_wrapper.submit_documents_to_workflow(workflow_id, [pdf_filepath])
+    workflow_wrapper.wait_for_submissions_to_process(sub_ids)
+    return sub_ids
 
 
 @pytest.fixture(scope="function")
 def function_submission_results(workflow_wrapper, function_submission_ids) -> dict:
     return workflow_wrapper.get_submission_result_from_id(
-        session_submission_ids[0], timeout=90
+        function_submission_ids[0], timeout=90
     )
 
 
