@@ -61,7 +61,7 @@ class Workflow(IndicoWrapper):
         self, workflow_id: int, submission_ids: List[int] = []
     ) -> List[dict]:
         """
-        Get list of completed and unretrieved workflow results 
+        Get list of completed and unretrieved workflow results
         Args:
             workflow_id (int): workflow to get completed submissions from
             submission_ids (List[int], optional): Specific IDs to retrieve, if completed. Defaults to [].
