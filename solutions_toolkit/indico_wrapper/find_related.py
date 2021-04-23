@@ -59,7 +59,7 @@ class FindRelated(IndicoWrapper):
         res = self.graphQL_request(query, {"id": dataset_id})["dataset"]
         wf_list = self.indico_client.call(ListWorkflows(dataset_ids=[dataset_id]))
         return {
-            "workflow_objects": wf_list,
+            "workflow_ids": [wf.id for wf in wf_list],
             "model_groups": res["modelGroups"],
             "dataset_name": res["name"],
             "dataset_id": dataset_id,
@@ -87,8 +87,8 @@ class FindRelated(IndicoWrapper):
             "model_group_id": model_group_id,
             "selected_model_id": res[0]["selectedModel"]["id"],
             "dataset_id": res[0]["datasetId"],
-            "workflows": [
-                wf
+            "workflow_ids": [
+                wf["id"]
                 for wf in dataset_workflows
                 for model in wf["reviewableModelGroups"]
                 if model["id"] == model_group_id
