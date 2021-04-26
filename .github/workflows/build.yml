@@ -1,4 +1,5 @@
-# ...
+name: Solutions Toolkit Pytest Build
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
