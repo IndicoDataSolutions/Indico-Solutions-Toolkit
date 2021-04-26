@@ -15,11 +15,9 @@ from indico.queries import (
     DownloadExport,
     Submission,
 )
-
 from indico import IndicoClient, IndicoConfig
 
-# TODO: Need unittesting for this class
-# Start with testing that kwargs adds to the config appropriately
+
 class IndicoWrapper:
     """
     Class to handle all indico api calls
@@ -30,12 +28,12 @@ class IndicoWrapper:
     ):
         """
         Create indico client with user provided arguments
-        
+
         args:
             host (str): url of Indico environment
             api_token_path (str): local path to Indico API token
             api_token (str): Indico API token string
-            
+
         """
         self.host_url = host_url
         self.api_token_path = api_token_path
@@ -51,7 +49,7 @@ class IndicoWrapper:
 
         for arg, value in kwargs.items():
             self.config[arg] = value
-            
+
         indico_config = IndicoConfig(**self.config)
         self.indico_client = IndicoClient(config=indico_config)
 
