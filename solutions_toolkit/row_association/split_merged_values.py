@@ -12,8 +12,8 @@ def split_prediction_into_many(
         value_to_split_on (str, optional): The value to split the text by. Defaults to "\n".
 
     Returns:
-        List[dict]: A list of indico extraction predictions.If 'value_to_split_on' doesn't 
-                    occur in prediction, returns original prediction. 
+        List[dict]: A list of indico extraction predictions.If 'value_to_split_on' doesn't
+                    occur in prediction, returns original prediction.
     """
     full_prediction_text = prediction["text"]
     overall_start = prediction["start"]

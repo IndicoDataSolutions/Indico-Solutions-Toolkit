@@ -18,6 +18,7 @@ FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 HOST_URL = os.environ.get("HOST_URL")
 API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
+API_TOKEN = os.environ.get("API_TOKEN")
 MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
 
 
@@ -138,17 +139,17 @@ def function_submission_results(workflow_wrapper, function_submission_ids) -> di
 
 @pytest.fixture(scope="session")
 def indico_wrapper():
-    return IndicoWrapper(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
+    return IndicoWrapper(host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH)
 
 
 @pytest.fixture(scope="session")
 def workflow_wrapper():
-    return Workflow(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
+    return Workflow(host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH)
 
 
 @pytest.fixture(scope="session")
-def dataset_wrapper(dataset_id):
-    return Dataset(host_url=HOST_URL, api_token_path=API_TOKEN_PATH, dataset_id=dataset_id)
+def dataset_wrapper(dataset):
+    return Dataset(host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH, dataset_id=dataset.id)
 
 
 @pytest.fixture(scope="session")

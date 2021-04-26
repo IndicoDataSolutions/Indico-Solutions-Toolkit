@@ -16,6 +16,6 @@ setup(
         "requests>=2.22.0",
         "setuptools>=41.4.0",
         "pandas>=1.0.3",
-        "coverage>=5.5".
+        "coverage>=5.5",
     ],
 )
