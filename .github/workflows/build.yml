@@ -8,6 +8,10 @@ jobs:
     
     env:
       USING_COVERAGE: "3.9"
+      API_TOKEN: ${{ secrets.TEST_API_TOKEN }}
+      DATASET_ID: ${{ secrets.DATASET_ID }}
+      MODEL_NAME: ${{ secrets.MODEL_NAME }}
+      WORKFLOW_ID: ${{ secrets.WORKFLOW_ID }}
     
     steps:
       - name: Checkout sources
@@ -23,6 +27,10 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
       
-      - name: Run tox
+      - name: Run formatter
         run: |
-          python -m tox
+          black solutions_toolkit
+
+      - name: Run tests
+        run: |
+          pytest
