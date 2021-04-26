@@ -15,11 +15,9 @@ from indico.queries import (
     DownloadExport,
     Submission,
 )
-
 from indico import IndicoClient, IndicoConfig
 
-# TODO: Need unittesting for this class
-# Start with testing that kwargs adds to the config appropriately
+
 class IndicoWrapper:
     """
     Class to handle all indico api calls

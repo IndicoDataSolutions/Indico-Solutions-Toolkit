@@ -11,7 +11,12 @@ from indico.queries import (
 )
 from indico.errors import IndicoRequestError
 
-from solutions_toolkit.indico_wrapper import IndicoWrapper, Workflow, Dataset
+from solutions_toolkit.indico_wrapper import (
+    IndicoWrapper,
+    Workflow,
+    Dataset,
+    FindRelated,
+)
 
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -80,7 +85,7 @@ def dataset(indico_wrapper):
 def workflow_id(indico_wrapper, dataset):
     workflow_id = os.environ.get("WORKFLOW_ID")
     if not workflow_id:
-        model_group = indico_wrapper.indico_client.call(
+        _ = indico_wrapper.indico_client.call(
             CreateModelGroup(
                 name="Solutions Toolkit Test Model",
                 dataset_id=dataset.id,
@@ -139,17 +144,26 @@ def function_submission_results(workflow_wrapper, function_submission_ids) -> di
 
 @pytest.fixture(scope="session")
 def indico_wrapper():
-    return IndicoWrapper(host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH)
+    return IndicoWrapper(
+        host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH
+    )
 
 
 @pytest.fixture(scope="session")
 def workflow_wrapper():
-    return Workflow(host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH)
+    return Workflow(
+        host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH
+    )
 
 
 @pytest.fixture(scope="session")
 def dataset_wrapper(dataset):
-    return Dataset(host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH, dataset_id=dataset.id)
+    return Dataset(
+        host_url=HOST_URL,
+        api_token=API_TOKEN,
+        api_token_path=API_TOKEN_PATH,
+        dataset_id=dataset.id,
+    )
 
 
 @pytest.fixture(scope="session")
