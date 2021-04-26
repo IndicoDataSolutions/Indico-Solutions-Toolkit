@@ -7,8 +7,6 @@ KEYS_TO_REMOVE_FROM_PREDICTION = ["confidence", "text"]
 
 # TODO: add method to remove completed submissions that have no valid target predictions
 
-
-
 class StaggeredLoop:
     """
     Use human reviewed prediction results to improve existing models
@@ -87,7 +85,11 @@ class StaggeredLoop:
             )
         else:
             self.model_name = available_model_names[0]
-        return results[self.model_name]["final"]
+        if "final" in results[self.model_name]:
+            return results[self.model_name]["final"]
+        raise Exception(
+            f"Completed submission {wf_result['submission_id']} was not human reviewed"
+        )
 
     def _is_not_manually_added_prediction(self, prediction: dict) -> bool:
         if isinstance(prediction["start"], int) and isinstance(prediction["end"], int):
