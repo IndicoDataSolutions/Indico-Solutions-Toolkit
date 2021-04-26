@@ -13,6 +13,7 @@ jobs:
       DATASET_ID: ${{ secrets.DATASET_ID }}
       MODEL_NAME: ${{ secrets.MODEL_NAME }}
       WORKFLOW_ID: ${{ secrets.WORKFLOW_ID }}
+      HOST_URL: app.indico.io
     
     steps:
       - name: Checkout sources
