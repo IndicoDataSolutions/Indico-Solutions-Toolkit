@@ -3,12 +3,12 @@ from solutions_toolkit.indico_wrapper import DocExtraction
 
 KEYS_TO_REMOVE_FROM_PREDICTION = ["confidence", "text"]
 
-# TODO: incorporate Workflow class -> i.e. get reviewed predictions for workflow/ submission IDs, OCR text, 
-# and (optional) filename 
+# TODO: incorporate Workflow class -> i.e. get reviewed predictions for workflow/ submission IDs, OCR text,
+# and (optional) filename
 # TODO: add method to write to snapshot-like CSV
 
-class StaggeredLoop:
 
+class StaggeredLoop:
     def __init__(self, workflow_id: int, submission_ids: List[int] = []):
         self._keys_to_remove_from_prediction = KEYS_TO_REMOVE_FROM_PREDICTION
 

@@ -1,5 +1,9 @@
+
 # Indico-Solutions-Toolkit
 A library to assist with Indico IPA development
+
+[![Build Status][build-image]][build-url]
+
 
 ### Tests
 To see test coverage
@@ -62,3 +66,6 @@ indico_wrapper = IndicoWrapper(host, api_token_path)
 submissions = indico_wrapper.get_submissions(workflow_id, "COMPLETE")
 sub_results = indico_wrapper.get_submission_results(submissions[0])
 ```
+
+<!-- Badges -->
+[build-url]:https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit

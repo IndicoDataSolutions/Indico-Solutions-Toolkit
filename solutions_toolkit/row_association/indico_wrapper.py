@@ -5,6 +5,7 @@ import os
 
 # TODO: Convert to WorkflowResult json object?
 
+
 class Tokens:
     """
     Class for indico calls
