@@ -70,15 +70,3 @@ def test_get_submission_result_from_id(
     results = workflow_wrapper.get_submission_result_from_id(module_submission_ids[0])
     predictions = results["results"]["document"]["results"][MODEL_NAME]["pre_review"]
     assert isinstance(predictions, list)
-
-
-def test_submit_submission_review(
-    workflow_wrapper, function_submission_ids, function_submission_results
-):
-    predictions = function_submission_results["results"]["document"]["results"][
-        MODEL_NAME
-    ]["pre_review"]
-    job = workflow_wrapper.submit_submission_review(
-        function_submission_ids[0], {MODEL_NAME: predictions}
-    )
-    assert isinstance(job, Job)
