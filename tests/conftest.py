@@ -167,5 +167,10 @@ def dataset_wrapper(dataset):
 
 
 @pytest.fixture(scope="session")
+def find_related_wrapper():
+    return FindRelated(host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH)
+
+
+@pytest.fixture(scope="session")
 def pdf_filepath():
     return os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")
