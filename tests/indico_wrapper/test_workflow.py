@@ -30,7 +30,7 @@ def test_get_ondoc_ocr_from_etl_url(workflow_wrapper, module_submission_results)
     etl_url = module_submission_results["etl_output"]
     on_doc = workflow_wrapper.get_ondoc_ocr_from_etl_url(etl_url)
     assert isinstance(on_doc, OnDoc)
-    assert on_doc.total_pages == 8
+    assert on_doc.total_pages == 2
 
 
 def test_get_completed_submission_results(

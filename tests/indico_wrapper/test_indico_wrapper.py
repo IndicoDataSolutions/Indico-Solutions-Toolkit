@@ -37,16 +37,3 @@ def test_graphQL_request(indico_wrapper, dataset):
     response = indico_wrapper.graphQL_request(query, {"id": dataset.id})
     assert response["dataset"]["id"] == int(dataset.id)
     assert response["dataset"]["status"] == "COMPLETE"
-
-
-def test_get_dataset(indico_wrapper, dataset):
-    dataset = indico_wrapper.get_dataset(dataset.id)
-    assert isinstance(dataset, types.dataset.Dataset)
-
-
-def test_create_and_download_export(indico_wrapper, dataset):
-    export = indico_wrapper.create_export(dataset.id)
-    assert isinstance(export.id, int)
-    assert export.status == "COMPLETE"
-    export_df = indico_wrapper.download_export(export.id)
-    assert isinstance(export_df["text"][0], str)
