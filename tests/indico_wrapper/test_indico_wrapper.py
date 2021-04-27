@@ -2,13 +2,14 @@ from indico import IndicoClient, types
 from indico.queries import CreateStorageURLs
 
 from solutions_toolkit.indico_wrapper import IndicoWrapper
-from tests.conftest import HOST_URL, API_TOKEN_PATH
+from tests.conftest import HOST_URL, API_TOKEN_PATH, API_TOKEN
 
 
 def test_indico_wrapper_init():
     indico_wrapper = IndicoWrapper(
         host_url=HOST_URL,
         api_token_path=API_TOKEN_PATH,
+        api_token=API_TOKEN,
         verify_ssl=False,
         requests_params={"test": True},
     )

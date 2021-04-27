@@ -5,8 +5,8 @@ import numpy as np
 class OnDoc:
     """
     OnDoc is a helper class for the raw "ondocument" preset confid OCR result. Enables easy extraction
-    of common datapoints into usable objects. "ondocument" is the default extraction config on the 
-    Indico platform. 
+    of common datapoints into usable objects. "ondocument" is the default extraction config on the
+    Indico platform.
     """
 
     def __init__(self, ondoc: List[dict]):
