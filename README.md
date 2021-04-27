@@ -68,5 +68,5 @@ sub_results = indico_wrapper.get_submission_results(submissions[0])
 ```
 
 <!-- Badges -->
-[build-url]: https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/.github/workflows/build.yml
-[build-image]: https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/.github/workflows/build.yml/badge.svg
+[build-url]: https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/actions/workflows/build.yml
+[build-image]: https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/actions/workflows/build.yml/badge.svg
