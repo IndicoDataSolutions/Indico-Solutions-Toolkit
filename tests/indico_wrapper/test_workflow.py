@@ -1,7 +1,7 @@
 from indico import IndicoClient
 from indico.types import Submission, Job
 
-from tests.conftest import API_TOKEN_PATH, HOST_URL, MODEL_NAME
+from tests.conftest import API_TOKEN_PATH, HOST_URL, MODEL_NAME, API_TOKEN
 from solutions_toolkit.indico_wrapper import Workflow
 from solutions_toolkit.ocr import OnDoc
 
@@ -10,6 +10,7 @@ def test_workflow_init():
     workflow = Workflow(
         HOST_URL,
         api_token_path=API_TOKEN_PATH,
+        api_token=API_TOKEN,
         verify_ssl=False,
         requests_params={"test": True},
     )
