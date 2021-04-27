@@ -15,7 +15,7 @@ class Association:
     Example Usage:
 
     litems = Association(
-            line_item_fields=["line_value", "line_date"], 
+            line_item_fields=["line_value", "line_date"],
             predictions=[{"label": "line_date", "start": 12, "text": "1/2/2021".....}]
         )
     litems.get_bounding_boxes(ocr_tokens=[{"postion"...,},])
@@ -51,7 +51,7 @@ class Association:
         Match and add bounding box metadata to prediction.
 
         Args:
-            pred (dict): Indico extraction model prediction 
+            pred (dict): Indico extraction model prediction
             ocr_tokens (List[dict]): List of OCR tokens
             raise_for_no_match (bool, optional): Raise an exception if no matching token found. Defaults to True.
 
@@ -83,7 +83,7 @@ class Association:
         in_place: bool = True,
     ) -> List[dict]:
         """
-        Adds keys for bounding box top/bottom and page number to line item extraction predictions, 
+        Adds keys for bounding box top/bottom and page number to line item extraction predictions,
         and adds all preds to property self._line_item_predictions
         Args:
         ocr_tokens (list of dicts): OCR tokens from 'ondocument' config (workflow default)
@@ -146,7 +146,7 @@ class Association:
 
     def get_line_items_in_groups(self) -> List[List[dict]]:
         """
-        After row number has been assigned to predictions, returns line item predictions as a 
+        After row number has been assigned to predictions, returns line item predictions as a
         list of lists where each list is a row.
         """
         rows = defaultdict(list)
@@ -154,7 +154,7 @@ class Association:
             if "error" not in pred:
                 rows[pred["row_number"]].append(pred)
         return list(rows.values())
-        
+
     def _get_first_valid_line_item_pred(self) -> dict:
         if len(self._line_item_predictions) == 0:
             raise Exception(
@@ -173,10 +173,10 @@ class Association:
         self, keys_to_remove=("bbTop", "bbBot", "bbLeft", "bbRight")
     ):
         """
-        Remove meta keys from prediction dictionaries. Other options that you might want 
+        Remove meta keys from prediction dictionaries. Other options that you might want
         to remove include: "page_num" and/or "row_number", "confidence", etc.
         Args:
-            keys_to_remove (tuple, optional): keys to remove from prediction dictionaries. 
+            keys_to_remove (tuple, optional): keys to remove from prediction dictionaries.
         """
         for remove_key in keys_to_remove:
             for pred in self._line_item_predictions:
@@ -211,7 +211,7 @@ def _check_if_token_match_found(pred: dict, raise_for_no_match: bool = True):
 
 def _add_metadata_to_unmatched_pred(pred: dict):
     """
-    If no token match found and not raising exception, add enough data to be able to process 
+    If no token match found and not raising exception, add enough data to be able to process
     through assign_row_number
     """
     pred["error"] = "No matching token found"
