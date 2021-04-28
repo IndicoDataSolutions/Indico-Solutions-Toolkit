@@ -16,6 +16,7 @@ from solutions_toolkit.indico_wrapper import (
     Workflow,
     Dataset,
     FindRelated,
+    Reviewer,
 )
 
 
@@ -25,26 +26,6 @@ HOST_URL = os.environ.get("HOST_URL")
 API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
 API_TOKEN = os.environ.get("API_TOKEN")
 MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
-
-
-@pytest.fixture(scope="function")
-def three_row_invoice_preds():
-    with open(
-        os.path.join(FILE_PATH, "data/row_association/three_row_invoice/preds.json"),
-        "r",
-    ) as f:
-        preds = json.load(f)
-    return preds
-
-
-@pytest.fixture(scope="function")
-def three_row_invoice_tokens():
-    with open(
-        os.path.join(FILE_PATH, "data/row_association/three_row_invoice/tokens.json"),
-        "r",
-    ) as f:
-        tokens = json.load(f)
-    return tokens
 
 
 @pytest.fixture(scope="session")
@@ -97,13 +78,6 @@ def workflow_id(indico_wrapper, dataset):
         workflow_id = indico_wrapper.indico_client.call(
             ListWorkflows(dataset_ids=[dataset.id])
         )[0].id
-        _ = indico_wrapper.indico_client.call(
-            UpdateWorkflowSettings(
-                workflow_id,
-                enable_review=True,
-                enable_auto_review=True,
-            )
-        )
     else:
         try:
             indico_wrapper.indico_client.call(GetWorkflow(workflow_id=workflow_id))
@@ -169,6 +143,13 @@ def dataset_wrapper(dataset):
 @pytest.fixture(scope="session")
 def find_related_wrapper():
     return FindRelated(host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH)
+
+
+@pytest.fixture(scope="session")
+def reviewer_wrapper(workflow_id):
+    return Reviewer(
+        host_url=HOST_URL, api_token_path=API_TOKEN_PATH, workflow_id=workflow_id
+    )
 
 
 @pytest.fixture(scope="session")
