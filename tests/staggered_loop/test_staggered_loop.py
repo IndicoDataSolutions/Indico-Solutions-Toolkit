@@ -27,6 +27,7 @@ def reviewed_submissions(workflow_id, workflow_wrapper, pdf_filepath, reviewer_w
         reviewed_ids.append(id_in_review)
     for sub_id in reviewed_ids:
         workflow_wrapper.wait_for_submission_status_complete(sub_id)
+    time.sleep(2) # provide buffer for DB to update
     return reviewed_ids
 
 
