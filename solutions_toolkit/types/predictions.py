@@ -6,15 +6,17 @@ import pandas as pd
 class Predictions():
     def __init__(self, predictions: List[dict]):
         self.predictions = predictions
-        self.updated_predictions = predictions
         
     def remove_by_confidence(self, confidence=0.95):
         pass
 
-    def choose_top_confidence(self):
+    def _select_max_confidence(self, label):
+        # Take highest confidence within each class in label
         pass
     
     @property
+    # preds["label"]
+    # maybe def __dict__()
     def by_label(self):
         prediction_label_map = defaultdict(list)
         for pred in self.predictions:
@@ -22,10 +24,12 @@ class Predictions():
             prediction_label_map[label].append(pred)
         return prediction_label_map
     
-    def save_to_csv(self, save_path: str, predictions: List[dict] = None):
-        if not predictions:
-            predictions = self.updated_predictions
+    def to_csv(self, save_path: str):
         pass
+
+    
+
+
 
     
 

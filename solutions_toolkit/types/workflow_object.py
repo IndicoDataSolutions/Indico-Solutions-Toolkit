@@ -1,10 +1,11 @@
 from typing import List
 
 
-class ExtractionResult:
+class WorkflowResult:
     def __init__(self, model_result: dict, model_name: str = None):
         self.result = model_result
         self.model_name = model_name
+        # TODO: seek model name and throw exceptions
 
     @property
     def pre_review_predictions(self) -> List[dict]:
@@ -34,8 +35,4 @@ class ExtractionResult:
     def models(self) -> list:
         return list(self.document_results.keys())
     
-    # How to handle multiple model names
-        # Instantiate new object for each model
-    # How to handle multiple types of outputs (extraction vs classification)
-        # Separate classes?
 
