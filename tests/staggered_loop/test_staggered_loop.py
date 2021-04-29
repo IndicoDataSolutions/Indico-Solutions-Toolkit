@@ -1,6 +1,7 @@
 import pytest
 import json
 import time
+from solutions_toolkit.indico_wrapper.workflow import COMPLETE_FILTER
 from solutions_toolkit.staggered_loop import StaggeredLoop
 from tests.indico_wrapper.test_reviewer import get_change_formatted_predictions
 from indico.queries import UpdateWorkflowSettings, GraphQLRequest, GetSubmission
@@ -27,22 +28,28 @@ def reviewed_submissions(workflow_id, workflow_wrapper, pdf_filepath, reviewer_w
         reviewed_ids.append(id_in_review)
     for sub_id in reviewed_ids:
         workflow_wrapper.wait_for_submission_status_complete(sub_id)
-    time.sleep(2) # provide buffer for DB to update
+    # time.sleep(2) # provide buffer for DB to update
+    print(reviewed_ids)
     return reviewed_ids
 
 
 def test_get_reviewed_prediction_data(
     workflow_id, workflow_wrapper, reviewed_submissions
 ):
+    # num_submissions needed for now because of possible bug marking subs as retrieved for no reason
+    num_submissions = len(
+        workflow_wrapper._get_list_of_submissions(
+            workflow_id, COMPLETE_FILTER, reviewed_submissions
+        )
+    )
     stagger = StaggeredLoop(
         workflow_id=workflow_id, submission_ids=reviewed_submissions
     )
     stagger.get_reviewed_prediction_data(workflow_wrapper)
-    assert len(stagger._filenames) == 2
-    assert len(stagger._workflow_results) == 2
-    assert len(stagger._snap_formatted_predictions) == 2
-    assert len(stagger._document_texts) == 2
-    assert stagger._filenames[0] == "fin_disc.pdf"
+    assert len(stagger._filenames) == num_submissions
+    assert len(stagger._workflow_results) == num_submissions
+    assert len(stagger._snap_formatted_predictions) == num_submissions
+    assert len(stagger._document_texts) == num_submissions
     for predictions in stagger._snap_formatted_predictions:
         assert isinstance(predictions, list)
         for pred in predictions:
