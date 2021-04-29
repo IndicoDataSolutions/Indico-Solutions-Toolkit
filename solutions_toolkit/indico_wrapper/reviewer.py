@@ -8,6 +8,8 @@ from indico.queries import (
 from solutions_toolkit.indico_wrapper import IndicoWrapper
 
 
+# TODO: Reviewer should probably inherit from WorkFlow
+
 class Reviewer(IndicoWrapper):
     """
     Class to simulate human reviewer

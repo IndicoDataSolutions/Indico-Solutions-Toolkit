@@ -1,6 +1,6 @@
 import pytest
 from collections import defaultdict
-from indico.queries import UpdateWorkflowSettings, Job
+from indico.queries import Job
 from solutions_toolkit.auto_review import ReviewConfiguration, AutoReviewer
 from tests.conftest import MODEL_NAME
 
@@ -15,10 +15,8 @@ def id_pending_scripted(workflow_id, workflow_wrapper, pdf_filepath):
     """
     Ensure that auto review is turned off and there are two submissions "PENDING_REVIEW"
     """
-    workflow_wrapper.indico_client.call(
-        UpdateWorkflowSettings(
-            workflow_id, enable_review=True, enable_auto_review=True,
-        )
+    workflow_wrapper.update_workflow_settings(
+        workflow_id, enable_review=True, enable_auto_review=True,
     )
     sub_id = workflow_wrapper.submit_documents_to_workflow(workflow_id, [pdf_filepath])
     workflow_wrapper.wait_for_submissions_to_process(sub_id)
