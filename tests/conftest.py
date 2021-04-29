@@ -148,7 +148,7 @@ def find_related_wrapper():
 @pytest.fixture(scope="session")
 def reviewer_wrapper(workflow_id):
     return Reviewer(
-        host_url=HOST_URL, api_token_path=API_TOKEN_PATH, workflow_id=workflow_id
+        host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH, workflow_id=workflow_id
     )
 
 
