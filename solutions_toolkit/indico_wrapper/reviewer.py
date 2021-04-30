@@ -5,12 +5,10 @@ from indico.queries import (
     SubmissionResult,
     RetrieveStorageObject,
 )
-from solutions_toolkit.indico_wrapper import IndicoWrapper
+from solutions_toolkit.indico_wrapper import Workflow
 
 
-# TODO: Reviewer should probably inherit from WorkFlow
-
-class Reviewer(IndicoWrapper):
+class Reviewer(Workflow):
     """
     Class to simulate human reviewer
 
@@ -26,7 +24,7 @@ class Reviewer(IndicoWrapper):
         # accept submission in review queue without changes
 
         id_to_accept = reviewer.get_random_review_id()
-        wf_result = reviewer.get_workflow_result(id_to_accept)["results"]["document"]["results"]
+        wf_result = reviewer.get_submission_result_from_id(id_to_accept)["results"]["document"]["results"]
         changes = {"model_name": wf_results["model_name"]["pre_review"]}
         reviewer.accept_review(id_to_accept, changes)
     """
@@ -92,12 +90,6 @@ class Reviewer(IndicoWrapper):
                 variables={"rejected": True, "submissionId": submission_id},
             )
         )
-
-    def get_workflow_result(self, submission_id: int, timeout: int = 300) -> dict:
-        job = self.indico_client.call(
-            SubmissionResult(submission_id, wait=True, timeout=timeout)
-        )
-        return self.indico_client.call(RetrieveStorageObject(job.result))
 
 
 SUBMIT_REVIEW = """
