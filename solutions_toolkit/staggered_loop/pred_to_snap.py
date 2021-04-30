@@ -100,7 +100,7 @@ class StaggeredLoop:
     def _check_is_valid_model_name(self, available_model_names: List[str]) -> None:
         if self.model_name not in available_model_names:
             raise KeyError(
-                f"{self.model_name} is an available model name. Options: {available_model_names}"
+                f"{self.model_name} is not an available model name. Options: {available_model_names}"
             )
 
     def _remove_unneeded_keys(self, prediction: dict):
