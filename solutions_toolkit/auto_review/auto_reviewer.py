@@ -22,13 +22,13 @@ REVIEWERS = {
 }
 
 
-class Reviewer:
+class AutoReviewer:
     """
     Class for programatically reviewing workflow predictions
 
     Example Usage:
 
-    reviewer = Reviewer(
+    reviewer = AutoReviewer(
         predictions, review_config
     )
     reviewer.apply_review()

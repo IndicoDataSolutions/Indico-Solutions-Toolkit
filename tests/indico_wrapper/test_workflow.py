@@ -1,7 +1,7 @@
 from indico import IndicoClient
 from indico.types import Submission, Job
 
-from tests.conftest import API_TOKEN_PATH, HOST_URL, MODEL_NAME
+from tests.conftest import API_TOKEN_PATH, HOST_URL, MODEL_NAME, API_TOKEN
 from solutions_toolkit.indico_wrapper import Workflow
 from solutions_toolkit.ocr import OnDoc
 
@@ -10,6 +10,7 @@ def test_workflow_init():
     workflow = Workflow(
         HOST_URL,
         api_token_path=API_TOKEN_PATH,
+        api_token=API_TOKEN,
         verify_ssl=False,
         requests_params={"test": True},
     )
@@ -30,7 +31,7 @@ def test_get_ondoc_ocr_from_etl_url(workflow_wrapper, module_submission_results)
     etl_url = module_submission_results["etl_output"]
     on_doc = workflow_wrapper.get_ondoc_ocr_from_etl_url(etl_url)
     assert isinstance(on_doc, OnDoc)
-    assert on_doc.total_pages == 8
+    assert on_doc.total_pages == 2
 
 
 def test_get_completed_submission_results(
@@ -70,15 +71,3 @@ def test_get_submission_result_from_id(
     results = workflow_wrapper.get_submission_result_from_id(module_submission_ids[0])
     predictions = results["results"]["document"]["results"][MODEL_NAME]["pre_review"]
     assert isinstance(predictions, list)
-
-
-def test_submit_submission_review(
-    workflow_wrapper, function_submission_ids, function_submission_results
-):
-    predictions = function_submission_results["results"]["document"]["results"][
-        MODEL_NAME
-    ]["pre_review"]
-    job = workflow_wrapper.submit_submission_review(
-        function_submission_ids[0], {MODEL_NAME: predictions}
-    )
-    assert isinstance(job, Job)
