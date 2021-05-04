@@ -1,3 +1,4 @@
+import time
 from typing import List
 from indico.queries import (
     Submission,
@@ -9,6 +10,7 @@ from indico.queries import (
     SubmissionResult,
     WaitForSubmissions,
     SubmitReview,
+    UpdateWorkflowSettings,
 )
 
 from solutions_toolkit.indico_wrapper import IndicoWrapper
@@ -119,11 +121,42 @@ class Workflow(IndicoWrapper):
             SubmitReview(submission_id, changes=updated_predictions)
         )
 
+    def update_workflow_settings(
+        self,
+        workflow_id: int,
+        enable_review: bool = False,
+        enable_auto_review: bool = False,
+    ) -> None:
+        self.indico_client.call(
+            UpdateWorkflowSettings(
+                workflow_id,
+                enable_review=enable_review,
+                enable_auto_review=enable_auto_review,
+            )
+        )
+
+    def wait_for_submission_status_complete(
+        self,
+        submission_id: int,
+        seconds_to_sleep_each_loop: int = 2,
+        max_retries: int = 5,
+    ):
+        retry_number = 0
+        submission = self.get_submission_object(submission_id)
+        while submission.status != "COMPLETE":
+            time.sleep(seconds_to_sleep_each_loop)
+            submission = self.get_submission_object(submission_id)
+            if retry_number == max_retries:
+                raise Exception(
+                    f"Submission {submission_id} didn't reach status complete."
+                    f"It has status: {submission.status} and errors: {submission.errors}"
+                )
+            retry_number += 1
+
     def _get_submission_results(self, submissions: List[Submission]) -> List[WorkflowResult]:
         submission_results = []
         for sub in submissions:
-            print(sub)
-            submission_results.append(WorkflowResult(model_result=self.get_storage_object(sub.result_file)))
+            submission_results.append(WorkflowResult(self.get_submission_result_from_id(sub.id)))
         return submission_results
 
     def _get_list_of_submissions(

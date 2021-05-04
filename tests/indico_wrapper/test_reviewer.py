@@ -1,6 +1,6 @@
 import pytest
 from solutions_toolkit.indico_wrapper import Reviewer
-from indico.queries import UpdateWorkflowSettings, GetSubmission
+from indico.queries import GetSubmission
 
 
 @pytest.fixture(scope="module")
@@ -8,10 +8,8 @@ def submissions_awaiting_review(workflow_id, workflow_wrapper, pdf_filepath):
     """
     Ensure that auto review is turned off and there are two submissions "PENDING_REVIEW"
     """
-    workflow_wrapper.indico_client.call(
-        UpdateWorkflowSettings(
-            workflow_id, enable_review=True, enable_auto_review=False,
-        )
+    workflow_wrapper.update_workflow_settings(
+        workflow_id, enable_review=True, enable_auto_review=False
     )
     sub_ids = workflow_wrapper.submit_documents_to_workflow(
         workflow_id, [pdf_filepath, pdf_filepath]
@@ -32,7 +30,7 @@ def test_accept_review(submissions_awaiting_review, reviewer_wrapper):
     id_in_review = reviewer_wrapper.get_random_review_id()
     submission = reviewer_wrapper.indico_client.call(GetSubmission(id_in_review))
     assert submission.status == "PENDING_REVIEW"
-    predictions = reviewer_wrapper.get_workflow_result(id_in_review)
+    predictions = reviewer_wrapper.get_submission_result_from_id(id_in_review)
     changes = get_change_formatted_predictions(predictions)
     reviewer_wrapper.accept_review(id_in_review, changes)
     submission = reviewer_wrapper.indico_client.call(GetSubmission(id_in_review))
