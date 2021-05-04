@@ -28,6 +28,9 @@ API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
 API_TOKEN = os.environ.get("API_TOKEN")
 MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
 
+@pytest.fixture(scope="session")
+def testdir_file_path():
+    return FILE_PATH
 
 @pytest.fixture(scope="session")
 def dataset(indico_wrapper):
@@ -135,7 +138,7 @@ def find_related_wrapper():
 @pytest.fixture(scope="session")
 def reviewer_wrapper(workflow_id):
     return Reviewer(
-        host_url=HOST_URL, api_token_path=API_TOKEN_PATH, workflow_id=workflow_id
+        host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH, workflow_id=workflow_id
     )
 
 
