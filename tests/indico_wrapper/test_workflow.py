@@ -4,6 +4,7 @@ from indico.types import Submission, Job
 from tests.conftest import API_TOKEN_PATH, HOST_URL, MODEL_NAME, API_TOKEN
 from solutions_toolkit.indico_wrapper import Workflow
 from solutions_toolkit.ocr import OnDoc
+from solutions_toolkit.types import WorkflowResult
 
 
 def test_workflow_init():
@@ -28,7 +29,7 @@ def test_submit_documents_to_workflow(workflow_wrapper, pdf_filepath, workflow_i
 
 
 def test_get_ondoc_ocr_from_etl_url(workflow_wrapper, module_submission_results):
-    etl_url = module_submission_results["etl_output"]
+    etl_url = module_submission_results.etl_url
     on_doc = workflow_wrapper.get_ondoc_ocr_from_etl_url(etl_url)
     assert isinstance(on_doc, OnDoc)
     assert on_doc.total_pages == 2
@@ -40,7 +41,8 @@ def test_get_completed_submission_results(
     results = workflow_wrapper.get_completed_submission_results(
         workflow_id, submission_ids=module_submission_ids
     )
-    assert isinstance(results, list)
+    assert isinstance(results, WorkflowResult)
+    assert isinstance(results.post_review_predicitions, list)
 
 
 def test_mark_submission_as_retreived(
@@ -69,5 +71,5 @@ def test_get_submission_result_from_id(
     workflow_wrapper, module_submission_ids
 ):
     results = workflow_wrapper.get_submission_result_from_id(module_submission_ids[0])
-    predictions = results["results"]["document"]["results"][MODEL_NAME]["pre_review"]
-    assert isinstance(predictions, list)
+    assert isinstance(results, WorkflowResult)
+    assert isinstance(results.post_review_predictions, list)

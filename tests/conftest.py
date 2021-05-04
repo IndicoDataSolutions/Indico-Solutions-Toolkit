@@ -11,6 +11,7 @@ from indico.queries import (
 )
 from indico.errors import IndicoRequestError
 
+from solutions_toolkit.types import WorkflowResult
 from solutions_toolkit.indico_wrapper import (
     IndicoWrapper,
     Workflow,
@@ -26,20 +27,6 @@ HOST_URL = os.environ.get("HOST_URL")
 API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
 API_TOKEN = os.environ.get("API_TOKEN")
 MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
-
-
-@pytest.fixture(scope="session")
-def auto_review_preds():
-    with open(os.path.join(FILE_PATH, "data/auto_review/preds.json"), "r") as f:
-        preds = json.load(f)
-    return preds
-
-
-@pytest.fixture(scope="session")
-def auto_review_field_config():
-    with open(os.path.join(FILE_PATH, "data/auto_review/field_config.json"), "r") as f:
-        field_config = json.load(f)
-    return field_config
 
 
 @pytest.fixture(scope="session")
@@ -96,7 +83,7 @@ def module_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
 
 
 @pytest.fixture(scope="module")
-def module_submission_results(workflow_wrapper, module_submission_ids) -> dict:
+def module_submission_results(workflow_wrapper, module_submission_ids) -> WorkflowResult:
     return workflow_wrapper.get_submission_result_from_id(
         module_submission_ids[0], timeout=90
     )
@@ -110,7 +97,7 @@ def function_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
 
 
 @pytest.fixture(scope="function")
-def function_submission_results(workflow_wrapper, function_submission_ids) -> dict:
+def function_submission_results(workflow_wrapper, function_submission_ids) -> WorkflowResult:
     return workflow_wrapper.get_submission_result_from_id(
         function_submission_ids[0], timeout=90
     )

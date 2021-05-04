@@ -1,13 +1,29 @@
 import pytest
+import os
+import json
 from collections import defaultdict
 from indico.queries import UpdateWorkflowSettings, Job
 from solutions_toolkit.auto_review import ReviewConfiguration, AutoReviewer
-from tests.conftest import MODEL_NAME
+from tests.conftest import MODEL_NAME, FILE_PATH
 
 
 min_max_length = 6
 ACCEPTED = "accepted"
 REJECTED = "rejected"
+
+
+@pytest.fixture(scope="session")
+def auto_review_preds():
+    with open(os.path.join(FILE_PATH, "data/auto_review/preds.json"), "r") as f:
+        preds = json.load(f)
+    return preds
+
+
+@pytest.fixture(scope="session")
+def auto_review_field_config():
+    with open(os.path.join(FILE_PATH, "data/auto_review/field_config.json"), "r") as f:
+        field_config = json.load(f)
+    return field_config
 
 
 @pytest.fixture(scope="function")
@@ -28,9 +44,7 @@ def id_pending_scripted(workflow_id, workflow_wrapper, pdf_filepath):
 def test_submit_submission_review(
     workflow_wrapper, id_pending_scripted, function_submission_results
 ):
-    predictions = function_submission_results["results"]["document"]["results"][
-        MODEL_NAME
-    ]["pre_review"]
+    predictions = function_submission_results.pre_review_predictions
     job = workflow_wrapper.submit_submission_review(
         id_pending_scripted, {MODEL_NAME: predictions}
     )
@@ -43,7 +57,7 @@ def test_submit_auto_review(workflow_wrapper, id_pending_scripted):
     """
     # Submit to workflow and get predictions
     result = workflow_wrapper.get_submission_result_from_id(id_pending_scripted)
-    predictions = result["results"]["document"]["results"][MODEL_NAME]["pre_review"]
+    predictions = result.pre_review_predictions
     # Review the submission
     field_config = [
         {"function": "accept_by_confidence", "kwargs": {"conf_threshold": 0.99}},
