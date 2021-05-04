@@ -1,7 +1,7 @@
 from solutions_toolkit.indico_wrapper import Dataset
 import indico.types
 
-from tests.conftest import HOST_URL, API_TOKEN_PATH
+from tests.conftest import HOST_URL, API_TOKEN_PATH, API_TOKEN
 
 
 def test_get_dataset(dataset_wrapper):
@@ -29,7 +29,9 @@ def test_get_dataset_files(dataset_wrapper):
 
 
 def test_create_delete_dataset(pdf_filepath):
-    function_dataset_wrapper = Dataset(host_url=HOST_URL, api_token_path=API_TOKEN_PATH)
+    function_dataset_wrapper = Dataset(
+        host_url=HOST_URL, api_token_path=API_TOKEN_PATH, api_token=API_TOKEN
+    )
     dataset = function_dataset_wrapper.create_dataset(
         filepaths=[pdf_filepath], name="Temporary Test Dataset"
     )
