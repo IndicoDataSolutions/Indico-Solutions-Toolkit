@@ -8,8 +8,8 @@ class FileProcessing:
     """
     Class to support common file processing operations
     """
-    def __init__(self):
-        self.file_paths: List[str] = []
+    def __init__(self, file_paths: List[str] = None):
+        self.file_paths: List[str] = file_paths
         self.invalid_suffix_paths = set()
 
     def get_file_paths_from_dir(
