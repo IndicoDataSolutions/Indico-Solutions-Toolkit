@@ -30,7 +30,7 @@ def test_accept_review(submissions_awaiting_review, reviewer_wrapper):
     id_in_review = reviewer_wrapper.get_random_review_id()
     submission = reviewer_wrapper.indico_client.call(GetSubmission(id_in_review))
     assert submission.status == "PENDING_REVIEW"
-    predictions = reviewer_wrapper.get_workflow_result(id_in_review)
+    predictions = reviewer_wrapper.get_submission_result_from_id(id_in_review)
     changes = get_change_formatted_predictions(predictions)
     reviewer_wrapper.accept_review(id_in_review, changes)
     submission = reviewer_wrapper.indico_client.call(GetSubmission(id_in_review))

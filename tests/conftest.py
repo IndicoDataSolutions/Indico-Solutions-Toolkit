@@ -27,6 +27,9 @@ API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
 API_TOKEN = os.environ.get("API_TOKEN")
 MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
 
+@pytest.fixture(scope="session")
+def testdir_file_path():
+    return FILE_PATH
 
 @pytest.fixture(scope="session")
 def auto_review_preds():
