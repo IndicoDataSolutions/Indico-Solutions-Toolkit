@@ -1,5 +1,4 @@
 from typing import List
-import numpy as np
 
 
 class Standard:
@@ -19,69 +18,33 @@ class Standard:
         """
         Return full document text as string
         """
-        return "\n".join(page["pages"][0]["text"] for page in self.standard)
+        return "\n".join(page["text"] for page in self.standard["pages"])
 
     @property
     def page_texts(self) -> List[str]:
         """
         Return list of page-level text
         """
-        return [page["pages"][0]["text"] for page in self.standard]
+        return [page["text"] for page in self.standard["pages"]]
 
     @property
     def page_results(self) -> List[dict]:
         """
         Return list of page-level dictionary result objects
         """
-        return [page["pages"][0] for page in self.standard]
+        return [page for page in self.standard["pages"]]
 
     @property
     def block_texts(self) -> List[str]:
         """
         Return list of block-level text
         """
-        return [block["text"] for page in self.standard for block in page["blocks"]]
-
-    @property
-    def token_objects(self) -> List[dict]:
-        """
-        Return list of all token objects
-        """
-        return [token for page in self.standard for token in page["tokens"]]
+        return [block["text"] for page in self.standard["pages"] for block in page["blocks"]]
 
     @property
     def total_pages(self) -> int:
-        return len(self.standard)
+        return len(self.standard["pages"])
 
     @property
     def total_characters(self) -> int:
         return len(self.full_text)
-
-    @property
-    def total_tokens(self) -> int:
-        return len(self.full_text.replace("\n", " ").split())
-
-    def ocr_confidence(self, metric="mean") -> float:
-        """
-        Return the OCR confidence (scale: 0 - 100) for all characters in the document
-
-        metric {str}: options are "mean" or "median"
-        """
-        if metric not in ("mean", "median"):
-            raise Exception(
-                f"Metric value must be either mean or median, not '{metric}'"
-            )
-
-        if "confidence" not in self.standard[0]["chars"][0].keys():
-            raise Exception(
-                "You are likely using an old SDK version, confidence is not included"
-            )
-
-        confidence = [
-            character["confidence"]
-            for page in self.standard
-            for character in page["chars"]
-        ]
-        if metric == "mean":
-            return np.mean(confidence)
-        return np.median(confidence)
