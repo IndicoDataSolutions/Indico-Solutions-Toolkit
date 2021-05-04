@@ -9,6 +9,8 @@ class FileProcessing:
     Class to support common file processing operations
     """
     def __init__(self, file_paths: List[str] = None):
+        if file_paths is None:
+            file_paths = []
         self.file_paths: List[str] = file_paths
         self.invalid_suffix_paths = set()
 
