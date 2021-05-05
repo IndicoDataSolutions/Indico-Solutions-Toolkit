@@ -4,7 +4,7 @@ import json
 from collections import defaultdict
 from indico.queries import Job
 from solutions_toolkit.auto_review import ReviewConfiguration, AutoReviewer
-from tests.conftest import MODEL_NAME, FILE_PATH
+from tests.conftest import FILE_PATH
 
 
 min_max_length = 6
@@ -29,7 +29,7 @@ def auto_review_field_config():
 @pytest.fixture(scope="function")
 def id_pending_scripted(workflow_id, workflow_wrapper, pdf_filepath):
     """
-    Ensure that auto review is turned off and there are two submissions "PENDING_REVIEW"
+    Ensure that auto review is turned on and there are two submissions "PENDING_REVIEW"
     """
     workflow_wrapper.update_workflow_settings(
         workflow_id, enable_review=True, enable_auto_review=True,
@@ -40,16 +40,16 @@ def id_pending_scripted(workflow_id, workflow_wrapper, pdf_filepath):
 
 
 def test_submit_submission_review(
-    workflow_wrapper, id_pending_scripted, function_submission_results
+    workflow_wrapper, id_pending_scripted, function_submission_results, model_name
 ):
     predictions = function_submission_results.pre_review_predictions
     job = workflow_wrapper.submit_submission_review(
-        id_pending_scripted, {MODEL_NAME: predictions}
+        id_pending_scripted, {model_name: predictions}
     )
     assert isinstance(job, Job)
 
 
-def test_submit_auto_review(workflow_wrapper, id_pending_scripted):
+def test_submit_auto_review(workflow_wrapper, id_pending_scripted, model_name):
     """
     Submit a document to a workflow, auto review the predictions, and retrieve the results
     """
@@ -72,11 +72,10 @@ def test_submit_auto_review(workflow_wrapper, id_pending_scripted):
     reviewer.apply_reviews()
     # Submit the changes and retrieve reviewed results
     workflow_wrapper.submit_submission_review(
-        id_pending_scripted, {MODEL_NAME: reviewer.updated_predictions}
+        id_pending_scripted, {model_name: reviewer.updated_predictions}
     )
     result = workflow_wrapper.get_submission_result_from_id(id_pending_scripted)
-    reviewed_preds = result["results"]["document"]["results"][MODEL_NAME]["final"]
-    for pred in reviewed_preds:
+    for pred in result.post_review_predictions:
         label = pred["label"]
         if (
             label in ["Liability Amount", "Date of Appointment"]

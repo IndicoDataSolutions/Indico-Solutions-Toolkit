@@ -3,6 +3,7 @@ import json
 import time
 from solutions_toolkit.indico_wrapper.workflow import COMPLETE_FILTER
 from solutions_toolkit.staggered_loop import StaggeredLoop
+from solutions_toolkit.types import WorkflowResult
 from tests.indico_wrapper.test_reviewer import get_change_formatted_predictions
 from indico.queries import UpdateWorkflowSettings, GraphQLRequest, GetSubmission
 
@@ -28,8 +29,6 @@ def reviewed_submissions(workflow_id, workflow_wrapper, pdf_filepath, reviewer_w
         reviewed_ids.append(id_in_review)
     for sub_id in reviewed_ids:
         workflow_wrapper.wait_for_submission_status_complete(sub_id)
-    # time.sleep(2) # provide buffer for DB to update
-    print(reviewed_ids)
     return reviewed_ids
 
 
@@ -84,9 +83,13 @@ def test_convert_predictions_for_snapshot():
 
 
 def test_get_nested_predictions():
-    wflow_result = dict(
-        results=dict(
-            document=dict(results=dict(model_v1=dict(pre_review=[{}], final=[{}, {}])))
+    wflow_result = WorkflowResult(
+        dict(
+            results=dict(
+                document=dict(
+                    results=dict(model_v1=dict(pre_review=[{}], final=[{}, {}]))
+                )
+            )
         )
     )
     stagger = StaggeredLoop(312, model_name="model_v1")
@@ -96,9 +99,13 @@ def test_get_nested_predictions():
 
 
 def test_get_nested_predictions_bad_model_name():
-    wflow_result = dict(
-        results=dict(
-            document=dict(results=dict(model_v1=dict(pre_review=[{}], final=[{}, {}])))
+    wflow_result = WorkflowResult(
+        dict(
+            results=dict(
+                document=dict(
+                    results=dict(model_v1=dict(pre_review=[{}], final=[{}, {}]))
+                )
+            )
         )
     )
     stagger = StaggeredLoop(312, model_name="name_doesnt_exist")
@@ -107,9 +114,13 @@ def test_get_nested_predictions_bad_model_name():
 
 
 def test_get_nested_predictions_no_model_name():
-    wflow_result = dict(
-        results=dict(
-            document=dict(results=dict(model_v1=dict(pre_review=[{}], final=[{}, {}])))
+    wflow_result = WorkflowResult(
+        dict(
+            results=dict(
+                document=dict(
+                    results=dict(model_v1=dict(pre_review=[{}], final=[{}, {}]))
+                )
+            )
         )
     )
     stagger = StaggeredLoop(312, model_name="")
@@ -118,12 +129,14 @@ def test_get_nested_predictions_no_model_name():
 
 
 def test_get_nested_predictions_no_model_name_fail():
-    wflow_result = dict(
-        results=dict(
-            document=dict(
-                results=dict(
-                    model_v1=dict(pre_review=[{}], final=[{}, {}]),
-                    model_v2=dict(pre_review=[{}], final=[{}, {}]),
+    wflow_result = WorkflowResult(
+        dict(
+            results=dict(
+                document=dict(
+                    results=dict(
+                        model_v1=dict(pre_review=[{}], final=[{}, {}]),
+                        model_v2=dict(pre_review=[{}], final=[{}, {}]),
+                    )
                 )
             )
         )

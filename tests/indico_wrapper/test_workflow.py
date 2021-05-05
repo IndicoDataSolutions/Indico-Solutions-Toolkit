@@ -1,7 +1,7 @@
 from indico import IndicoClient
 from indico.types import Submission, Job
 
-from tests.conftest import API_TOKEN_PATH, HOST_URL, MODEL_NAME, API_TOKEN
+from tests.conftest import API_TOKEN_PATH, HOST_URL, API_TOKEN
 from solutions_toolkit.indico_wrapper import Workflow
 from solutions_toolkit.ocr import OnDoc
 from solutions_toolkit.types import WorkflowResult
@@ -41,8 +41,7 @@ def test_get_completed_submission_results(
     results = workflow_wrapper.get_completed_submission_results(
         workflow_id, submission_ids=module_submission_ids
     )
-    assert isinstance(results, WorkflowResult)
-    assert isinstance(results.post_review_predicitions, list)
+    assert isinstance(results, list)
 
 
 def test_mark_submission_as_retreived(
