@@ -67,6 +67,19 @@ submissions = indico_wrapper.get_submissions(workflow_id, "COMPLETE")
 sub_results = indico_wrapper.get_submission_results(submissions[0])
 ```
 
+How to use the OCR modules
+```
+from solutions_toolkit.ocr import StandardOcr
+
+job = client.call(DocumentExtraction(files=[src_path], json_config={"preset_config": "standard"}))
+job = client.call(JobStatus(id=job[0].id, wait=True))
+extracted_data = client.call(RetrieveStorageObject(job.result))
+results = StandardOcr(extracted_data)
+
+print(results.full_text)
+print(results.page_results)
+```
+
 <!-- Badges -->
 [build-url]: https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/actions/workflows/build.yml
 [build-image]: https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/actions/workflows/build.yml/badge.svg
