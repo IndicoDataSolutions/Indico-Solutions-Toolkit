@@ -1,5 +1,4 @@
 from solutions_toolkit.row_association import Association
-from tests.conftest import MODEL_NAME
 
 
 def test_workflow_submit_and_get_rows(workflow_wrapper, workflow_id, pdf_filepath):

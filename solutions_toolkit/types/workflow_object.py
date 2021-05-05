@@ -25,21 +25,31 @@ class WorkflowResult:
     @property
     def pre_review_predictions(self) -> List[dict]:
         self.set_check_model_name()
-        return self.document_results[self.model_name]["pre_review"]
+        try:
+            return self.document_results[self.model_name]["pre_review"]
+        except KeyError:
+            raise Exception(
+                f"The Workflow for submission {self.submission_id} does not have review enabled"
+            )
 
     @property
     def post_review_predictions(self) -> List[dict]:
         self.set_check_model_name()
-        return self.document_results[self.model_name]["final"]
+        try:
+            return self.document_results[self.model_name]["final"]
+        except KeyError:
+            raise Exception(
+                f"Submission {self.submission_id} was not human reviewed"
+            )
 
     @property
-    def predicitions(self) -> List[dict]:
+    def predictions(self) -> List[dict]:
         self.set_check_model_name()
         return self.document_results[self.model_name]
 
     @property
     def etl_url(self) -> str:
-        return self.result["etl_url"]
+        return self.result["etl_output"]
 
     @property
     def document_results(self) -> dict:
@@ -48,3 +58,7 @@ class WorkflowResult:
     @property
     def available_model_names(self) -> list:
         return list(self.document_results.keys())
+
+    @property
+    def submission_id(self) -> str:
+        return self.result["submission_id"]

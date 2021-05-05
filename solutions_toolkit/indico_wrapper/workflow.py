@@ -156,7 +156,7 @@ class Workflow(IndicoWrapper):
     def _get_submission_results(self, submissions: List[Submission]) -> List[WorkflowResult]:
         submission_results = []
         for sub in submissions:
-            submission_results.append(WorkflowResult(self.get_submission_result_from_id(sub.id)))
+            submission_results.append(self.get_submission_result_from_id(sub.id))
         return submission_results
 
     def _get_list_of_submissions(

@@ -2,6 +2,7 @@ import json
 from typing import List
 import pandas as pd
 from solutions_toolkit.indico_wrapper import Workflow
+from solutions_toolkit.types import WorkflowResult
 
 KEYS_TO_REMOVE_FROM_PREDICTION = ["confidence", "text"]
 
@@ -26,7 +27,7 @@ class StaggeredLoop:
         self.workflow_id = workflow_id
         self.submission_ids = submission_ids
         self.model_name = model_name
-        self._workflow_results: List[dict] = []
+        self._workflow_results: List[WorkflowResult] = []
         self._snap_formatted_predictions: List[List[dict]] = []
         self._filenames: List[str] = []
         self._document_texts: List[str] = []
@@ -56,7 +57,7 @@ class StaggeredLoop:
     def _get_submission_full_text(self, workflow_api: Workflow) -> None:
         for wf_result in self._workflow_results:
             ondoc_result = workflow_api.get_ondoc_ocr_from_etl_url(
-                wf_result["etl_output"]
+                wf_result.etl_url
             )
             self._document_texts.append(ondoc_result.full_text)
 
@@ -74,34 +75,16 @@ class StaggeredLoop:
                 reformatted_predictions.append(pred)
         return reformatted_predictions
 
-    def _get_nested_predictions(self, wf_result: dict) -> List[dict]:
-        results = wf_result["results"]["document"]["results"]
-        available_model_names = list(results.keys())
-        if self.model_name:
-            self._check_is_valid_model_name(available_model_names)
-        elif len(available_model_names) > 1:
-            raise RuntimeError(
-                f"Multiple models available, you must set self.model_name to one of {available_model_names}"
-            )
-        else:
-            self.model_name = available_model_names[0]
-        if "final" in results[self.model_name]:
-            return results[self.model_name]["final"]
-        raise Exception(
-            f"Completed submission {wf_result['submission_id']} was not human reviewed"
-        )
+    def _get_nested_predictions(self, wf_result: WorkflowResult) -> List[dict]:
+        if self.model_name != "":
+            wf_result.model_name=self.model_name
+        return wf_result.post_review_predictions
 
     def _is_not_manually_added_prediction(self, prediction: dict) -> bool:
         if isinstance(prediction["start"], int) and isinstance(prediction["end"], int):
             if prediction["end"] > prediction["start"]:
                 return True
         return False
-
-    def _check_is_valid_model_name(self, available_model_names: List[str]) -> None:
-        if self.model_name not in available_model_names:
-            raise KeyError(
-                f"{self.model_name} is not an available model name. Options: {available_model_names}"
-            )
 
     def _remove_unneeded_keys(self, prediction: dict):
         for key_to_remove in self._keys_to_remove_from_prediction:

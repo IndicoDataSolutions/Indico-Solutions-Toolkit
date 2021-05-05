@@ -145,3 +145,8 @@ def reviewer_wrapper(workflow_id):
 @pytest.fixture(scope="session")
 def pdf_filepath():
     return os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")
+
+
+@pytest.fixture(scope="session")
+def model_name():
+    return MODEL_NAME
