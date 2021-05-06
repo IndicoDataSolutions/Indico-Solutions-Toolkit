@@ -22,7 +22,7 @@ def reviewed_submissions(workflow_id, workflow_wrapper, pdf_filepath, reviewer_w
     reviewed_ids = []
     for _ in range(2):
         id_in_review = reviewer_wrapper.get_random_review_id()
-        predictions = reviewer_wrapper.get_submission_result_from_id(id_in_review)
+        predictions = reviewer_wrapper.get_submission_results_from_ids([id_in_review])
         changes = get_change_formatted_predictions(predictions)
         reviewer_wrapper.accept_review(id_in_review, changes)
         reviewed_ids.append(id_in_review)

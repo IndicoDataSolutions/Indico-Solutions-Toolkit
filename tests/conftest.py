@@ -103,9 +103,9 @@ def module_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
 
 @pytest.fixture(scope="module")
 def module_submission_results(workflow_wrapper, module_submission_ids) -> dict:
-    return workflow_wrapper.get_submission_result_from_id(
-        module_submission_ids[0], timeout=90
-    )
+    return workflow_wrapper.get_submission_results_from_ids(
+        [module_submission_ids[0]], timeout=90
+    )[0]
 
 
 @pytest.fixture(scope="function")
@@ -117,9 +117,9 @@ def function_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
 
 @pytest.fixture(scope="function")
 def function_submission_results(workflow_wrapper, function_submission_ids) -> dict:
-    return workflow_wrapper.get_submission_result_from_id(
-        function_submission_ids[0], timeout=90
-    )
+    return workflow_wrapper.get_submission_results_from_ids(
+        [function_submission_ids[0]], timeout=90
+    )[0]
 
 
 @pytest.fixture(scope="session")

@@ -24,7 +24,7 @@ class Reviewer(Workflow):
         # accept submission in review queue without changes
 
         id_to_accept = reviewer.get_random_review_id()
-        wf_result = reviewer.get_submission_result_from_id(id_to_accept)["results"]["document"]["results"]
+        wf_result = reviewer.get_submission_results_from_ids([id_to_accept])["results"]["document"]["results"]
         changes = {"model_name": wf_results["model_name"]["pre_review"]}
         reviewer.accept_review(id_to_accept, changes)
     """
@@ -84,7 +84,7 @@ class Reviewer(Workflow):
             raise Exception("The exception queue is empty")
 
     def reject_submission(self, submission_id):
-        res = self.indico_client.call(
+        self.indico_client.call(
             GraphQLRequest(
                 query=SUBMIT_REVIEW,
                 variables={"rejected": True, "submissionId": submission_id},
