@@ -60,26 +60,26 @@ class Workflow(IndicoWrapper):
         return OnDoc(ocr_result)
 
     def get_completed_submission_results(
-        self, workflow_id: int, submission_ids: List[int] = []
+        self, workflow_id: int, submission_ids: List[int] = None
     ) -> List[dict]:
         """
         Get list of completed and unretrieved workflow results
         Args:
             workflow_id (int): workflow to get completed submissions from
-            submission_ids (List[int], optional): Specific IDs to retrieve, if completed. Defaults to [].
+            submission_ids (List[int], optional): Specific IDs to retrieve, if completed. Defaults to None.
 
         Returns:
             List[dict]: completed submission results
         """
         submissions = self.get_complete_submission_objects(workflow_id, submission_ids)
-        submission_results = self._get_submission_results(submissions)
+        submission_results = self.get_submission_results_from_ids([sub.id for sub in submissions])
         return submission_results
 
     def mark_submission_as_retreived(self, submission_id: int):
         self.indico_client.call(UpdateSubmission(submission_id, retrieved=True))
 
     def get_complete_submission_objects(
-        self, workflow_id: int, submission_ids: List[int] = []
+        self, workflow_id: int, submission_ids: List[int] = None
     ) -> List[Submission]:
         return self._get_list_of_submissions(
             workflow_id, COMPLETE_FILTER, submission_ids
@@ -88,21 +88,33 @@ class Workflow(IndicoWrapper):
     def get_submission_object(self, submission_id: int) -> Submission:
         return self.indico_client.call(GetSubmission(submission_id))
 
-    def get_submission_result_from_id(
-        self, submission_id: int, timeout: int = 75
+    def get_submission_results_from_ids(
+        self, submission_ids: List[int], timeout: int = 75, ignore_exceptions: bool = False
     ) -> dict:
         """
         Wait for submission to pass through workflow models and get result. If Review is enabled, result may be retrieved prior to human review.
         Args:
             submission_id (int): Id of submission predictions to retrieve
+            timeout (int): seconds permitted for each submission prior to timing out
+            ignore_exceptions (bool): if True, catch exception for unsuccessful submission
 
         Returns:
-            dict: workflow result object
+            List[dict]: workflow result objects
         """
-        job = self.indico_client.call(
-            SubmissionResult(submission_id, wait=True, timeout=timeout)
-        )
-        return self.get_storage_object(job.result)
+        results = []
+        for subid in submission_ids:
+            job = self.indico_client.call(
+                SubmissionResult(subid, wait=True, timeout=timeout)
+            )
+            if job.status != "SUCCESS":
+                message = f"{job.status}! Submission {subid}: {job.result}"
+                if ignore_exceptions:
+                    print(message)
+                    continue
+                else:
+                    raise Exception(message)
+            results.append(self.get_storage_object(job.result))
+        return results
 
     def wait_for_submissions_to_process(
         self, submission_ids: List[int], timeout: int = 120
@@ -146,16 +158,10 @@ class Workflow(IndicoWrapper):
             submission = self.get_submission_object(submission_id)
             if retry_number == max_retries:
                 raise Exception(
-                    f"Submission {submission_id} didn't reach status complete."
+                    f"Submission {submission_id} didn't reach status COMPLETE."
                     f"It has status: {submission.status} and errors: {submission.errors}"
                 )
             retry_number += 1
-
-    def _get_submission_results(self, submissions: List[Submission]) -> List[dict]:
-        submission_results = []
-        for sub in submissions:
-            submission_results.append(self.get_submission_result_from_id(sub.id))
-        return submission_results
 
     def _get_list_of_submissions(
         self,
