@@ -7,6 +7,7 @@ KEYS_TO_REMOVE_FROM_PREDICTION = ["confidence", "text"]
 
 # TODO: add method to remove completed submissions that have no valid target predictions
 
+
 class StaggeredLoop:
     """
     Use human reviewed prediction results to improve existing models
@@ -35,7 +36,9 @@ class StaggeredLoop:
         submissions = workflow_api.get_complete_submission_objects(
             self.workflow_id, self.submission_ids
         )
-        self._workflow_results = workflow_api._get_submission_results(submissions)
+        self._workflow_results = workflow_api.get_submission_results_from_ids(
+            [sub.id for sub in submissions]
+        )
         self._convert_predictions_to_snapshot_format()
         self._get_submission_full_text(workflow_api)
         self._filenames = [i.input_filename for i in submissions]
