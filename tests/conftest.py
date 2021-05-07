@@ -8,6 +8,9 @@ from indico.queries import (
     GetDataset,
     UpdateWorkflowSettings,
     ListWorkflows,
+    DocumentExtraction,
+    RetrieveStorageObject,
+    JobStatus
 )
 from indico.errors import IndicoRequestError
 
@@ -140,13 +143,21 @@ def reviewer_wrapper(workflow_id):
     return Reviewer(
         host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH, workflow_id=workflow_id
     )
-
+  
 
 @pytest.fixture(scope="session")
 def pdf_filepath():
     return os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")
 
-
+  
 @pytest.fixture(scope="session")
 def model_name():
     return MODEL_NAME
+
+  
+@pytest.fixture(scope="session")
+def standard_ocr_object(indico_wrapper, pdf_filepath):
+    job = indico_wrapper.indico_client.call(DocumentExtraction(files=[pdf_filepath], json_config={"preset_config": "standard"}))
+    job = indico_wrapper.indico_client.call(JobStatus(id=job[0].id, wait=True))
+    extracted_data = indico_wrapper.indico_client.call(RetrieveStorageObject(job.result))
+    return extracted_data
