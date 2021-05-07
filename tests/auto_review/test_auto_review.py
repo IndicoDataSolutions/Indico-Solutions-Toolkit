@@ -42,7 +42,7 @@ def id_pending_scripted(workflow_id, workflow_wrapper, pdf_filepath):
 def test_submit_submission_review(
     workflow_wrapper, id_pending_scripted, function_submission_results, model_name
 ):
-    predictions = function_submission_results.pre_review_predictions
+    predictions = function_submission_results.predictions
     job = workflow_wrapper.submit_submission_review(
         id_pending_scripted, {model_name: predictions}
     )
@@ -55,7 +55,7 @@ def test_submit_auto_review(workflow_wrapper, id_pending_scripted, model_name):
     """
     # Submit to workflow and get predictions
     result = workflow_wrapper.get_submission_result_from_id(id_pending_scripted)
-    predictions = result.pre_review_predictions
+    predictions = result.predictions
     # Review the submission
     field_config = [
         {"function": "accept_by_confidence", "kwargs": {"conf_threshold": 0.99}},

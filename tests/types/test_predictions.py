@@ -7,8 +7,8 @@ from solutions_toolkit.types import Predictions
 def test_init(static_preds):
     predictions = Predictions(predictions=static_preds)
     assert predictions.preds == static_preds
-    assert isinstance(predictions.by_label["Name"], list)
-    assert isinstance(predictions.by_label["Name"][0], dict)
+    assert isinstance(predictions.to_dict_by_label["Name"], list)
+    assert isinstance(predictions.to_dict_by_label["Name"][0], dict)
 
 
 def test_remove_by_confidence(predictions_obj):
@@ -22,10 +22,10 @@ def test_remove_by_confidence(predictions_obj):
             assert pred["confidence"][label] > 0.9
 
 
-def test_select_max_confidence(predictions_obj):
-    predictions_obj.select_max_confidence(labels=["Name", "Department"])
-    assert len(predictions_obj.by_label["Name"]) == 1
-    assert len(predictions_obj.by_label["Department"]) == 1
+def test_remove_except_max_confidence(predictions_obj):
+    predictions_obj.remove_except_max_confidence(labels=["Name", "Department"])
+    assert len(predictions_obj.to_dict_by_label["Name"]) == 1
+    assert len(predictions_obj.to_dict_by_label["Department"]) == 1
 
 
 def test_to_csv(predictions_obj):

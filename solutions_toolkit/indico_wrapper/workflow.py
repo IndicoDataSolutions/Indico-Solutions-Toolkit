@@ -104,7 +104,7 @@ class Workflow(IndicoWrapper):
         job = self.indico_client.call(
             SubmissionResult(submission_id, wait=True, timeout=timeout)
         )
-        return WorkflowResult(model_result=self.get_storage_object(job.result))
+        return WorkflowResult(self.get_storage_object(job.result))
 
     def wait_for_submissions_to_process(
         self, submission_ids: List[int], timeout: int = 120
