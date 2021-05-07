@@ -1,6 +1,7 @@
 import pytest
 import json
 import time
+from solutions_toolkit.indico_wrapper import Reviewer, Workflow
 from solutions_toolkit.indico_wrapper.workflow import COMPLETE_FILTER
 from solutions_toolkit.staggered_loop import StaggeredLoop
 from tests.indico_wrapper.test_reviewer import get_change_formatted_predictions
@@ -8,44 +9,44 @@ from indico.queries import UpdateWorkflowSettings, GraphQLRequest, GetSubmission
 
 
 @pytest.fixture(scope="module")
-def reviewed_submissions(workflow_id, workflow_wrapper, pdf_filepath, reviewer_wrapper):
+def reviewed_submissions(workflow_id, indico_client, pdf_filepath):
     """
     Ensure that auto review is turned off and there are two "COMPLETE" human reviewed submissions
     """
-    workflow_wrapper.update_workflow_settings(
+    reviewer = Reviewer(indico_client, workflow_id)
+    reviewer.update_workflow_settings(
         workflow_id, enable_review=True, enable_auto_review=False
     )
-    sub_ids = workflow_wrapper.submit_documents_to_workflow(
+    sub_ids = reviewer.submit_documents_to_workflow(
         workflow_id, [pdf_filepath, pdf_filepath]
     )
-    workflow_wrapper.wait_for_submissions_to_process(sub_ids)
+    reviewer.wait_for_submissions_to_process(sub_ids)
     reviewed_ids = []
     for _ in range(2):
-        id_in_review = reviewer_wrapper.get_random_review_id()
-        predictions = reviewer_wrapper.get_submission_result_from_id(id_in_review)
+        id_in_review = reviewer.get_random_review_id()
+        predictions = reviewer.get_submission_result_from_id(id_in_review)
         changes = get_change_formatted_predictions(predictions)
-        reviewer_wrapper.accept_review(id_in_review, changes)
+        reviewer.accept_review(id_in_review, changes)
         reviewed_ids.append(id_in_review)
     for sub_id in reviewed_ids:
-        workflow_wrapper.wait_for_submission_status_complete(sub_id)
-    # time.sleep(2) # provide buffer for DB to update
-    print(reviewed_ids)
+        reviewer.wait_for_submission_status_complete(sub_id)
     return reviewed_ids
 
 
 def test_get_reviewed_prediction_data(
-    workflow_id, workflow_wrapper, reviewed_submissions
+    workflow_id, indico_client, reviewed_submissions
 ):
     # num_submissions needed for now because of possible bug marking subs as retrieved for no reason
+    wflow = Workflow(indico_client)
     num_submissions = len(
-        workflow_wrapper._get_list_of_submissions(
+        wflow._get_list_of_submissions(
             workflow_id, COMPLETE_FILTER, reviewed_submissions
         )
     )
     stagger = StaggeredLoop(
         workflow_id=workflow_id, submission_ids=reviewed_submissions
     )
-    stagger.get_reviewed_prediction_data(workflow_wrapper)
+    stagger.get_reviewed_prediction_data(wflow)
     assert len(stagger._filenames) == num_submissions
     assert len(stagger._workflow_results) == num_submissions
     assert len(stagger._snap_formatted_predictions) == num_submissions

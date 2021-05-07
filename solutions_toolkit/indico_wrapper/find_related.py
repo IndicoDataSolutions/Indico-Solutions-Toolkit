@@ -1,5 +1,5 @@
 from indico.queries import ListWorkflows
-
+from indico import IndicoClient
 from solutions_toolkit.indico_wrapper import IndicoWrapper
 
 
@@ -24,10 +24,8 @@ class FindRelated(IndicoWrapper):
         }
     """
 
-    def __init__(self, host_url, api_token_path=None, api_token=None, **kwargs):
-        super().__init__(
-            host_url, api_token_path=api_token_path, api_token=api_token, **kwargs
-        )
+    def __init__(self, client: IndicoClient):
+        self.client = client
 
     def workflow_id(self, workflow_id: int) -> dict:
         res = self.graphQL_request(
@@ -57,7 +55,7 @@ class FindRelated(IndicoWrapper):
             }
         """
         res = self.graphQL_request(query, {"id": dataset_id})["dataset"]
-        wf_list = self.indico_client.call(ListWorkflows(dataset_ids=[dataset_id]))
+        wf_list = self.client.call(ListWorkflows(dataset_ids=[dataset_id]))
         return {
             "workflow_ids": [wf.id for wf in wf_list],
             "model_groups": res["modelGroups"],
