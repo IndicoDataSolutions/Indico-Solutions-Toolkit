@@ -6,7 +6,7 @@ from solutions_toolkit.types import Predictions, WorkflowResult
 
 @pytest.fixture(scope="function")
 def predictions_obj(static_preds):
-    return Predictions(predictions=static_preds.copy())
+    return Predictions(static_preds.copy())
 
 
 @pytest.fixture(scope="module")
@@ -16,7 +16,7 @@ def static_preds(static_results, model_name):
 
 @pytest.fixture(scope="module")
 def wf_result_obj(static_results):
-    return WorkflowResult(model_result=static_results)
+    return WorkflowResult(static_results)
 
 
 @pytest.fixture(scope="module")
