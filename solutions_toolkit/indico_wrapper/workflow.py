@@ -15,6 +15,8 @@ from indico.queries import (
 
 from solutions_toolkit.indico_wrapper import IndicoWrapper
 from solutions_toolkit.ocr import OnDoc
+from solutions_toolkit.types import WorkflowResult
+
 
 COMPLETE_FILTER = SubmissionFilter(status="COMPLETE", retrieved=False)
 PENDING_REVIEW_FILTER = SubmissionFilter(status="PENDING_REVIEW", retrieved=False)
@@ -61,7 +63,7 @@ class Workflow(IndicoWrapper):
 
     def get_completed_submission_results(
         self, workflow_id: int, submission_ids: List[int] = []
-    ) -> List[dict]:
+    ) -> List[WorkflowResult]:
         """
         Get list of completed and unretrieved workflow results
         Args:
@@ -90,7 +92,7 @@ class Workflow(IndicoWrapper):
 
     def get_submission_result_from_id(
         self, submission_id: int, timeout: int = 75
-    ) -> dict:
+    ) -> WorkflowResult:
         """
         Wait for submission to pass through workflow models and get result. If Review is enabled, result may be retrieved prior to human review.
         Args:
@@ -102,7 +104,7 @@ class Workflow(IndicoWrapper):
         job = self.indico_client.call(
             SubmissionResult(submission_id, wait=True, timeout=timeout)
         )
-        return self.get_storage_object(job.result)
+        return WorkflowResult(self.get_storage_object(job.result))
 
     def wait_for_submissions_to_process(
         self, submission_ids: List[int], timeout: int = 120
@@ -151,7 +153,7 @@ class Workflow(IndicoWrapper):
                 )
             retry_number += 1
 
-    def _get_submission_results(self, submissions: List[Submission]) -> List[dict]:
+    def _get_submission_results(self, submissions: List[Submission]) -> List[WorkflowResult]:
         submission_results = []
         for sub in submissions:
             submission_results.append(self.get_submission_result_from_id(sub.id))
