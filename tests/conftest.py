@@ -13,7 +13,7 @@ from indico.queries import (
     JobStatus
 )
 from indico.errors import IndicoRequestError
-
+from solutions_toolkit.staggered_loop import StaggeredLoop
 from solutions_toolkit.indico_wrapper import (
     IndicoWrapper,
     Workflow,
@@ -156,6 +156,10 @@ def reviewer_wrapper(workflow_id):
     return Reviewer(
         host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH, workflow_id=workflow_id
     )
+
+@pytest.fixture(scope="session")
+def stagger_wrapper():
+    return StaggeredLoop(host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH,)
 
 
 @pytest.fixture(scope="session")
