@@ -14,6 +14,7 @@ from indico.queries import (
 )
 from indico.errors import IndicoRequestError
 
+from solutions_toolkit.types import WorkflowResult
 from solutions_toolkit.indico_wrapper import (
     IndicoWrapper,
     Workflow,
@@ -33,20 +34,6 @@ MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
 @pytest.fixture(scope="session")
 def testdir_file_path():
     return FILE_PATH
-
-@pytest.fixture(scope="session")
-def auto_review_preds():
-    with open(os.path.join(FILE_PATH, "data/auto_review/preds.json"), "r") as f:
-        preds = json.load(f)
-    return preds
-
-
-@pytest.fixture(scope="session")
-def auto_review_field_config():
-    with open(os.path.join(FILE_PATH, "data/auto_review/field_config.json"), "r") as f:
-        field_config = json.load(f)
-    return field_config
-
 
 @pytest.fixture(scope="session")
 def dataset(indico_wrapper):
@@ -102,7 +89,7 @@ def module_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
 
 
 @pytest.fixture(scope="module")
-def module_submission_results(workflow_wrapper, module_submission_ids) -> dict:
+def module_submission_results(workflow_wrapper, module_submission_ids) -> WorkflowResult:
     return workflow_wrapper.get_submission_result_from_id(
         module_submission_ids[0], timeout=90
     )
@@ -116,7 +103,7 @@ def function_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
 
 
 @pytest.fixture(scope="function")
-def function_submission_results(workflow_wrapper, function_submission_ids) -> dict:
+def function_submission_results(workflow_wrapper, function_submission_ids) -> WorkflowResult:
     return workflow_wrapper.get_submission_result_from_id(
         function_submission_ids[0], timeout=90
     )
@@ -156,13 +143,18 @@ def reviewer_wrapper(workflow_id):
     return Reviewer(
         host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH, workflow_id=workflow_id
     )
-
+  
 
 @pytest.fixture(scope="session")
 def pdf_filepath():
     return os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")
 
+  
+@pytest.fixture(scope="session")
+def model_name():
+    return MODEL_NAME
 
+  
 @pytest.fixture(scope="session")
 def standard_ocr_object(indico_wrapper, pdf_filepath):
     job = indico_wrapper.indico_client.call(DocumentExtraction(files=[pdf_filepath], json_config={"preset_config": "standard"}))
