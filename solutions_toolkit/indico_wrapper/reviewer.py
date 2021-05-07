@@ -14,9 +14,6 @@ class Reviewer(Workflow):
         self,
         client: IndicoClient,
         workflow_id: int,
-        api_token_path=None,
-        api_token=None,
-        **kwargs
     ):
         self.client = client
         self.workflow_id = workflow_id
