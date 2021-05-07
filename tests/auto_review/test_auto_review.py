@@ -1,6 +1,9 @@
+import os
+import json
 import pytest
 from collections import defaultdict
 from indico.queries import Job
+from solutions_toolkit.indico_wrapper import Workflow
 from solutions_toolkit.auto_review import ReviewConfiguration, AutoReviewer
 from tests.conftest import MODEL_NAME
 
@@ -10,37 +13,54 @@ ACCEPTED = "accepted"
 REJECTED = "rejected"
 
 
+@pytest.fixture(scope="session")
+def auto_review_preds(testdir_file_path):
+    with open(os.path.join(testdir_file_path, "data/auto_review/preds.json"), "r") as f:
+        preds = json.load(f)
+    return preds
+
+
+@pytest.fixture(scope="session")
+def auto_review_field_config(testdir_file_path):
+    with open(
+        os.path.join(testdir_file_path, "data/auto_review/field_config.json"), "r"
+    ) as f:
+        field_config = json.load(f)
+    return field_config
+
+
 @pytest.fixture(scope="function")
-def id_pending_scripted(workflow_id, workflow_wrapper, pdf_filepath):
+def id_pending_scripted(workflow_id, indico_client, pdf_filepath):
     """
     Ensure that auto review is turned off and there are two submissions "PENDING_REVIEW"
     """
-    workflow_wrapper.update_workflow_settings(
+    wflow = Workflow(indico_client)
+    wflow.update_workflow_settings(
         workflow_id, enable_review=True, enable_auto_review=True,
     )
-    sub_id = workflow_wrapper.submit_documents_to_workflow(workflow_id, [pdf_filepath])
-    workflow_wrapper.wait_for_submissions_to_process(sub_id)
+    sub_id = wflow.submit_documents_to_workflow(workflow_id, [pdf_filepath])
+    wflow.wait_for_submissions_to_process(sub_id)
     return sub_id[0]
 
 
 def test_submit_submission_review(
-    workflow_wrapper, id_pending_scripted, function_submission_results
+    indico_client, id_pending_scripted, wflow_submission_results
 ):
-    predictions = function_submission_results["results"]["document"]["results"][
+    wflow = Workflow(indico_client)
+    predictions = wflow_submission_results["results"]["document"]["results"][
         MODEL_NAME
     ]["pre_review"]
-    job = workflow_wrapper.submit_submission_review(
-        id_pending_scripted, {MODEL_NAME: predictions}
-    )
+    job = wflow.submit_submission_review(id_pending_scripted, {MODEL_NAME: predictions})
     assert isinstance(job, Job)
 
 
-def test_submit_auto_review(workflow_wrapper, id_pending_scripted):
+def test_submit_auto_review(indico_client, id_pending_scripted):
     """
     Submit a document to a workflow, auto review the predictions, and retrieve the results
     """
     # Submit to workflow and get predictions
-    result = workflow_wrapper.get_submission_result_from_id(id_pending_scripted)
+    wflow = Workflow(indico_client)
+    result = wflow.get_submission_result_from_id(id_pending_scripted)
     predictions = result["results"]["document"]["results"][MODEL_NAME]["pre_review"]
     # Review the submission
     field_config = [
@@ -57,10 +77,10 @@ def test_submit_auto_review(workflow_wrapper, id_pending_scripted):
     reviewer = AutoReviewer(predictions, review_config)
     reviewer.apply_reviews()
     # Submit the changes and retrieve reviewed results
-    workflow_wrapper.submit_submission_review(
+    wflow.submit_submission_review(
         id_pending_scripted, {MODEL_NAME: reviewer.updated_predictions}
     )
-    result = workflow_wrapper.get_submission_result_from_id(id_pending_scripted)
+    result = wflow.get_submission_result_from_id(id_pending_scripted)
     reviewed_preds = result["results"]["document"]["results"][MODEL_NAME]["final"]
     for pred in reviewed_preds:
         label = pred["label"]
