@@ -21,9 +21,7 @@ def get_change_formatted_predictions(workflow_result):
     """
     Helper function for get change format for accepted predictions in test_accept_review
     """
-    results = workflow_result["results"]["document"]["results"]
-    model_name = list(results.keys())[0]
-    return {model_name: results[model_name]["pre_review"]}
+    return {workflow_result.model_name: workflow_result.predictions}
 
 
 def test_accept_review(submissions_awaiting_review, reviewer_wrapper):

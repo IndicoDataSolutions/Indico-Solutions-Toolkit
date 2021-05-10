@@ -3,8 +3,22 @@ import json
 import time
 from solutions_toolkit.indico_wrapper.workflow import COMPLETE_FILTER
 from solutions_toolkit.staggered_loop import StaggeredLoop
+from solutions_toolkit.types import WorkflowResult
 from tests.indico_wrapper.test_reviewer import get_change_formatted_predictions
 from indico.queries import UpdateWorkflowSettings, GraphQLRequest, GetSubmission
+
+
+@pytest.fixture(scope="function")
+def static_wflow_result():
+    return WorkflowResult(
+        dict(
+            results=dict(
+                document=dict(
+                    results=dict(model_v1=dict(pre_review=[{}], final=[{}, {}]))
+                )
+            )
+        )
+    )
 
 
 @pytest.fixture(scope="module")
