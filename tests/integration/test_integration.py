@@ -13,11 +13,11 @@ def test_workflow_submit_and_get_rows(indico_client, workflow_id, pdf_filepath):
         workflow_id=workflow_id, pdf_filepaths=[pdf_filepath]
     )
     wflow.wait_for_submissions_to_process(sub_ids)
-    sub_result = wflow.get_submission_results_from_ids(submission_id=sub_ids[0])[0]
+    sub_result = wflow.get_submission_results_from_ids([sub_ids[0]])[0]
     litems = Association(
         ["Previous Position", "Previous Organization"], predictions=sub_result.predictions
     )
-    ondoc_ocr = wflow.get_ondoc_ocr_from_etl_url(sub_result.etl_output)
+    ondoc_ocr = wflow.get_ondoc_ocr_from_etl_url(sub_result.etl_url)
     litems.get_bounding_boxes(ocr_tokens=ondoc_ocr.token_objects)
     litems.assign_row_number()
     for pred in litems.updated_predictions:
