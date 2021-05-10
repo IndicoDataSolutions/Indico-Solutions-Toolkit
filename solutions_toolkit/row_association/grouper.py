@@ -206,7 +206,7 @@ def _check_if_token_match_found(pred: dict, raise_for_no_match: bool = True):
     elif not raise_for_no_match:
         _add_metadata_to_unmatched_pred(pred)
     else:
-        raise Exception(f"Couldn't match a token to this predicition:\n{pred}")
+        raise Exception(f"Couldn't match a token to this prediction:\n{pred}")
 
 
 def _add_metadata_to_unmatched_pred(pred: dict):

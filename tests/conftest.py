@@ -14,6 +14,8 @@ from indico.queries import (
 )
 from indico.errors import IndicoRequestError
 from solutions_toolkit.staggered_loop import StaggeredLoop
+from solutions_toolkit.types import WorkflowResult
+
 from solutions_toolkit.indico_wrapper import (
     IndicoWrapper,
     Workflow,
@@ -33,20 +35,6 @@ MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
 @pytest.fixture(scope="session")
 def testdir_file_path():
     return FILE_PATH
-
-@pytest.fixture(scope="session")
-def auto_review_preds():
-    with open(os.path.join(FILE_PATH, "data/auto_review/preds.json"), "r") as f:
-        preds = json.load(f)
-    return preds
-
-
-@pytest.fixture(scope="session")
-def auto_review_field_config():
-    with open(os.path.join(FILE_PATH, "data/auto_review/field_config.json"), "r") as f:
-        field_config = json.load(f)
-    return field_config
-
 
 @pytest.fixture(scope="session")
 def dataset(indico_wrapper):
@@ -157,6 +145,7 @@ def reviewer_wrapper(workflow_id):
         host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH, workflow_id=workflow_id
     )
 
+ 
 @pytest.fixture(scope="session")
 def stagger_wrapper():
     return StaggeredLoop(host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH,)
@@ -166,7 +155,12 @@ def stagger_wrapper():
 def pdf_filepath():
     return os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")
 
+  
+@pytest.fixture(scope="session")
+def model_name():
+    return MODEL_NAME
 
+  
 @pytest.fixture(scope="session")
 def standard_ocr_object(indico_wrapper, pdf_filepath):
     job = indico_wrapper.indico_client.call(DocumentExtraction(files=[pdf_filepath], json_config={"preset_config": "standard"}))

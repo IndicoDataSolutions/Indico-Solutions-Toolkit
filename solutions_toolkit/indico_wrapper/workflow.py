@@ -15,6 +15,8 @@ from indico.queries import (
 
 from solutions_toolkit.indico_wrapper import IndicoWrapper
 from solutions_toolkit.ocr import OnDoc
+from solutions_toolkit.types import WorkflowResult
+
 
 COMPLETE_FILTER = SubmissionFilter(status="COMPLETE", retrieved=False)
 PENDING_REVIEW_FILTER = SubmissionFilter(status="PENDING_REVIEW", retrieved=False)
