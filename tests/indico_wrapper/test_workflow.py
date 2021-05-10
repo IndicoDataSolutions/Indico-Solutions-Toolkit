@@ -3,6 +3,7 @@ from indico.types import Submission, Job
 from tests.conftest import MODEL_NAME
 from solutions_toolkit.indico_wrapper import Workflow
 from solutions_toolkit.ocr import OnDoc
+from solutions_toolkit.types import WorkflowResult
 
 
 def test_submit_documents_to_workflow(indico_client, pdf_filepath, workflow_id):
@@ -16,7 +17,7 @@ def test_submit_documents_to_workflow(indico_client, pdf_filepath, workflow_id):
 
 def test_get_ondoc_ocr_from_etl_url(indico_client, wflow_submission_results):
     wflow = Workflow(indico_client)
-    etl_url = wflow_submission_results["etl_output"]
+    etl_url = wflow_submission_results.etl_output
     on_doc = wflow.get_ondoc_ocr_from_etl_url(etl_url)
     assert isinstance(on_doc, OnDoc)
     assert on_doc.total_pages == 2
@@ -53,6 +54,6 @@ def test_get_submission_object(indico_client, module_submission_ids):
 
 def test_get_submission_result_from_id(indico_client, module_submission_ids):
     wflow = Workflow(indico_client)
-    results = wflow.get_submission_result_from_id(module_submission_ids[0])
-    predictions = results["results"]["document"]["results"][MODEL_NAME]["pre_review"]
-    assert isinstance(predictions, list)
+    result = wflow.get_submission_results_from_ids(module_submission_ids[0])[0]
+    assert isinstance(result, WorkflowResult)
+    assert isinstance(result.post_review_predictions, list)

@@ -22,9 +22,7 @@ def get_change_formatted_predictions(workflow_result):
     """
     Helper function for get change format for accepted predictions in test_accept_review
     """
-    results = workflow_result["results"]["document"]["results"]
-    model_name = list(results.keys())[0]
-    return {model_name: results[model_name]["pre_review"]}
+    return {workflow_result.model_name: workflow_result.predictions}
 
 
 def test_accept_review(submissions_awaiting_review, indico_client, workflow_id):
@@ -32,8 +30,8 @@ def test_accept_review(submissions_awaiting_review, indico_client, workflow_id):
     id_in_review = reviewer_wrapper.get_random_review_id()
     submission = reviewer_wrapper.get_submission_object(id_in_review)
     assert submission.status == "PENDING_REVIEW"
-    predictions = reviewer_wrapper.get_submission_result_from_id(id_in_review)
-    changes = get_change_formatted_predictions(predictions)
+    predictions = reviewer_wrapper.get_submission_results_from_ids([id_in_review])
+    changes = get_change_formatted_predictions(predictions[0])
     reviewer_wrapper.accept_review(id_in_review, changes)
     submission = reviewer_wrapper.get_submission_object(id_in_review)
     assert submission.status == "COMPLETE"

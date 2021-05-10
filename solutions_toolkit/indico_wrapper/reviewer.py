@@ -7,7 +7,6 @@ from solutions_toolkit.indico_wrapper import Workflow
 class Reviewer(Workflow):
     """
     Class to simulate human reviewer
-
     """
 
     def __init__(
