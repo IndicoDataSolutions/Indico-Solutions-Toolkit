@@ -15,10 +15,9 @@ def test_submit_documents_to_workflow(indico_client, pdf_filepath, workflow_id):
     assert isinstance(sub_ids[0], int)
 
 
-def test_get_ondoc_ocr_from_etl_url(indico_client, wflow_submission_results):
+def test_get_ondoc_ocr_from_etl_url(indico_client, wflow_submission_result):
     wflow = Workflow(indico_client)
-    etl_url = wflow_submission_results.etl_output
-    on_doc = wflow.get_ondoc_ocr_from_etl_url(etl_url)
+    on_doc = wflow.get_ondoc_ocr_from_etl_url(wflow_submission_result.etl_url)
     assert isinstance(on_doc, OnDoc)
     assert on_doc.total_pages == 2
 
@@ -52,8 +51,8 @@ def test_get_submission_object(indico_client, module_submission_ids):
     assert isinstance(sub, Submission)
 
 
-def test_get_submission_result_from_id(indico_client, module_submission_ids):
+def test_get_submission_results_from_ids(indico_client, module_submission_ids):
     wflow = Workflow(indico_client)
-    result = wflow.get_submission_results_from_ids(module_submission_ids[0])[0]
+    result = wflow.get_submission_results_from_ids([module_submission_ids[0]])[0]
     assert isinstance(result, WorkflowResult)
     assert isinstance(result.post_review_predictions, list)
