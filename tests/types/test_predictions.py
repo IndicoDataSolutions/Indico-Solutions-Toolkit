@@ -1,14 +1,15 @@
 import tempfile
 import pandas as pd
-
+from copy import deepcopy
 from solutions_toolkit.types import Predictions
 
 
 def test_init(static_preds):
-    predictions = Predictions(predictions=static_preds)
+    predictions = Predictions(static_preds)
     assert predictions.preds == static_preds
-    assert isinstance(predictions.to_dict_by_label["Name"], list)
-    assert isinstance(predictions.to_dict_by_label["Name"][0], dict)
+    assert isinstance(predictions["Name"], list)
+    assert isinstance(predictions["Name"][0], dict)
+    assert isinstance(predictions["Name"][0]["label"], str)
 
 
 def test_remove_by_confidence(predictions_obj):
@@ -29,21 +30,13 @@ def test_remove_except_max_confidence(predictions_obj):
 
 
 def test_to_csv(predictions_obj):
+    duplicated_obj = deepcopy(predictions_obj)
     with tempfile.NamedTemporaryFile(suffix=".csv") as tf:
         filepath = str(tf.name)
-        predictions_obj.to_csv(filepath)
+        predictions_obj.to_csv(filepath, append_if_exists=False)
         df = pd.read_csv(filepath)
-        assert "text" in df.columns
-        assert "end" in df.columns
-        assert df.shape == (25, 5)
-
-
-def test_by_label_to_csv(predictions_obj):
-    with tempfile.NamedTemporaryFile(suffix=".csv") as tf:
-        filepath = str(tf.name)
-        predictions_obj.by_label_to_csv(filepath)
+        assert "confidence" and "text" and "label" and "filename" in df.columns
+        assert df.shape == (25, 4)
+        duplicated_obj.to_csv(filepath, append_if_exists=True)
         df = pd.read_csv(filepath)
-        assert "label_names" in df.columns
-        assert "labels_list" in df.columns
-        assert df.shape == (8, 2)
-
+        assert df.shape == (50, 4)
