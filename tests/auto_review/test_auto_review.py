@@ -54,7 +54,7 @@ def test_submit_auto_review(workflow_wrapper, id_pending_scripted, model_name):
     Submit a document to a workflow, auto review the predictions, and retrieve the results
     """
     # Submit to workflow and get predictions
-    result = workflow_wrapper.get_submission_result_from_id(id_pending_scripted)
+    result = workflow_wrapper.get_submission_results_from_ids([id_pending_scripted])[0]
     predictions = result.predictions
     # Review the submission
     field_config = [
@@ -74,7 +74,7 @@ def test_submit_auto_review(workflow_wrapper, id_pending_scripted, model_name):
     workflow_wrapper.submit_submission_review(
         id_pending_scripted, {model_name: reviewer.updated_predictions}
     )
-    result = workflow_wrapper.get_submission_result_from_id(id_pending_scripted)
+    result = workflow_wrapper.get_submission_results_from_ids([id_pending_scripted])[0]
     for pred in result.post_review_predictions:
         label = pred["label"]
         if (

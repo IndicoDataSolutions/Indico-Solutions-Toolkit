@@ -13,8 +13,9 @@ from indico.queries import (
     JobStatus
 )
 from indico.errors import IndicoRequestError
-
+from solutions_toolkit.staggered_loop import StaggeredLoop
 from solutions_toolkit.types import WorkflowResult
+
 from solutions_toolkit.indico_wrapper import (
     IndicoWrapper,
     Workflow,
@@ -89,10 +90,10 @@ def module_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
 
 
 @pytest.fixture(scope="module")
-def module_submission_results(workflow_wrapper, module_submission_ids) -> WorkflowResult:
-    return workflow_wrapper.get_submission_result_from_id(
-        module_submission_ids[0], timeout=90
-    )
+def module_submission_results(workflow_wrapper, module_submission_ids) -> dict:
+    return workflow_wrapper.get_submission_results_from_ids(
+        [module_submission_ids[0]], timeout=90
+    )[0]
 
 
 @pytest.fixture(scope="function")
@@ -103,10 +104,10 @@ def function_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
 
 
 @pytest.fixture(scope="function")
-def function_submission_results(workflow_wrapper, function_submission_ids) -> WorkflowResult:
-    return workflow_wrapper.get_submission_result_from_id(
-        function_submission_ids[0], timeout=90
-    )
+def function_submission_results(workflow_wrapper, function_submission_ids) -> dict:
+    return workflow_wrapper.get_submission_results_from_ids(
+        [function_submission_ids[0]], timeout=90
+    )[0]
 
 
 @pytest.fixture(scope="session")
@@ -143,7 +144,12 @@ def reviewer_wrapper(workflow_id):
     return Reviewer(
         host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH, workflow_id=workflow_id
     )
-  
+
+ 
+@pytest.fixture(scope="session")
+def stagger_wrapper():
+    return StaggeredLoop(host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH,)
+
 
 @pytest.fixture(scope="session")
 def pdf_filepath():

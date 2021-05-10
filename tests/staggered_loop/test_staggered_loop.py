@@ -22,53 +22,50 @@ def static_wflow_result():
 
 
 @pytest.fixture(scope="module")
-def reviewed_submissions(workflow_id, workflow_wrapper, pdf_filepath, reviewer_wrapper):
+def reviewed_submissions(workflow_id, stagger_wrapper, pdf_filepath, reviewer_wrapper):
     """
     Ensure that auto review is turned off and there are two "COMPLETE" human reviewed submissions
     """
-    workflow_wrapper.update_workflow_settings(
+    stagger_wrapper.update_workflow_settings(
         workflow_id, enable_review=True, enable_auto_review=False
     )
-    sub_ids = workflow_wrapper.submit_documents_to_workflow(
+    sub_ids = stagger_wrapper.submit_documents_to_workflow(
         workflow_id, [pdf_filepath, pdf_filepath]
     )
-    workflow_wrapper.wait_for_submissions_to_process(sub_ids)
+    stagger_wrapper.wait_for_submissions_to_process(sub_ids)
     reviewed_ids = []
     for _ in range(2):
         id_in_review = reviewer_wrapper.get_random_review_id()
-        predictions = reviewer_wrapper.get_submission_result_from_id(id_in_review)
-        changes = get_change_formatted_predictions(predictions)
+        predictions = reviewer_wrapper.get_submission_results_from_ids([id_in_review])
+        changes = get_change_formatted_predictions(predictions[0])
         reviewer_wrapper.accept_review(id_in_review, changes)
         reviewed_ids.append(id_in_review)
     for sub_id in reviewed_ids:
-        workflow_wrapper.wait_for_submission_status_complete(sub_id)
+        stagger_wrapper.wait_for_submission_status_complete(sub_id)
     return reviewed_ids
 
 
 def test_get_reviewed_prediction_data(
-    workflow_id, workflow_wrapper, reviewed_submissions
+    workflow_id, stagger_wrapper, reviewed_submissions
 ):
     # num_submissions needed for now because of possible bug marking subs as retrieved for no reason
     num_submissions = len(
-        workflow_wrapper._get_list_of_submissions(
+        stagger_wrapper._get_list_of_submissions(
             workflow_id, COMPLETE_FILTER, reviewed_submissions
         )
     )
-    stagger = StaggeredLoop(
-        workflow_id=workflow_id, submission_ids=reviewed_submissions
-    )
-    stagger.get_reviewed_prediction_data(workflow_wrapper)
-    assert len(stagger._filenames) == num_submissions
-    assert len(stagger._workflow_results) == num_submissions
-    assert len(stagger._snap_formatted_predictions) == num_submissions
-    assert len(stagger._document_texts) == num_submissions
-    for predictions in stagger._snap_formatted_predictions:
+    stagger_wrapper.get_reviewed_prediction_data(workflow_id, reviewed_submissions)
+    assert len(stagger_wrapper._filenames) == num_submissions
+    assert len(stagger_wrapper._workflow_results) == num_submissions
+    assert len(stagger_wrapper._snap_formatted_predictions) == num_submissions
+    assert len(stagger_wrapper._document_texts) == num_submissions
+    for predictions in stagger_wrapper._snap_formatted_predictions:
         assert isinstance(predictions, list)
         for pred in predictions:
             assert set(pred.keys()) == set(["label", "start", "end"])
 
 
-def test_convert_predictions_for_snapshot():
+def test_convert_predictions_for_snapshot(stagger_wrapper):
     predictions = [
         {"text": "abc", "start": 1, "end": 4, "confidence": None, "label": "letters"},
         {"text": "def", "start": 4, "end": 7, "confidence": None, "label": "letters"},
@@ -87,35 +84,60 @@ def test_convert_predictions_for_snapshot():
             "label": "manuallyadded",
         },
     ]
-    stagger = StaggeredLoop(312)
-    formatted_predictions = stagger._reformat_predictions(predictions)
+    stagger_wrapper.model_name = ""
+    formatted_predictions = stagger_wrapper._reformat_predictions(predictions)
     assert len(formatted_predictions) == 2
     for pred in formatted_predictions:
         assert set(pred.keys()) == set(["label", "start", "end"])
         assert pred["label"] == "letters"
 
 
-def test_get_nested_predictions(static_wflow_result):
-    stagger = StaggeredLoop(312, model_name="model_v1")
-    predictions = stagger._get_nested_predictions(static_wflow_result)
+def test_get_nested_predictions(stagger_wrapper):
+    wflow_result = dict(
+        results=dict(
+            document=dict(results=dict(model_v1=dict(pre_review=[{}], final=[{}, {}])))
+        )
+    )
+    stagger_wrapper.model_name = ""
+    predictions = stagger_wrapper._get_nested_predictions(wflow_result)
     assert isinstance(predictions, list)
     assert len(predictions) == 2
 
 
-def test_get_nested_predictions_bad_model_name(static_wflow_result):
-    stagger = StaggeredLoop(312, model_name="name_doesnt_exist")
+def test_get_nested_predictions_bad_model_name(stagger_wrapper):
+    wflow_result = dict(
+        results=dict(
+            document=dict(results=dict(model_v1=dict(pre_review=[{}], final=[{}, {}])))
+        )
+    )
+    stagger_wrapper.model_name = "Name doesn't exist"
     with pytest.raises(KeyError):
-        stagger._get_nested_predictions(static_wflow_result)
+        stagger_wrapper._get_nested_predictions(wflow_result)
 
 
-def test_get_nested_predictions_no_model_name(static_wflow_result):
-    stagger = StaggeredLoop(312, model_name="")
-    predictions = stagger._get_nested_predictions(static_wflow_result)
+def test_get_nested_predictions_no_model_name(stagger_wrapper):
+    wflow_result = dict(
+        results=dict(
+            document=dict(results=dict(model_v1=dict(pre_review=[{}], final=[{}, {}])))
+        )
+    )
+    stagger_wrapper.model_name = ""
+
+    predictions = stagger_wrapper._get_nested_predictions(wflow_result)
     assert len(predictions) == 2
 
 
-def test_get_nested_predictions_no_model_name_fail(static_wflow_result):
-    static_wflow_result.document_results["model_v2"] = {"pre_review":[{}], "final":[{}, {}]}
-    stagger = StaggeredLoop(312, model_name="")
+def test_get_nested_predictions_no_model_name_fail(stagger_wrapper):
+    wflow_result = dict(
+        results=dict(
+            document=dict(
+                results=dict(
+                    model_v1=dict(pre_review=[{}], final=[{}, {}]),
+                    model_v2=dict(pre_review=[{}], final=[{}, {}]),
+                )
+            )
+        )
+    )
+    stagger_wrapper.model_name = ""
     with pytest.raises(RuntimeError):
-        stagger._get_nested_predictions(static_wflow_result)
+        stagger_wrapper._get_nested_predictions(wflow_result)
