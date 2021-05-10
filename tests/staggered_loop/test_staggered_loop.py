@@ -23,6 +23,11 @@ def static_wflow_result():
 
 
 @pytest.fixture(scope="module")
+def stagger_wrapper(indico_client):
+    return StaggeredLoop(indico_client)
+
+
+@pytest.fixture(scope="module")
 def reviewed_submissions(workflow_id, indico_client, pdf_filepath):
     """
     Ensure that auto review is turned off and there are two "COMPLETE" human reviewed submissions
@@ -47,9 +52,7 @@ def reviewed_submissions(workflow_id, indico_client, pdf_filepath):
     return reviewed_ids
 
 
-def test_get_reviewed_prediction_data(
-    workflow_id, indico_client, reviewed_submissions
-):
+def test_get_reviewed_prediction_data(workflow_id, indico_client, reviewed_submissions):
     # num_submissions needed for now because of possible bug marking subs as retrieved for no reason
     wflow = Workflow(indico_client)
     num_submissions = len(
@@ -57,9 +60,7 @@ def test_get_reviewed_prediction_data(
             workflow_id, COMPLETE_FILTER, reviewed_submissions
         )
     )
-    stagger = StaggeredLoop(
-        workflow_id=workflow_id, submission_ids=reviewed_submissions
-    )
+    stagger = StaggeredLoop(indico_client)
     stagger.get_reviewed_prediction_data(workflow_id, reviewed_submissions)
     assert len(stagger._filenames) == num_submissions
     assert len(stagger._workflow_results) == num_submissions
@@ -98,48 +99,35 @@ def test_convert_predictions_for_snapshot(stagger_wrapper):
         assert pred["label"] == "letters"
 
 
-def test_get_nested_predictions(stagger_wrapper):
-    wflow_result = dict(
-        results=dict(
-            document=dict(results=dict(model_v1=dict(pre_review=[{}], final=[{}, {}])))
-        )
-    )
+def test_get_nested_predictions(stagger_wrapper, static_wflow_result):
     stagger_wrapper.model_name = ""
-    predictions = stagger_wrapper._get_nested_predictions(wflow_result)
+    predictions = stagger_wrapper._get_nested_predictions(static_wflow_result)
     assert isinstance(predictions, list)
     assert len(predictions) == 2
 
 
-def test_get_nested_predictions_bad_model_name(stagger_wrapper):
-    wflow_result = dict(
-        results=dict(
-            document=dict(results=dict(model_v1=dict(pre_review=[{}], final=[{}, {}])))
-        )
-    )
+def test_get_nested_predictions_bad_model_name(stagger_wrapper, static_wflow_result):
     stagger_wrapper.model_name = "Name doesn't exist"
     with pytest.raises(KeyError):
-        stagger_wrapper._get_nested_predictions(wflow_result)
+        stagger_wrapper._get_nested_predictions(static_wflow_result)
 
 
-def test_get_nested_predictions_no_model_name(stagger_wrapper):
-    wflow_result = dict(
-        results=dict(
-            document=dict(results=dict(model_v1=dict(pre_review=[{}], final=[{}, {}])))
-        )
-    )
+def test_get_nested_predictions_no_model_name(stagger_wrapper, static_wflow_result):
     stagger_wrapper.model_name = ""
 
-    predictions = stagger_wrapper._get_nested_predictions(wflow_result)
+    predictions = stagger_wrapper._get_nested_predictions(static_wflow_result)
     assert len(predictions) == 2
 
 
 def test_get_nested_predictions_no_model_name_fail(stagger_wrapper):
-    wflow_result = dict(
-        results=dict(
-            document=dict(
-                results=dict(
-                    model_v1=dict(pre_review=[{}], final=[{}, {}]),
-                    model_v2=dict(pre_review=[{}], final=[{}, {}]),
+    wflow_result = WorkflowResult(
+        dict(
+            results=dict(
+                document=dict(
+                    results=dict(
+                        model_v1=dict(pre_review=[{}], final=[{}, {}]),
+                        model_v2=dict(pre_review=[{}], final=[{}, {}]),
+                    )
                 )
             )
         )
