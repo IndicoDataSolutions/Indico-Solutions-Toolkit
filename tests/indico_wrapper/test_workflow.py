@@ -66,9 +66,9 @@ def test_get_submission_object(workflow_wrapper, module_submission_ids):
     assert isinstance(sub, Submission)
 
 
-def test_get_submission_result_from_id(
+def test_get_submission_results_from_ids(
     workflow_wrapper, module_submission_ids
 ):
-    results = workflow_wrapper.get_submission_result_from_id(module_submission_ids[0])
-    assert isinstance(results, WorkflowResult)
-    assert isinstance(results.post_review_predictions, list)
+    result = workflow_wrapper.get_submission_results_from_ids([module_submission_ids[0]])[0]
+    assert isinstance(result, WorkflowResult)
+    assert isinstance(result.post_review_predictions, list)
