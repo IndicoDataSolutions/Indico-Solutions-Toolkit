@@ -46,13 +46,12 @@ def id_pending_scripted(workflow_id, indico_client, pdf_filepath):
 
 
 def test_submit_submission_review(
-    indico_client, id_pending_scripted, wflow_submission_results
+    indico_client, id_pending_scripted, wflow_submission_result, model_name
 ):
     wflow = Workflow(indico_client)
-    predictions = wflow_submission_results["results"]["document"]["results"][
-        MODEL_NAME
-    ]["pre_review"]
-    job = wflow.submit_submission_review(id_pending_scripted, {MODEL_NAME: predictions})
+    job = wflow.submit_submission_review(
+        id_pending_scripted, {model_name: wflow_submission_result.predictions}
+    )
     assert isinstance(job, Job)
 
 
@@ -62,7 +61,7 @@ def test_submit_auto_review(indico_client, id_pending_scripted, model_name):
     """
     # Submit to workflow and get predictions
     wflow = Workflow(indico_client)
-    result = wflow.get_submission_results_from_ids(id_pending_scripted)[0]
+    result = wflow.get_submission_results_from_ids([id_pending_scripted])[0]
     predictions = result.predictions
     # Review the submission
     field_config = [

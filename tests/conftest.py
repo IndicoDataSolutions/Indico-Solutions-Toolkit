@@ -15,7 +15,7 @@ from indico.queries import (
 from indico import IndicoClient
 from indico.errors import IndicoRequestError
 from solutions_toolkit import create_client
-
+from solutions_toolkit.types import WorkflowResult
 from solutions_toolkit.indico_wrapper import (
     IndicoWrapper,
     Workflow,
@@ -107,24 +107,19 @@ def function_submission_ids(workflow_id, indico_client, pdf_filepath):
     return sub_ids
 
 @pytest.fixture(scope="module")
-def wflow_submission_results(indico_client, module_submission_ids) -> dict:
+def wflow_submission_result(indico_client, module_submission_ids) -> dict:
     workflow_wrapper = Workflow(indico_client)
-    return workflow_wrapper.get_submission_result_from_id(
-        module_submission_ids[0], timeout=90
-    )
-
-@pytest.fixture(scope="session")
-def pdf_filepath():
-    return os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")
-
+    return workflow_wrapper.get_submission_results_from_ids(
+        [module_submission_ids[0]], timeout=90
+    )[0]
   
 @pytest.fixture(scope="session")
 def model_name():
     return MODEL_NAME
   
 @pytest.fixture(scope="session")
-def standard_ocr_object(indico_wrapper, pdf_filepath):
-    job = indico_wrapper.indico_client.call(DocumentExtraction(files=[pdf_filepath], json_config={"preset_config": "standard"}))
-    job = indico_wrapper.indico_client.call(JobStatus(id=job[0].id, wait=True))
-    extracted_data = indico_wrapper.indico_client.call(RetrieveStorageObject(job.result))
+def standard_ocr_object(indico_client, pdf_filepath):
+    job = indico_client.call(DocumentExtraction(files=[pdf_filepath], json_config={"preset_config": "standard"}))
+    job = indico_client.call(JobStatus(id=job[0].id, wait=True))
+    extracted_data = indico_client.call(RetrieveStorageObject(job.result))
     return extracted_data
