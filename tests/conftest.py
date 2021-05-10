@@ -15,6 +15,7 @@ from indico.queries import (
 from indico import IndicoClient
 from indico.errors import IndicoRequestError
 from solutions_toolkit import create_client
+
 from solutions_toolkit.indico_wrapper import (
     IndicoWrapper,
     Workflow,
@@ -43,7 +44,6 @@ def testdir_file_path():
 @pytest.fixture(scope="session")
 def pdf_filepath():
     return os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")
-
 
 # TODO: below fixture should just use the dataset class...
 
@@ -113,15 +113,18 @@ def wflow_submission_results(indico_client, module_submission_ids) -> dict:
         module_submission_ids[0], timeout=90
     )
 
-# @pytest.fixture(scope="session")
-# def reviewer_wrapper(workflow_id):
-#     return Reviewer(
-#         host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH, workflow_id=workflow_id
-#     )
-
 @pytest.fixture(scope="session")
-def standard_ocr_object(indico_client, pdf_filepath):
-    job = indico_client.call(DocumentExtraction(files=[pdf_filepath], json_config={"preset_config": "standard"}))
-    job = indico_client.call(JobStatus(id=job[0].id, wait=True))
-    extracted_data = indico_client.call(RetrieveStorageObject(job.result))
+def pdf_filepath():
+    return os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")
+
+  
+@pytest.fixture(scope="session")
+def model_name():
+    return MODEL_NAME
+  
+@pytest.fixture(scope="session")
+def standard_ocr_object(indico_wrapper, pdf_filepath):
+    job = indico_wrapper.indico_client.call(DocumentExtraction(files=[pdf_filepath], json_config={"preset_config": "standard"}))
+    job = indico_wrapper.indico_client.call(JobStatus(id=job[0].id, wait=True))
+    extracted_data = indico_wrapper.indico_client.call(RetrieveStorageObject(job.result))
     return extracted_data

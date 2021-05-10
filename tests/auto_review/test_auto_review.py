@@ -1,11 +1,13 @@
 import os
 import json
 import pytest
+import os
+import json
 from collections import defaultdict
 from indico.queries import Job
 from solutions_toolkit.indico_wrapper import Workflow
 from solutions_toolkit.auto_review import ReviewConfiguration, AutoReviewer
-from tests.conftest import MODEL_NAME
+from tests.conftest import FILE_PATH
 
 
 min_max_length = 6
@@ -32,7 +34,7 @@ def auto_review_field_config(testdir_file_path):
 @pytest.fixture(scope="function")
 def id_pending_scripted(workflow_id, indico_client, pdf_filepath):
     """
-    Ensure that auto review is turned off and there are two submissions "PENDING_REVIEW"
+    Ensure that auto review is turned on and there are two submissions "PENDING_REVIEW"
     """
     wflow = Workflow(indico_client)
     wflow.update_workflow_settings(
@@ -54,14 +56,14 @@ def test_submit_submission_review(
     assert isinstance(job, Job)
 
 
-def test_submit_auto_review(indico_client, id_pending_scripted):
+def test_submit_auto_review(indico_client, id_pending_scripted, model_name):
     """
     Submit a document to a workflow, auto review the predictions, and retrieve the results
     """
     # Submit to workflow and get predictions
     wflow = Workflow(indico_client)
-    result = wflow.get_submission_result_from_id(id_pending_scripted)
-    predictions = result["results"]["document"]["results"][MODEL_NAME]["pre_review"]
+    result = wflow.get_submission_results_from_ids(id_pending_scripted)[0]
+    predictions = result.predictions
     # Review the submission
     field_config = [
         {"function": "accept_by_confidence", "kwargs": {"conf_threshold": 0.99}},
@@ -78,11 +80,10 @@ def test_submit_auto_review(indico_client, id_pending_scripted):
     reviewer.apply_reviews()
     # Submit the changes and retrieve reviewed results
     wflow.submit_submission_review(
-        id_pending_scripted, {MODEL_NAME: reviewer.updated_predictions}
+        id_pending_scripted, {model_name: reviewer.updated_predictions}
     )
-    result = wflow.get_submission_result_from_id(id_pending_scripted)
-    reviewed_preds = result["results"]["document"]["results"][MODEL_NAME]["final"]
-    for pred in reviewed_preds:
+    result = wflow.get_submission_results_from_ids([id_pending_scripted])[0]
+    for pred in result.post_review_predictions:
         label = pred["label"]
         if (
             label in ["Liability Amount", "Date of Appointment"]
