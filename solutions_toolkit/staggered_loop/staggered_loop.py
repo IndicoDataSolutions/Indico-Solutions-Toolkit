@@ -1,6 +1,7 @@
 import json
 from typing import List
 import pandas as pd
+from indico import IndicoClient
 from solutions_toolkit.indico_wrapper import Workflow
 from solutions_toolkit.types import WorkflowResult
 
@@ -9,13 +10,7 @@ class StaggeredLoop(Workflow):
 
     _keys_to_remove_from_prediction = ["confidence", "text"]
 
-    def __init__(
-        self,
-        host_url: str,
-        api_token_path: str = None,
-        api_token: str = None,
-        **kwargs,
-    ):
+    def __init__(self, client: IndicoClient):
         """
         Gather human reviewed submissions to improve existing model
 
@@ -24,9 +19,7 @@ class StaggeredLoop(Workflow):
             stagger.get_reviewed_prediction_data(312, [7532, 7612], "Model V1")
             stagger.write_csv("./path/to/output.csv")
         """
-        super().__init__(
-            host_url, api_token_path=api_token_path, api_token=api_token, **kwargs
-        )
+        self.client = client
         self._workflow_results: List[WorkflowResult] = []
         self._snap_formatted_predictions: List[List[dict]] = []
         self._filenames: List[str] = []
@@ -86,7 +79,7 @@ class StaggeredLoop(Workflow):
 
     def _get_nested_predictions(self, wf_result: WorkflowResult) -> List[dict]:
         if self.model_name != "":
-            wf_result.model_name=self.model_name
+            wf_result.model_name = self.model_name
         return wf_result.post_review_predictions
 
     def _is_not_manually_added_prediction(self, prediction: dict) -> bool:

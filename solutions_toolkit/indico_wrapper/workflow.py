@@ -1,5 +1,6 @@
 import time
 from typing import List
+from indico import IndicoClient
 from indico.queries import (
     Submission,
     SubmissionFilter,
@@ -12,7 +13,6 @@ from indico.queries import (
     SubmitReview,
     UpdateWorkflowSettings,
 )
-
 from solutions_toolkit.indico_wrapper import IndicoWrapper
 from solutions_toolkit.ocr import OnDoc
 from solutions_toolkit.types import WorkflowResult
@@ -27,10 +27,8 @@ class Workflow(IndicoWrapper):
     Class to support Workflow-related API calls
     """
 
-    def __init__(self, host_url, api_token_path=None, api_token=None, **kwargs):
-        super().__init__(
-            host_url, api_token_path=api_token_path, api_token=api_token, **kwargs
-        )
+    def __init__(self, client: IndicoClient):
+        self.client = client
 
     def submit_documents_to_workflow(
         self, workflow_id: int, pdf_filepaths: List[str]
@@ -42,7 +40,7 @@ class Workflow(IndicoWrapper):
         Returns:
             List[int]: List of unique and persistent identifier for each submission.
         """
-        return self.indico_client.call(
+        return self.client.call(
             WorkflowSubmission(workflow_id=workflow_id, files=pdf_filepaths)
         )
 
@@ -74,11 +72,13 @@ class Workflow(IndicoWrapper):
             List[dict]: completed submission results
         """
         submissions = self.get_complete_submission_objects(workflow_id, submission_ids)
-        submission_results = self.get_submission_results_from_ids([sub.id for sub in submissions])
+        submission_results = self.get_submission_results_from_ids(
+            [sub.id for sub in submissions]
+        )
         return submission_results
 
     def mark_submission_as_retreived(self, submission_id: int):
-        self.indico_client.call(UpdateSubmission(submission_id, retrieved=True))
+        self.client.call(UpdateSubmission(submission_id, retrieved=True))
 
     def get_complete_submission_objects(
         self, workflow_id: int, submission_ids: List[int] = None
@@ -88,10 +88,13 @@ class Workflow(IndicoWrapper):
         )
 
     def get_submission_object(self, submission_id: int) -> Submission:
-        return self.indico_client.call(GetSubmission(submission_id))
+        return self.client.call(GetSubmission(submission_id))
 
     def get_submission_results_from_ids(
-        self, submission_ids: List[int], timeout: int = 75, ignore_exceptions: bool = False
+        self,
+        submission_ids: List[int],
+        timeout: int = 75,
+        ignore_exceptions: bool = False,
     ) -> dict:
         """
         Wait for submission to pass through workflow models and get result. If Review is enabled, result may be retrieved prior to human review.
@@ -105,17 +108,15 @@ class Workflow(IndicoWrapper):
         """
         results = []
         for subid in submission_ids:
-            job = self.indico_client.call(
-                SubmissionResult(subid, wait=True, timeout=timeout)
-            )
+            job = self.client.call(SubmissionResult(subid, wait=True, timeout=timeout))
             if job.status != "SUCCESS":
                 message = f"{job.status}! Submission {subid}: {job.result}"
                 if ignore_exceptions:
-                    print(message)
+                    print(f"Ignoring exception and continuing: {message}")
                     continue
                 else:
                     raise Exception(message)
-            results.append(self.get_storage_object(job.result))
+            results.append(WorkflowResult(self.get_storage_object(job.result)))
         return results
 
     def wait_for_submissions_to_process(
@@ -124,12 +125,12 @@ class Workflow(IndicoWrapper):
         """
         Wait for all submissions to complete workflow processing
         """
-        return self.indico_client.call(
+        return self.client.call(
             WaitForSubmissions(submission_ids=submission_ids, timeout=timeout)
         )
 
     def submit_submission_review(self, submission_id: int, updated_predictions: dict):
-        return self.indico_client.call(
+        return self.client.call(
             SubmitReview(submission_id, changes=updated_predictions)
         )
 
@@ -139,7 +140,7 @@ class Workflow(IndicoWrapper):
         enable_review: bool = False,
         enable_auto_review: bool = False,
     ) -> None:
-        self.indico_client.call(
+        self.client.call(
             UpdateWorkflowSettings(
                 workflow_id,
                 enable_review=enable_review,
@@ -171,7 +172,7 @@ class Workflow(IndicoWrapper):
         submission_filter: SubmissionFilter,
         submission_ids: List[int] = None,
     ) -> List[Submission]:
-        return self.indico_client.call(
+        return self.client.call(
             ListSubmissions(
                 workflow_ids=[workflow_id],
                 submission_ids=submission_ids,
