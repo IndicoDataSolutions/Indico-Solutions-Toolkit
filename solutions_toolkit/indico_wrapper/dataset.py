@@ -1,5 +1,6 @@
 from typing import List
-import indico.types
+from indico import IndicoClient
+from indico.types import Dataset
 from indico.queries import (
     GetDataset,
     CreateDataset,
@@ -9,47 +10,45 @@ from indico.queries import (
     ProcessFiles,
     DeleteDataset,
 )
-
 from solutions_toolkit.indico_wrapper import IndicoWrapper
 
+# TODO: API consistency, sometimes dataset_id as kwargs other times expects w/ instantiation
 
-class Dataset(IndicoWrapper):
+class Datasets(IndicoWrapper):
     def __init__(
-        self, host_url, api_token_path=None, api_token=None, dataset_id=None, **kwargs
+        self, client: IndicoClient, dataset_id: int = None
     ):
-        super().__init__(
-            host_url, api_token_path=api_token_path, api_token=api_token, **kwargs
-        )
+        self.client = client
         self.dataset_id = dataset_id
 
     def get_dataset(self):
-        return self.indico_client.call(GetDataset(self.dataset_id))
+        return self.client.call(GetDataset(self.dataset_id))
 
     def create_export(self, **kwargs):
-        return self.indico_client.call(
+        return self.client.call(
             CreateExport(dataset_id=self.dataset_id, **kwargs)
         )
 
     def download_export(self, export_id):
-        return self.indico_client.call(DownloadExport(export_id))
+        return self.client.call(DownloadExport(export_id))
 
-    def add_to_dataset(self, filepaths: List[str]) -> indico.types.Dataset:
+    def add_to_dataset(self, filepaths: List[str]) -> Dataset:
         dataset = self._upload_files(filepaths)
         return self._process_uploaded_files(dataset)
 
     def _upload_files(self, filepaths):
-        return self.indico_client.call(
+        return self.client.call(
             AddFiles(dataset_id=self.dataset_id, files=filepaths)
         )
 
     def _process_uploaded_files(self, dataset):
         datafile_ids = [f.id for f in dataset.files if f.status == "DOWNLOADED"]
-        return self.indico_client.call(
+        return self.client.call(
             ProcessFiles(dataset_id=dataset.id, datafile_ids=datafile_ids, wait=True)
         )
 
-    def create_dataset(self, filepaths: List[str], name: str) -> indico.types.Dataset:
-        dataset = self.indico_client.call(
+    def create_dataset(self, filepaths: List[str], name: str) -> Dataset:
+        dataset = self.client.call(
             CreateDataset(
                 name=name,
                 files=filepaths,
@@ -62,7 +61,7 @@ class Dataset(IndicoWrapper):
         """
         Returns True if operation is succesful
         """
-        return self.indico_client.call(DeleteDataset(id=dataset_id))
+        return self.client.call(DeleteDataset(id=dataset_id))
 
     def get_dataset_files(self) -> List[dict]:
         query = """

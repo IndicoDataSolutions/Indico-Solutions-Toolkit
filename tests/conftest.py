@@ -12,14 +12,14 @@ from indico.queries import (
     RetrieveStorageObject,
     JobStatus
 )
+from indico import IndicoClient
 from indico.errors import IndicoRequestError
-from solutions_toolkit.staggered_loop import StaggeredLoop
+from solutions_toolkit import create_client
 from solutions_toolkit.types import WorkflowResult
-
 from solutions_toolkit.indico_wrapper import (
     IndicoWrapper,
     Workflow,
-    Dataset,
+    Datasets,
     FindRelated,
     Reviewer,
     DocExtraction
@@ -33,15 +33,26 @@ API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
 API_TOKEN = os.environ.get("API_TOKEN")
 MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
 
+
+@pytest.fixture(scope="session")
+def indico_client() -> IndicoClient:
+    return create_client(HOST_URL, API_TOKEN_PATH, API_TOKEN)
+
 @pytest.fixture(scope="session")
 def testdir_file_path():
     return FILE_PATH
 
 @pytest.fixture(scope="session")
-def dataset(indico_wrapper):
+def pdf_filepath():
+    return os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")
+
+# TODO: below fixture should just use the dataset class...
+
+@pytest.fixture(scope="session")
+def dataset_obj(indico_client):
     dataset_id = os.environ.get("DATASET_ID")
     if not dataset_id:
-        dataset = indico_wrapper.indico_client.call(
+        dataset = indico_client.call(
             CreateDataset(
                 name="Solutions Toolkit Test Dataset",
                 files=[os.path.join(FILE_PATH, "data/samples/fin_disc_snapshot.csv")],
@@ -49,7 +60,7 @@ def dataset(indico_wrapper):
         )
     else:
         try:
-            dataset = indico_wrapper.indico_client.call(GetDataset(id=dataset_id))
+            dataset = indico_client.call(GetDataset(id=dataset_id))
         except IndicoRequestError:
             raise ValueError(
                 f"Dataset with ID {dataset_id} does not exist or you do not have access to it"
@@ -58,115 +69,60 @@ def dataset(indico_wrapper):
 
 
 @pytest.fixture(scope="session")
-def workflow_id(indico_wrapper, dataset):
+def workflow_id(indico_client, dataset_obj):
     workflow_id = os.environ.get("WORKFLOW_ID")
     if not workflow_id:
-        _ = indico_wrapper.indico_client.call(
+        indico_client.call(
             CreateModelGroup(
                 name="Solutions Toolkit Test Model",
-                dataset_id=dataset.id,
-                source_column_id=dataset.datacolumn_by_name("text").id,
-                labelset_id=dataset.labelset_by_name("question_1620").id,
+                dataset_id=dataset_obj.id,
+                source_column_id=dataset_obj.datacolumn_by_name("text").id,
+                labelset_id=dataset_obj.labelset_by_name("question_1620").id,
                 wait=True,
             )
         )
-        workflow_id = indico_wrapper.indico_client.call(
-            ListWorkflows(dataset_ids=[dataset.id])
+        workflow_id = indico_client.call(
+            ListWorkflows(dataset_ids=[dataset_obj.id])
         )[0].id
     else:
         try:
-            indico_wrapper.indico_client.call(GetWorkflow(workflow_id=workflow_id))
+            indico_client.call(GetWorkflow(workflow_id=workflow_id))
         except IndicoRequestError:
             raise ValueError(
                 f"Workflow with ID {workflow_id} does not exist or you do not have access to it"
             )
     return workflow_id
 
-
 @pytest.fixture(scope="module")
-def module_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
+def module_submission_ids(workflow_id, indico_client, pdf_filepath):
+    workflow_wrapper = Workflow(indico_client)
     sub_ids = workflow_wrapper.submit_documents_to_workflow(workflow_id, [pdf_filepath])
     workflow_wrapper.wait_for_submissions_to_process(sub_ids)
     return sub_ids
 
+@pytest.fixture(scope="function")
+def function_submission_ids(workflow_id, indico_client, pdf_filepath):
+    workflow_wrapper = Workflow(indico_client)
+    sub_ids = workflow_wrapper.submit_documents_to_workflow(workflow_id, [pdf_filepath])
+    workflow_wrapper.wait_for_submissions_to_process(sub_ids)
+    return sub_ids
 
 @pytest.fixture(scope="module")
-def module_submission_results(workflow_wrapper, module_submission_ids) -> dict:
+def wflow_submission_result(indico_client, module_submission_ids) -> dict:
+    workflow_wrapper = Workflow(indico_client)
     return workflow_wrapper.get_submission_results_from_ids(
         [module_submission_ids[0]], timeout=90
     )[0]
-
-
-@pytest.fixture(scope="function")
-def function_submission_ids(workflow_id, workflow_wrapper, pdf_filepath):
-    sub_ids = workflow_wrapper.submit_documents_to_workflow(workflow_id, [pdf_filepath])
-    workflow_wrapper.wait_for_submissions_to_process(sub_ids)
-    return sub_ids
-
-
-@pytest.fixture(scope="function")
-def function_submission_results(workflow_wrapper, function_submission_ids) -> dict:
-    return workflow_wrapper.get_submission_results_from_ids(
-        [function_submission_ids[0]], timeout=90
-    )[0]
-
-
-@pytest.fixture(scope="session")
-def indico_wrapper():
-    return IndicoWrapper(
-        host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH
-    )
-
-
-@pytest.fixture(scope="session")
-def workflow_wrapper():
-    return Workflow(
-        host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH
-    )
-
-
-@pytest.fixture(scope="session")
-def dataset_wrapper(dataset):
-    return Dataset(
-        host_url=HOST_URL,
-        api_token=API_TOKEN,
-        api_token_path=API_TOKEN_PATH,
-        dataset_id=dataset.id,
-    )
-
-
-@pytest.fixture(scope="session")
-def find_related_wrapper():
-    return FindRelated(host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH)
-
-
-@pytest.fixture(scope="session")
-def reviewer_wrapper(workflow_id):
-    return Reviewer(
-        host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH, workflow_id=workflow_id
-    )
-
- 
-@pytest.fixture(scope="session")
-def stagger_wrapper():
-    return StaggeredLoop(host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH,)
-
-
-@pytest.fixture(scope="session")
-def pdf_filepath():
-    return os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")
-
   
 @pytest.fixture(scope="session")
 def model_name():
     return MODEL_NAME
-
   
 @pytest.fixture(scope="session")
-def standard_ocr_object(indico_wrapper, pdf_filepath):
-    job = indico_wrapper.indico_client.call(DocumentExtraction(files=[pdf_filepath], json_config={"preset_config": "standard"}))
-    job = indico_wrapper.indico_client.call(JobStatus(id=job[0].id, wait=True))
-    extracted_data = indico_wrapper.indico_client.call(RetrieveStorageObject(job.result))
+def standard_ocr_object(indico_client, pdf_filepath):
+    job = indico_client.call(DocumentExtraction(files=[pdf_filepath], json_config={"preset_config": "standard"}))
+    job = indico_client.call(JobStatus(id=job[0].id, wait=True))
+    extracted_data = indico_client.call(RetrieveStorageObject(job.result))
     return extracted_data
 
 
