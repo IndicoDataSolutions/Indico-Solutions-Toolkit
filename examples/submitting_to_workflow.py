@@ -1,4 +1,5 @@
 from solutions_toolkit.indico_wrapper import Workflow
+from solutions_toolkit.pipelines import FileProcessing
 from solutions_toolkit import create_client
 
 WORKFLOW_ID = 1418

@@ -72,13 +72,13 @@ class FileProcessing:
                 if self._check_acceptable_suffix(name, accepted_types):
                     self.file_paths.append(os.path.join(root, name))
                 else:
-                    self.invalid_suffix_paths.add(os.path.join(path_to_dir, name))
+                    self.invalid_suffix_paths.add(os.path.join(root, name))
 
     def _non_recursive_file_search(self, path_to_dir: str, accepted_types: Tuple[str]):
         files = [os.path.join(path_to_dir, f) for f in os.listdir(path_to_dir)]
         for fpath in files:
             if self._check_acceptable_suffix(fpath, accepted_types):
-                self.file_paths.append(os.path.join(path_to_dir, fpath))
+                self.file_paths.append(fpath)
             elif isfile(fpath):
                 self.invalid_suffix_paths.add(fpath)
 
