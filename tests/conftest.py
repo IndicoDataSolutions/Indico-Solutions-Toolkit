@@ -125,7 +125,6 @@ def standard_ocr_object(indico_client, pdf_filepath):
     extracted_data = indico_client.call(RetrieveStorageObject(job.result))
     return extracted_data
 
-
 @pytest.fixture(scope="session")
 def doc_extraction_wrapper():
     return DocExtraction(
