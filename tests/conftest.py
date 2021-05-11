@@ -126,7 +126,5 @@ def standard_ocr_object(indico_client, pdf_filepath):
     return extracted_data
 
 @pytest.fixture(scope="session")
-def doc_extraction_wrapper():
-    return DocExtraction(
-        host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH
-    )
+def doc_extraction_wrapper(indico_client):
+    return DocExtraction(indico_client)

@@ -1,4 +1,5 @@
 from typing import List
+from indico import IndicoClient
 from indico.queries import (
     DocumentExtraction,
     JobStatus
@@ -13,10 +14,8 @@ class DocExtraction(IndicoWrapper):
     Class to support DocumentExtraction-related API calls
     """
 
-    def __init__(self, host_url, api_token_path=None, api_token=None, **kwargs):
-        super().__init__(
-            host_url, api_token_path=api_token_path, api_token=api_token, **kwargs
-        )
+    def __init__(self, client: IndicoClient):
+        self.client = client
 
     def get_extraction_jobs(self, preset_config: str, pdf_filepaths: List) -> List:
         """
@@ -27,7 +26,7 @@ class DocExtraction(IndicoWrapper):
         Returns:
             jobs (List): List of job ids
         """
-        jobs = self.indico_client.call(
+        jobs = self.client.call(
             DocumentExtraction(files=pdf_filepaths, json_config={"preset_config": preset_config}))
         return jobs
 
@@ -42,14 +41,14 @@ class DocExtraction(IndicoWrapper):
         """
         jobs = self.get_extraction_jobs(preset_config, pdf_filepaths)
         if len(jobs) == 1:
-            job = self.indico_client.call(JobStatus(id=jobs[0].id, wait=True))
+            job = self.client.call(JobStatus(id=jobs[0].id, wait=True))
             extracted_data = self.get_storage_object(job.result)
             return extracted_data
         elif len(jobs) > 1:
             extracted_data = {}
             for ind, job in enumerate(jobs):
                 file = pdf_filepaths[ind]
-                ocr = self.indico_client.call(JobStatus(id=job.id, wait=True))
+                ocr = self.client.call(JobStatus(id=job.id, wait=True))
                 result = self.get_storage_object(ocr.result)
                 extracted_data[file] = result
             return extracted_data
