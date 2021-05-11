@@ -22,6 +22,7 @@ from solutions_toolkit.indico_wrapper import (
     Dataset,
     FindRelated,
     Reviewer,
+    DocExtraction
 )
 
 
@@ -167,3 +168,10 @@ def standard_ocr_object(indico_wrapper, pdf_filepath):
     job = indico_wrapper.indico_client.call(JobStatus(id=job[0].id, wait=True))
     extracted_data = indico_wrapper.indico_client.call(RetrieveStorageObject(job.result))
     return extracted_data
+
+
+@pytest.fixture(scope="session")
+def doc_extraction_wrapper():
+    return DocExtraction(
+        host_url=HOST_URL, api_token=API_TOKEN, api_token_path=API_TOKEN_PATH
+    )
