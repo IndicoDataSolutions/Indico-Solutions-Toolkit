@@ -1,10 +1,8 @@
-import os
 from typing import List
 from indico.queries import (
     DocumentExtraction,
     JobStatus
 )
-
 from solutions_toolkit.indico_wrapper import IndicoWrapper
 from solutions_toolkit.ocr import OnDoc
 from solutions_toolkit.ocr import StandardOcr
