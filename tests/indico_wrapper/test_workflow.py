@@ -3,7 +3,7 @@ from indico.types import Submission, Job
 from tests.conftest import MODEL_NAME
 from solutions_toolkit.indico_wrapper import Workflow
 from solutions_toolkit.ocr import OnDoc
-from solutions_toolkit.types import WorkflowResult
+from solutions_toolkit.types import WorkflowResult, Predictions
 
 
 def test_submit_documents_to_workflow(indico_client, pdf_filepath, workflow_id):
@@ -55,4 +55,4 @@ def test_get_submission_results_from_ids(indico_client, module_submission_ids):
     wflow = Workflow(indico_client)
     result = wflow.get_submission_results_from_ids([module_submission_ids[0]])[0]
     assert isinstance(result, WorkflowResult)
-    assert isinstance(result.post_review_predictions, list)
+    assert isinstance(result.post_review_predictions, Predictions)

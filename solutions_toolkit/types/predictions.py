@@ -6,31 +6,41 @@ from solutions_toolkit.pipelines import FileProcessing
 # TODO: eventually change this to just "Extractions" class w/ another class for classification preds
 # TODO: add property to list all predicted labels
 
+
 class Predictions:
     """
     Functionality for common extraction prediction use cases
     """
+
     def __init__(self, predictions: List[dict]):
-        self.preds = predictions
+        self._preds = predictions
 
     @property
     def to_dict_by_label(self) -> Dict[str, list]:
         prediction_label_map = defaultdict(list)
-        for pred in self.preds:
+        for pred in self._preds:
             prediction_label_map[pred["label"]].append(pred)
         return prediction_label_map
 
     @property
     def num_predictions(self) -> int:
-        return len(self.preds)
+        return len(self._preds)
 
-    def remove_by_confidence(self, confidence=0.95, labels: List[str] = None):
-        for pred in self.preds:
+    def remove_by_confidence(self, confidence: float = 0.95, labels: List[str] = None):
+        """
+        Remove predictions that are less than given confidence
+        Args:
+            confidence (float, optional): confidence theshold. Defaults to 0.95.
+            labels (List[str], optional): Labels where this applies, if None applies to all. Defaults to None.
+        """
+        high_conf_preds = []
+        for pred in self._preds:
             label = pred["label"]
             if labels and label not in labels:
-                continue
-            if pred["confidence"][label] < confidence:
-                self.preds.remove(pred)
+                high_conf_preds.append(pred)
+            elif pred["confidence"][label] >= confidence:
+                high_conf_preds.append(pred)
+        self._preds = high_conf_preds
 
     def remove_except_max_confidence(self, labels: List[str]):
         """
@@ -39,19 +49,36 @@ class Predictions:
         for label in labels:
             max_pred = self._select_max_confidence(label)
             self._remove_all_by_label(label)
-            self.preds.append(max_pred)
+            self._preds.append(max_pred)
 
     def set_confidence_key_to_max_value(self):
         """
         Overwite confidence dictionary to just max confidence float
         """
-        for pred in self.preds:
+        for pred in self._preds:
             pred["confidence"] = pred["confidence"][pred["label"]]
 
     def remove_keys(self, keys_to_remove: List[str] = ["start", "end"]):
-        for pred in self.preds:
+        for pred in self._preds:
             for key in keys_to_remove:
                 pred.pop(key)
+
+    def remove_human_added_predictions(self):
+        """
+        Remove predictions that were not added by the model (i.e. added by scripted or human review)
+        """
+        self._preds = [
+            i for i in self._preds if not self._is_manually_added_prediction(i)
+        ]
+
+    def tolist(self):
+        return self._preds
+
+    def _is_manually_added_prediction(self, prediction: dict) -> bool:
+        if isinstance(prediction["start"], int) and isinstance(prediction["end"], int):
+            if prediction["end"] > prediction["start"]:
+                return False
+        return True
 
     def _select_max_confidence(self, label):
         max_pred = None
@@ -64,17 +91,19 @@ class Predictions:
         return max_pred
 
     def _remove_all_by_label(self, label):
-        for pred in self.preds:
+        for pred in self._preds:
             if pred["label"] == label:
-                self.preds.remove(pred)
+                self._preds.remove(pred)
 
     def __repr__(self):
-        return f"Prediction Class, {self.num_predictions} Predictions:\n\n{self.preds}"
+        return f"Prediction Class, {self.num_predictions} Predictions:\n\n{self._preds}"
 
     def __getitem__(self, label: str) -> List[dict]:
-        return [i for i in self.preds if i["label"] == label]
+        return [i for i in self._preds if i["label"] == label]
 
-    def to_csv(self, save_path: str, filename: str = "", append_if_exists: bool = True) -> None:
+    def to_csv(
+        self, save_path: str, filename: str = "", append_if_exists: bool = True
+    ) -> None:
         """
         Write three column CSV ('confidence', 'label', 'text')
         Args:
@@ -83,9 +112,8 @@ class Predictions:
         """
         self.set_confidence_key_to_max_value()
         self.remove_keys(keys_to_remove=["start", "end"])
-        df = pd.DataFrame(self.preds)
+        df = pd.DataFrame(self._preds)
         df["filename"] = filename
-        print(FileProcessing.file_exists(save_path))
         if append_if_exists and FileProcessing.file_exists(save_path):
             df.to_csv(save_path, mode="a", header=False, index=False)
         else:
