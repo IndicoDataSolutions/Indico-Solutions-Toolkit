@@ -62,6 +62,10 @@ class FileProcessing:
         print(f"Removing {len(self.file_paths) - len(unprocessed_filepaths)} files from file_paths")
         self.file_paths = unprocessed_filepaths
 
+    @staticmethod
+    def file_exists(path_to_file: str) -> bool:
+        return os.path.isfile(path_to_file)
+
     def _recursive_file_search(self, path_to_dir: str, accepted_types: Tuple[str]):
         for root, _, files in os.walk(path_to_dir):
             for name in files:
