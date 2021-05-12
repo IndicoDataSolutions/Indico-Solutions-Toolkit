@@ -95,7 +95,7 @@ class Workflow(IndicoWrapper):
         submission_ids: List[int],
         timeout: int = 75,
         ignore_exceptions: bool = False,
-    ) -> dict:
+    ) -> List[WorkflowResult]:
         """
         Wait for submission to pass through workflow models and get result. If Review is enabled, result may be retrieved prior to human review.
         Args:
@@ -104,7 +104,7 @@ class Workflow(IndicoWrapper):
             ignore_exceptions (bool): if True, catch exception for unsuccessful submission
 
         Returns:
-            List[dict]: workflow result objects
+            List[WorkflowResult]: workflow result objects
         """
         results = []
         for subid in submission_ids:

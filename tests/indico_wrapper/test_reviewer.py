@@ -22,7 +22,7 @@ def get_change_formatted_predictions(workflow_result):
     """
     Helper function for get change format for accepted predictions in test_accept_review
     """
-    return {workflow_result.model_name: workflow_result.predictions}
+    return {workflow_result.model_name: workflow_result.predictions.tolist()}
 
 
 def test_accept_review(submissions_awaiting_review, indico_client, workflow_id):
