@@ -50,7 +50,7 @@ def test_submit_submission_review(
 ):
     wflow = Workflow(indico_client)
     job = wflow.submit_submission_review(
-        id_pending_scripted, {model_name: wflow_submission_result.predictions.tolist()}
+        id_pending_scripted, {model_name: wflow_submission_result.predictions.to_list()}
     )
     assert isinstance(job, Job)
 
@@ -62,7 +62,7 @@ def test_submit_auto_review(indico_client, id_pending_scripted, model_name):
     # Submit to workflow and get predictions
     wflow = Workflow(indico_client)
     result = wflow.get_submission_results_from_ids([id_pending_scripted])[0]
-    predictions = result.predictions.tolist()
+    predictions = result.predictions.to_list()
     # Review the submission
     field_config = [
         {"function": "accept_by_confidence", "kwargs": {"conf_threshold": 0.99}},
@@ -82,7 +82,7 @@ def test_submit_auto_review(indico_client, id_pending_scripted, model_name):
         id_pending_scripted, {model_name: reviewer.updated_predictions}
     )
     result = wflow.get_submission_results_from_ids([id_pending_scripted])[0]
-    for pred in result.post_review_predictions.tolist():
+    for pred in result.post_review_predictions.to_list():
         label = pred["label"]
         if (
             label in ["Liability Amount", "Date of Appointment"]

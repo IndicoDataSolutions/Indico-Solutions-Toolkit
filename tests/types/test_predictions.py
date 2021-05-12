@@ -6,7 +6,7 @@ from solutions_toolkit.types import Predictions
 
 def test_init(static_preds):
     predictions = Predictions(static_preds)
-    assert predictions.tolist() == static_preds
+    assert predictions.to_list() == static_preds
     assert isinstance(predictions["Name"], list)
     assert isinstance(predictions["Name"][0], dict)
     assert isinstance(predictions["Name"][0]["label"], str)
@@ -15,7 +15,7 @@ def test_init(static_preds):
 def test_remove_by_confidence(predictions_obj):
     predictions_obj.remove_by_confidence(confidence=0.95, labels=["Name", "Department"])
     predictions_obj.remove_by_confidence(confidence=0.9)
-    for pred in predictions_obj.tolist():
+    for pred in predictions_obj.to_list():
         label = pred["label"]
         if label in ["Name", "Department"]:
             assert pred["confidence"][label] > 0.95
