@@ -1,32 +1,14 @@
 from typing import List
-from indico.queries import (
-    RetrieveStorageObject,
-    SubmissionFilter,
-    ListSubmissions,
-    SubmitReview,
-    GetSubmission,
-    WorkflowSubmission,
-    WaitForSubmissions,
-    SubmissionResult,
-    UpdateSubmission,
-    GraphQLRequest,
-    GetDataset,
-    CreateExport,
-    DownloadExport,
-    Submission,
-)
+from indico.queries import RetrieveStorageObject, GraphQLRequest, JobStatus
 from indico import IndicoClient
 
-# TODO -> add job status calls to this class
 
 class IndicoWrapper:
     """
     Class for shared API functionality
     """
 
-    def __init__(
-        self, client: IndicoClient
-    ):
+    def __init__(self, client: IndicoClient):
         """
         Create indico client with user provided arguments
 
@@ -37,6 +19,9 @@ class IndicoWrapper:
 
     def get_storage_object(self, storage_url):
         return self.client.call(RetrieveStorageObject(storage_url))
+
+    def get_job_status(self, job_id: int, wait: bool = True):
+        return self.client.call(JobStatus(id=job_id, wait=wait))
 
     def graphQL_request(self, graphql_query: str, variables: dict):
         return self.client.call(

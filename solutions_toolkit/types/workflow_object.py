@@ -1,14 +1,21 @@
 from typing import List
-
+from .predictions import Predictions
 
 class WorkflowResult:
-    def __init__(self, model_result: dict, model_name: str = None):
-        self.result = model_result
+    def __init__(self, result: dict, model_name: str = None):
+        """
+        Common functionality for workflow result object
+        Args:
+            result (dict): raw workflow result object
+            model_name (str, optional): Extraction/Classification model name . Defaults to None.
+        """
+        self.result = result
         self.model_name = model_name
 
     def set_model_name(self):
         """
-        Checks self.model_name and attempts to set it if not already specified. Raises error if multiple models are available.
+        Attempts to set it if not already specified. 
+        Raises error if multiple models are available and self.model_name specified.
         """
         if self.model_name:
             self._check_is_valid_model_name()
@@ -26,19 +33,24 @@ class WorkflowResult:
             )
 
     @property
-    def predictions(self) -> List[dict]:
+    def predictions(self) -> Predictions:
+        """
+        Return predictions without human review
+        """
         self.set_model_name()
+        if isinstance(self.document_results, list):
+            return Predictions(self.document_results)
         preds = self.document_results[self.model_name]
         if isinstance(preds, dict):
-            return preds["pre_review"]
+            return Predictions(preds["pre_review"])
         else:
-            return preds
+            return Predictions(preds)
 
     @property
     def post_review_predictions(self) -> List[dict]:
         self.set_model_name()
         try:
-            return self.document_results[self.model_name]["final"]
+            return Predictions(self.document_results[self.model_name]["final"])
         except KeyError:
             raise Exception(f"Submission {self.submission_id} has not completed Review")
 
@@ -51,7 +63,7 @@ class WorkflowResult:
         return self.result["results"]["document"]["results"]
 
     @property
-    def available_model_names(self) -> list:
+    def available_model_names(self) -> List[str]:
         return list(self.document_results.keys())
 
     @property
