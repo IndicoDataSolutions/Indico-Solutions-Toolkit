@@ -20,7 +20,7 @@ class CustomOcr:
         """
         Return full document text as string
         """
-        return self.customocr['text']
+        return self.customocr["text"]
 
     @property
     def page_texts(self) -> List[str]:
