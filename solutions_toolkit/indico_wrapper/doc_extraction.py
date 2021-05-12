@@ -1,13 +1,13 @@
-from typing import List
+from typing import List, Union
 from indico import IndicoClient
 from indico.queries import (
     DocumentExtraction,
-    Job,
-    JobStatus
+    Job
 )
 from solutions_toolkit.indico_wrapper import IndicoWrapper
 from solutions_toolkit.ocr import OnDoc
 from solutions_toolkit.ocr import StandardOcr
+from solutions_toolkit.ocr import CustomOcr
 
 
 class DocExtraction(IndicoWrapper):
@@ -15,51 +15,44 @@ class DocExtraction(IndicoWrapper):
     Class to support DocumentExtraction-related API calls
     """
 
-    def __init__(self, client: IndicoClient, preset_config: None):
+    def __init__(self, client: IndicoClient, preset_config: str = "standard", custom_config: dict = None):
+        """
+        Args:
+            preset_config (str): Options are simple, legacy, detailed, ondocument, and standard.
+        """
+        self._preset_config = preset_config
         self.client = client
-        self.preset_config = preset_config
+        self.json_config = {"preset_config": preset_config}
+        if custom_config:
+            self.json_config = custom_config
 
-    def _submit_to_ocr(self, preset_config: str, pdf_filepaths: List[str]) -> List[Job]:
+    def run_ocr(self, filepaths: List[str]) -> List[Union[StandardOcr, OnDoc]]:
         """
         Args:
-            preset_config (str): Preset configuration setting
-            pdf_filepaths (List[str]): List of paths to local documents you would like to submit for extraction
+            filepaths (List[str]): List of paths to local documents you would like to submit for extraction
 
         Returns:
-            jobs (List[Job]): List of job ids
+            extracted_data (List[Union[StandardOcr, OnDoc, CustomOcr]]): data from DocumentExtraction converted to OCR objects
         """
-        return self.client.call(
-            DocumentExtraction(files=pdf_filepaths, json_config={"preset_config": preset_config}))
-
-    def run_ocr(self, preset_config: str, pdf_filepaths: List[str]):
-        """
-        Args:
-            preset_config (str): Preset configuration setting
-            pdf_filepaths (List[str]): List of paths to local documents you would like to submit for extraction
-
-        Returns:
-            extracted_data (List[OcrObjects]): data from DocumentExtraction converted to OCR objects if applicable
-        """
-        jobs = self._submit_to_ocr(preset_config, pdf_filepaths)
+        jobs = self._submit_to_ocr(filepaths)
         extracted_data = []
-        for job in jobs:
-            ocr = self.client.call(JobStatus(id=job.id, wait=True))
-            result = self.get_storage_object(ocr.result)
-            extracted_data.append(self.convert_ocr_objects(preset_config=preset_config, data=result))
+        for ind, job in enumerate(jobs):
+            status = self.check_job_status(id=job.id, wait=True)
+            if status.status == "SUCCESS":
+                result = self.get_storage_object(status.result)
+                extracted_data.append(self._convert_ocr_objects(result))
+            else:
+                raise Exception(f"{filepaths[ind]} {status.status}: {status.result}.")
         return extracted_data
 
-    def convert_ocr_objects(self, preset_config: str, data):
-        """
-        Args:
-            preset_config (str): Preset configuration setting
-            data: data from DocumentExtraction
+    def _submit_to_ocr(self, filepaths: List[str]) -> List[Job]:
+        return self.client.call(
+            DocumentExtraction(files=filepaths, json_config=self.json_config))
 
-        Returns:
-            data (OcrObject): data converted to an ocr object
-        """
-        if preset_config == "ondocument":
-            return OnDoc(data)
-        elif preset_config == "standard":
-            return StandardOcr(data)
+    def _convert_ocr_objects(self, extracted_data: Union[List[dict], dict]) -> Union[StandardOcr, OnDoc, CustomOcr]:
+        if self._preset_config == "ondocument":
+            return OnDoc(extracted_data)
+        elif self._preset_config == "standard" or self.json_config is None:
+            return StandardOcr(extracted_data)
         else:
-            return data
+            return CustomOcr(extracted_data, self._preset_config)
