@@ -1,9 +1,6 @@
 from typing import List, Union
 from indico import IndicoClient
-from indico.queries import (
-    DocumentExtraction,
-    Job
-)
+from indico.queries import DocumentExtraction, Job
 from solutions_toolkit.indico_wrapper import IndicoWrapper
 from solutions_toolkit.ocr import OnDoc
 from solutions_toolkit.ocr import StandardOcr
@@ -15,7 +12,12 @@ class DocExtraction(IndicoWrapper):
     Class to support DocumentExtraction-related API calls
     """
 
-    def __init__(self, client: IndicoClient, preset_config: str = "standard", custom_config: dict = None):
+    def __init__(
+        self,
+        client: IndicoClient,
+        preset_config: str = "standard",
+        custom_config: dict = None,
+    ):
         """
         Args:
             preset_config (str): Options are simple, legacy, detailed, ondocument, and standard.
@@ -47,9 +49,12 @@ class DocExtraction(IndicoWrapper):
 
     def _submit_to_ocr(self, filepaths: List[str]) -> List[Job]:
         return self.client.call(
-            DocumentExtraction(files=filepaths, json_config=self.json_config))
+            DocumentExtraction(files=filepaths, json_config=self.json_config)
+        )
 
-    def _convert_ocr_objects(self, extracted_data: Union[List[dict], dict]) -> Union[StandardOcr, OnDoc, CustomOcr]:
+    def _convert_ocr_objects(
+        self, extracted_data: Union[List[dict], dict]
+    ) -> Union[StandardOcr, OnDoc, CustomOcr]:
         if self._preset_config == "ondocument":
             return OnDoc(extracted_data)
         elif self._preset_config == "standard" or self.json_config is None:
