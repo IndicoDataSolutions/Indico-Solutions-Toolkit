@@ -8,14 +8,13 @@ from indico.queries import (
     GetDataset,
     UpdateWorkflowSettings,
     ListWorkflows,
+    JobStatus,
     DocumentExtraction,
     RetrieveStorageObject,
-    JobStatus
 )
 from indico import IndicoClient
 from indico.errors import IndicoRequestError
 from solutions_toolkit import create_client
-from solutions_toolkit.types import WorkflowResult
 from solutions_toolkit.indico_wrapper import (
     IndicoWrapper,
     Workflow,
