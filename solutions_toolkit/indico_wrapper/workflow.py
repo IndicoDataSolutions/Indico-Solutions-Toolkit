@@ -1,6 +1,6 @@
 import time
 from typing import List
-from indico import IndicoClient
+from indico import IndicoClient, IndicoRequestError
 from indico.queries import (
     Submission,
     SubmissionFilter,
@@ -108,14 +108,18 @@ class Workflow(IndicoWrapper):
         """
         results = []
         for subid in submission_ids:
-            job = self.client.call(SubmissionResult(subid, wait=True, timeout=timeout))
+            try:
+                job = self.client.call(
+                    SubmissionResult(subid, wait=True, timeout=timeout)
+                )
+            except IndicoRequestError as e:
+                message = f"IndicoRequestError with Submission {subid}: {e}"
+                self._error_handle(message, ignore_exceptions)
+                continue
             if job.status != "SUCCESS":
                 message = f"{job.status}! Submission {subid}: {job.result}"
-                if ignore_exceptions:
-                    print(f"Ignoring exception and continuing: {message}")
-                    continue
-                else:
-                    raise Exception(message)
+                self._error_handle(message, ignore_exceptions)
+                continue
             results.append(WorkflowResult(self.get_storage_object(job.result)))
         return results
 
@@ -179,3 +183,9 @@ class Workflow(IndicoWrapper):
                 filters=submission_filter,
             )
         )
+
+    def _error_handle(self, message: str, ignore_exceptions: bool):
+        if ignore_exceptions:
+            print(f"Ignoring exception and continuing: {message}")
+        else:
+            raise Exception(message)
