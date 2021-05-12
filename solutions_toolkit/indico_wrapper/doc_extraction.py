@@ -37,7 +37,7 @@ class DocExtraction(IndicoWrapper):
         jobs = self._submit_to_ocr(filepaths)
         extracted_data = []
         for ind, job in enumerate(jobs):
-            status = self.check_job_status(id=job.id, wait=True)
+            status = self.get_job_status(job.id, True)
             if status.status == "SUCCESS":
                 result = self.get_storage_object(status.result)
                 extracted_data.append(self._convert_ocr_objects(result))
