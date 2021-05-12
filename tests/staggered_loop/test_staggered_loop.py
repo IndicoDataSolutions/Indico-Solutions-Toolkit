@@ -4,7 +4,7 @@ import time
 from solutions_toolkit.indico_wrapper import Reviewer, Workflow
 from solutions_toolkit.indico_wrapper.workflow import COMPLETE_FILTER
 from solutions_toolkit.staggered_loop import StaggeredLoop
-from solutions_toolkit.types import WorkflowResult
+from solutions_toolkit.types import WorkflowResult, Predictions
 from tests.indico_wrapper.test_reviewer import get_change_formatted_predictions
 from indico.queries import UpdateWorkflowSettings, GraphQLRequest, GetSubmission
 
@@ -73,24 +73,38 @@ def test_get_reviewed_prediction_data(workflow_id, indico_client, reviewed_submi
 
 
 def test_convert_predictions_for_snapshot(stagger_wrapper):
-    predictions = [
-        {"text": "abc", "start": 1, "end": 4, "confidence": None, "label": "letters"},
-        {"text": "def", "start": 4, "end": 7, "confidence": None, "label": "letters"},
-        {
-            "text": "shouldbeignored",
-            "start": 0,
-            "end": 0,
-            "confidence": None,
-            "label": "manuallyadded",
-        },
-        {
-            "text": "shouldbeignored",
-            "start": None,
-            "end": None,
-            "confidence": None,
-            "label": "manuallyadded",
-        },
-    ]
+    predictions = Predictions(
+        [
+            {
+                "text": "abc",
+                "start": 1,
+                "end": 4,
+                "confidence": None,
+                "label": "letters",
+            },
+            {
+                "text": "def",
+                "start": 4,
+                "end": 7,
+                "confidence": None,
+                "label": "letters",
+            },
+            {
+                "text": "shouldbeignored",
+                "start": 0,
+                "end": 0,
+                "confidence": None,
+                "label": "manuallyadded",
+            },
+            {
+                "text": "shouldbeignored",
+                "start": None,
+                "end": None,
+                "confidence": None,
+                "label": "manuallyadded",
+            },
+        ]
+    )
     stagger_wrapper.model_name = ""
     formatted_predictions = stagger_wrapper._reformat_predictions(predictions)
     assert len(formatted_predictions) == 2
@@ -102,8 +116,8 @@ def test_convert_predictions_for_snapshot(stagger_wrapper):
 def test_get_nested_predictions(stagger_wrapper, static_wflow_result):
     stagger_wrapper.model_name = ""
     predictions = stagger_wrapper._get_nested_predictions(static_wflow_result)
-    assert isinstance(predictions, list)
-    assert len(predictions) == 2
+    assert isinstance(predictions, Predictions)
+    assert predictions.num_predictions == 2
 
 
 def test_get_nested_predictions_bad_model_name(stagger_wrapper, static_wflow_result):
@@ -116,7 +130,7 @@ def test_get_nested_predictions_no_model_name(stagger_wrapper, static_wflow_resu
     stagger_wrapper.model_name = ""
 
     predictions = stagger_wrapper._get_nested_predictions(static_wflow_result)
-    assert len(predictions) == 2
+    assert predictions.num_predictions == 2
 
 
 def test_get_nested_predictions_no_model_name_fail(stagger_wrapper):

@@ -3,12 +3,12 @@ from typing import List
 import pandas as pd
 from indico import IndicoClient
 from solutions_toolkit.indico_wrapper import Workflow
-from solutions_toolkit.types import WorkflowResult
+from solutions_toolkit.types import WorkflowResult, Predictions
 
 
 class StaggeredLoop(Workflow):
 
-    _keys_to_remove_from_prediction = ["confidence", "text"]
+    _keys_to_remove = ["confidence", "text"]
 
     def __init__(self, client: IndicoClient):
         """
@@ -69,25 +69,12 @@ class StaggeredLoop(Workflow):
             predictions = self._reformat_predictions(predictions)
             self._snap_formatted_predictions.append(predictions)
 
-    def _reformat_predictions(self, predictions: List[dict]) -> List[dict]:
-        reformatted_predictions = []
-        for pred in predictions:
-            if self._is_not_manually_added_prediction(pred):
-                self._remove_unneeded_keys(pred)
-                reformatted_predictions.append(pred)
-        return reformatted_predictions
+    def _reformat_predictions(self, predictions: Predictions) -> List[dict]:
+        predictions.remove_human_added_predictions()
+        predictions.remove_keys(self._keys_to_remove)
+        return predictions.tolist()
 
-    def _get_nested_predictions(self, wf_result: WorkflowResult) -> List[dict]:
+    def _get_nested_predictions(self, wf_result: WorkflowResult) -> Predictions:
         if self.model_name != "":
             wf_result.model_name = self.model_name
         return wf_result.post_review_predictions
-
-    def _is_not_manually_added_prediction(self, prediction: dict) -> bool:
-        if isinstance(prediction["start"], int) and isinstance(prediction["end"], int):
-            if prediction["end"] > prediction["start"]:
-                return True
-        return False
-
-    def _remove_unneeded_keys(self, prediction: dict):
-        for key_to_remove in self._keys_to_remove_from_prediction:
-            prediction.pop(key_to_remove, None)
