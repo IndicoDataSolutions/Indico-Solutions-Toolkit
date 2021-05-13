@@ -31,4 +31,6 @@ class CustomOcr:
         if "pages" in self.customocr:
             return [page["text"] for page in self.customocr["pages"]]
         else:
-            raise Exception(f"JSON configuration setting does not have page-level text.")
+            raise Exception(
+                f"JSON configuration setting does not have page-level text."
+            )
