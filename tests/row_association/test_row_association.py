@@ -10,7 +10,7 @@ def test_grouper_row_number_false_add_to_all(three_row_invoice_preds, three_row_
     litems.assign_row_number()
     assert len(three_row_invoice_preds) - 1 == len(litems._line_item_predictions), "all predictions present in update"
     assert len(litems._non_line_item_predictions) == 1, "non-line item field not ignored"
-    assert len(three_row_invoice_preds) == len(litems.updated_predictions), "should include all original preds"
+    assert len(three_row_invoice_preds) == len(litems.updated_predictions.tolist()), "should include all original preds"
     assert litems._non_line_item_predictions[0]["label"] == "should be ignored"
     row_count = defaultdict(list)
     for pred in litems._line_item_predictions:
@@ -41,10 +41,9 @@ def test_grouper_no_token_match_no_exception(three_row_invoice_preds, three_row_
     litems = Association(["work_order_number", "line_date", "work_order_tonnage"], three_row_invoice_preds)
     litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
     litems.assign_row_number()
-    unmatched_prediction = [i for i in litems.updated_predictions if "error" in i]
-    assert len(unmatched_prediction) == 1
-    assert unmatched_prediction[0]["error"] == "No matching token found"
-    assert unmatched_prediction[0]["row_number"] == None
+    assert len(litems._errored_predictions) == 1
+    assert litems._errored_predictions[0]["error"] == "No matching token found for line item field"
+    assert "row_number" not in litems._errored_predictions[0]
 
 def test_get_line_items_in_groups(three_row_invoice_preds, three_row_invoice_tokens):
     litems = Association(
