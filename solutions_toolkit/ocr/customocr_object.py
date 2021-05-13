@@ -7,13 +7,11 @@ class CustomOcr:
     of full text and page-level text.
     """
 
-    def __init__(self, customocr: Union[List[dict], dict], preset_config: str):
+    def __init__(self, customocr: Union[List[dict], dict]):
         """
         customocr Union[List[dict], dict]: result object from indico.queries.DocumentExtraction
         """
         self.customocr = customocr
-        self.preset_config = preset_config
-        self.json_config = {"preset_config": preset_config}
 
     @property
     def full_text(self) -> str:
@@ -27,5 +25,7 @@ class CustomOcr:
         """
         Return list of page-level text
         """
-        if self.preset_config == "detailed" or self.preset_config == "simple":
+        if "pages" in self.customocr:
             return [page["text"] for page in self.customocr["pages"]]
+        else:
+            raise Exception(f"Preset configuration setting does not have page-level text.")

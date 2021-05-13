@@ -28,7 +28,7 @@ class DocExtraction(IndicoWrapper):
         if custom_config:
             self.json_config = custom_config
 
-    def run_ocr(self, filepaths: List[str]) -> List[Union[StandardOcr, OnDoc]]:
+    def run_ocr(self, filepaths: List[str]) -> List[Union[StandardOcr, OnDoc, CustomOcr]]:
         """
         Args:
             filepaths (List[str]): List of paths to local documents you would like to submit for extraction
