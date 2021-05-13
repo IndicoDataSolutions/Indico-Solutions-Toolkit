@@ -30,14 +30,14 @@ class DocExtraction(IndicoWrapper):
 
     def run_ocr(
         self, filepaths: List[str], text_setting: str = None
-    ) -> List[Union[StandardOcr, OnDoc, CustomOcr]]:
+    ) -> List[Union[StandardOcr, OnDoc, CustomOcr, str]]:
         """
         Args:
             filepaths (List[str]): List of paths to local documents you would like to submit for extraction
             text_setting (str): Options are full_text and page_texts.
 
         Returns:
-            extracted_data (List[Union[StandardOcr, OnDoc, CustomOcr]]): data from DocumentExtraction converted to OCR objects
+            extracted_data (List[Union[StandardOcr, OnDoc, CustomOcr, str]]): data from DocumentExtraction converted to OCR objects or string text
         """
         jobs = self._submit_to_ocr(filepaths)
         extracted_data = []

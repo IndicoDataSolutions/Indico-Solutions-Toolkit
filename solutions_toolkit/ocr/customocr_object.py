@@ -18,9 +18,9 @@ class CustomOcr:
         """
         Return full document text as string
         """
-        if self.customocr is dict and "text" in self.customocr:
+        if isinstance(self.customocr, dict) and "text" in self.customocr:
             return self.customocr["text"]
-        elif self.customocr is List[dict] and "pages" in self.customocr[0]:
+        elif isinstance(self.customocr, list) and "pages" in self.customocr[0]:
             if "text" in self.customocr[0]["pages"][0]:
                 return "\n".join(page["pages"][0]["text"] for page in self.customocr)
         raise Exception(f"JSON configuration setting does not have full text.")
@@ -30,10 +30,10 @@ class CustomOcr:
         """
         Return list of page-level text
         """
-        if self.customocr is dict and "pages" in self.customocr:
+        if isinstance(self.customocr, dict) and "pages" in self.customocr:
             if "text" in self.customocr["pages"]:
                 return [page["text"] for page in self.customocr["pages"]]
-        elif self.customocr is List[dict] and "pages" in self.customocr[0]:
+        elif isinstance(self.customocr, list) and "pages" in self.customocr[0]:
             if "text" in self.customocr[0]["pages"][0]:
                 return [page["pages"][0]["text"] for page in self.customocr]
         raise Exception(f"JSON configuration setting does not have page-level text.")
