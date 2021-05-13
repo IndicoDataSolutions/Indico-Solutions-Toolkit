@@ -23,7 +23,7 @@ class IndicoWrapper:
     def get_job_status(self, job_id: int, wait: bool = True):
         return self.client.call(JobStatus(id=job_id, wait=wait))
 
-    def graphQL_request(self, graphql_query: str, variables: dict):
+    def graphQL_request(self, graphql_query: str, variables: dict = None):
         return self.client.call(
             GraphQLRequest(query=graphql_query, variables=variables)
         )
