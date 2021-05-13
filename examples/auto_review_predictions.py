@@ -24,7 +24,7 @@ submission_ids = wflow.submit_documents_to_workflow(
     WORKFLOW_ID, pdf_filepaths=["./disclosures/disclosure_1.pdf"]
 )
 wf_results = wflow.get_submission_results_from_ids(submission_ids)
-predictions = wf_results[0].predictions.tolist()
+predictions = wf_results[0].predictions.to_list()
 
 # Set up reviewer and review predictions
 review_config = ReviewConfiguration(
