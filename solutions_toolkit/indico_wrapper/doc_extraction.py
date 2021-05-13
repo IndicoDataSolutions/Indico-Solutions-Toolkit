@@ -17,24 +17,24 @@ class DocExtraction(IndicoWrapper):
         client: IndicoClient,
         preset_config: str = "standard",
         custom_config: dict = None,
-        text_setting: str = None
     ):
         """
         Args:
             preset_config (str): Options are simple, legacy, detailed, ondocument, and standard.
-            text_setting (str): Options are full_text and page_texts.
         """
         self._preset_config = preset_config
         self.client = client
         self.json_config = {"preset_config": preset_config}
-        self.text_setting = text_setting
         if custom_config:
             self.json_config = custom_config
 
-    def run_ocr(self, filepaths: List[str]) -> List[Union[StandardOcr, OnDoc, CustomOcr]]:
+    def run_ocr(
+        self, filepaths: List[str], text_setting: str = None
+    ) -> List[Union[StandardOcr, OnDoc, CustomOcr]]:
         """
         Args:
             filepaths (List[str]): List of paths to local documents you would like to submit for extraction
+            text_setting (str): Options are full_text and page_texts.
 
         Returns:
             extracted_data (List[Union[StandardOcr, OnDoc, CustomOcr]]): data from DocumentExtraction converted to OCR objects
@@ -45,9 +45,9 @@ class DocExtraction(IndicoWrapper):
             status = self.get_job_status(job.id, True)
             if status.status == "SUCCESS":
                 result = self.get_storage_object(status.result)
-                if self.text_setting == "full_text":
+                if text_setting == "full_text":
                     extracted_data.append(self._convert_ocr_objects(result).full_text)
-                elif self.text_setting == "page_texts":
+                elif text_setting == "page_texts":
                     extracted_data.append(self._convert_ocr_objects(result).page_texts)
                 else:
                     extracted_data.append(self._convert_ocr_objects(result))
