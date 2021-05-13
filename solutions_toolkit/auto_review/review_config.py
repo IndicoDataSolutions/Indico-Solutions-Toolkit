@@ -10,7 +10,7 @@ class ReviewConfiguration:
     ):
         """
         Args:
-        field_config (List[dict]): list of function config dictionaries
+        field_config (List[dict]): list of function config dictionaries. Available functions defined in auto_review_functions.py
         function config:
         {
             "function": "reject_by_confidence",
