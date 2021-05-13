@@ -11,7 +11,6 @@ class Predictions:
     """
     Functionality for common extraction prediction use cases
     """
-
     def __init__(self, predictions: List[dict]):
         self._preds = predictions
 
@@ -71,7 +70,7 @@ class Predictions:
             i for i in self._preds if not self._is_manually_added_prediction(i)
         ]
 
-    def tolist(self):
+    def to_list(self):
         return self._preds
 
     def _is_manually_added_prediction(self, prediction: dict) -> bool:
