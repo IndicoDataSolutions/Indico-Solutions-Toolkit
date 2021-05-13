@@ -10,7 +10,7 @@ def test_grouper_row_number_false_add_to_all(three_row_invoice_preds, three_row_
     litems.assign_row_number()
     assert len(three_row_invoice_preds) - 1 == len(litems._line_item_predictions), "all predictions present in update"
     assert len(litems._non_line_item_predictions) == 1, "non-line item field not ignored"
-    assert len(three_row_invoice_preds) == len(litems.updated_predictions.tolist()), "should include all original preds"
+    assert len(three_row_invoice_preds) == len(litems.updated_predictions.to_list()), "should include all original preds"
     assert litems._non_line_item_predictions[0]["label"] == "should be ignored"
     row_count = defaultdict(list)
     for pred in litems._line_item_predictions:
