@@ -1,6 +1,4 @@
-from solutions_toolkit.ocr import OnDoc
 from solutions_toolkit.ocr import StandardOcr
-from solutions_toolkit.ocr import CustomOcr
 
 
 def test_run_ocr(doc_extraction_wrapper, pdf_filepath):
