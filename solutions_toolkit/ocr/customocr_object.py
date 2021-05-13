@@ -18,7 +18,10 @@ class CustomOcr:
         """
         Return full document text as string
         """
-        return self.customocr["text"]
+        if "text" in self.customocr:
+            return self.customocr["text"]
+        else:
+            raise Exception(f"JSON configuration setting does not have full text.")
 
     @property
     def page_texts(self) -> List[str]:
@@ -28,4 +31,4 @@ class CustomOcr:
         if "pages" in self.customocr:
             return [page["text"] for page in self.customocr["pages"]]
         else:
-            raise Exception(f"Preset configuration setting does not have page-level text.")
+            raise Exception(f"JSON configuration setting does not have page-level text.")

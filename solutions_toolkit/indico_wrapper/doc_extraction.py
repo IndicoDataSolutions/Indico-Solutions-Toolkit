@@ -17,14 +17,17 @@ class DocExtraction(IndicoWrapper):
         client: IndicoClient,
         preset_config: str = "standard",
         custom_config: dict = None,
+        text_setting: str = None
     ):
         """
         Args:
             preset_config (str): Options are simple, legacy, detailed, ondocument, and standard.
+            text_setting (str): Options are full_text and page_texts.
         """
         self._preset_config = preset_config
         self.client = client
         self.json_config = {"preset_config": preset_config}
+        self.text_setting = text_setting
         if custom_config:
             self.json_config = custom_config
 
@@ -42,7 +45,12 @@ class DocExtraction(IndicoWrapper):
             status = self.get_job_status(job.id, True)
             if status.status == "SUCCESS":
                 result = self.get_storage_object(status.result)
-                extracted_data.append(self._convert_ocr_objects(result))
+                if self.text_setting == "full_text":
+                    extracted_data.append(self._convert_ocr_objects(result).full_text)
+                elif self.text_setting == "page_texts":
+                    extracted_data.append(self._convert_ocr_objects(result).page_texts)
+                else:
+                    extracted_data.append(self._convert_ocr_objects(result))
             else:
                 raise Exception(f"{filepaths[ind]} {status.status}: {status.result}.")
         return extracted_data
@@ -60,4 +68,4 @@ class DocExtraction(IndicoWrapper):
         elif self._preset_config == "standard" or self.json_config is None:
             return StandardOcr(extracted_data)
         else:
-            return CustomOcr(extracted_data, self._preset_config)
+            return CustomOcr(extracted_data)
