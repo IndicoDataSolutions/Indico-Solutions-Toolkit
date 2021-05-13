@@ -1,11 +1,10 @@
 """Associate row items"""
-from typing import List
+from solutions_toolkit.types import Predictions
+from typing import List, Union
 from collections import defaultdict
 from copy import deepcopy
 import os
 import json
-
-# TODO: separate line item predictions with no matching predictions from self._line_item_predictions
 
 
 class Association:
@@ -25,7 +24,11 @@ class Association:
     updated_preds: List[dict] = litems.updated_predictions
     """
 
-    def __init__(self, line_item_fields: List[str], predictions: List[dict] = None):
+    def __init__(
+        self,
+        line_item_fields: List[str],
+        predictions: Union[List[dict], Predictions] = None,
+    ):
         """
         Args:
         predictions (List[dict]): List of extraction predictions
@@ -35,13 +38,20 @@ class Association:
         updated_predictions (List[dict]): predictions updated with row_number
         """
         self.line_item_fields: List[str] = line_item_fields
+        if isinstance(predictions, Predictions):
+            predictions = predictions.to_list()
         self.predictions: List[dict] = predictions
         self._line_item_predictions: List[dict] = []
         self._non_line_item_predictions: List[dict] = []
+        self._errored_predictions: List[dict] = []
 
     @property
-    def updated_predictions(self):
-        return self._line_item_predictions + self._non_line_item_predictions
+    def updated_predictions(self) -> Predictions:
+        return Predictions(
+            self._line_item_predictions
+            + self._non_line_item_predictions
+            + self._errored_predictions
+        )
 
     @staticmethod
     def match_pred_to_token(
@@ -53,10 +63,9 @@ class Association:
         Args:
             pred (dict): Indico extraction model prediction
             ocr_tokens (List[dict]): List of OCR tokens
-            raise_for_no_match (bool, optional): Raise an exception if no matching token found. Defaults to True.
 
         Raises:
-            Exception: No matching token was found
+            ValueError: No matching token was found
 
         Returns:
             [int]: index in ocr tokens where prediction matched
@@ -72,24 +81,17 @@ class Association:
                 _update_bounding_metadata_for_pred(pred, token)
             elif token["doc_offset"]["start"] > pred["end"]:
                 break
-        _check_if_token_match_found(pred, raise_for_no_match)
+        _check_if_token_match_found(pred)
         return match_token_index
 
     def get_bounding_boxes(
-        self,
-        ocr_tokens: List[dict],
-        add_boxes_to_all: bool = False,
-        raise_for_no_match: bool = True,
-        in_place: bool = True,
-    ) -> List[dict]:
+        self, ocr_tokens: List[dict], raise_for_no_match: bool = True,
+    ):
         """
-        Adds keys for bounding box top/bottom and page number to line item extraction predictions,
-        and adds all preds to property self._line_item_predictions
+        Adds keys for bounding box top/bottom/left/right and page number to line item predictions
         Args:
         ocr_tokens (list of dicts): OCR tokens from 'ondocument' config (workflow default)
         raise_for_no_match (bool): raise exception if a matching token isn't found for a prediction
-        add_boxes_to_all (bool): add bounding box and page number metadata to non line item predictions
-        in_place (bool): if False, returns tokens with bounding boxes
         """
         if len(self.predictions) == 0:
             raise Exception(
@@ -99,29 +101,30 @@ class Association:
         match_index = 0
         for pred in predictions:
             if self.is_line_item_pred(pred):
-                match_index = self.match_pred_to_token(
-                    pred, ocr_tokens[match_index:], raise_for_no_match
-                )
-                self._line_item_predictions.append(pred)
-            else:
-                if add_boxes_to_all:
+                try:
                     match_index = self.match_pred_to_token(
                         pred, ocr_tokens[match_index:], raise_for_no_match
                     )
+                    self._line_item_predictions.append(pred)
+                    continue
+                except ValueError as e:
+                    if raise_for_no_match:
+                        raise ValueError(e)
+                    else:
+                        print(f"Ignoring Error: {e}")
+                        self._errored_predictions.append(pred)
+            else:
                 self._non_line_item_predictions.append(pred)
-        if not in_place:
-            return self.updated_predictions
 
     def is_line_item_pred(self, pred: dict):
         if pred["label"] in self.line_item_fields:
             return True
         return False
 
-    def assign_row_number(self, in_place: bool = True):
+    def assign_row_number(self):
         """
         Adds a row_number:int key/val pair based on bounding box position and page
-        Args:
-        in_place (bool): if False, returns updated_predictions
+
         Updates:
         self._line_item_predictions (list of dicts): predictions with row_number added
         """
@@ -131,9 +134,7 @@ class Association:
         page_number = starting_pred["page_num"]
         row_number = 1
         for pred in self._line_item_predictions:
-            if "error" in pred:
-                continue
-            elif pred["bbTop"] > min_bot or pred["page_num"] != page_number:
+            if pred["bbTop"] > min_bot or pred["page_num"] != page_number:
                 row_number += 1
                 page_number = pred["page_num"]
                 max_top, min_bot = pred["bbTop"], pred["bbBot"]
@@ -141,8 +142,6 @@ class Association:
                 max_top = min(pred["bbTop"], max_top)
                 min_bot = max(pred["bbBot"], min_bot)
             pred["row_number"] = row_number
-        if not in_place:
-            return self.updated_predictions
 
     def get_line_items_in_groups(self) -> List[List[dict]]:
         """
@@ -151,8 +150,7 @@ class Association:
         """
         rows = defaultdict(list)
         for pred in self._line_item_predictions:
-            if "error" not in pred:
-                rows[pred["row_number"]].append(pred)
+            rows[pred["row_number"]].append(pred)
         return list(rows.values())
 
     def _get_first_valid_line_item_pred(self) -> dict:
@@ -160,37 +158,13 @@ class Association:
             raise Exception(
                 "Whoops! You have no line_item_fields predictions. Did you run get_bounding_boxes?"
             )
-        try:
-            return next(
-                pred for pred in self._line_item_predictions if "error" not in pred
-            )
-        except StopIteration:
-            raise Exception(
-                "No matching tokens were found for your line item predictions"
-            )
-
-    def remove_meta_keys_from_dict(
-        self, keys_to_remove=("bbTop", "bbBot", "bbLeft", "bbRight")
-    ):
-        """
-        Remove meta keys from prediction dictionaries. Other options that you might want
-        to remove include: "page_num" and/or "row_number", "confidence", etc.
-        Args:
-            keys_to_remove (tuple, optional): keys to remove from prediction dictionaries.
-        """
-        for remove_key in keys_to_remove:
-            for pred in self._line_item_predictions:
-                pred.pop(remove_key, None)
-            for pred in self._non_line_item_predictions:
-                pred.pop(remove_key, None)
-
+        return self._line_item_predictions[0]
 
 def sequences_overlap(x: dict, y: dict) -> bool:
     """
     Boolean return value indicates whether or not seqs overlap
     """
     return x["start"] < y["end"] and y["start"] < x["end"]
-
 
 def _add_bounding_metadata_to_pred(pred: dict, token: dict):
     pred["bbTop"] = token["position"]["bbTop"]
@@ -199,29 +173,10 @@ def _add_bounding_metadata_to_pred(pred: dict, token: dict):
     pred["bbRight"] = token["position"]["bbRight"]
     pred["page_num"] = token["page_num"]
 
-
-def _check_if_token_match_found(pred: dict, raise_for_no_match: bool = True):
-    if "bbTop" in pred:
-        return True
-    elif not raise_for_no_match:
-        _add_metadata_to_unmatched_pred(pred)
-    else:
-        raise Exception(f"Couldn't match a token to this prediction:\n{pred}")
-
-
-def _add_metadata_to_unmatched_pred(pred: dict):
-    """
-    If no token match found and not raising exception, add enough data to be able to process
-    through assign_row_number
-    """
-    pred["error"] = "No matching token found"
-    pred["bbTop"] = None
-    pred["bbBot"] = None
-    pred["bbLeft"] = None
-    pred["bbRight"] = None
-    pred["page_num"] = None
-    pred["row_number"] = None
-
+def _check_if_token_match_found(pred: dict):
+    if "bbTop" not in pred:
+        pred["error"] = "No matching token found for line item field"
+        raise ValueError(f"Couldn't match a token to this prediction:\n{pred}")
 
 def _update_bounding_metadata_for_pred(pred: dict, token: dict):
     pred["bbTop"] = min(token["position"]["bbTop"], pred["bbTop"])

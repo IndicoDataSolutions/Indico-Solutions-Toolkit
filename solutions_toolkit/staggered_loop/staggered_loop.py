@@ -72,7 +72,7 @@ class StaggeredLoop(Workflow):
     def _reformat_predictions(self, predictions: Predictions) -> List[dict]:
         predictions.remove_human_added_predictions()
         predictions.remove_keys(self._keys_to_remove)
-        return predictions.tolist()
+        return predictions.to_list()
 
     def _get_nested_predictions(self, wf_result: WorkflowResult) -> Predictions:
         if self.model_name != "":
