@@ -1,6 +1,6 @@
 import pytest
 import json
-from solutions_toolkit.types import Predictions, WorkflowResult
+from indico_toolkit.types import Predictions, WorkflowResult
 
 
 @pytest.fixture(scope="module")

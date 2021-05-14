@@ -10,7 +10,7 @@ from indico.queries import (
     ProcessFiles,
     DeleteDataset,
 )
-from solutions_toolkit.indico_wrapper import IndicoWrapper
+from indico_toolkit.indico_wrapper import IndicoWrapper
 
 # TODO: API consistency, sometimes dataset_id as kwargs other times expects w/ instantiation
 

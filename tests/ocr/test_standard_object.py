@@ -1,4 +1,4 @@
-from solutions_toolkit.ocr import StandardOcr
+from indico_toolkit.ocr import StandardOcr
 
 
 def test_standard_object_full_text(standard_ocr_object):

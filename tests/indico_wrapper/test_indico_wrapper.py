@@ -1,6 +1,6 @@
 from indico import IndicoClient, types
 from indico.queries import CreateStorageURLs
-from solutions_toolkit.indico_wrapper import IndicoWrapper
+from indico_toolkit.indico_wrapper import IndicoWrapper
 
 def test_get_storage_object(indico_client, pdf_filepath):
     indico_wrapper = IndicoWrapper(indico_client)

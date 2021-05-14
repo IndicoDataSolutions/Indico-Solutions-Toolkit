@@ -1,7 +1,7 @@
 import json
 import time
 from indico import IndicoClient
-from solutions_toolkit.indico_wrapper import Workflow
+from indico_toolkit.indico_wrapper import Workflow
 
 
 class Reviewer(Workflow):
