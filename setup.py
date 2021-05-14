@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="solutions-toolkit",
+    name="indico-toolkit",
     packages=find_packages(exclude=["tests"]),
     description="""Tools to assist with Indico IPA development""",
     license="MIT License (See LICENSE)",

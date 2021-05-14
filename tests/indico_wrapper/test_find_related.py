@@ -1,4 +1,4 @@
-from solutions_toolkit.indico_wrapper import FindRelated
+from indico_toolkit.indico_wrapper import FindRelated
 
 def test_workflow_id(workflow_id, indico_client, dataset_obj):
     finder = FindRelated(indico_client)

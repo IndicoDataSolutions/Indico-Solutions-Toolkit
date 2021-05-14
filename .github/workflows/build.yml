@@ -30,7 +30,7 @@ jobs:
       
       - name: Run formatter
         run: |
-          black solutions_toolkit
+          black indico_toolkit
 
       - name: Run tests
         run: |

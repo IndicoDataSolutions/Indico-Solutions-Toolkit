@@ -7,12 +7,12 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   solutions_toolkit.row_association
+   indico_toolkit.row_association
 
 Module contents
 ---------------
 
-.. automodule:: solutions_toolkit
+.. automodule:: indico_toolkit
    :members:
    :undoc-members:
    :show-inheritance:

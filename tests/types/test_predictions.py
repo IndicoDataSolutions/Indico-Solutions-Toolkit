@@ -1,7 +1,7 @@
 import tempfile
 import pandas as pd
 from copy import deepcopy
-from solutions_toolkit.types import Predictions
+from indico_toolkit.types import Predictions
 
 
 def test_init(static_preds):

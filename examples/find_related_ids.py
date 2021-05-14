@@ -1,5 +1,5 @@
-from solutions_toolkit.indico_wrapper import FindRelated
-from solutions_toolkit import create_client
+from indico_toolkit.indico_wrapper import FindRelated
+from indico_toolkit import create_client
 
 MODEL_ID = 33318
 HOST = "app.indico.io"

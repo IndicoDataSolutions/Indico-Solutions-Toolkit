@@ -15,7 +15,7 @@ coverage report -m
 ### Examples 
 How to add row_number key to your predictions
 ```
-from solutions_toolkit.row_association import Association
+from indico_toolkit.row_association import Association
 
 litems = Association(
         line_item_fields=["line_value", "line_date"], 
@@ -30,7 +30,7 @@ updated_preds: List[dict] = litems.updated_predictions
 
 How to auto-review predictions
 ```
-from solutions_toolkit.auto_review import ReviewConfiguration, Reviewer
+from indico_toolkit.auto_review import ReviewConfiguration, Reviewer
 
 field_config = [
     {
@@ -55,7 +55,7 @@ updated_preds: List[dict] = reviewer.updated_predictions
 
 How to use the OCR modules
 ```
-from solutions_toolkit.ocr import StandardOcr
+from indico_toolkit.ocr import StandardOcr
 
 job = client.call(DocumentExtraction(files=[src_path], json_config={"preset_config": "standard"}))
 job = client.call(JobStatus(id=job[0].id, wait=True))

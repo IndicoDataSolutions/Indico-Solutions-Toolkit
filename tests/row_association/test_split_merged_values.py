@@ -1,5 +1,5 @@
 import pytest
-from solutions_toolkit.row_association import split_prediction_into_many
+from indico_toolkit.row_association import split_prediction_into_many
 
 
 def test_split_prediction_into_many_three_splits():

@@ -1,6 +1,6 @@
 from typing import List
 from indico import IndicoClient
-from solutions_toolkit.indico_wrapper import IndicoWrapper
+from .indico_wrapper import IndicoWrapper
 
 
 class FindRelated(IndicoWrapper):

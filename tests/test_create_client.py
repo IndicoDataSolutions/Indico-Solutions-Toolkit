@@ -1,6 +1,6 @@
 import os
 import pytest
-from solutions_toolkit import create_client
+from indico_toolkit import create_client
 
 HOST_URL = os.environ.get("HOST_URL")
 API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")

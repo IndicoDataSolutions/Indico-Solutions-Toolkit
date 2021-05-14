@@ -1,5 +1,5 @@
 """Associate row items"""
-from solutions_toolkit.types import Predictions
+from indico_toolkit.types import Predictions
 from typing import List, Union
 from collections import defaultdict
 from copy import deepcopy
