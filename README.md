@@ -1,69 +1,65 @@
 
-# Indico-Solutions-Toolkit
-A library to assist with Indico IPA development
+# Indico-Toolkit
+A library to assist Indico IPA development
 
 [![Build Status][build-image]][build-url]
 
+### Available Functionality
+The indico-toolkit provides classes and functions to help achieve the following:
+* Easy batch workflow submission and retrieval.
+* Classes that simplify dataset/doc-extraction functionality.
+* Row and line item association. 
+* Staggered loop learning retrieval and reformatting. 
+* Helpful Scripted/Auto Review processing and submission.
+* Common manipulation of prediction/workflow reuslts.
+* Objects to simplify parsing OCR responses.
+* Finder class to quicky obtain associated model/dataset/workflow Ids.
+* Class to spoof a human reviewer.
+
+
+### Example Useage
+For scripted examples on how to use see the toolkit, see the [examples directory](https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/tree/main/examples) 
 
 ### Tests
+To run the test suite you will need to set the following environment variables: HOST_URL, API_TOKEN_PATH.
+You can also set WORKFLOW_ID (workflow w/ single extraction model), MODEL_NAME (extraction model name) 
+and DATASET_ID (uploaded dataset). If you don't set these 3 env variables, test configuration will 
+upload a dataset and create a workflow. 
+```
+pytest
+```
 To see test coverage
 ```
 coverage run --omit 'venv/*' -m pytest
 coverage report -m
 ```
 
-### Examples 
-How to add row_number key to your predictions
+### Example 
+How to get prediction results and write the results to CSV
 ```
-from indico_toolkit.row_association import Association
+from indico_toolkit.indico_wrapper import Workflow
+from indico_toolkit.pipelines import FileProcessing
+from indico_toolkit import create_client
 
-litems = Association(
-        line_item_fields=["line_value", "line_date"], 
-        predictions=[{"label": "line_date", "start": 12, "text": "1/2/2021".....}]
-    )
+WORKFLOW_ID = 1418
+HOST = "app.indico.io"
+API_TOKEN_PATH = "./indico_api_token.txt"
 
-litems.get_bounding_boxes(ocr_tokens=[{"postion"...,},])
-litems.assign_row_number()
+# Instantiate the workflow class
+client = create_client(HOST, API_TOKEN_PATH)
+wflow = Workflow(client)
 
-updated_preds: List[dict] = litems.updated_predictions
-```
+# Collect files to submit
+fp = FileProcessing()
+fp.get_file_paths_from_dir("./datasets/disclosures/")
 
-How to auto-review predictions
-```
-from indico_toolkit.auto_review import ReviewConfiguration, Reviewer
+# Submit documents, await the results and write the results to CSV in batches of 10
+for paths in fp.batch_files(batch_size=10):
+    submission_ids = wflow.submit_documents_to_workflow(WORKFLOW_ID, paths)
+    submission_results = wflow.get_submission_results_from_ids(submission_ids)
+    for filename, result in zip(paths, submission_results):
+        result.predictions.to_csv("./results.csv", filename=filename, append_if_exists=True)
 
-field_config = [
-    {
-        "function": "accept_by_confidence",
-        "kwargs": {
-            "label": ["Name"],
-            "conf_threshold": 0.95
-        }
-    },
-    ...
-]
-review_config = ReviewConfiguration(field_config)
-
-reviewer = Reviewer(
-        predictions=[{"label": "Name", "start": 12, "text": "Jane Doe".....}],
-        review_config=review_config
-    )
-reviewer.apply_reviews()
-updated_preds: List[dict] = reviewer.updated_predictions
-```
-
-
-How to use the OCR modules
-```
-from indico_toolkit.ocr import StandardOcr
-
-job = client.call(DocumentExtraction(files=[src_path], json_config={"preset_config": "standard"}))
-job = client.call(JobStatus(id=job[0].id, wait=True))
-extracted_data = client.call(RetrieveStorageObject(job.result))
-results = StandardOcr(extracted_data)
-
-print(results.full_text)
-print(results.page_results)
 ```
 
 <!-- Badges -->
