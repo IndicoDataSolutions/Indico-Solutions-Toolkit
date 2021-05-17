@@ -1,4 +1,9 @@
 from indico_toolkit.ocr import StandardOcr
+from indico_toolkit.indico_wrapper import DocExtraction
+from indico_toolkit import create_client
+
+HOST = "app.indico.io"
+API_TOKEN_PATH = "./indico_api_token.txt"
 
 
 def test_run_ocr_standard(doc_extraction_standard, pdf_filepath):
@@ -18,7 +23,16 @@ def test_run_ocr_standard(doc_extraction_standard, pdf_filepath):
     assert len(page_texts_result[0][0]) == 1153
 
 
-def test_run_ocr_custom(doc_extraction_custom, pdf_filepath):
+def test_run_ocr_custom(pdf_filepath):
+    client = create_client(HOST, API_TOKEN_PATH)
+    doc_extraction_custom = DocExtraction(client=client, custom_config={
+        "top_level": "page",
+        "nest": False,
+        "reblocking": ["style", "list", "inline-header"],
+        "pages": ["text", "size", "dpi", "doc_offset", "page_num", "image", "thumbnail"],
+        "blocks": ["text", "doc_offset", "page_offset", "position", "block_type", "page_num"],
+        "tokens": ["text", "doc_offset", "page_offset", "block_offset", "position", "page_num", "style"],
+        "chars": ["text", "doc_index", "block_index", "page_index", "page_num", "position"]})
     full_text_result = doc_extraction_custom.run_ocr(
         filepaths=[pdf_filepath], text_setting="full_text"
     )

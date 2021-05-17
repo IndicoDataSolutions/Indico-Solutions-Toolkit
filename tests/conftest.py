@@ -127,14 +127,3 @@ def standard_ocr_object(indico_client, pdf_filepath):
 @pytest.fixture(scope="session")
 def doc_extraction_standard(indico_client):
     return DocExtraction(client=indico_client)
-
-@pytest.fixture(scope="session")
-def doc_extraction_custom(indico_client):
-    return DocExtraction(client=indico_client, custom_config={
-        "top_level": "page",
-        "nest": False,
-        "reblocking": ["style", "list", "inline-header"],
-        "pages": ["text", "size", "dpi", "doc_offset", "page_num", "image", "thumbnail"],
-        "blocks": ["text", "doc_offset", "page_offset", "position", "block_type", "page_num"],
-        "tokens": ["text", "doc_offset", "page_offset", "block_offset", "position", "page_num", "style"],
-        "chars": ["text", "doc_index", "block_index", "page_index", "page_num", "position"]})
