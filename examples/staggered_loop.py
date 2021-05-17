@@ -1,8 +1,8 @@
 """
 Convert human reviewed submissions from a workflow to a 'labeled data'format and writes it to CSV.
 """
-from solutions_toolkit.staggered_loop import StaggeredLoop
-from solutions_toolkit import create_client
+from indico_toolkit.staggered_loop import StaggeredLoop
+from indico_toolkit import create_client
 
 
 client = create_client("app.indico.io", "./indico_api_token.txt")

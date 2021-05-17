@@ -1,9 +1,9 @@
 """
 Upload files to an existing dataset in batches
 """
-from solutions_toolkit.indico_wrapper import Datasets, dataset
-from solutions_toolkit.pipelines import FileProcessing
-from solutions_toolkit import create_client
+from indico_toolkit.indico_wrapper import Datasets, dataset
+from indico_toolkit.pipelines import FileProcessing
+from indico_toolkit import create_client
 
 DATASET_ID = 1234
 HOST = "app.indico.io"

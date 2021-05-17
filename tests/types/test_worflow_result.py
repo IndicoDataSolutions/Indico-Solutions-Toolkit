@@ -1,5 +1,5 @@
 import pytest
-from solutions_toolkit.types import Predictions
+from indico_toolkit.types import Predictions
 
 def test_get_predictions_set_model_name(wf_result_obj):
     preds = wf_result_obj.predictions

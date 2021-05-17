@@ -1,13 +1,13 @@
 """
 Submit documents to a workflow, auto review them and submit them for human review
 """
-from solutions_toolkit import auto_review
-from solutions_toolkit.auto_review import (
+from indico_toolkit import auto_review
+from indico_toolkit.auto_review import (
     ReviewConfiguration,
     AutoReviewer,
 )
-from solutions_toolkit.indico_wrapper import Workflow
-from solutions_toolkit import create_client
+from indico_toolkit.indico_wrapper import Workflow
+from indico_toolkit import create_client
 
 
 WORKFLOW_ID = 1234
@@ -40,4 +40,7 @@ auto_reviewer = AutoReviewer(predictions, review_config)
 auto_reviewer.apply_reviews()
 
 # Submit review
-wflow.submit_submission_review(submission_ids[0], {MODEL_NAME: auto_reviewer.updated_predictions})
+wflow.submit_submission_review(
+    submission_ids[0], {MODEL_NAME: auto_reviewer.updated_predictions}
+)
+

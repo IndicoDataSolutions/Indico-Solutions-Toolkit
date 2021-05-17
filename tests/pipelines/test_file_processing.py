@@ -1,7 +1,7 @@
 import pytest
 from pathlib import Path
 import os
-from solutions_toolkit.pipelines import FileProcessing
+from indico_toolkit.pipelines import FileProcessing
 
 
 def test_get_file_paths_from_dir(testdir_file_path):

@@ -1,5 +1,5 @@
-from solutions_toolkit.row_association import Association
-from solutions_toolkit.indico_wrapper import Workflow
+from indico_toolkit.row_association import Association
+from indico_toolkit.indico_wrapper import Workflow
 from tests.conftest import MODEL_NAME
 
 

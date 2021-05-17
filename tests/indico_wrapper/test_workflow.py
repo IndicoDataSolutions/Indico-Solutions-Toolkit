@@ -1,9 +1,9 @@
 from indico import IndicoClient
 from indico.types import Submission, Job
 from tests.conftest import MODEL_NAME
-from solutions_toolkit.indico_wrapper import Workflow
-from solutions_toolkit.ocr import OnDoc
-from solutions_toolkit.types import WorkflowResult, Predictions
+from indico_toolkit.indico_wrapper import Workflow
+from indico_toolkit.ocr import OnDoc
+from indico_toolkit.types import WorkflowResult, Predictions
 
 
 def test_submit_documents_to_workflow(indico_client, pdf_filepath, workflow_id):
