@@ -13,9 +13,9 @@ from indico.queries import (
     SubmitReview,
     UpdateWorkflowSettings,
 )
-from solutions_toolkit.indico_wrapper import IndicoWrapper
-from solutions_toolkit.ocr import OnDoc
-from solutions_toolkit.types import WorkflowResult
+from .indico_wrapper import IndicoWrapper
+from indico_toolkit.ocr import OnDoc
+from indico_toolkit.types import WorkflowResult
 
 
 COMPLETE_FILTER = SubmissionFilter(status="COMPLETE", retrieved=False)

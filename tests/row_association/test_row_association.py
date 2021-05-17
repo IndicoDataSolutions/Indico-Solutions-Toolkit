@@ -1,7 +1,7 @@
 import json
 import pytest
 from collections import defaultdict
-from solutions_toolkit.row_association import Association
+from indico_toolkit.row_association import Association
 
 
 def test_grouper_row_number_false_add_to_all(three_row_invoice_preds, three_row_invoice_tokens):

@@ -1,7 +1,7 @@
 from typing import List, Dict
 from collections import defaultdict
 import pandas as pd
-from solutions_toolkit.pipelines import FileProcessing
+from indico_toolkit.pipelines import FileProcessing
 
 # TODO: eventually change this to just "Extractions" class w/ another class for classification preds
 # TODO: add property to list all predicted labels

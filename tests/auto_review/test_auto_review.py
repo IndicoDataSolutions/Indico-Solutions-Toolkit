@@ -5,8 +5,8 @@ import os
 import json
 from collections import defaultdict
 from indico.queries import Job
-from solutions_toolkit.indico_wrapper import Workflow
-from solutions_toolkit.auto_review import ReviewConfiguration, AutoReviewer
+from indico_toolkit.indico_wrapper import Workflow
+from indico_toolkit.auto_review import ReviewConfiguration, AutoReviewer
 from tests.conftest import FILE_PATH
 
 

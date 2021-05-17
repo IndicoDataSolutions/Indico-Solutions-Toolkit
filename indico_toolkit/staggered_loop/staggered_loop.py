@@ -2,8 +2,8 @@ import json
 from typing import List
 import pandas as pd
 from indico import IndicoClient
-from solutions_toolkit.indico_wrapper import Workflow
-from solutions_toolkit.types import WorkflowResult, Predictions
+from indico_toolkit.indico_wrapper import Workflow
+from indico_toolkit.types import WorkflowResult, Predictions
 
 
 class StaggeredLoop(Workflow):

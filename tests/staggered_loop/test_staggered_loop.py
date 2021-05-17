@@ -1,10 +1,10 @@
 import pytest
 import json
 import time
-from solutions_toolkit.indico_wrapper import Reviewer, Workflow
-from solutions_toolkit.indico_wrapper.workflow import COMPLETE_FILTER
-from solutions_toolkit.staggered_loop import StaggeredLoop
-from solutions_toolkit.types import WorkflowResult, Predictions
+from indico_toolkit.indico_wrapper import Reviewer, Workflow
+from indico_toolkit.indico_wrapper.workflow import COMPLETE_FILTER
+from indico_toolkit.staggered_loop import StaggeredLoop
+from indico_toolkit.types import WorkflowResult, Predictions
 from tests.indico_wrapper.test_reviewer import get_change_formatted_predictions
 from indico.queries import UpdateWorkflowSettings, GraphQLRequest, GetSubmission
 
