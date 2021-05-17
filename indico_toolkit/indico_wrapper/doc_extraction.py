@@ -63,9 +63,9 @@ class DocExtraction(IndicoWrapper):
     def _convert_ocr_objects(
         self, extracted_data: Union[List[dict], dict]
     ) -> Union[StandardOcr, OnDoc, CustomOcr]:
-        if self._preset_config == "ondocument":
+        if self.json_config == {"preset_config": "ondocument"}:
             return OnDoc(extracted_data)
-        elif self._preset_config == "standard" or self.json_config is None:
+        elif self.json_config == {"preset_config": "standard"} or self.json_config is None:
             return StandardOcr(extracted_data)
         else:
             return CustomOcr(extracted_data)
