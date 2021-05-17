@@ -1,11 +1,5 @@
-import os
 from indico_toolkit.ocr import StandardOcr
 from indico_toolkit.indico_wrapper import DocExtraction
-from indico_toolkit import create_client
-
-HOST_URL = os.environ.get("HOST_URL")
-API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
-API_TOKEN = os.environ.get("API_TOKEN")
 
 
 def test_run_ocr_standard(doc_extraction_standard, pdf_filepath):
@@ -25,9 +19,8 @@ def test_run_ocr_standard(doc_extraction_standard, pdf_filepath):
     assert len(page_texts_result[0][0]) == 1153
 
 
-def test_run_ocr_custom(pdf_filepath):
-    client = create_client(HOST_URL, API_TOKEN_PATH, API_TOKEN)
-    doc_extraction_custom = DocExtraction(client=client, custom_config={
+def test_run_ocr_custom(indico_client, pdf_filepath):
+    doc_extraction_custom = DocExtraction(indico_client, custom_config={
         "top_level": "page",
         "nest": False,
         "reblocking": ["style", "list", "inline-header"],
