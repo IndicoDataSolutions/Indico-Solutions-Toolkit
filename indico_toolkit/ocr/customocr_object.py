@@ -31,8 +31,7 @@ class CustomOcr:
         Return list of page-level text
         """
         if isinstance(self.customocr, dict) and "pages" in self.customocr:
-            if "text" in self.customocr["pages"]:
-                return [page["text"] for page in self.customocr["pages"]]
+            return [page["text"] for page in self.customocr["pages"]]
         elif isinstance(self.customocr, list) and "pages" in self.customocr[0]:
             if "text" in self.customocr[0]["pages"][0]:
                 return [page["pages"][0]["text"] for page in self.customocr]

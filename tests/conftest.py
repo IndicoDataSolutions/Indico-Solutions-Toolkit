@@ -116,7 +116,14 @@ def wflow_submission_result(indico_client, module_submission_ids) -> dict:
 @pytest.fixture(scope="session")
 def model_name():
     return MODEL_NAME
-  
+
+@pytest.fixture(scope="session")
+def ondoc_ocr_object(indico_client, pdf_filepath):
+    job = indico_client.call(DocumentExtraction(files=[pdf_filepath], json_config={"preset_config": "ondocument"}))
+    job = indico_client.call(JobStatus(id=job[0].id, wait=True))
+    extracted_data = indico_client.call(RetrieveStorageObject(job.result))
+    return extracted_data
+
 @pytest.fixture(scope="session")
 def standard_ocr_object(indico_client, pdf_filepath):
     job = indico_client.call(DocumentExtraction(files=[pdf_filepath], json_config={"preset_config": "standard"}))
