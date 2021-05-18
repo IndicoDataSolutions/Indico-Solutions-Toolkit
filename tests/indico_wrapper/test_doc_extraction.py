@@ -1,5 +1,12 @@
-from indico_toolkit.ocr import StandardOcr
+from indico_toolkit.ocr import StandardOcr, OnDoc
 from indico_toolkit.indico_wrapper import DocExtraction
+
+
+def test_run_ocr_ondoc(indico_client, pdf_filepath):
+    doc_extraction_ondoc = DocExtraction(indico_client, preset_config="ondocument")
+    extracted_data = doc_extraction_ondoc.run_ocr(filepaths=[pdf_filepath])
+    for item in extracted_data:
+        assert isinstance(item, OnDoc)
 
 
 def test_run_ocr_standard(doc_extraction_standard, pdf_filepath):
