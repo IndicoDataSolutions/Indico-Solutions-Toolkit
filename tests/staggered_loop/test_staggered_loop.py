@@ -1,12 +1,12 @@
 import pytest
-import json
-import time
+import tempfile
+import pandas as pd
+from indico_toolkit import ToolkitInputError
 from indico_toolkit.indico_wrapper import Reviewer, Workflow
 from indico_toolkit.indico_wrapper.workflow import COMPLETE_FILTER
 from indico_toolkit.staggered_loop import StaggeredLoop
 from indico_toolkit.types import WorkflowResult, Predictions
 from tests.indico_wrapper.test_reviewer import get_change_formatted_predictions
-from indico.queries import UpdateWorkflowSettings, GraphQLRequest, GetSubmission
 
 
 @pytest.fixture(scope="function")
@@ -72,6 +72,18 @@ def test_get_reviewed_prediction_data(workflow_id, indico_client, reviewed_submi
             assert set(pred.keys()) == set(["label", "start", "end"])
 
 
+def test_to_csv(stagger_wrapper, reviewed_submissions, workflow_id):
+    with tempfile.NamedTemporaryFile(suffix=".csv") as tf:
+        filepath = str(tf.name)
+        stagger_wrapper.get_reviewed_prediction_data(workflow_id, reviewed_submissions)
+        stagger_wrapper.to_csv(filepath)
+        df = pd.read_csv(filepath)
+        assert df.shape[0] > 0
+        assert "text" in df.columns
+        assert "target" in df.columns
+        assert "filename" in df.columns
+
+
 def test_convert_predictions_for_snapshot(stagger_wrapper):
     predictions = Predictions(
         [
@@ -122,7 +134,7 @@ def test_get_nested_predictions(stagger_wrapper, static_wflow_result):
 
 def test_get_nested_predictions_bad_model_name(stagger_wrapper, static_wflow_result):
     stagger_wrapper.model_name = "Name doesn't exist"
-    with pytest.raises(KeyError):
+    with pytest.raises(ToolkitInputError):
         stagger_wrapper._get_nested_predictions(static_wflow_result)
 
 
@@ -147,5 +159,5 @@ def test_get_nested_predictions_no_model_name_fail(stagger_wrapper):
         )
     )
     stagger_wrapper.model_name = ""
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ToolkitInputError):
         stagger_wrapper._get_nested_predictions(wflow_result)

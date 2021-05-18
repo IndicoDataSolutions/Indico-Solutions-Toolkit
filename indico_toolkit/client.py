@@ -1,6 +1,6 @@
 from indico import IndicoClient, IndicoConfig
 from indico.errors import IndicoAuthenticationFailed
-
+from indico_toolkit.errors import ToolkitAuthError
 
 def create_client(
     host: str,
@@ -23,6 +23,6 @@ def create_client(
     try:
         return IndicoClient(config)
     except IndicoAuthenticationFailed as e:
-        raise Exception(
+        raise ToolkitAuthError(
             f"{e}\n\n Ensure that you are using your most recently downloaded token with the correct host URL"
         )
