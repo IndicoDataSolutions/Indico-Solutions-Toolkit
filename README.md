@@ -8,8 +8,9 @@ A library to assist Indico IPA development
 The indico-toolkit provides classes and functions to help achieve the following:
 * Easy batch workflow submission and retrieval.
 * Classes that simplify dataset/doc-extraction functionality.
-* Row and line item association. 
-* Staggered loop learning retrieval and reformatting. 
+* Row and line item association.
+* Staggered loop learning retrieval and reformatting.
+* Auto Classification (create classifier without needing to label)
 * Helpful Scripted/Auto Review processing and submission.
 * Common manipulation of prediction/workflow reuslts.
 * Objects to simplify parsing OCR responses.
