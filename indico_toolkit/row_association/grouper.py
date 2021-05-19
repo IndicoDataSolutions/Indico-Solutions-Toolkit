@@ -1,6 +1,6 @@
 """Associate row items"""
 from indico_toolkit.types import Predictions
-from typing import List, Union
+from typing import List, Union, Iterable
 from collections import defaultdict
 from copy import deepcopy
 import os
@@ -26,20 +26,23 @@ class Association:
 
     def __init__(
         self,
-        line_item_fields: List[str],
-        predictions: Union[List[dict], Predictions] = None,
+        predictions: Union[List[dict], Predictions],
+        line_item_fields: Iterable[str] = None,
     ):
         """
         Args:
         predictions (List[dict]): List of extraction predictions
-        line_item_fields (List[str]): Fields/labels to include as line item values, other values
-                                      will not be assigned a row_number
-        Attributes populated after running get_bounding_boxes and assign_row_number:
-        updated_predictions (List[dict]): predictions updated with row_number
+        line_item_fields (Iterable[str]): Fields/labels to include as line item values, other values
+                                      will not be assigned a row_number. If None, treats all fields 
+                                      as line item fields.
+
         """
-        self.line_item_fields: List[str] = line_item_fields
         if isinstance(predictions, Predictions):
             predictions = predictions.to_list()
+        if line_item_fields is None:
+            print("No line item fields provided. Will treat all predictions as line items")
+            line_item_fields = Predictions.get_extraction_labels_set(predictions)
+        self.line_item_fields: Iterable[str] = line_item_fields
         self.predictions: List[dict] = predictions
         self._line_item_predictions: List[dict] = []
         self._non_line_item_predictions: List[dict] = []
@@ -98,28 +101,22 @@ class Association:
                 "Make sure you instantiated the class with a list of predictions"
             )
         predictions = deepcopy(self.predictions)
+        predictions = self._remove_unneeded_predictions(predictions)
+        predictions = self.sort_predictions_by_start_index(predictions)
         match_index = 0
         for pred in predictions:
-            if self.is_line_item_pred(pred):
-                try:
-                    match_index = self.match_pred_to_token(
-                        pred, ocr_tokens[match_index:], raise_for_no_match
-                    )
-                    self._line_item_predictions.append(pred)
-                    continue
-                except ValueError as e:
-                    if raise_for_no_match:
-                        raise ValueError(e)
-                    else:
-                        print(f"Ignoring Error: {e}")
-                        self._errored_predictions.append(pred)
-            else:
-                self._non_line_item_predictions.append(pred)
-
-    def is_line_item_pred(self, pred: dict):
-        if pred["label"] in self.line_item_fields:
-            return True
-        return False
+            try:
+                match_index = self.match_pred_to_token(
+                    pred, ocr_tokens[match_index:], raise_for_no_match
+                )
+                self._line_item_predictions.append(pred)
+                continue
+            except ValueError as e:
+                if raise_for_no_match:
+                    raise ValueError(e)
+                else:
+                    print(f"Ignoring Error: {e}")
+                    self._errored_predictions.append(pred)
 
     def assign_row_number(self):
         """
@@ -153,6 +150,30 @@ class Association:
             rows[pred["row_number"]].append(pred)
         return list(rows.values())
 
+    @staticmethod
+    def sort_predictions_by_start_index(predictions: List[dict]) -> List[dict]:
+        return sorted(predictions, key=lambda x: x["start"])
+
+    def _remove_unneeded_predictions(self, predictions: List[dict]) -> List[dict]:
+        """
+        Remove predictions that are not line item fields or don't have valid start/end index data
+        """
+        valid_line_item_preds = []
+        for pred in predictions:
+            if not self.is_line_item_pred(pred):
+                self._non_line_item_predictions.append(pred)
+            elif Predictions.is_manually_added_prediction(pred):
+                pred["error"] = "Can't match tokens for manually added prediction"
+                self._errored_predictions.append(pred)
+            else:
+                valid_line_item_preds.append(pred)
+        return valid_line_item_preds
+
+    def is_line_item_pred(self, pred: dict):
+        if pred["label"] in self.line_item_fields:
+            return True
+        return False
+
     def _get_first_valid_line_item_pred(self) -> dict:
         if len(self._line_item_predictions) == 0:
             raise Exception(
@@ -160,11 +181,13 @@ class Association:
             )
         return self._line_item_predictions[0]
 
+
 def sequences_overlap(x: dict, y: dict) -> bool:
     """
     Boolean return value indicates whether or not seqs overlap
     """
     return x["start"] < y["end"] and y["start"] < x["end"]
+
 
 def _add_bounding_metadata_to_pred(pred: dict, token: dict):
     pred["bbTop"] = token["position"]["bbTop"]
@@ -173,10 +196,12 @@ def _add_bounding_metadata_to_pred(pred: dict, token: dict):
     pred["bbRight"] = token["position"]["bbRight"]
     pred["page_num"] = token["page_num"]
 
+
 def _check_if_token_match_found(pred: dict):
     if "bbTop" not in pred:
         pred["error"] = "No matching token found for line item field"
         raise ValueError(f"Couldn't match a token to this prediction:\n{pred}")
+
 
 def _update_bounding_metadata_for_pred(pred: dict, token: dict):
     pred["bbTop"] = min(token["position"]["bbTop"], pred["bbTop"])
