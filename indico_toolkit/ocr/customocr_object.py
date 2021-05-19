@@ -20,6 +20,9 @@ class CustomOcr:
         """
         if isinstance(self.customocr, dict) and "text" in self.customocr:
             return self.customocr["text"]
+        elif isinstance(self.customocr, dict) and "pages" in self.customocr:
+            if "text" in self.customocr["pages"][0]:
+                return "\n".join(page["text"] for page in self.customocr["pages"])
         elif isinstance(self.customocr, list) and "pages" in self.customocr[0]:
             if "text" in self.customocr[0]["pages"][0]:
                 return "\n".join(page["pages"][0]["text"] for page in self.customocr)
