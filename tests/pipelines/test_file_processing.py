@@ -12,6 +12,13 @@ def test_get_file_paths_from_dir(testdir_file_path):
     assert len(fileproc.invalid_suffix_paths) == 1
 
 
+def test_get_file_paths_from_dir_error(testdir_file_path):
+    test_dir = os.path.join(testdir_file_path, "data/samples/fin_disc_result.json")
+    fileproc = FileProcessing()
+    with pytest.raises(Exception):
+        fileproc.get_file_paths_from_dir(test_dir)
+
+
 def test_get_file_paths_from_dir_recursive(testdir_file_path):
     test_dir = os.path.join(testdir_file_path, "data/")
     fileproc = FileProcessing()
