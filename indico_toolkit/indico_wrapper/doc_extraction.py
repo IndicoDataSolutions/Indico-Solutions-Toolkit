@@ -2,9 +2,7 @@ from typing import List, Union
 from indico import IndicoClient
 from indico.queries import DocumentExtraction, Job
 from indico_toolkit.indico_wrapper import IndicoWrapper
-from indico_toolkit.ocr import OnDoc
-from indico_toolkit.ocr import StandardOcr
-from indico_toolkit.ocr import CustomOcr
+from indico_toolkit.ocr import OnDoc, StandardOcr, CustomOcr
 
 
 class DocExtraction(IndicoWrapper):

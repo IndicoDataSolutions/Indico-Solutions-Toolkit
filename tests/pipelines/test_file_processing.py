@@ -12,7 +12,7 @@ def test_get_file_paths_from_dir(testdir_file_path):
     assert len(fileproc.invalid_suffix_paths) == 1
 
 
-def test_get_file_paths_from_dir_error(testdir_file_path):
+def test_from_dir_absent_suffix(testdir_file_path):
     test_dir = os.path.join(testdir_file_path, "data/samples/")
     fileproc = FileProcessing()
     with pytest.raises(Exception):
