@@ -133,4 +133,4 @@ def standard_ocr_object(indico_client, pdf_filepath):
 
 @pytest.fixture(scope="session")
 def doc_extraction_standard(indico_client):
-    return DocExtraction(client=indico_client)
+    return DocExtraction(indico_client)
