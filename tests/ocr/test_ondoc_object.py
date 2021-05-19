@@ -56,7 +56,7 @@ def test_ondoc_confidence_metric_exception(ondoc_ocr_object):
         ondoc_ocr.ocr_confidence("average")
 
 
-def test_ondoc_confidence_confidence_exception(ondoc_ocr_object):
+def test_ondoc_excluded_confidence_exception(ondoc_ocr_object):
     ondoc_ocr = OnDoc(ondoc_ocr_object[0]["chars"][0].pop("confidence"))
     with pytest.raises(Exception):
         ondoc_ocr.ocr_confidence("mean")
