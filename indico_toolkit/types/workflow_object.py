@@ -1,5 +1,6 @@
 from typing import List
 from .predictions import Predictions
+from indico_toolkit import ToolkitStatusError, ToolkitInputError
 
 class WorkflowResult:
     def __init__(self, result: dict, model_name: str = None):
@@ -20,7 +21,7 @@ class WorkflowResult:
         if self.model_name:
             self._check_is_valid_model_name()
         elif len(self.available_model_names) > 1:
-            raise RuntimeError(
+            raise ToolkitInputError(
                 f"Multiple models available, you must set self.model_name to one of {self.available_model_names}"
             )
         else:
@@ -28,7 +29,7 @@ class WorkflowResult:
 
     def _check_is_valid_model_name(self) -> None:
         if self.model_name not in self.available_model_names:
-            raise KeyError(
+            raise ToolkitInputError(
                 f"{self.model_name} is not an available model name. Options: {self.available_model_names}"
             )
 
@@ -37,9 +38,13 @@ class WorkflowResult:
         """
         Return predictions without human review
         """
-        self.set_model_name()
-        if isinstance(self.document_results, list):
-            return Predictions(self.document_results)
+        try:
+            self.set_model_name()
+        except AttributeError as error:
+            if isinstance(self.document_results, list):
+                return Predictions(self.document_results)
+            else:
+                raise error
         preds = self.document_results[self.model_name]
         if isinstance(preds, dict):
             return Predictions(preds["pre_review"])
@@ -52,7 +57,9 @@ class WorkflowResult:
         try:
             return Predictions(self.document_results[self.model_name]["final"])
         except KeyError:
-            raise Exception(f"Submission {self.submission_id} has not completed Review")
+            raise ToolkitStatusError(
+                f"Submission {self.submission_id} has no 'final' predictions. Has it completed human review?"
+            )
 
     @property
     def etl_url(self) -> str:
@@ -69,7 +76,7 @@ class WorkflowResult:
     @property
     def submission_id(self) -> str:
         return self.result["submission_id"]
-    
+
     @property
     def errors(self) -> list:
         return self.result["errors"]
@@ -81,7 +88,7 @@ class WorkflowResult:
     @property
     def reviewer_id(self) -> int:
         return self.result["reviewer_id"]
-    
+
     @property
     def review_notes(self) -> int:
         return self.result["review_notes"]
@@ -89,7 +96,7 @@ class WorkflowResult:
     @property
     def review_rejected(self) -> int:
         return self.result["review_rejected"]
-    
+
     @property
     def admin_review(self) -> bool:
         return self.result["admin_review"]

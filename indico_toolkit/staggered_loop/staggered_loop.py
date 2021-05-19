@@ -45,7 +45,7 @@ class StaggeredLoop(Workflow):
         self._get_submission_full_text()
         self._filenames = [i.input_filename for i in submissions]
 
-    def write_csv(
+    def to_csv(
         self,
         output_path: str,
         text_col_name: str = "text",
