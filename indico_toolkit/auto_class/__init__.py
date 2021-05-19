@@ -1,1 +1,1 @@
-from .classifier import AutoClassifier
+from .classifier import AutoClassifier, FirstPageClassifier
