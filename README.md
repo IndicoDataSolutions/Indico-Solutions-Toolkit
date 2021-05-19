@@ -8,8 +8,10 @@ A library to assist Indico IPA development
 The indico-toolkit provides classes and functions to help achieve the following:
 * Easy batch workflow submission and retrieval.
 * Classes that simplify dataset/doc-extraction functionality.
-* Row and line item association. 
-* Staggered loop learning retrieval and reformatting. 
+* Row and line item association.
+* Staggered loop learning retrieval and reformatting.
+* Train a document classification model without labeling.
+* Train a first page classification model (for bundle splitting) without labeling.
 * Helpful Scripted/Auto Review processing and submission.
 * Common manipulation of prediction/workflow reuslts.
 * Objects to simplify parsing OCR responses.
@@ -18,7 +20,7 @@ The indico-toolkit provides classes and functions to help achieve the following:
 
 
 ### Example Useage
-For scripted examples on how to use see the toolkit, see the [examples directory](https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/tree/main/examples) 
+For scripted examples on how to use the toolkit, see the [examples directory](https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/tree/main/examples) 
 
 ### Tests
 To run the test suite you will need to set the following environment variables: HOST_URL, API_TOKEN_PATH.

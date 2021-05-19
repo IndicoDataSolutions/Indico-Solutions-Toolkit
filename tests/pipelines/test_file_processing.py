@@ -30,8 +30,8 @@ def test_batch_files(testdir_file_path):
         test_dir, accepted_types=(".json", ".pdf", ".csv"), recursive_search=True
     )
     batches = [i for i in fileproc.batch_files(2)]
-    assert len(batches) == 3
-    assert len(batches[0]) == 2 and len(batches[1]) == 2
+    assert len(batches) == 4
+    assert len(batches[0]) == 2 and len(batches[1]) == 2 and len(batches[2]) == 2
     assert len(batches[-1]) == 1
 
 
