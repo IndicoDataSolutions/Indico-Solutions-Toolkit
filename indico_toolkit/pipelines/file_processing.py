@@ -66,6 +66,18 @@ class FileProcessing:
     def file_exists(path_to_file: str) -> bool:
         return os.path.isfile(path_to_file)
 
+    @property
+    def parent_directory_of_filepaths(self) -> List[str]:
+        return [Path(i).parent.name for i in self.file_paths]
+
+    @staticmethod
+    def get_file_name_without_suffix(filepath: str) -> str:
+        return Path(filepath).stem
+
+    @staticmethod
+    def get_file_path_suffix(filepath: str) -> str:
+        return Path(filepath).suffix
+
     def _recursive_file_search(self, path_to_dir: str, accepted_types: Tuple[str]):
         for root, _, files in os.walk(path_to_dir):
             for name in files:
