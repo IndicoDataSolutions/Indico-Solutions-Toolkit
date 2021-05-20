@@ -19,9 +19,9 @@ OCR_TOKENS = [
     ]   
 
 litems = Association(
-        # fields from your model that should always be treated as line items
+        predictions=PREDICTIONS,
+         # fields from your model that should be treated as line items
         line_item_fields=["line_value", "line_date"],
-        predictions=PREDICTIONS
     )
 
 litems.get_bounding_boxes(ocr_tokens=OCR_TOKENS)

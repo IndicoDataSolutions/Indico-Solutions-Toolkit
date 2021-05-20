@@ -5,7 +5,7 @@ from indico_toolkit.row_association import Association
 
 
 def test_grouper_row_number_false_add_to_all(three_row_invoice_preds, three_row_invoice_tokens):
-    litems = Association(["work_order_number", "line_date", "work_order_tonnage"], three_row_invoice_preds)
+    litems = Association(three_row_invoice_preds, ["work_order_number", "line_date", "work_order_tonnage"])
     litems.get_bounding_boxes(three_row_invoice_tokens)
     litems.assign_row_number()
     assert len(three_row_invoice_preds) - 1 == len(litems._line_item_predictions), "all predictions present in update"
@@ -32,13 +32,13 @@ def test_grouper_row_number_false_add_to_all(three_row_invoice_preds, three_row_
 
 def test_grouper_no_token_match_raise_exception(three_row_invoice_preds, three_row_invoice_tokens):
     three_row_invoice_tokens.pop()
-    litems = Association(["work_order_number", "line_date", "work_order_tonnage"], three_row_invoice_preds)
+    litems = Association(three_row_invoice_preds, ["work_order_number", "line_date", "work_order_tonnage"])
     with pytest.raises(Exception):
         litems.get_bounding_boxes(three_row_invoice_tokens)
 
 def test_grouper_no_token_match_no_exception(three_row_invoice_preds, three_row_invoice_tokens):
     three_row_invoice_tokens.pop()
-    litems = Association(["work_order_number", "line_date", "work_order_tonnage"], three_row_invoice_preds)
+    litems = Association(three_row_invoice_preds, ["work_order_number", "line_date", "work_order_tonnage"])
     litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
     litems.assign_row_number()
     assert len(litems._errored_predictions) == 1
@@ -47,8 +47,8 @@ def test_grouper_no_token_match_no_exception(three_row_invoice_preds, three_row_
 
 def test_get_line_items_in_groups(three_row_invoice_preds, three_row_invoice_tokens):
     litems = Association(
-        ["work_order_number", "line_date", "work_order_tonnage"],
         three_row_invoice_preds,
+        ["work_order_number", "line_date", "work_order_tonnage"],
     )
     litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
     litems.assign_row_number()
@@ -56,3 +56,24 @@ def test_get_line_items_in_groups(three_row_invoice_preds, three_row_invoice_tok
     assert len(grouped_rows) == 3
     assert isinstance(grouped_rows[0], list)
     assert isinstance(grouped_rows[0][0], dict)
+
+def test_prediction_reordering(three_row_invoice_preds, three_row_invoice_tokens):
+    # move the last ordered prediction to the front of the list
+    three_row_invoice_preds.insert(0, three_row_invoice_preds.pop())
+    litems = Association(
+        three_row_invoice_preds,
+        ["work_order_number", "line_date", "work_order_tonnage"],
+    )
+    litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
+    litems.assign_row_number()
+    grouped_rows = litems.get_line_items_in_groups()
+    assert len(grouped_rows) == 3
+
+def test_empty_line_items_init(three_row_invoice_preds, three_row_invoice_tokens):
+    litems = Association(
+        three_row_invoice_preds,
+    )
+    litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
+    litems.assign_row_number()
+    grouped_rows = litems.get_line_items_in_groups()
+    assert len(grouped_rows) == 3
