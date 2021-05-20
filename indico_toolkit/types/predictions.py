@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Set
 from collections import defaultdict
 import pandas as pd
 from indico_toolkit.pipelines import FileProcessing
@@ -67,17 +67,22 @@ class Predictions:
         Remove predictions that were not added by the model (i.e. added by scripted or human review)
         """
         self._preds = [
-            i for i in self._preds if not self._is_manually_added_prediction(i)
+            i for i in self._preds if not self.is_manually_added_prediction(i)
         ]
 
     def to_list(self):
         return self._preds
 
-    def _is_manually_added_prediction(self, prediction: dict) -> bool:
+    @staticmethod
+    def is_manually_added_prediction(prediction: dict) -> bool:
         if isinstance(prediction["start"], int) and isinstance(prediction["end"], int):
             if prediction["end"] > prediction["start"]:
                 return False
         return True
+
+    @staticmethod
+    def get_extraction_labels_set(predictions: List[dict]) -> Set[str]:
+        return set([i["label"] for i in predictions])
 
     def _select_max_confidence(self, label):
         max_pred = None
