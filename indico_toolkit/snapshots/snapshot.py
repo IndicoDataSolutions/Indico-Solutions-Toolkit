@@ -97,7 +97,6 @@ class Snapshot:
             on=self.file_name_col,
             suffixes=(None, suffix),
         )
-        print(merged["target_to_merge"])
         updated_labels = []
         unmatched_files = []
         for _, row in merged.iterrows():
