@@ -7,11 +7,6 @@ from indico_toolkit import ToolkitInputError
 from indico_toolkit.snapshots import Snapshot
 
 
-@pytest.fixture(scope="session")
-def snapshot_csv_path(testdir_file_path):
-    return os.path.join(testdir_file_path, "data/snapshots/snapshot.csv")
-
-
 def test_instantiation_wo_params(snapshot_csv_path):
     snap = Snapshot(snapshot_csv_path)
     assert snap.text_col == "document"
@@ -116,7 +111,6 @@ def test_merge_by_file_name_no_filename_matches(snapshot_csv_path):
     snap1.standardize_column_names()
     snap2.standardize_column_names()
     snap2.df[snap2.file_name_col] = "no_match"
-    print(snap2.df[snap2.file_name_col])
     original_labels = deepcopy(snap1.df[snap1.label_col].tolist())
     snap1.merge_by_file_name(snap2)
     assert snap1.df[snap1.label_col].tolist() == original_labels
