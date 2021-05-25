@@ -31,18 +31,18 @@ def test_get_file_paths_from_dir_recursive(testdir_file_path):
 
 
 def test_batch_files(testdir_file_path):
-    test_dir = os.path.join(testdir_file_path, "data/")
+    test_dir = os.path.join(testdir_file_path, "data/auto_class/")
     fileproc = FileProcessing()
     fileproc.get_file_paths_from_dir(
         test_dir, accepted_types=(".json", ".pdf", ".csv"), recursive_search=True
     )
-    batches = [i for i in fileproc.batch_files(2)]
-    assert len(batches) == 4
-    assert len(batches[0]) == 2 and len(batches[1]) == 2 and len(batches[2]) == 2
-    assert len(batches[-1]) == 1
+    batches = [i for i in fileproc.batch_files(1)]
+    assert len(batches) == 2
+    assert len(batches[0]) == 1
+    assert len(batches[1]) == 1
 
 
-def test_remove_file_if_processed(testdir_file_path):
+def test_remove_specified_files(testdir_file_path):
     test_dir = os.path.join(testdir_file_path, "data/")
     fileproc = FileProcessing()
     fileproc.get_file_paths_from_dir(
@@ -50,6 +50,6 @@ def test_remove_file_if_processed(testdir_file_path):
     )
     file_to_remove = fileproc.file_paths[0]
     processed_files = [Path(file_to_remove).name]
-    fileproc.remove_files_if_processed(processed_files)
+    fileproc.remove_specified_files(processed_files)
     assert file_to_remove not in fileproc.file_paths
 
