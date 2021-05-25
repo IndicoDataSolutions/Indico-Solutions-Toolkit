@@ -18,6 +18,15 @@ class Snapshot:
         label_col: str = None,
         file_name_col: str = None,
     ):
+        """
+        Combine and manipulate a Teach Task's snapshot. 
+
+        Args:
+            path_to_snapshot (str): path to Snapshot CSV
+            text_col (str, optional): Column with text, will be inferred if not provided. Defaults to None.
+            label_col (str, optional): Column with labels, will be inferred if not provided. Defaults to None.
+            file_name_col (str, optional): Column with file names, will be inferred if not provided. Defaults to None.
+        """
         self.path_to_snapshot = path_to_snapshot
         self.df: pd.DataFrame = pd.read_csv(path_to_snapshot)
         self.label_col = label_col
@@ -32,6 +41,11 @@ class Snapshot:
             self._infer_file_name_col()
 
     def remove_extraction_labels(self, labels_to_remove: List[str]):
+        """
+        Remove unwanted labels from label column
+        Args:
+            labels_to_remove (List[str]): the labels you'd like to remove
+        """
         updated_predictions = []
         for label_set in self.df[self.label_col]:
             updated_predictions.append(
@@ -45,6 +59,9 @@ class Snapshot:
         label_col: str = "target",
         file_name_col: str = "file_name",
     ):
+        """
+        To allow merging/appending snapshots, standardize the key column headers
+        """
         self.df.rename(
             mapper={
                 self.file_name_col: file_name_col,
