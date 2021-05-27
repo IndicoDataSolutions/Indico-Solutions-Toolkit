@@ -62,6 +62,10 @@ class OnDoc:
     def total_tokens(self) -> int:
         return len(self.full_text.replace("\n", " ").split())
 
+    @property
+    def page_heights_and_widths(self) -> List[dict]:
+        return [i["pages"][0]["size"] for i in self.ondoc]
+
     def ocr_confidence(self, metric="mean") -> float:
         """
         Return the OCR confidence (scale: 0 - 100) for all characters in the document
