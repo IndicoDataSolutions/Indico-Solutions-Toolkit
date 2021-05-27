@@ -27,9 +27,9 @@ def three_row_invoice_tokens():
 
 
 @pytest.fixture(scope="function")
-def three_row_bank_statement_preds():
+def two_row_bank_statement_preds():
     with open(
-        os.path.join(FILE_PATH, "data/three_row_bank_statement/preds.json"),
+        os.path.join(FILE_PATH, "data/two_row_bank_statement/preds.json"),
         "r",
     ) as f:
         preds = json.load(f)
@@ -37,9 +37,9 @@ def three_row_bank_statement_preds():
 
 
 @pytest.fixture(scope="function")
-def three_row_bank_statement_tokens():
+def two_row_bank_statement_tokens():
     with open(
-        os.path.join(FILE_PATH, "data/three_row_bank_statement/tokens.json"),
+        os.path.join(FILE_PATH, "data/two_row_bank_statement/tokens.json"),
         "r",
     ) as f:
         tokens = json.load(f)
