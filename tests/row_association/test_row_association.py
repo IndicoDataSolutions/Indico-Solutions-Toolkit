@@ -112,14 +112,15 @@ def test_empty_line_items_init(three_row_invoice_preds, three_row_invoice_tokens
     assert len(grouped_rows) == 3
 
 
-def test_assign_row_number_order(
-    three_row_bank_statement_preds, three_row_bank_statement_tokens
+def test_predictions_sorted_by_bbtop(
+    two_row_bank_statement_preds, two_row_bank_statement_tokens
 ):
     litems = Association(
-        three_row_bank_statement_preds,
+        two_row_bank_statement_preds,
     )
-    litems.get_bounding_boxes(three_row_bank_statement_tokens, raise_for_no_match=False)
+    litems.get_bounding_boxes(two_row_bank_statement_tokens, raise_for_no_match=False)
     litems.assign_row_number()
     grouped_rows = litems.get_line_items_in_groups()
     for row in grouped_rows:
+        # without sorting by bbTop, rows would be 1 & 3 length
         assert len(row) == 2
