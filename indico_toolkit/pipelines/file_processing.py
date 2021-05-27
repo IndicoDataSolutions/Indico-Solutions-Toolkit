@@ -49,15 +49,15 @@ class FileProcessing:
         for i in range(0, len(self.file_paths), batch_size):
             yield self.file_paths[i : i + batch_size]
 
-    def remove_files_if_processed(self, processed_files: Iterable[str]):
+    def remove_specified_files(self, files: Iterable[str]):
         """
         Removes files from self.file_paths if they are part of provided file iterable
         Args:
-            processed_files (Iterable[str]): iterable of file names, NOT full paths, e.g. ["invoice.pdf",]
+            files (Iterable[str]): iterable of file names, NOT full paths, e.g. ["invoice.pdf",]
         """
         unprocessed_filepaths = []
         for filepath in self.file_paths:
-            if Path(filepath).name not in processed_files:
+            if Path(filepath).name not in files:
                 unprocessed_filepaths.append(filepath)
         print(f"Removing {len(self.file_paths) - len(unprocessed_filepaths)} files from file_paths")
         self.file_paths = unprocessed_filepaths
