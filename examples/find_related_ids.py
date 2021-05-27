@@ -3,7 +3,7 @@ from indico_toolkit import create_client
 
 MODEL_ID = 33318
 HOST = "app.indico.io"
-API_TOKEN_PATH = "./solutions_test_token.txt"   #./indico_api_token.txt"
+API_TOKEN_PATH = "./indico_api_token.txt"
 
 # Instantiate the FindRelated class
 client = create_client(HOST, API_TOKEN_PATH)
