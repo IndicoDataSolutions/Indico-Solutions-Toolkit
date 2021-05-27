@@ -125,6 +125,8 @@ class Association:
         Updates:
         self._line_item_predictions (list of dicts): predictions with row_number added
         """
+        self._line_item_predictions = sorted(self._line_item_predictions,
+                                             key=lambda x: (x["page_num"], x["bbTop"], x["bbLeft"]))
         starting_pred = self._get_first_valid_line_item_pred()
         max_top = starting_pred["bbTop"]
         min_bot = starting_pred["bbBot"]
