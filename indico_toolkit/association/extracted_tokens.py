@@ -16,13 +16,14 @@ class ExtractedTokens(Association):
     ):
         super().__init__(predictions)
 
-    def match_pred_to_token(self, pred: dict, ocr_tokens: List[dict]):
+    def match_pred_to_token(self, pred: dict, ocr_tokens: List[dict], pred_index: int):
         """
         Append matching token positions to self.mapped_positions, if no matches for pred, raise ValueError
 
         Args:
             pred (dict): Indico extraction model prediction
             ocr_tokens (List[dict]): List of OCR tokens
+            pred_index (int): unique number for each prediction so that tokens can be linked to it
 
         Raises:
             ValueError: No matching token was found
@@ -32,9 +33,11 @@ class ExtractedTokens(Association):
         """
         no_match = True
         match_token_index = 0
+        pred["prediction_index"] = pred_index
         for ind, token in enumerate(ocr_tokens):
             if sequences_overlap(token["doc_offset"], pred):
-                self._add_pred_meta_to_token(token, pred)
+                self._add_pred_meta_to_token(token, pred, pred_index)
+                self._remove_unneeded_token_keys(token)
                 self._mapped_positions.append(token)
                 match_token_index = ind
                 no_match = False
@@ -55,9 +58,9 @@ class ExtractedTokens(Association):
         self._separate_manually_added_predictions()
         self._predictions = self.sort_predictions_by_start_index(self._predictions)
         match_index = 0
-        for pred in self._predictions:
+        for pred_ind, pred in enumerate(self._predictions):
             try:
-                match_index = self.match_pred_to_token(pred, ocr_tokens[match_index:])
+                match_index = self.match_pred_to_token(pred, ocr_tokens[match_index:], pred_ind)
             except ValueError as e:
                 if raise_for_no_match:
                     raise ValueError(e)
@@ -79,6 +82,12 @@ class ExtractedTokens(Association):
     def unmapped_predictions(self) -> Predictions:
         return Predictions(self._errored_predictions + self._manually_added_preds)
 
+    def _remove_unneeded_token_keys(
+        self, token: dict, keys: List[str] = ["style", "block_offset", "page_offset"]
+    ):
+        for key in keys:
+            token.pop(key, None)
+
     def _separate_manually_added_predictions(self):
         predictions = []
         for pred in self._predictions:
@@ -88,6 +97,7 @@ class ExtractedTokens(Association):
                 predictions.append(pred)
         self._predictions = predictions
 
-    def _add_pred_meta_to_token(self, token: dict, pred: dict):
+    def _add_pred_meta_to_token(self, token: dict, pred: dict, pred_index: int):
         token["label"] = pred["label"]
         token["text"] = pred["text"]
+        token["prediction_index"] = pred_index

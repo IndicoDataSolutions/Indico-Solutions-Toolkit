@@ -45,7 +45,7 @@ def test_get_line_items_in_groups(three_row_invoice_preds, three_row_invoice_tok
     )
     litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
     litems.assign_row_number()
-    grouped_rows = litems.get_line_items_in_groups()
+    grouped_rows = litems.grouped_line_items
     assert len(grouped_rows) == 3
     assert isinstance(grouped_rows[0], list)
     assert isinstance(grouped_rows[0][0], dict)
@@ -59,8 +59,7 @@ def test_prediction_reordering(three_row_invoice_preds, three_row_invoice_tokens
     )
     litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
     litems.assign_row_number()
-    grouped_rows = litems.get_line_items_in_groups()
-    assert len(grouped_rows) == 3
+    assert len(litems.grouped_line_items) == 3
 
 def test_empty_line_items_init(three_row_invoice_preds, three_row_invoice_tokens):
     litems = LineItems(
@@ -68,8 +67,7 @@ def test_empty_line_items_init(three_row_invoice_preds, three_row_invoice_tokens
     )
     litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
     litems.assign_row_number()
-    grouped_rows = litems.get_line_items_in_groups()
-    assert len(grouped_rows) == 3
+    assert len(litems.grouped_line_items) == 3
 
 
 def test_mapped_positions_by_page(three_row_invoice_preds, three_row_invoice_tokens):
