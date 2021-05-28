@@ -131,7 +131,8 @@ class LineItems(Association):
                 min_bot = max(pred["bbBot"], min_bot)
             pred["row_number"] = row_number
 
-    def get_line_items_in_groups(self) -> List[List[dict]]:
+    @property
+    def grouped_line_items(self) -> List[List[dict]]:
         """
         After row number has been assigned to predictions, returns line item predictions as a
         list of lists where each list is a row.
