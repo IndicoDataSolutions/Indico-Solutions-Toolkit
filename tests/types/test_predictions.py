@@ -32,7 +32,7 @@ def test_remove_except_max_confidence(predictions_obj):
 def test_to_csv(predictions_obj):
     duplicated_obj = deepcopy(predictions_obj)
     with tempfile.NamedTemporaryFile(suffix=".csv") as tf:
-        filepath = str(tf.name)
+        filepath = tf.name
         predictions_obj.to_csv(filepath, append_if_exists=False)
         df = pd.read_csv(filepath)
         assert "confidence" and "text" and "label" and "filename" in df.columns

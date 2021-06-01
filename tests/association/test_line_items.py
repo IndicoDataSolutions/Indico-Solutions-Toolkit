@@ -23,13 +23,18 @@ def test_grouper_row_number_false_add_to_all(three_row_invoice_preds, three_row_
             assert "row_number" in pred.keys()
             assert pred["row_number"] == 3
 
-def test_grouper_no_token_match_raise_exception(three_row_invoice_preds, three_row_invoice_tokens):
+def test_grouper_no_token_match_raise_exception(
+    three_row_invoice_preds, three_row_invoice_tokens
+):
     three_row_invoice_tokens.pop()
     litems = LineItems(three_row_invoice_preds, ["work_order_number", "line_date", "work_order_tonnage"])
     with pytest.raises(Exception):
         litems.get_bounding_boxes(three_row_invoice_tokens)
 
-def test_grouper_no_token_match_no_exception(three_row_invoice_preds, three_row_invoice_tokens):
+
+def test_grouper_no_token_match_no_exception(
+    three_row_invoice_preds, three_row_invoice_tokens
+):
     three_row_invoice_tokens.pop()
     litems = LineItems(three_row_invoice_preds, ["work_order_number", "line_date", "work_order_tonnage"])
     litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
@@ -37,6 +42,7 @@ def test_grouper_no_token_match_no_exception(three_row_invoice_preds, three_row_
     assert len(litems._errored_predictions) == 1
     assert "error" in litems._errored_predictions[0]
     assert "row_number" not in litems._errored_predictions[0]
+
 
 def test_get_line_items_in_groups(three_row_invoice_preds, three_row_invoice_tokens):
     litems = LineItems(
@@ -50,6 +56,7 @@ def test_get_line_items_in_groups(three_row_invoice_preds, three_row_invoice_tok
     assert isinstance(grouped_rows[0], list)
     assert isinstance(grouped_rows[0][0], dict)
 
+
 def test_prediction_reordering(three_row_invoice_preds, three_row_invoice_tokens):
     # move the last ordered prediction to the front of the list
     three_row_invoice_preds.insert(0, three_row_invoice_preds.pop())
@@ -60,6 +67,7 @@ def test_prediction_reordering(three_row_invoice_preds, three_row_invoice_tokens
     litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
     litems.assign_row_number()
     assert len(litems.grouped_line_items) == 3
+
 
 def test_empty_line_items_init(three_row_invoice_preds, three_row_invoice_tokens):
     litems = LineItems(
@@ -79,3 +87,16 @@ def test_mapped_positions_by_page(three_row_invoice_preds, three_row_invoice_tok
     assert len(litems.mapped_positions_by_page) == 2
     assert len(litems.mapped_positions_by_page[0]) == 3
     assert len(litems.mapped_positions_by_page[1]) == 2
+
+
+def test_predictions_sorted_by_bbtop(
+    two_row_bank_statement_preds, two_row_bank_statement_tokens
+):
+    litems = LineItems(
+        two_row_bank_statement_preds,
+    )
+    litems.get_bounding_boxes(two_row_bank_statement_tokens, raise_for_no_match=False)
+    litems.assign_row_number()
+    for row in litems.grouped_line_items:
+        # without sorting by bbTop, rows would be 1 & 3 length
+        assert len(row) == 2

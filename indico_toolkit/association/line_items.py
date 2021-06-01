@@ -116,6 +116,10 @@ class LineItems(Association):
         Updates:
         self._mapped_positions (list of dicts): predictions with row_number added
         """
+        self._mapped_positions = sorted(
+            self._mapped_positions,
+            key=lambda x: (x["page_num"], x["bbTop"], x["bbLeft"]),
+        )
         starting_pred = self._get_first_valid_line_item_pred()
         max_top = starting_pred["bbTop"]
         min_bot = starting_pred["bbBot"]
