@@ -1,0 +1,54 @@
+[
+    {
+        "end": 792,
+        "text": "04/20",
+        "label": "Deposit Date",
+        "start": 787,
+        "confidence": {
+            "Deposit Amount": 2.507998431156011e-08,
+            "Deposit Date": 0.9999987483024597,
+            "Withdrawal Amount": 1.0397030081321645e-07,
+            "Withdrawal Date": 4.0913937482400797e-07
+        },
+        "page_num": 0
+    },
+    {
+        "end": 953,
+        "text": "4,687.52",
+        "label": "Withdrawal Amount",
+        "start": 945,
+        "confidence": {
+            "Deposit Amount": 0.22412289679050446,
+            "Deposit Date": 1.697689242519118e-07,
+            "Withdrawal Amount": 0.7758310437202454,
+            "Withdrawal Date": 2.9380757382568845e-07
+        },
+        "page_num": 0
+    },
+    {
+        "end": 1003,
+        "text": "150,000.00",
+        "label": "Deposit Amount",
+        "start": 993,
+        "confidence": {
+            "Deposit Amount": 0.9999580979347229,
+            "Deposit Date": 6.473590730138312e-08,
+            "Withdrawal Amount": 3.93832269764971e-05,
+            "Withdrawal Date": 7.59832303742769e-08
+        },
+        "page_num": 0
+    },
+    {
+        "end": 1030,
+        "text": "04/16",
+        "label": "Withdrawal Date",
+        "start": 1025,
+        "confidence": {
+            "Deposit Amount": 3.864186126634195e-08,
+            "Deposit Date": 4.525405472577404e-07,
+            "Withdrawal Amount": 3.693432972795563e-07,
+            "Withdrawal Date": 0.9999985694885254
+        },
+        "page_num": 0
+    }
+]
