@@ -7,6 +7,8 @@ from indico_toolkit.pipelines import FileProcessing
 from indico_toolkit.types import Predictions
 
 # TODO: add redact and replace data class
+# TODO: add example
+
 
 class Highlighter(ExtractedTokens):
     def __init__(self, predictions: List[dict], path_to_pdf: str):
