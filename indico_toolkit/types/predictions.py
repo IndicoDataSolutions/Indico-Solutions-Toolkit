@@ -1,5 +1,5 @@
 from typing import List, Dict, Set
-from collections import defaultdict
+from collections import defaultdict, Counter
 import pandas as pd
 from indico_toolkit.pipelines import FileProcessing
 
@@ -94,10 +94,20 @@ class Predictions:
                 confidence = pred_confidence
         return max_pred
 
+    @property
+    def label_count_dict(self) -> Dict[str, int]:
+        """
+        Get count of occurrences of each label
+        """
+        return dict(Counter(i["label"] for i in self._preds))
+
     def _remove_all_by_label(self, label):
         for pred in self._preds:
             if pred["label"] == label:
                 self._preds.remove(pred)
+
+    def __len__(self):
+        return len(self._preds)
 
     def __repr__(self):
         return f"Prediction Class, {self.num_predictions} Predictions:\n\n{self._preds}"

@@ -50,6 +50,6 @@ def test_remove_specified_files(testdir_file_path):
     )
     file_to_remove = fileproc.file_paths[0]
     processed_files = [Path(file_to_remove).name]
-    fileproc.remove_specified_files(processed_files)
+    fileproc.remove_files_if_processed(processed_files)
     assert file_to_remove not in fileproc.file_paths
 

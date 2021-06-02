@@ -2,6 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="indico-toolkit",
+    version="1.0",
     packages=find_packages(exclude=["tests"]),
     description="""Tools to assist with Indico IPA development""",
     license="MIT License (See LICENSE)",
@@ -17,5 +18,6 @@ setup(
         "setuptools>=41.4.0",
         "pandas>=1.0.3",
         "coverage>=5.5",
+        "PyMuPDF==1.18.13"
     ],
 )
