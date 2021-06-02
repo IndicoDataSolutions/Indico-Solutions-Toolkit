@@ -9,6 +9,7 @@ The indico-toolkit provides classes and functions to help achieve the following:
 * Easy batch workflow submission and retrieval.
 * Classes that simplify dataset/doc-extraction functionality.
 * Row and line item association.
+* Highlighting extraction predictions on source PDFs.
 * Staggered loop learning retrieval and reformatting.
 * Train a document classification model without labeling.
 * Train a first page classification model (for bundle splitting) without labeling.
