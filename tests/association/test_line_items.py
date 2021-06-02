@@ -4,8 +4,13 @@ from collections import defaultdict
 from indico_toolkit.association import LineItems
 
 
-def test_grouper_row_number_false_add_to_all(three_row_invoice_preds, three_row_invoice_tokens):
-    litems = LineItems(three_row_invoice_preds, ["work_order_number", "line_date", "work_order_tonnage"])
+def test_grouper_row_number_false_add_to_all(
+    three_row_invoice_preds, three_row_invoice_tokens
+):
+    litems = LineItems(
+        three_row_invoice_preds,
+        ["work_order_number", "line_date", "work_order_tonnage"],
+    )
     litems.get_bounding_boxes(three_row_invoice_tokens)
     litems.assign_row_number()
     assert len(litems._mapped_positions) == 5
@@ -23,11 +28,15 @@ def test_grouper_row_number_false_add_to_all(three_row_invoice_preds, three_row_
             assert "row_number" in pred.keys()
             assert pred["row_number"] == 3
 
+
 def test_grouper_no_token_match_raise_exception(
     three_row_invoice_preds, three_row_invoice_tokens
 ):
     three_row_invoice_tokens.pop()
-    litems = LineItems(three_row_invoice_preds, ["work_order_number", "line_date", "work_order_tonnage"])
+    litems = LineItems(
+        three_row_invoice_preds,
+        ["work_order_number", "line_date", "work_order_tonnage"],
+    )
     with pytest.raises(Exception):
         litems.get_bounding_boxes(three_row_invoice_tokens)
 
@@ -36,7 +45,10 @@ def test_grouper_no_token_match_no_exception(
     three_row_invoice_preds, three_row_invoice_tokens
 ):
     three_row_invoice_tokens.pop()
-    litems = LineItems(three_row_invoice_preds, ["work_order_number", "line_date", "work_order_tonnage"])
+    litems = LineItems(
+        three_row_invoice_preds,
+        ["work_order_number", "line_date", "work_order_tonnage"],
+    )
     litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
     litems.assign_row_number()
     assert len(litems._errored_predictions) == 1
@@ -70,17 +82,14 @@ def test_prediction_reordering(three_row_invoice_preds, three_row_invoice_tokens
 
 
 def test_empty_line_items_init(three_row_invoice_preds, three_row_invoice_tokens):
-    litems = LineItems(
-        three_row_invoice_preds,
-    )
-    litems.get_bounding_boxes(three_row_invoice_tokens, raise_for_no_match=False)
-    litems.assign_row_number()
-    assert len(litems.grouped_line_items) == 3
+    with pytest.raises(TypeError):
+        LineItems(three_row_invoice_preds,)
 
 
 def test_mapped_positions_by_page(three_row_invoice_preds, three_row_invoice_tokens):
     litems = LineItems(
         three_row_invoice_preds,
+        ("work_order_number", "line_date", "work_order_tonnage")
     )
     litems.get_bounding_boxes(three_row_invoice_tokens)
     assert isinstance(litems.mapped_positions_by_page, dict)
@@ -94,7 +103,8 @@ def test_predictions_sorted_by_bbtop(
 ):
     litems = LineItems(
         two_row_bank_statement_preds,
-    )
+        ["Deposit Date", "Withdrawal Amount", "Deposit Amount", "Withdrawal Date"]
+        )
     litems.get_bounding_boxes(two_row_bank_statement_tokens, raise_for_no_match=False)
     litems.assign_row_number()
     for row in litems.grouped_line_items:

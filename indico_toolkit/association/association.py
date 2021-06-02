@@ -1,9 +1,10 @@
 from typing import Union, List, Dict
 from collections import defaultdict
+from abc import ABC, abstractmethod
 from indico_toolkit.types import Predictions
 
 
-class Association:
+class Association(ABC):
     """
     Base class for matching tokens to extraction predictions. 
     """
@@ -14,9 +15,9 @@ class Association:
         self._manually_added_preds = []
         self._errored_predictions = []
 
-    @staticmethod
+    @abstractmethod
     def match_pred_to_token(self):
-        raise NotImplementedError
+        pass
 
     @staticmethod
     def sort_predictions_by_start_index(predictions: List[dict]) -> List[dict]:
@@ -39,9 +40,8 @@ class Association:
             predictions = predictions.to_list()
         return predictions
 
-    def _is_manually_added(self, prediction: dict):
+    def _is_manually_added_pred(self, prediction: dict) -> bool:
         if Predictions.is_manually_added_prediction(prediction):
-            prediction["error"] = "Can't match tokens for manually added prediction"
             return True
         return False
 

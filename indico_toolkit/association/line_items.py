@@ -28,21 +28,15 @@ class LineItems(Association):
     def __init__(
         self,
         predictions: Union[List[dict], Predictions],
-        line_item_fields: Iterable[str] = None,
+        line_item_fields: Iterable[str],
     ):
         """
         Args:
         predictions (List[dict]): List of extraction predictions
         line_item_fields (Iterable[str]): Fields/labels to include as line item values, other values
-                                      will not be assigned a row_number. If None, treats all fields 
-                                      as line item fields.
+                                      will not be assigned a row_number.
         """
         self.predictions = self.validate_prediction_formatting(predictions)
-        if line_item_fields is None:
-            print(
-                "No line item fields provided. Will treat all predictions as line items"
-            )
-            line_item_fields = Predictions.get_extraction_labels_set(self.predictions)
         self.line_item_fields: Iterable[str] = line_item_fields
         self._mapped_positions: List[dict] = []
         self._unmapped_positions: List[dict] = []
@@ -154,7 +148,8 @@ class LineItems(Association):
         for pred in predictions:
             if not self.is_line_item_pred(pred):
                 self._unmapped_positions.append(pred)
-            elif self._is_manually_added(pred):
+            elif self._is_manually_added_pred(pred):
+                pred["error"] = "Can't match tokens for manually added prediction"
                 self._errored_predictions.append(pred)
             else:
                 valid_line_item_preds.append(pred)

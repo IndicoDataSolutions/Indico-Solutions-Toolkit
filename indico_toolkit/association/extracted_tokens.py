@@ -91,7 +91,8 @@ class ExtractedTokens(Association):
     def _separate_manually_added_predictions(self):
         predictions = []
         for pred in self._predictions:
-            if self._is_manually_added(pred):
+            if self._is_manually_added_pred(pred):
+                pred["error"] = "Can't match tokens for manually added prediction"
                 self._manually_added_preds.append(pred)
             else:
                 predictions.append(pred)
