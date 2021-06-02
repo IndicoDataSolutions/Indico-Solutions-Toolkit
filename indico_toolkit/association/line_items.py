@@ -1,65 +1,57 @@
 """Associate row items"""
-from indico_toolkit.types import Predictions
-from typing import List, Union, Iterable
+from typing import List, Union, Iterable, Dict
 from collections import defaultdict
 from copy import deepcopy
 import os
 import json
+from indico_toolkit.types import Predictions
+from .association import sequences_overlap, Association, _check_if_token_match_found
 
 
-class Association:
+class LineItems(Association):
     """
-    Class for assigning row_number to line item fields given workflow predictions
+    Class for associating line items given extraction predictions and ondocument OCR tokens
 
     Example Usage:
 
-    litems = Association(
+    litems = LineItems(
+            predictions=[{"label": "line_date", "start": 12, "text": "1/2/2021".....}],
             line_item_fields=["line_value", "line_date"],
-            predictions=[{"label": "line_date", "start": 12, "text": "1/2/2021".....}]
         )
     litems.get_bounding_boxes(ocr_tokens=[{"postion"...,},])
     litems.assign_row_number()
 
     # Get your updated predictions
-    updated_preds: List[dict] = litems.updated_predictions
+    print(litems.updated_predictions)
     """
 
     def __init__(
         self,
         predictions: Union[List[dict], Predictions],
-        line_item_fields: Iterable[str] = None,
+        line_item_fields: Iterable[str],
     ):
         """
         Args:
         predictions (List[dict]): List of extraction predictions
         line_item_fields (Iterable[str]): Fields/labels to include as line item values, other values
-                                      will not be assigned a row_number. If None, treats all fields 
-                                      as line item fields.
-
+                                      will not be assigned a row_number.
         """
-        if isinstance(predictions, Predictions):
-            predictions = predictions.to_list()
-        if line_item_fields is None:
-            print("No line item fields provided. Will treat all predictions as line items")
-            line_item_fields = Predictions.get_extraction_labels_set(predictions)
+        self.predictions = self.validate_prediction_formatting(predictions)
         self.line_item_fields: Iterable[str] = line_item_fields
-        self.predictions: List[dict] = predictions
-        self._line_item_predictions: List[dict] = []
-        self._non_line_item_predictions: List[dict] = []
+        self._mapped_positions: List[dict] = []
+        self._unmapped_positions: List[dict] = []
         self._errored_predictions: List[dict] = []
 
     @property
     def updated_predictions(self) -> Predictions:
         return Predictions(
-            self._line_item_predictions
-            + self._non_line_item_predictions
+            self._mapped_positions
+            + self._unmapped_positions
             + self._errored_predictions
         )
 
     @staticmethod
-    def match_pred_to_token(
-        pred: dict, ocr_tokens: List[dict], raise_for_no_match: bool = True
-    ):
+    def match_pred_to_token(pred: dict, ocr_tokens: List[dict]):
         """
         Match and add bounding box metadata to prediction.
 
@@ -84,7 +76,7 @@ class Association:
                 _update_bounding_metadata_for_pred(pred, token)
             elif token["doc_offset"]["start"] > pred["end"]:
                 break
-        _check_if_token_match_found(pred)
+        _check_if_token_match_found(pred, no_match)
         return match_token_index
 
     def get_bounding_boxes(
@@ -93,27 +85,20 @@ class Association:
         """
         Adds keys for bounding box top/bottom/left/right and page number to line item predictions
         Args:
-        ocr_tokens (list of dicts): OCR tokens from 'ondocument' config (workflow default)
+        ocr_tokens (List[dict]): Tokens from 'ondocument' OCR config output
         raise_for_no_match (bool): raise exception if a matching token isn't found for a prediction
         """
-        if len(self.predictions) == 0:
-            raise Exception(
-                "Make sure you instantiated the class with a list of predictions"
-            )
         predictions = deepcopy(self.predictions)
         predictions = self._remove_unneeded_predictions(predictions)
         predictions = self.sort_predictions_by_start_index(predictions)
         match_index = 0
         for pred in predictions:
             try:
-                match_index = self.match_pred_to_token(
-                    pred, ocr_tokens[match_index:], raise_for_no_match
-                )
-                self._line_item_predictions.append(pred)
-                continue
+                match_index = self.match_pred_to_token(pred, ocr_tokens[match_index:])
+                self._mapped_positions.append(pred)
             except ValueError as e:
                 if raise_for_no_match:
-                    raise ValueError(e)
+                    raise e
                 else:
                     print(f"Ignoring Error: {e}")
                     self._errored_predictions.append(pred)
@@ -123,16 +108,18 @@ class Association:
         Adds a row_number:int key/val pair based on bounding box position and page
 
         Updates:
-        self._line_item_predictions (list of dicts): predictions with row_number added
+        self._mapped_positions (list of dicts): predictions with row_number added
         """
-        self._line_item_predictions = sorted(self._line_item_predictions,
-                                             key=lambda x: (x["page_num"], x["bbTop"], x["bbLeft"]))
+        self._mapped_positions = sorted(
+            self._mapped_positions,
+            key=lambda x: (x["page_num"], x["bbTop"], x["bbLeft"]),
+        )
         starting_pred = self._get_first_valid_line_item_pred()
         max_top = starting_pred["bbTop"]
         min_bot = starting_pred["bbBot"]
         page_number = starting_pred["page_num"]
         row_number = 1
-        for pred in self._line_item_predictions:
+        for pred in self._mapped_positions:
             if pred["bbTop"] > min_bot or pred["page_num"] != page_number:
                 row_number += 1
                 page_number = pred["page_num"]
@@ -142,19 +129,16 @@ class Association:
                 min_bot = max(pred["bbBot"], min_bot)
             pred["row_number"] = row_number
 
-    def get_line_items_in_groups(self) -> List[List[dict]]:
+    @property
+    def grouped_line_items(self) -> List[List[dict]]:
         """
         After row number has been assigned to predictions, returns line item predictions as a
         list of lists where each list is a row.
         """
         rows = defaultdict(list)
-        for pred in self._line_item_predictions:
+        for pred in self._mapped_positions:
             rows[pred["row_number"]].append(pred)
         return list(rows.values())
-
-    @staticmethod
-    def sort_predictions_by_start_index(predictions: List[dict]) -> List[dict]:
-        return sorted(predictions, key=lambda x: x["start"])
 
     def _remove_unneeded_predictions(self, predictions: List[dict]) -> List[dict]:
         """
@@ -163,8 +147,8 @@ class Association:
         valid_line_item_preds = []
         for pred in predictions:
             if not self.is_line_item_pred(pred):
-                self._non_line_item_predictions.append(pred)
-            elif Predictions.is_manually_added_prediction(pred):
+                self._unmapped_positions.append(pred)
+            elif self._is_manually_added_pred(pred):
                 pred["error"] = "Can't match tokens for manually added prediction"
                 self._errored_predictions.append(pred)
             else:
@@ -177,18 +161,11 @@ class Association:
         return False
 
     def _get_first_valid_line_item_pred(self) -> dict:
-        if len(self._line_item_predictions) == 0:
+        if len(self._mapped_positions) == 0:
             raise Exception(
                 "Whoops! You have no line_item_fields predictions. Did you run get_bounding_boxes?"
             )
-        return self._line_item_predictions[0]
-
-
-def sequences_overlap(x: dict, y: dict) -> bool:
-    """
-    Boolean return value indicates whether or not seqs overlap
-    """
-    return x["start"] < y["end"] and y["start"] < x["end"]
+        return self._mapped_positions[0]
 
 
 def _add_bounding_metadata_to_pred(pred: dict, token: dict):
@@ -197,12 +174,6 @@ def _add_bounding_metadata_to_pred(pred: dict, token: dict):
     pred["bbLeft"] = token["position"]["bbLeft"]
     pred["bbRight"] = token["position"]["bbRight"]
     pred["page_num"] = token["page_num"]
-
-
-def _check_if_token_match_found(pred: dict):
-    if "bbTop" not in pred:
-        pred["error"] = "No matching token found for line item field"
-        raise ValueError(f"Couldn't match a token to this prediction:\n{pred}")
 
 
 def _update_bounding_metadata_for_pred(pred: dict, token: dict):

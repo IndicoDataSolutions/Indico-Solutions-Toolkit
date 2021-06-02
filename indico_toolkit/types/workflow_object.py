@@ -33,6 +33,9 @@ class WorkflowResult:
                 f"{self.model_name} is not an available model name. Options: {self.available_model_names}"
             )
 
+    def __repr__(self):
+        return f"WorkflowResult object, Submission ID: {self.submission_id}"
+
     @property
     def predictions(self) -> Predictions:
         """

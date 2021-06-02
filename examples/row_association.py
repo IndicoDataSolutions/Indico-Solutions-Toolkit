@@ -1,4 +1,4 @@
-from indico_toolkit.row_association import Association
+from indico_toolkit.association import LineItems
 
 # Example extraction prediction result from model/workflow (use full list of predictions)
 PREDICTIONS = [
@@ -18,7 +18,7 @@ OCR_TOKENS = [
         },
     ]   
 
-litems = Association(
+litems = LineItems(
         predictions=PREDICTIONS,
          # fields from your model that should be treated as line items
         line_item_fields=["line_value", "line_date"],
@@ -30,4 +30,4 @@ litems.assign_row_number()
 # all predictions with added metadata -> List[dict]
 print(litems.updated_predictions)
 # only line item predictions grouped together -> List[List[dict]]
-print(litems.get_line_items_in_groups())
+print(litems.grouped_line_items)

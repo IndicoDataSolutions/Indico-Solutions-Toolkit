@@ -49,15 +49,15 @@ class FileProcessing:
         for i in range(0, len(self.file_paths), batch_size):
             yield self.file_paths[i : i + batch_size]
 
-    def remove_specified_files(self, files: Iterable[str]):
+    def remove_files_if_processed(self, processed_files: Iterable[str]):
         """
         Removes files from self.file_paths if they are part of provided file iterable
         Args:
-            files (Iterable[str]): iterable of file names, NOT full paths, e.g. ["invoice.pdf",]
+            processed_files (Iterable[str]): iterable of file names, NOT full paths, e.g. ["invoice.pdf",]
         """
         unprocessed_filepaths = []
         for filepath in self.file_paths:
-            if Path(filepath).name not in files:
+            if self.file_name_from_path(filepath) not in processed_files:
                 unprocessed_filepaths.append(filepath)
         print(f"Removing {len(self.file_paths) - len(unprocessed_filepaths)} files from file_paths")
         self.file_paths = unprocessed_filepaths
@@ -78,6 +78,10 @@ class FileProcessing:
     def get_file_path_suffix(filepath: str) -> str:
         return Path(filepath).suffix
 
+    @staticmethod
+    def file_name_from_path(filepath: str) -> str:
+        return Path(filepath).name
+    
     def _recursive_file_search(self, path_to_dir: str, accepted_types: Tuple[str]):
         for root, _, files in os.walk(path_to_dir):
             for name in files:

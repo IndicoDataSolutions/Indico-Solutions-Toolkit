@@ -1,4 +1,4 @@
-from indico_toolkit.row_association import Association
+from indico_toolkit.association import LineItems
 from indico_toolkit.indico_wrapper import Workflow
 from tests.conftest import MODEL_NAME
 
@@ -13,8 +13,7 @@ def test_workflow_submit_and_get_rows(indico_client, workflow_id, pdf_filepath):
     )
     wflow.wait_for_submissions_to_process(sub_ids)
     sub_result = wflow.get_submission_results_from_ids([sub_ids[0]])[0]
-    # TODO: update Association to work with Predictions object natively
-    litems = Association(
+    litems = LineItems(
         sub_result.predictions.to_list(),
         ["Previous Position", "Previous Organization"],
     )
