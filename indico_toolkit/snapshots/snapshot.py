@@ -19,7 +19,7 @@ class Snapshot:
         file_name_col: str = None,
     ):
         """
-        Combine and manipulate a Teach Task's snapshot. 
+        Combine and manipulate a Teach Task's snapshot.
 
         Args:
             path_to_snapshot (str): path to Snapshot CSV
@@ -95,14 +95,16 @@ class Snapshot:
         self.df = self.df.append(snap_to_add.df, ignore_index=True)
 
     def merge_by_file_name(
-        self, snap_to_merge: Snapshot, ensure_identical_text: bool = True,
+        self,
+        snap_to_merge: Snapshot,
+        ensure_identical_text: bool = True,
     ):
         """
-        Merge extraction labels for identical files. Merge is 'left' and file names / rows only present 
+        Merge extraction labels for identical files. Merge is 'left' and file names / rows only present
         in 'snap_to_merge' are excluded.
         Args:
-            snap_to_merge (Snapshot): Snapshot you want to merge 
-            ensure_identical_text (bool, optional): Require document text to be identical for common file name. 
+            snap_to_merge (Snapshot): Snapshot you want to merge
+            ensure_identical_text (bool, optional): Require document text to be identical for common file name.
                                                     Defaults to True.
         """
         self._assert_key_column_names_match(snap_to_merge)
@@ -186,25 +188,26 @@ class Snapshot:
         elif "document" in self.df.columns:
             self.text_col = "document"
         else:
-            raise ToolkitInstantiationError(
-                f"You must set 'text_col' from {list(self.df.colmns)}"
-            )
+            error_message = self._format_error_message("text_col")
+            raise ToolkitInstantiationError(error_message)
 
     def _infer_label_col(self):
         question_col = [col for col in self.df.columns if "question" in col]
         if len(question_col) != 1:
-            raise ToolkitInstantiationError(
-                f"You must set 'label_col' from {list(self.df.colmns)}"
-            )
+            error_message = self._format_error_message("label_col")
+            raise ToolkitInstantiationError(error_message)
         self.label_col = question_col[0]
 
     def _infer_file_name_col(self):
         file_name_col = [col for col in self.df.columns if "file_name" in col]
         if len(file_name_col) != 1:
-            raise ToolkitInstantiationError(
-                f"You must set 'file_name_col' from {list(self.df.colmns)}"
-            )
+            error_message = self._format_error_message("file_name_col")
+            raise ToolkitInstantiationError(error_message)
         self.file_name_col = file_name_col[0]
+
+    def _format_column_error_message(self, column):
+        column_list = list(self.df.columns)
+        return f"You must set attribute '{column}' from {column_list}"
 
     def __repr__(self):
         return f"Snapshot, label_col: {self.label_col}, loc: {self.path_to_snapshot}"
