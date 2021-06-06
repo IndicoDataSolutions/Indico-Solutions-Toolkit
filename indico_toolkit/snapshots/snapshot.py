@@ -94,6 +94,17 @@ class Snapshot:
         self._assert_key_column_names_match(snap_to_add)
         self.df = self.df.append(snap_to_add.df, ignore_index=True)
 
+    def get_extraction_label_names(self):
+        """
+        Return a list of all labeled classes in an extraction snapshot.
+        """
+        label_column = self.df[self.label_col].tolist()
+        label_set = set()
+        for labels in label_column:
+            for label in labels:
+                label_set.add(label["label"])
+        return sorted(list(label_set))
+
     def merge_by_file_name(
         self,
         snap_to_merge: Snapshot,
