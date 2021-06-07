@@ -199,20 +199,20 @@ class Snapshot:
         elif "document" in self.df.columns:
             self.text_col = "document"
         else:
-            error_message = self._format_error_message("text_col")
+            error_message = self._format_column_error_message("text_col")
             raise ToolkitInstantiationError(error_message)
 
     def _infer_label_col(self):
         question_col = [col for col in self.df.columns if "question" in col]
         if len(question_col) != 1:
-            error_message = self._format_error_message("label_col")
+            error_message = self._format_column_error_message("label_col")
             raise ToolkitInstantiationError(error_message)
         self.label_col = question_col[0]
 
     def _infer_file_name_col(self):
         file_name_col = [col for col in self.df.columns if "file_name" in col]
         if len(file_name_col) != 1:
-            error_message = self._format_error_message("file_name_col")
+            error_message = self._format_column_error_message("file_name_col")
             raise ToolkitInstantiationError(error_message)
         self.file_name_col = file_name_col[0]
 
