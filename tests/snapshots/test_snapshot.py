@@ -6,6 +6,7 @@ import pandas as pd
 from indico_toolkit import ToolkitInputError
 from indico_toolkit.snapshots import Snapshot
 
+# TODO: tests for exception handling
 
 def test_instantiation_wo_params(snapshot_csv_path):
     snap = Snapshot(snapshot_csv_path)
