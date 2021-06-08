@@ -84,6 +84,11 @@ class Datasets(IndicoWrapper):
             graphql_query=query, variables={"id": self.dataset_id}
         )
         return dataset["dataset"]["files"]
+    
+    @dataset_id_required
+    def get_col_name_by_id(self, col_id: int) -> str:
+        dataset = self.get_dataset()
+        return next(c.name for c in dataset.datacolumns if c.id == col_id)
 
     def _create_export(self, **kwargs) -> int:
         """
