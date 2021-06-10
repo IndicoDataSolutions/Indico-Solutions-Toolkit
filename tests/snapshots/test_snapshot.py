@@ -6,6 +6,7 @@ import pandas as pd
 from indico_toolkit import ToolkitInputError
 from indico_toolkit.snapshots import Snapshot
 
+# TODO: tests for exception handling
 
 def test_instantiation_wo_params(snapshot_csv_path):
     snap = Snapshot(snapshot_csv_path)
@@ -33,7 +34,8 @@ def test_instantiation(snapshot_csv_path):
 def test_instantiation_bad_label_col(snapshot_csv_path):
     with pytest.raises(ToolkitInputError):
         Snapshot(
-            snapshot_csv_path, label_col="file_name_9123",
+            snapshot_csv_path,
+            label_col="file_name_9123",
         )
 
 
@@ -98,12 +100,14 @@ def test_merge_by_file_name(snapshot_csv_path):
     for val in snap1.df[snap1.label_col]:
         assert isinstance(val, list)
 
+
 def test_merge_by_file_name_columns_no_match(snapshot_csv_path):
     snap1 = Snapshot(snapshot_csv_path)
     snap2 = Snapshot(snapshot_csv_path)
     snap1.standardize_column_names()
     with pytest.raises(ToolkitInputError):
         snap1.merge_by_file_name(snap2)
+
 
 def test_merge_by_file_name_no_filename_matches(snapshot_csv_path):
     snap1 = Snapshot(snapshot_csv_path)
@@ -114,3 +118,11 @@ def test_merge_by_file_name_no_filename_matches(snapshot_csv_path):
     original_labels = deepcopy(snap1.df[snap1.label_col].tolist())
     snap1.merge_by_file_name(snap2)
     assert snap1.df[snap1.label_col].tolist() == original_labels
+
+
+def test_get_extraction_label_names(snapshot_csv_path, snapshot_classes):
+    snap = Snapshot(snapshot_csv_path)
+    label_list = snap.get_extraction_label_names()
+    assert len(snapshot_classes) == len(label_list)
+    for snapshot_class, test_class in zip(snapshot_classes, label_list):
+        assert snapshot_class == test_class
