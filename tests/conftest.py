@@ -158,17 +158,3 @@ def doc_extraction_standard(indico_client):
 @pytest.fixture(scope="session")
 def snapshot_csv_path(testdir_file_path):
     return os.path.join(testdir_file_path, "data/snapshots/snapshot.csv")
-
-
-@pytest.fixture(scope="session")
-def snapshot_classes():
-    snapshot_classes = [
-        "Company Name",
-        "Stock Symbol",
-        "Trader's District",
-        "Trader's Name",
-        "Transaction Amount",
-        "Transaction date",
-        "Transaction type",
-    ]
-    return snapshot_classes
