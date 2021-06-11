@@ -7,7 +7,7 @@ build-backend = "flit_core.buildapi"
 module = "indico_toolkit"
 author = "indico"
 author-email = "scott.levin@indico.io"
-home-page = "https://indico.io/"
+home-page = "https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit"
 classifiers = [ "License :: OSI Approved :: MIT License",]
 description-file = "README.md"
 

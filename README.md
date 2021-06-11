@@ -66,6 +66,17 @@ for paths in fp.batch_files(batch_size=10):
 
 ```
 
+### Contributing
+
+If you are adding new features to Indico Toolkit, make sure to:
+
+* Add robust integration and unit tests.
+* Add a sample usage script to the 'examples/' directory.
+* Add a bullet point for what the feature does to the list at the top of this README.md.
+* Ensure the full test suite is passing locally before creating a pull request.
+* Add doc strings for methods where usage is non-obvious.
+* If you are using new pip installed libraries, make sure they are added to the setup.py
+
 <!-- Badges -->
 [build-url]: https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/actions/workflows/build.yml
 [build-image]: https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/actions/workflows/build.yml/badge.svg

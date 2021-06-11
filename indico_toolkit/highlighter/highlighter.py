@@ -7,7 +7,6 @@ from indico_toolkit.pipelines import FileProcessing
 from indico_toolkit.types import Predictions
 
 # TODO: add redact and replace data class
-# TODO: add example
 
 
 class Highlighter(ExtractedTokens):
@@ -34,28 +33,28 @@ class Highlighter(ExtractedTokens):
         """
         if not color_map:
             color_map = defaultdict(lambda: "yellow")
-        doc = fitz.open(self.path_to_pdf)
-        for doc_page, tokens in self.mapped_positions_by_page.items():
-            page = doc[doc_page]
-            xnorm = page.rect[2] / page_dimensions[doc_page]["width"]
-            ynorm = page.rect[3] / page_dimensions[doc_page]["height"]
-            for token in tokens:
-                annotation = fitz.Rect(
-                    token["position"]["bbLeft"] * xnorm,
-                    token["position"]["bbTop"] * ynorm,
-                    token["position"]["bbRight"] * xnorm,
-                    token["position"]["bbBot"] * ynorm,
-                )
-                color = color_map[token["label"]]
-                ann = page.addHighlightAnnot(annotation)
-                ann.setOpacity(0.5)
-                ann.setColors(stroke=getColor(color))
-                ann.update()
+        with fitz.open(self.path_to_pdf) as doc:
+            for doc_page, tokens in self.mapped_positions_by_page.items():
+                page = doc[doc_page]
+                xnorm = page.rect[2] / page_dimensions[doc_page]["width"]
+                ynorm = page.rect[3] / page_dimensions[doc_page]["height"]
+                for token in tokens:
+                    annotation = fitz.Rect(
+                        token["position"]["bbLeft"] * xnorm,
+                        token["position"]["bbTop"] * ynorm,
+                        token["position"]["bbRight"] * xnorm,
+                        token["position"]["bbBot"] * ynorm,
+                    )
+                    color = color_map[token["label"]]
+                    ann = page.addHighlightAnnot(annotation)
+                    ann.setOpacity(0.5)
+                    ann.setColors(stroke=getColor(color))
+                    ann.update()
 
-        if include_toc:
-            toc_text = self._get_toc_text()
-            doc.insertPage(0, text=toc_text, fontsize=13)
-        doc.save(output_path)
+            if include_toc:
+                toc_text = self._get_toc_text()
+                doc.insertPage(0, text=toc_text, fontsize=13)
+            doc.save(output_path)
 
     def _get_toc_text(self) -> str:
         """
