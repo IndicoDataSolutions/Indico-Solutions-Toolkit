@@ -1,42 +1,23 @@
-import tempfile
-import pandas as pd
-from copy import deepcopy
-from indico_toolkit.types import Predictions
+from _pytest.python import Class
+from tests.types.conftest import extractions_obj
+import pytest
+
+from indico_toolkit.types import Predictions, Extractions, Classifications
+from indico_toolkit.errors import ToolkitInputError
 
 
-def test_init(static_preds):
-    predictions = Predictions(static_preds)
-    assert predictions.to_list() == static_preds
-    assert isinstance(predictions["Name"], list)
-    assert isinstance(predictions["Name"][0], dict)
-    assert isinstance(predictions["Name"][0]["label"], str)
+def test_bad_type():
+    with pytest.raises(ToolkitInputError):
+        Predictions.get_obj("Bad type")
 
 
-def test_remove_by_confidence(predictions_obj):
-    predictions_obj.remove_by_confidence(confidence=0.95, labels=["Name", "Department"])
-    predictions_obj.remove_by_confidence(confidence=0.9)
-    for pred in predictions_obj.to_list():
-        label = pred["label"]
-        if label in ["Name", "Department"]:
-            assert pred["confidence"][label] > 0.95
-        else:
-            assert pred["confidence"][label] > 0.9
+def test_get_obj_extractions(static_extract_preds):
+    extraction_obj = Predictions.get_obj(static_extract_preds)
+    assert type(extraction_obj) == Extractions
+    assert extraction_obj._preds == static_extract_preds
 
 
-def test_remove_except_max_confidence(predictions_obj):
-    predictions_obj.remove_except_max_confidence(labels=["Name", "Department"])
-    assert len(predictions_obj.to_dict_by_label["Name"]) == 1
-    assert len(predictions_obj.to_dict_by_label["Department"]) == 1
-
-
-def test_to_csv(predictions_obj):
-    duplicated_obj = deepcopy(predictions_obj)
-    with tempfile.NamedTemporaryFile(suffix=".csv") as tf:
-        filepath = tf.name
-        predictions_obj.to_csv(filepath, append_if_exists=False)
-        df = pd.read_csv(filepath)
-        assert "confidence" and "text" and "label" and "filename" in df.columns
-        assert df.shape == (25, 4)
-        duplicated_obj.to_csv(filepath, append_if_exists=True)
-        df = pd.read_csv(filepath)
-        assert df.shape == (50, 4)
+def test_get_obj_classifications(static_class_preds):
+    classification_obj = Predictions.get_obj(static_class_preds)
+    assert type(classification_obj) == Classifications
+    assert classification_obj._preds == static_class_preds

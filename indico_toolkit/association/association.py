@@ -1,7 +1,7 @@
 from typing import Union, List, Dict
 from collections import defaultdict
 from abc import ABC, abstractmethod
-from indico_toolkit.types import Predictions
+from indico_toolkit.types import Extractions
 
 
 class Association(ABC):
@@ -9,7 +9,7 @@ class Association(ABC):
     Base class for matching tokens to extraction predictions. 
     """
 
-    def __init__(self, predictions: Union[List[dict], Predictions]):
+    def __init__(self, predictions: Union[List[dict], Extractions]):
         self._predictions = self.validate_prediction_formatting(predictions)
         self._mapped_positions = []
         self._manually_added_preds = []
@@ -34,17 +34,14 @@ class Association(ABC):
         return page_map
     
     def validate_prediction_formatting(
-        self, predictions: Union[List[dict], Predictions]
+        self, predictions: Union[List[dict], Extractions]
     ) -> List[dict]:
-        if isinstance(predictions, Predictions):
+        if isinstance(predictions, Extractions):
             predictions = predictions.to_list()
         return predictions
 
     def _is_manually_added_pred(self, prediction: dict) -> bool:
-        if Predictions.is_manually_added_prediction(prediction):
-            return True
-        return False
-
+        return Extractions.is_manually_added_prediction(prediction)
 
 def sequences_overlap(x: dict, y: dict) -> bool:
     """
