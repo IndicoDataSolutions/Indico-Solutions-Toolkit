@@ -9,6 +9,10 @@ class TeachTask:
     @property
     def labels(self) -> List[str]:
         return self.teach_task["questions"][0]["targets"]
+    
+    @property
+    def active(self) -> bool:
+        return self.teach_task["active"]
 
     @property
     def model_group_id(self) -> int:
@@ -69,3 +73,7 @@ class TeachTask:
     @property
     def assigned_users(self) -> List[dict]:
         return self.teach_task["assignedUsers"]
+    
+    @property
+    def question_status(self) -> str:
+        return self.teach_task["questionsStatus"]

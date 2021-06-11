@@ -1,6 +1,7 @@
 from typing import List
 from functools import wraps
 import pandas as pd
+import time
 
 from indico.client.client import IndicoClient
 from indico_toolkit.indico_wrapper import Datasets
@@ -48,6 +49,7 @@ class Teach(Datasets):
         data_type: str = "TEXT",
         num_labelers_required: int = 1,
         keywords: List[str] = [],
+        wait: bool = True
     ):
         """
         Create a teach task
@@ -61,6 +63,7 @@ class Teach(Datasets):
             data_type (str, optional): Type of data in dataset. Defaults to "TEXT"
             num_labelers_required (int, optional): Number of labelers required for each document. Defaults to 1
             keywords (List[str], optional): Keywords to help with labeling. Defaults to []
+            wait (bool, optional): Wait for teach task to complete
         """
         source_col_id = self.dataset.datacolumn_by_name(datacolumn_name).id
         variables = {
@@ -81,12 +84,22 @@ class Teach(Datasets):
         }
         teach_task = self.graphQL_request(CREATE_TEACH_TASK, variables)
         self.task_id = teach_task["createQuestionnaire"]["id"]
+        if wait:
+            self._wait_for_teach_task()
+
+
+    @task_id_required
+    def _wait_for_teach_task(self):
+        while self.task.question_status == "STARTED":
+            time.sleep(2)
+
 
     @task_id_required
     def duplicate_teach_task(
         self,
         task_name: str = None,
         question: str = None,
+        wait: bool = True
     ):
         teach_task = self.task
         if not task_name:
@@ -102,6 +115,7 @@ class Teach(Datasets):
             data_type=teach_task.data_type,
             num_labelers_required=teach_task.num_labelers_required,
             keywords=teach_task.keywords,
+            wait=wait
         )
 
     @task_id_required
@@ -111,6 +125,13 @@ class Teach(Datasets):
         label_col: str = None,
         row_index_col: str = None,
     ) -> dict:
+        """
+        Label current teach task using snapshot csv or dataset export
+        Args:
+            path_to_snapshot (str, optional): path to snapshot csv for labeling teach task, if not provided a dataset export is created and used
+            label_col (str, optional): column name of label information, inferred if not provided
+            row_index_col (str, optional): column name of index column, assumed default format if not provided
+        """
         if path_to_snapshot:
             self.df = pd.read_csv(path_to_snapshot)
         else:
