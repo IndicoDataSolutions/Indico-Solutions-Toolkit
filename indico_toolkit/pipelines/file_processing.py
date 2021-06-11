@@ -71,6 +71,10 @@ class FileProcessing:
         return [Path(i).parent.name for i in self.file_paths]
 
     @staticmethod
+    def join_paths(start_path:str, end_path: str) -> str:
+        return os.path.join(start_path, end_path)
+
+    @staticmethod
     def get_file_name_without_suffix(filepath: str) -> str:
         return Path(filepath).stem
 
@@ -82,6 +86,19 @@ class FileProcessing:
     def file_name_from_path(filepath: str) -> str:
         return Path(filepath).name
     
+    @staticmethod
+    def get_parent_path(filepath: str) -> str:
+        return str(Path(filepath).parent)
+
+    def __iter__(self):
+        """
+        Object is iterable on file_paths
+        """
+        current = 0
+        while current < len(self.file_paths):
+            yield self.file_paths[current]
+            current += 1
+
     def _recursive_file_search(self, path_to_dir: str, accepted_types: Tuple[str]):
         for root, _, files in os.walk(path_to_dir):
             for name in files:
