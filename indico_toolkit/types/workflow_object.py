@@ -41,24 +41,17 @@ class WorkflowResult:
         """
         Return predictions without human review
         """
-        try:
-            self.set_model_name()
-        except AttributeError as error:
-            if isinstance(self.document_results, list):
-                return Predictions(self.document_results)
-            else:
-                raise error
+        self.set_model_name()
         preds = self.document_results[self.model_name]
-        if isinstance(preds, dict):
-            return Predictions(preds["pre_review"])
-        else:
-            return Predictions(preds)
+        if "pre_review" in preds:
+            preds = preds["pre_review"]
+        return Predictions.get_obj(preds)
 
     @property
     def post_review_predictions(self) -> List[dict]:
         self.set_model_name()
         try:
-            return Predictions(self.document_results[self.model_name]["final"])
+            return Predictions.get_obj(self.document_results[self.model_name]["final"])
         except KeyError:
             raise ToolkitStatusError(
                 f"Submission {self.submission_id} has no 'final' predictions. Has it completed human review?"

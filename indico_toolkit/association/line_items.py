@@ -44,7 +44,7 @@ class LineItems(Association):
 
     @property
     def updated_predictions(self) -> Predictions:
-        return Predictions(
+        return Predictions.get_obj(
             self._mapped_positions
             + self._unmapped_positions
             + self._errored_predictions
