@@ -5,7 +5,7 @@ from indico_toolkit import ToolkitInputError
 from indico_toolkit.indico_wrapper import Reviewer, Workflow
 from indico_toolkit.indico_wrapper.workflow import COMPLETE_FILTER
 from indico_toolkit.staggered_loop import StaggeredLoop
-from indico_toolkit.types import WorkflowResult, Predictions
+from indico_toolkit.types import WorkflowResult, Predictions, Extractions
 from tests.indico_wrapper.test_reviewer import get_change_formatted_predictions
 
 
@@ -85,7 +85,7 @@ def test_to_csv(stagger_wrapper, reviewed_submissions, workflow_id):
 
 
 def test_convert_predictions_for_snapshot(stagger_wrapper):
-    predictions = Predictions(
+    predictions = Predictions.get_obj(
         [
             {
                 "text": "abc",
@@ -128,7 +128,7 @@ def test_convert_predictions_for_snapshot(stagger_wrapper):
 def test_get_nested_predictions(stagger_wrapper, static_wflow_result):
     stagger_wrapper.model_name = ""
     predictions = stagger_wrapper._get_nested_predictions(static_wflow_result)
-    assert isinstance(predictions, Predictions)
+    assert isinstance(predictions, Extractions)
     assert predictions.num_predictions == 2
 
 
