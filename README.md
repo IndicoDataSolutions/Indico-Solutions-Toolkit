@@ -20,6 +20,10 @@ The indico-toolkit provides classes and functions to help achieve the following:
 * Snapshot merging and manipulation
 * Class to spoof a human reviewer.
 
+### Installation
+```
+pip install indico_toolkit
+```
 
 ### Example Useage
 For scripted examples on how to use the toolkit, see the [examples directory](https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/tree/main/examples) 
@@ -65,6 +69,17 @@ for paths in fp.batch_files(batch_size=10):
         result.predictions.to_csv("./results.csv", filename=filename, append_if_exists=True)
 
 ```
+
+### Contributing
+
+If you are adding new features to Indico Toolkit, make sure to:
+
+* Add robust integration and unit tests.
+* Add a sample usage script to the 'examples/' directory.
+* Add a bullet point for what the feature does to the list at the top of this README.md.
+* Ensure the full test suite is passing locally before creating a pull request.
+* Add doc strings for methods where usage is non-obvious.
+* If you are using new pip installed libraries, make sure they are added to the setup.py and pyproject.toml.
 
 <!-- Badges -->
 [build-url]: https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/actions/workflows/build.yml

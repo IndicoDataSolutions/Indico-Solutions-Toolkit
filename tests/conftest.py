@@ -49,9 +49,6 @@ def pdf_filepath():
     return os.path.join(FILE_PATH, "data/samples/fin_disc.pdf")
 
 
-# TODO: below fixture should just use the dataset class...
-
-
 @pytest.fixture(scope="session")
 def dataset_obj(indico_client):
     dataset_id = os.environ.get("DATASET_ID")

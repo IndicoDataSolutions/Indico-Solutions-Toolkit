@@ -8,3 +8,12 @@
 
 ### Fixed
 * Row Association now also sorting on 'bbtop'
+
+## 1.0.2 6/15/2021
+
+### Added
+* PDF manipulation features
+* Support for classification predictions
+
+### Fixed
+* Dependency installation

@@ -1,5 +1,7 @@
 [build-system]
-requires = ["flit_core >=2,<4"]
+requires = [
+    "flit_core >=2,<4",
+    ]
 requires-python = ">=3.6"
 build-backend = "flit_core.buildapi"
 
@@ -7,7 +9,25 @@ build-backend = "flit_core.buildapi"
 module = "indico_toolkit"
 author = "indico"
 author-email = "scott.levin@indico.io"
-home-page = "https://indico.io/"
+home-page = "https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit"
 classifiers = [ "License :: OSI Approved :: MIT License",]
 description-file = "README.md"
+requires = [
+    "indico-client>=4.9.0",
+    "msgpack-numpy==0.4.4.3",
+    "numpy>=1.16.0",
+    "Pillow>=6.2.0",
+    "requests>=2.22.0",
+    "setuptools>=41.4.0",
+    "pandas>=1.0.3",
+    "coverage>=5.5",
+    "PyMuPDF==1.18.13"
+]
+
+[tool.flit.metadata.requires-extra]
+test = [
+    "pytest>=5.2.1", 
+    "requests-mock>=1.7.0-7", 
+    "pytest-dependency==0.5.1"
+]
 
