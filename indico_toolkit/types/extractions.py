@@ -45,6 +45,8 @@ class Extractions:
         Removes all predictions except the highest confidence within each specified class
         """
         for label in labels:
+            if label not in self.to_dict_by_label:
+                continue
             max_pred = self._select_max_confidence(label)
             self._remove_all_by_label(label)
             self._preds.append(max_pred)

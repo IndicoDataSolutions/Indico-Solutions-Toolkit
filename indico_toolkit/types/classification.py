@@ -4,16 +4,16 @@ import pandas as pd
 from indico_toolkit.pipelines import FileProcessing
 
 
-class Classifications:
+class Classification:
     """
     Functionality for classification predictions
     """
-    def __init__(self, predictions: dict):
-        self._preds = predictions
+    def __init__(self, prediction: dict):
+        self._pred = prediction
 
     @property
     def label(self) -> str:
-        return self._preds["label"]
+        return self._pred["label"]
 
     @property
     def labels(self) -> list:
@@ -23,14 +23,14 @@ class Classifications:
         """
         Overwite confidence dictionary to just max confidence float
         """
-        self._preds["confidence"] = self._preds["confidence"][self.label]
+        self._pred["confidence"] = self._pred["confidence"][self.label]
     
     @property
     def confidence_scores(self) -> Dict[str, float]:
-        return self._preds["confidence"]
+        return self._pred["confidence"]
 
     def to_csv(self, save_path, filename: str = "", append_if_exists: bool = True) -> None:
-        results = {filename: self._preds}
+        results = {filename: self._pred}
         df = pd.DataFrame(results).transpose()
         df["filename"] = filename
         if append_if_exists and FileProcessing.file_exists(save_path):

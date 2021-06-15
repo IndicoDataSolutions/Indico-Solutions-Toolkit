@@ -2,28 +2,28 @@ from copy import deepcopy
 import tempfile
 import pandas as pd
 
-from indico_toolkit.types import Classifications
+from indico_toolkit.types import Classification
 
 
 def test_init(static_class_preds):
-    classifications = Classifications(static_class_preds)
-    assert classifications._preds == static_class_preds
+    classification = Classification(static_class_preds)
+    assert classification._pred == static_class_preds
 
-def test_properties(classifications_obj):
-    assert classifications_obj.label == "1"
-    assert len(classifications_obj.labels) == 4
-    assert len(classifications_obj.confidence_scores.keys()) == 4
+def test_properties(classification_obj):
+    assert classification_obj.label == "1"
+    assert len(classification_obj.labels) == 4
+    assert len(classification_obj.confidence_scores.keys()) == 4
 
-def test_set_confidence_key_to_max_value(classifications_obj):
-    max_conf = max(classifications_obj.confidence_scores.values())
-    classifications_obj.set_confidence_key_to_max_value()
-    assert  classifications_obj.confidence_scores == max_conf
+def test_set_confidence_key_to_max_value(classification_obj):
+    max_conf = max(classification_obj.confidence_scores.values())
+    classification_obj.set_confidence_key_to_max_value()
+    assert  classification_obj.confidence_scores == max_conf
 
-def test_to_csv(classifications_obj):
-    duplicated_obj = deepcopy(classifications_obj)
+def test_to_csv(classification_obj):
+    duplicated_obj = deepcopy(classification_obj)
     with tempfile.NamedTemporaryFile(suffix=".csv") as tf:
         filepath = tf.name
-        classifications_obj.to_csv(filepath, filepath, append_if_exists=False)
+        classification_obj.to_csv(filepath, filepath, append_if_exists=False)
         df = pd.read_csv(filepath)
         assert "confidence" and "label" and "filename" in df.columns
         assert df.shape == (1, 3)

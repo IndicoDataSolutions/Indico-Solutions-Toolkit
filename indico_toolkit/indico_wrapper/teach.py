@@ -57,12 +57,12 @@ class Teach(Datasets):
             task_name (str): Name of teach task
             classes (List[str]): Desired labels for the teach task
             question (str): Question or prompt for labelers
-            datacolumn_name (str, optional): Name of source column in dataset. Defaults to "text"
-            task_type (str, optional): Teach task type i.e. "CLASSIFICATION", "CLASSIFICATION_MULTIPLE". Defaults to "ANNOTATION"
-            processors (List[dict], optional): Processors to include on teach task. Defaults to []
-            data_type (str, optional): Type of data in dataset. Defaults to "TEXT"
-            num_labelers_required (int, optional): Number of labelers required for each document. Defaults to 1
-            keywords (List[str], optional): Keywords to help with labeling. Defaults to []
+            datacolumn_name (str): Name of source column in dataset. Defaults to "text"
+            task_type (str): Teach task type i.e. "CLASSIFICATION", "CLASSIFICATION_MULTIPLE". Defaults to "ANNOTATION"
+            processors (List[dict]): Processors to include on teach task. Defaults to []
+            data_type (str): Type of data in dataset. Defaults to "TEXT"
+            num_labelers_required (int): Number of labelers required for each document. Defaults to 1
+            keywords (List[str]): Keywords to help with labeling. Defaults to []
             wait (bool, optional): Wait for teach task to complete
         """
         source_col_id = self.dataset.datacolumn_by_name(datacolumn_name).id
@@ -140,6 +140,7 @@ class Teach(Datasets):
             row_index_col = f"row_index_{self.dataset_id}"
         if not label_col:
             label_col = self._infer_label_col()
+        self._check_if_cols_present([row_index_col, label_col])
         labels = []
         clean_df = self.df.dropna(subset=[label_col])
         for _, row in clean_df.iterrows():
@@ -155,6 +156,11 @@ class Teach(Datasets):
         return self.graphQL_request(
             graphql_query=SUBMIT_QUESTIONNAIRE_EXAMPLE, variables=variables
         )
+    
+    def _check_if_cols_present(self, cols: list) -> None:
+        for col in cols:
+            if col not in self.df.columns:
+                raise ToolkitInputError(f"{col} column not found. Options: {self.df.columns}")
 
     def _infer_label_col(self) -> str:
         col_names = []

@@ -4,7 +4,7 @@ from collections import defaultdict
 from copy import deepcopy
 import os
 import json
-from indico_toolkit.types import Predictions
+from indico_toolkit.types import Extractions
 from .association import sequences_overlap, Association, _check_if_token_match_found
 
 
@@ -27,7 +27,7 @@ class LineItems(Association):
 
     def __init__(
         self,
-        predictions: Union[List[dict], Predictions],
+        predictions: Union[List[dict], Extractions],
         line_item_fields: Iterable[str],
     ):
         """
@@ -43,8 +43,8 @@ class LineItems(Association):
         self._errored_predictions: List[dict] = []
 
     @property
-    def updated_predictions(self) -> Predictions:
-        return Predictions.get_obj(
+    def updated_predictions(self) -> Extractions:
+        return Extractions(
             self._mapped_positions
             + self._unmapped_positions
             + self._errored_predictions
