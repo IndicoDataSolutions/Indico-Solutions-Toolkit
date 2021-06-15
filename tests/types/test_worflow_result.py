@@ -2,7 +2,7 @@ import pytest
 
 from indico_toolkit.types import Extractions, WorkflowResult
 from indico_toolkit import ToolkitInputError, ToolkitStatusError
-from indico_toolkit.types.classifications import Classifications
+from indico_toolkit.types.classification import Classification
 
 
 def test_get_predictions_set_model_name(wf_result_obj):
@@ -33,4 +33,4 @@ def test_predictions_no_pre_review():
 
 def test_classification_predictions():
     wf_result = WorkflowResult({"results": {"document": {"results": {"model_v1": {}}}}, "submission_id": 12}, "model_v1")
-    assert isinstance(wf_result.predictions, Classifications)
+    assert isinstance(wf_result.predictions, Classification)

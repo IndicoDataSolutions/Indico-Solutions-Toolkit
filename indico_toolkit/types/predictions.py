@@ -12,11 +12,11 @@ class Predictions:
     def get_obj(predictions):
         """
         Returns:
-        Extractions object or Classifications object depending on predictions type
+        Extractions object or Classification object depending on predictions type
         """
         if type(predictions) == list:
             return indico_toolkit.types.Extractions(predictions)
         elif type(predictions) == dict:
-            return indico_toolkit.types.Classifications(predictions)
+            return indico_toolkit.types.Classification(predictions)
         else:
-            raise ToolkitInputError(f"Unable to process predictions with type {type(predictions)}")
+            raise ToolkitInputError(f"Unable to process predictions with type {type(predictions)}. Predictions: {predictions}")

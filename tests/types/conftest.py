@@ -2,7 +2,7 @@ import pytest
 import json
 
 from indico_toolkit.types import Predictions, WorkflowResult
-from indico_toolkit.types import Extractions, Classifications
+from indico_toolkit.types import Extractions, Classification
 
 
 @pytest.fixture(scope="module")
@@ -30,8 +30,8 @@ def extractions_obj(static_extract_preds):
     return Extractions(static_extract_preds.copy())
 
 @pytest.fixture(scope="function")
-def classifications_obj(static_class_preds):
-    return Classifications(static_class_preds.copy())
+def classification_obj(static_class_preds):
+    return Classification(static_class_preds.copy())
 
 @pytest.fixture(scope="module")
 def wf_result_obj(static_extract_results):

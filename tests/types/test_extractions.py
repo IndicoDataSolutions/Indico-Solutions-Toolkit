@@ -24,7 +24,7 @@ def test_remove_by_confidence(extractions_obj):
 
 
 def test_remove_except_max_confidence(extractions_obj):
-    extractions_obj.remove_except_max_confidence(labels=["Name", "Department"])
+    extractions_obj.remove_except_max_confidence(labels=["Name", "Department", "Not present label"])
     assert len(extractions_obj.to_dict_by_label["Name"]) == 1
     assert len(extractions_obj.to_dict_by_label["Department"]) == 1
 
