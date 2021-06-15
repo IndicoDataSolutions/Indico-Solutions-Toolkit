@@ -31,6 +31,7 @@ HOST_URL = os.environ.get("HOST_URL")
 API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
 API_TOKEN = os.environ.get("API_TOKEN")
 MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
+CLASS_MODEL_NAME = os.environ.get("CLASS_MODEL_NAME", "Toolkit Test Classification Model")
 
 
 @pytest.fixture(scope="session")
@@ -122,6 +123,10 @@ def wflow_submission_result(indico_client, module_submission_ids) -> dict:
 def model_name():
     return MODEL_NAME
 
+
+@pytest.fixture(scope="session")
+def class_model_name():
+    return CLASS_MODEL_NAME
 
 @pytest.fixture(scope="session")
 def ondoc_ocr_object(indico_client, pdf_filepath):

@@ -1,0 +1,21 @@
+{
+    "submission_id": "1f4d5290-ca26-11eb-bfef-ea7f9d5dcba4",
+    "etl_output": "indico-file:///storage/submission/1717/457658ad-c4d9-4516-ad92-161912a98356/28b00a53-4589-4131-96fd-df08101e6502_4d1156a6-e0b4-4cc5-aff7-b1256593d4cc_etl_output.json",
+    "errors": [],
+    "results": {
+        "document": {
+            "results": {
+                "Toolkit Test Classification Model": {
+                    "confidence": {
+                        "1": 0.3199724549362772,
+                        "3": 0.27925055054656683,
+                        "2": 0.20843889028203272,
+                        "4": 0.1923381042351232
+                    },
+                    "label": "1"
+                }
+            }
+        }
+    },
+    "file_version": 1
+}
