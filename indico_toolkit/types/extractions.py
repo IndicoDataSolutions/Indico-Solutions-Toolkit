@@ -44,8 +44,9 @@ class Extractions:
         """
         Removes all predictions except the highest confidence within each specified class
         """
+        label_set = self.label_set
         for label in labels:
-            if label not in self.to_dict_by_label:
+            if label not in label_set:
                 continue
             max_pred = self._select_max_confidence(label)
             self._remove_all_by_label(label)
@@ -84,6 +85,10 @@ class Extractions:
     @staticmethod
     def get_extraction_labels_set(predictions: List[dict]) -> Set[str]:
         return set([i["label"] for i in predictions])
+
+    @property
+    def label_set(self):
+        return set([i["label"] for i in self._preds])
 
     def _select_max_confidence(self, label):
         max_pred = None
