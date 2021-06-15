@@ -4,7 +4,7 @@ import fitz
 from fitz.utils import getColor
 from indico_toolkit.association import ExtractedTokens
 from indico_toolkit.pipelines import FileProcessing
-from indico_toolkit.types import Predictions
+from indico_toolkit.types import Extractions
 
 # TODO: add redact and replace data class
 # TODO: add example
@@ -77,4 +77,4 @@ class Highlighter(ExtractedTokens):
             if token["prediction_index"] not in already_found:
                 already_found.append(token["prediction_index"])
                 unique_preds.append(token)
-        return Predictions(unique_preds).label_count_dict
+        return Extractions(unique_preds).label_count_dict

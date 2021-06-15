@@ -1,7 +1,7 @@
 from typing import List, Union
 from copy import deepcopy
 from .association import sequences_overlap, Association, _check_if_token_match_found
-from indico_toolkit.types import Predictions
+from indico_toolkit.types import Extractions
 
 # TODO: add test that 'errored_predictions' actually works with ValueErrors
 
@@ -12,7 +12,7 @@ class ExtractedTokens(Association):
     """
 
     def __init__(
-        self, predictions: Union[List[dict], Predictions],
+        self, predictions: Union[List[dict], Extractions],
     ):
         super().__init__(predictions)
 
@@ -73,14 +73,14 @@ class ExtractedTokens(Association):
         return self._mapped_positions
 
     @property
-    def predictions(self) -> Predictions:
-        return Predictions(
+    def predictions(self) -> Extractions:
+        return Extractions(
             self._predictions + self._errored_predictions + self._manually_added_preds
         )
 
     @property
-    def unmapped_predictions(self) -> Predictions:
-        return Predictions(self._errored_predictions + self._manually_added_preds)
+    def unmapped_predictions(self) -> Extractions:
+        return Extractions(self._errored_predictions + self._manually_added_preds)
 
     def _remove_unneeded_token_keys(
         self, token: dict, keys: List[str] = ["style", "block_offset", "page_offset"]

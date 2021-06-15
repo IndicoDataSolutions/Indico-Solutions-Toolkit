@@ -8,7 +8,7 @@ def test_get_file_paths_from_dir(testdir_file_path):
     test_dir = os.path.join(testdir_file_path, "data/samples/")
     fileproc = FileProcessing()
     fileproc.get_file_paths_from_dir(test_dir, accepted_types=(".pdf", ".json"))
-    assert len(fileproc.file_paths) == 2
+    assert len(fileproc.file_paths) == 3
     assert len(fileproc.invalid_suffix_paths) == 1
 
 
@@ -25,7 +25,7 @@ def test_get_file_paths_from_dir_recursive(testdir_file_path):
     fileproc.get_file_paths_from_dir(
         test_dir, accepted_types=(".json",), recursive_search=True
     )
-    assert len(fileproc.file_paths) == 3
+    assert len(fileproc.file_paths) == 4
     for fpath in fileproc.file_paths:
         assert fpath.endswith(".json")
 
