@@ -108,9 +108,11 @@ class Extractions:
         return dict(Counter(i["label"] for i in self._preds))
 
     def _remove_all_by_label(self, label):
+        new_preds = []
         for pred in self._preds:
-            if pred["label"] == label:
-                self._preds.remove(pred)
+            if pred["label"] != label:
+                new_preds.append(pred)
+        self._preds = new_preds
 
     def __len__(self):
         return len(self._preds)
