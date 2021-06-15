@@ -1,11 +1,13 @@
 import pytest
-from indico_toolkit.types import Predictions, WorkflowResult
+
+from indico_toolkit.types import Extractions, WorkflowResult
 from indico_toolkit import ToolkitInputError, ToolkitStatusError
+from indico_toolkit.types.classification import Classification
 
 
 def test_get_predictions_set_model_name(wf_result_obj):
     preds = wf_result_obj.predictions
-    assert isinstance(preds, Predictions)
+    assert isinstance(preds, Extractions)
     assert isinstance(wf_result_obj.model_name, str)
 
 
@@ -25,5 +27,10 @@ def test_no_final_preds():
 
 
 def test_predictions_no_pre_review():
-    wf_result = WorkflowResult({"results": {"document": {"results": []}}, "submission_id": 12}, "model_v1")
-    assert isinstance(wf_result.predictions, Predictions)
+    wf_result = WorkflowResult({"results": {"document": {"results": {"model_v1": []}}}, "submission_id": 12}, "model_v1")
+    assert isinstance(wf_result.predictions, Extractions)
+
+
+def test_classification_predictions():
+    wf_result = WorkflowResult({"results": {"document": {"results": {"model_v1": {}}}}, "submission_id": 12}, "model_v1")
+    assert isinstance(wf_result.predictions, Classification)
