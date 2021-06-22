@@ -18,6 +18,10 @@ class Classification:
     @property
     def labels(self) -> list:
         return list(self.confidence_scores.keys())
+    
+    @property
+    def confidence(self) -> float:
+        return self.confidence_scores[self.label]
 
     def set_confidence_key_to_max_value(self):
         """

@@ -1,5 +1,6 @@
 import pytest
 import json
+from copy import deepcopy
 
 from indico_toolkit.types import Predictions, WorkflowResult
 from indico_toolkit.types import Extractions, Classification
@@ -27,11 +28,11 @@ def static_class_preds(static_class_results, class_model_name):
 
 @pytest.fixture(scope="function")
 def extractions_obj(static_extract_preds):
-    return Extractions(static_extract_preds.copy())
+    return Extractions(deepcopy(static_extract_preds))
 
 @pytest.fixture(scope="function")
 def classification_obj(static_class_preds):
-    return Classification(static_class_preds.copy())
+    return Classification(deepcopy(static_class_preds))
 
 @pytest.fixture(scope="module")
 def wf_result_obj(static_extract_results):
