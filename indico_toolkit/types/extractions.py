@@ -1,6 +1,7 @@
 from typing import List, Dict, Set
 from collections import defaultdict, Counter
 import pandas as pd
+from copy import deepcopy
 from indico_toolkit.pipelines import FileProcessing
 
 # TODO: add property to list all predicted labels
@@ -10,6 +11,7 @@ class Extractions:
     """
     Functionality for common extraction prediction use cases
     """
+
     def __init__(self, predictions: List[dict]):
         self._preds = predictions
 
@@ -52,17 +54,35 @@ class Extractions:
             self._remove_all_by_label(label)
             self._preds.append(max_pred)
 
-    def set_confidence_key_to_max_value(self):
+    def set_confidence_key_to_max_value(self, inplace: bool = True):
         """
         Overwite confidence dictionary to just max confidence float
         """
-        for pred in self._preds:
-            pred["confidence"] = pred["confidence"][pred["label"]]
+        if inplace:
+            self._set_confidence_key_to_max_value(self._preds)
+        else:
+            return self._set_confidence_key_to_max_value(deepcopy(self._preds))
 
-    def remove_keys(self, keys_to_remove: List[str] = ["start", "end"]):
-        for pred in self._preds:
+    @staticmethod
+    def _set_confidence_key_to_max_value(preds):
+        for pred in preds:
+            pred["confidence"] = pred["confidence"][pred["label"]]
+        return preds
+
+    def remove_keys(
+        self, keys_to_remove: List[str] = ["start", "end"], inplace: bool = True
+    ):
+        if inplace:
+            self._remove_keys(self._preds, keys_to_remove)
+        else:
+            return self._remove_keys(deepcopy(self._preds), keys_to_remove)
+
+    @staticmethod
+    def _remove_keys(preds, keys_to_remove: List[str] = ["start", "end"]):
+        for pred in preds:
             for key in keys_to_remove:
                 pred.pop(key)
+        return preds
 
     def remove_human_added_predictions(self):
         """
@@ -129,12 +149,12 @@ class Extractions:
         """
         Write three column CSV ('confidence', 'label', 'text')
         Args:
-            save_path (str): path to write CSV 
+            save_path (str): path to write CSV
             filename (str, optional): the file where the preds were derived from. Defaults to "".
         """
-        self.set_confidence_key_to_max_value()
-        self.remove_keys(keys_to_remove=["start", "end"])
-        df = pd.DataFrame(self._preds)
+        preds = self.set_confidence_key_to_max_value(inplace=False)
+        preds = self._remove_keys(preds, keys_to_remove=["start", "end"])
+        df = pd.DataFrame(preds)
         df["filename"] = filename
         if append_if_exists and FileProcessing.file_exists(save_path):
             df.to_csv(save_path, mode="a", header=False, index=False)

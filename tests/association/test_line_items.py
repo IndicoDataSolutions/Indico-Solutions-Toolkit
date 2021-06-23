@@ -1,4 +1,3 @@
-import json
 import pytest
 from collections import defaultdict
 from indico_toolkit.association import LineItems
