@@ -2,8 +2,6 @@
 from typing import List, Union, Iterable, Dict
 from collections import defaultdict
 from copy import deepcopy
-import os
-import json
 from indico_toolkit.types import Extractions
 from .association import sequences_overlap, Association, _check_if_token_match_found
 

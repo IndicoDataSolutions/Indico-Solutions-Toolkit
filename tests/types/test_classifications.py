@@ -13,6 +13,7 @@ def test_properties(classification_obj):
     assert classification_obj.label == "1"
     assert len(classification_obj.labels) == 4
     assert len(classification_obj.confidence_scores.keys()) == 4
+    assert classification_obj.confidence == 0.31
 
 def test_set_confidence_key_to_max_value(classification_obj):
     max_conf = max(classification_obj.confidence_scores.values())
