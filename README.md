@@ -80,7 +80,3 @@ If you are adding new features to Indico Toolkit, make sure to:
 * Ensure the full test suite is passing locally before creating a pull request.
 * Add doc strings for methods where usage is non-obvious.
 * If you are using new pip installed libraries, make sure they are added to the setup.py and pyproject.toml.
-
-<!-- Badges -->
-[build-url]: https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/actions/workflows/build.yml
-[build-image]: https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/actions/workflows/build.yml/badge.svg

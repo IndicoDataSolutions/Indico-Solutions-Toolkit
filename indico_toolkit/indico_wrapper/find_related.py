@@ -20,11 +20,25 @@ class FindRelated(IndicoWrapper):
                     }
                 }
         """
-        res = self.graphQL_request(query, {"id": questionnaire_id})["questionnaires"]["questionnaires"][0]
+        res = self.graphQL_request(query, {"id": questionnaire_id})["questionnaires"][
+            "questionnaires"
+        ][0]
         model_group_res = self.model_group_id(res["questions"][0]["modelGroupId"])
         return model_group_res
 
     def workflow_id(self, workflow_id: int) -> dict:
+        """
+        Given a workflow ID returns formated like:
+            {
+                'model_groups': [
+                    {
+                        'id': 107,'name': 'My Extraction Model','selectedModel': {'id': 649}}
+                        ],
+                'dataset_id': 122,
+                'workflow_name': 'Financial Loans 6/2_Bank Notices Extraction',
+                'workflow_id': 141
+            }
+        """
         res = self._get_workflow_data(workflow_id=workflow_id)[0]
         questionnaires = []
         for model_group in res["reviewableModelGroups"]:

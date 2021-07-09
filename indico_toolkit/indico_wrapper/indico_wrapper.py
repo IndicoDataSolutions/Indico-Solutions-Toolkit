@@ -1,12 +1,16 @@
-from typing import List
+from typing import List, Dict, Union
 from indico.queries import (
     RetrieveStorageObject,
     GraphQLRequest,
     JobStatus,
     CreateModelGroup,
+    ModelGroupPredict,
 )
 from indico.types import Dataset, ModelGroup
 from indico import IndicoClient
+
+from indico_toolkit.types import Predictions
+from indico_toolkit import ToolkitStatusError
 
 
 class IndicoWrapper:
@@ -63,3 +67,34 @@ class IndicoWrapper:
         return self.client.call(
             GraphQLRequest(query=graphql_query, variables=variables)
         )
+
+    def get_predictions_with_model_id(
+        self,
+        model_id: int,
+        samples: List[str],
+        load: bool = True,
+        options: dict = None,
+        wait: bool = True,
+    ) -> Union[int, List[Predictions]]:
+        """
+        Submit samples directly to a model. Note: documents must already be in raw text.
+        Args:
+            model_id (int): The model ID to submit to
+            samples (List[str]): A list containing the text samples you want to submit
+            load (bool, optional): Set to False if you are submitting for object detection. Defaults to True.
+            options (dict, optional): Model Prediction options. Defaults to None.
+            wait (bool, optional): Wait for predictions to finish. Defaults to True.
+
+        Returns: if wait is False, returns the job ID, else returns a list of Predictions where each 
+        Predictions is either type Classifications or Extractions depending on your model.
+        """
+        job = self.client.call(ModelGroupPredict(model_id, samples, load, options))
+        if wait == False:
+            return job.id
+        status = self.get_job_status(job.id, wait=True)
+        if status.status != "SUCCESS":
+            raise ToolkitStatusError(
+                f"Predictions Failed, {status.status}: {status.result}"
+            )
+        return [Predictions.get_obj(i) for i in status.result]
+
