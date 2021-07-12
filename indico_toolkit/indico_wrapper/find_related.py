@@ -28,7 +28,7 @@ class FindRelated(IndicoWrapper):
 
     def workflow_id(self, workflow_id: int) -> dict:
         """
-        Given a workflow ID returns formated like:
+        Given a workflow ID returns dictionary obj formatted like:
             {
                 'model_groups': [
                     {
