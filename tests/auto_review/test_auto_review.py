@@ -77,20 +77,12 @@ def test_submit_auto_review(indico_client, id_pending_scripted, model_name):
     review_config = ReviewConfiguration(field_config)
     reviewer = AutoReviewer(predictions, review_config)
     reviewer.apply_reviews()
-    # Submit the changes and retrieve reviewed results
+    non_rejected_pred_count = len([i for i in reviewer.updated_predictions if "rejected" not in i])
     wflow.submit_submission_review(
         id_pending_scripted, {model_name: reviewer.updated_predictions}
     )
     result = wflow.get_submission_results_from_ids([id_pending_scripted])[0]
-    for pred in result.post_review_predictions.to_list():
-        label = pred["label"]
-        if (
-            label in ["Liability Amount", "Date of Appointment"]
-            and len(pred["text"]) < 3
-        ):
-            assert pred["rejected"] == True
-        elif pred["confidence"][label] > 0.99:
-            assert pred["accepted"] == True
+    assert result.post_review_predictions.num_predictions == non_rejected_pred_count
 
 
 def accept_if_match(predictions, match_text: str, labels: list = None):
