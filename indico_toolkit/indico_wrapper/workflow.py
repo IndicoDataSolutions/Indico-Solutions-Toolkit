@@ -12,6 +12,7 @@ from indico.queries import (
     WaitForSubmissions,
     SubmitReview,
     UpdateWorkflowSettings,
+    JobStatus,
 )
 from .indico_wrapper import IndicoWrapper
 from indico_toolkit.ocr import OnDoc
@@ -61,7 +62,7 @@ class Workflow(IndicoWrapper):
 
     def get_completed_submission_results(
         self, workflow_id: int, submission_ids: List[int] = None
-    ) -> List[dict]:
+    ) -> List[WorkflowResult]:
         """
         Get list of completed and unretrieved workflow results
         Args:
@@ -133,10 +134,13 @@ class Workflow(IndicoWrapper):
             WaitForSubmissions(submission_ids=submission_ids, timeout=timeout)
         )
 
-    def submit_submission_review(self, submission_id: int, updated_predictions: dict):
-        return self.client.call(
+    def submit_submission_review(self, submission_id: int, updated_predictions: dict, wait: bool=True):
+        job = self.client.call(
             SubmitReview(submission_id, changes=updated_predictions)
         )
+        if wait:
+            job = self.client.call(JobStatus(job.id, wait=True))
+        return job
 
     def update_workflow_settings(
         self,
