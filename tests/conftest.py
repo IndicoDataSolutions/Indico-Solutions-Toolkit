@@ -95,6 +95,13 @@ def workflow_id(indico_client, dataset_obj):
     return workflow_id
 
 
+@pytest.fixture(scope="session")
+def extraction_model_id(indico_client, workflow_id):
+    find = FindRelated(indico_client)
+    result = find.workflow_id(workflow_id)
+    return result["model_groups"][0]["selectedModel"]["id"]
+
+
 @pytest.fixture(scope="module")
 def module_submission_ids(workflow_id, indico_client, pdf_filepath):
     workflow_wrapper = Workflow(indico_client)
