@@ -96,10 +96,19 @@ def workflow_id(indico_client, dataset_obj):
 
 
 @pytest.fixture(scope="session")
-def extraction_model_id(indico_client, workflow_id):
+def _finder_model_result(indico_client, workflow_id):
     find = FindRelated(indico_client)
     result = find.workflow_id(workflow_id)
-    return result["model_groups"][0]["selectedModel"]["id"]
+    return result["model_groups"][0]
+
+@pytest.fixture(scope="session")
+def extraction_model_group_id(_finder_model_result):
+    return _finder_model_result["id"]
+
+
+@pytest.fixture(scope="session")
+def extraction_model_id(finder_model_result):
+    return _finder_model_result["selectedModel"]["id"]
 
 
 @pytest.fixture(scope="module")

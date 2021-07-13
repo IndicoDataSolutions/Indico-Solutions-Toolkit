@@ -5,3 +5,4 @@ from .find_related import FindRelated
 from .reviewer import Reviewer
 from .doc_extraction import DocExtraction
 from .teach import Teach
+from .metrics import ExtractionMetrics
