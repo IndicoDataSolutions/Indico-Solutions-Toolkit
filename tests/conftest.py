@@ -107,7 +107,7 @@ def extraction_model_group_id(_finder_model_result):
 
 
 @pytest.fixture(scope="session")
-def extraction_model_id(finder_model_result):
+def extraction_model_id(_finder_model_result):
     return _finder_model_result["selectedModel"]["id"]
 
 
