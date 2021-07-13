@@ -2,8 +2,6 @@
 # Indico-Toolkit
 A library to assist Indico IPA development
 
-[![Build Status][build-image]][build-url]
-
 ### Available Functionality
 The indico-toolkit provides classes and functions to help achieve the following:
 * Easy batch workflow submission and retrieval.
