@@ -1,4 +1,7 @@
 import pytest
+import tempfile
+import pandas as pd
+
 from indico_toolkit.indico_wrapper import ExtractionMetrics
 
 
@@ -36,3 +39,10 @@ def test_get_metrics_df_exact(ex_metrics_object):
     assert isinstance(df["precision"][0], float)
     assert "field_name" in df.columns and "model_id" in df.columns
     assert isinstance(df["field_name"][0], str)
+
+def test_to_csv(ex_metrics_object):
+    with tempfile.NamedTemporaryFile(suffix=".csv") as tf:
+        ex_metrics_object.to_csv(tf.name)
+        df = pd.read_csv(tf.name)
+        assert df.shape[0] > 0
+        assert "field_name" in df.columns and "model_id" in df.columns
