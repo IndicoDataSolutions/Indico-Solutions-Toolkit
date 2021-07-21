@@ -1,6 +1,7 @@
 import pytest
 from pathlib import Path
 import os
+import tempfile
 from indico_toolkit.pipelines import FileProcessing
 
 
@@ -53,3 +54,14 @@ def test_remove_specified_files(testdir_file_path):
     fileproc.remove_files_if_processed(processed_files)
     assert file_to_remove not in fileproc.file_paths
 
+
+def test_fix_file_suffixes(testdir_file_path):
+    with tempfile.NamedTemporaryFile() as temp:
+        fileproc = FileProcessing()
+        f_name = temp.name
+        renamed_file = fileproc.fix_file_suffixes(
+            file_paths=[f_name], mime_suffix_mapping={"inode/x-empty": ".pdf"}
+        )
+        assert renamed_file[0][-4:] == ".pdf"
+        p = Path(renamed_file[0])
+        p.rename(f_name)

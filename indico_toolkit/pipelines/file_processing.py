@@ -1,6 +1,8 @@
 import os
 from os.path import isfile
 from pathlib import Path
+import mimetypes
+import magic
 from typing import List, Tuple, Callable, Iterable
 
 
@@ -8,6 +10,7 @@ class FileProcessing:
     """
     Class to support common file processing operations
     """
+
     def __init__(self, file_paths: List[str] = None):
         if file_paths is None:
             file_paths = []
@@ -44,6 +47,39 @@ class FileProcessing:
             f"Found {len(self.file_paths)} valid files and {len(self.invalid_suffix_paths)} paths with invalid suffixes."
         )
 
+    def fix_file_suffixes(
+        self,
+        file_paths = None,
+        mime_suffix_mapping=None,
+    ) -> List[str]:
+        """
+        Rename filepaths with suffixes matching file mime type and update self.file_paths
+        Args:
+            file_paths (Iterable[str], optional): iterable of file paths to fix, defaults to self.invalid_suffix_paths
+            mime_suffix_mapping (Dict[str, str], optional): mime filetype keying to suffixes to use for renaming, defaults to mimetypes.types_map
+        """
+        renamed_files = []
+        unmapped_types = []
+        mime = magic.Magic(mime=True)
+        if not file_paths:
+            file_paths = self.invalid_suffix_paths
+        if not mime_suffix_mapping:
+            mime_suffix_mapping = {v:k for k, v in mimetypes.types_map.items()}
+        for p in file_paths:
+            m = mime.from_file(p)
+            if m in mime_suffix_mapping:
+                path = Path(p)
+                if path.suffix != mime_suffix_mapping[m]:
+                    fixed_path = path.with_suffix(mime_suffix_mapping[m])
+                    path.rename(fixed_path)
+                    renamed_files.append(str(fixed_path))
+            else:
+                unmapped_types.append(m)
+        print(f"Renamed {len(renamed_files)} files")
+        if len(unmapped_types) > 0:
+            print(f"Skipped {len(unmapped_types)} files with unmapped mime types {set(unmapped_types)}")
+        self.file_paths.extend(renamed_files)
+        return renamed_files
 
     def batch_files(self, batch_size: int = 20) -> List[str]:
         for i in range(0, len(self.file_paths), batch_size):
@@ -59,7 +95,9 @@ class FileProcessing:
         for filepath in self.file_paths:
             if self.file_name_from_path(filepath) not in processed_files:
                 unprocessed_filepaths.append(filepath)
-        print(f"Removing {len(self.file_paths) - len(unprocessed_filepaths)} files from file_paths")
+        print(
+            f"Removing {len(self.file_paths) - len(unprocessed_filepaths)} files from file_paths"
+        )
         self.file_paths = unprocessed_filepaths
 
     @staticmethod
@@ -71,7 +109,7 @@ class FileProcessing:
         return [Path(i).parent.name for i in self.file_paths]
 
     @staticmethod
-    def join_paths(start_path:str, end_path: str) -> str:
+    def join_paths(start_path: str, end_path: str) -> str:
         return os.path.join(start_path, end_path)
 
     @staticmethod
@@ -85,7 +123,7 @@ class FileProcessing:
     @staticmethod
     def file_name_from_path(filepath: str) -> str:
         return Path(filepath).name
-    
+
     @staticmethod
     def get_parent_path(filepath: str) -> str:
         return str(Path(filepath).parent)

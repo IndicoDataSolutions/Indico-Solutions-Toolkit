@@ -18,6 +18,7 @@ setup(
         "setuptools>=41.4.0",
         "pandas>=1.0.3",
         "coverage>=5.5",
-        "PyMuPDF==1.18.13"
+        "PyMuPDF==1.18.13",
+        "python-magic>=0.4.24"
     ],
 )
