@@ -1,8 +1,8 @@
 from typing import List, Dict, Set
 
-import indico_toolkit.types
 from indico_toolkit.errors import ToolkitInputError
-
+from .extractions import Extractions
+from .classification import Classification, ClassificationMGP
 
 class Predictions:
     """
@@ -15,8 +15,11 @@ class Predictions:
         Extractions object or Classification object depending on predictions type
         """
         if type(predictions) == list:
-            return indico_toolkit.types.Extractions(predictions)
+            return Extractions(predictions)
         elif type(predictions) == dict:
-            return indico_toolkit.types.Classification(predictions)
+            if "label" in predictions:
+                return Classification(predictions)
+            else:
+                return ClassificationMGP(predictions)
         else:
             raise ToolkitInputError(f"Unable to process predictions with type {type(predictions)}. Predictions: {predictions}")
