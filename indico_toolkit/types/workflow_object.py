@@ -2,6 +2,7 @@ from typing import List
 from .predictions import Predictions
 from indico_toolkit import ToolkitStatusError, ToolkitInputError
 
+
 class WorkflowResult:
     def __init__(self, result: dict, model_name: str = None):
         """
@@ -12,20 +13,6 @@ class WorkflowResult:
         """
         self.result = result
         self.model_name = model_name
-
-    def set_model_name(self):
-        """
-        Attempts to set it if not already specified. 
-        Raises error if multiple models are available and self.model_name specified.
-        """
-        if self.model_name:
-            self._check_is_valid_model_name()
-        elif len(self.available_model_names) > 1:
-            raise ToolkitInputError(
-                f"Multiple models available, you must set self.model_name to one of {self.available_model_names}"
-            )
-        else:
-            self.model_name = self.available_model_names[0]
 
     def _check_is_valid_model_name(self) -> None:
         if self.model_name not in self.available_model_names:
@@ -41,7 +28,7 @@ class WorkflowResult:
         """
         Return predictions without human review
         """
-        self.set_model_name()
+        self._set_model_name()
         preds = self.document_results[self.model_name]
         if "pre_review" in preds:
             preds = preds["pre_review"]
@@ -49,13 +36,27 @@ class WorkflowResult:
 
     @property
     def post_review_predictions(self) -> List[dict]:
-        self.set_model_name()
+        self._set_model_name()
         try:
             return Predictions.get_obj(self.document_results[self.model_name]["final"])
         except KeyError:
             raise ToolkitStatusError(
                 f"Submission {self.submission_id} has no 'final' predictions. Has it completed human review?"
             )
+
+    def _set_model_name(self):
+        """
+        Attempts to select the relevant model name if not already specified.
+        Raises error if multiple models are available and self.model_name specified.
+        """
+        if self.model_name:
+            self._check_is_valid_model_name()
+        elif len(self.available_model_names) > 1:
+            raise ToolkitInputError(
+                f"Multiple models available, you must set self.model_name to one of {self.available_model_names}"
+            )
+        else:
+            self.model_name = self.available_model_names[0]
 
     @property
     def etl_url(self) -> str:
