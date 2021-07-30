@@ -1,38 +1,66 @@
-from typing import List
+from typing import List, Union
 from collections import defaultdict
 import fitz
-from fitz.utils import getColor
+from fitz.utils import getColor, getColorList
+import numpy as np
+
 from indico_toolkit.association import ExtractedTokens
 from indico_toolkit.pipelines import FileProcessing
 from indico_toolkit.types import Extractions
+from indico_toolkit import ToolkitInstantiationError
 
 # TODO: add redact and replace data class
 
 
 class Highlighter(ExtractedTokens):
     def __init__(self, predictions: List[dict], path_to_pdf: str):
+        """
+        Highlight predictions using source PDF documents
+        Args:
+            predictions (List[dict]): Extraction predictions
+            path_to_pdf (str): Path to the predictions' doc
+
+        Example:
+            highlight = Highlighter(preds, "./myfile.pdf")
+            highlight.collect_tokens(ondoc.token_objects)
+            highlight.highlight_pdf(
+                    "./highlighted_myfile.pdf", 
+                    ondoc.page_heights_and_widths, 
+                    all_yellow_highlight=False
+                )
+        """
         super().__init__(predictions)
+        if not path_to_pdf.lower().endswith(".pdf"):
+            raise ToolkitInstantiationError(
+                f"Highlighter requires PDF files, not {path_to_pdf[-4:]}"
+            )
         self.path_to_pdf = path_to_pdf
 
     def highlight_pdf(
         self,
         output_path: str,
         page_dimensions: List[dict],
+        all_yellow_highlight: bool = True,
         include_toc: bool = False,
         color_map: dict = None,
     ):
         """
-        Highlights predictions onto a copy of source PDF with the option to include a table of contents
+        Highlights extraction predictions onto a copy of source PDF
         
         Arguments:
             output_path {str} -- path of labeled PDF copy to create (set to same as pdf_path to overwrite)
              page_dimensions: {List[dict]} -- page heights and widths from ondocument OCR result, see 
                                               Ondoc class and page_heights_and_widths property
+            all_yellow_highlight (bool) -- if True, all highlights are yellow, otherwise, each field gets a unique color
             include_toc {bool} -- if True, insert a table of contents of what annotations were made and on what page
-            # TODO: add color_map description
+            color_map (dict) -- Optionally, specify what highlight color to apply to each field, use get_color_list() method
+                                to see available colors. 
+                                
         """
-        if not color_map:
+        if all_yellow_highlight:
             color_map = defaultdict(lambda: "yellow")
+        elif color_map is None:
+            color_map = self.get_label_color_hash()
         with fitz.open(self.path_to_pdf) as doc:
             for doc_page, tokens in self.mapped_positions_by_page.items():
                 page = doc[doc_page]
@@ -77,3 +105,26 @@ class Highlighter(ExtractedTokens):
                 already_found.append(token["prediction_index"])
                 unique_preds.append(token)
         return Extractions(unique_preds).label_count_dict
+
+    def get_label_color_hash(self):
+        """
+        Create a unique random highlight color for each label in hash table
+        """
+        label_set = Extractions.get_extraction_labels_set(self._predictions)
+        colors = np.random.choice(
+            self.get_color_list(), size=len(label_set), replace=False
+        )
+        return dict(zip(label_set, colors))
+
+    def get_color_list(self) -> List[str]:
+        """
+        Get list of available highlight colors
+        """
+        return [
+            i
+            for i in getColorList()
+            if "dark" not in i.lower()
+            and "white" not in i.lower()
+            and "black" not in i.lower()
+        ]
+

@@ -98,3 +98,33 @@ def test_table_of_contents(invoice_predictions, invoice_ocr_obj, highlighter_pdf
         assert num_highlights == number_of_tokens_to_highlight
         toc_text = doc[0].get_textpage().extractText()
         assert "File: invoice_sample.pdf" in toc_text
+
+
+@pytest.mark.parametrize("all_yellow_bool, unique_color_count", [(True, 1), (False, 5)])
+def test_highlight_colors(
+    invoice_predictions,
+    invoice_ocr_obj,
+    highlighter_pdf_path,
+    all_yellow_bool,
+    unique_color_count,
+):
+    highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
+    highlight.collect_tokens(invoice_ocr_obj.token_objects)
+    with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
+        highlight.highlight_pdf(
+            f.name,
+            invoice_ocr_obj.page_heights_and_widths,
+            all_yellow_highlight=all_yellow_bool,
+        )
+        doc = fitz.open(f.name)
+        highlight_colors = set(
+            [str(i.colors["stroke"]) for page in doc for i in page.annots()]
+        )
+        assert len(highlight_colors) == unique_color_count
+
+def test_get_label_color_hash():
+    highlight = Highlighter([{"label": "a", "text": "b"}, {"label": "b", "text": "a"}], "something.pdf")
+    color_hash = highlight.get_label_color_hash()
+    assert isinstance(color_hash, dict)
+    assert len(color_hash) == 2
+    assert "a" in color_hash.keys() and "b" in color_hash.keys()
