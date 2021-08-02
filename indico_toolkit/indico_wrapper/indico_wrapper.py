@@ -1,13 +1,17 @@
-from typing import List, Dict, Union
+from typing import List, Union
+from functools import wraps
+import time
 from indico.queries import (
     RetrieveStorageObject,
     GraphQLRequest,
     JobStatus,
     CreateModelGroup,
     ModelGroupPredict,
+    CreateStorageURLs,
 )
 from indico.types import Dataset, ModelGroup
 from indico import IndicoClient
+from indico.errors import IndicoRequestError
 
 from indico_toolkit.types import Predictions
 from indico_toolkit import ToolkitStatusError
@@ -36,7 +40,7 @@ class IndicoWrapper:
         wait: bool = False,
     ) -> ModelGroup:
         """
-        Train an Indico model 
+        Train an Indico model
         Args:
             dataset (Dataset): A dataset object (should represent an uploaded CSV dataset)
             model_name (str): the name for your model
@@ -57,13 +61,46 @@ class IndicoWrapper:
             )
         )
 
-    def get_storage_object(self, storage_url):
+    def _retry(exceptions, wait=0.5):
+        def retry_decorator(fn):
+            @wraps(fn)
+            def retry_func(*args, **kwargs):
+                num_retries = 5
+                if "num_retries" in kwargs:
+                    num_retries = kwargs.get("num_retries")
+                retries = 0
+                while True:
+                    try:
+                        return fn(*args, **kwargs)
+                    except exceptions as e:
+                        if retries >= num_retries:
+                            raise e
+                        else:
+                            retries += 1
+                            print(
+                                f"Retrying function {fn.__name__} after exception {e}"
+                            )
+                            time.sleep(wait)
+                            continue
+
+            return retry_func
+
+        return retry_decorator
+
+    @_retry(IndicoRequestError)
+    def get_storage_object(self, storage_url, num_retries=0):
         return self.client.call(RetrieveStorageObject(storage_url))
+
+    def create_storage_urls(self, file_paths: List[str]) -> List[str]:
+        return self.client.call(CreateStorageURLs(files=file_paths))
 
     def get_job_status(self, job_id: int, wait: bool = True):
         return self.client.call(JobStatus(id=job_id, wait=wait))
 
-    def graphQL_request(self, graphql_query: str, variables: dict = None):
+    @_retry(IndicoRequestError)
+    def graphQL_request(
+        self, graphql_query: str, variables: dict = None, num_retries=5
+    ):
         return self.client.call(
             GraphQLRequest(query=graphql_query, variables=variables)
         )
@@ -85,7 +122,7 @@ class IndicoWrapper:
             options (dict, optional): Model Prediction options. Defaults to None.
             wait (bool, optional): Wait for predictions to finish. Defaults to True.
 
-        Returns: if wait is False, returns the job ID, else returns a list of Predictions where each 
+        Returns: if wait is False, returns the job ID, else returns a list of Predictions where each
         Predictions is either type Classifications or Extractions depending on your model.
         """
         job = self.client.call(ModelGroupPredict(model_id, samples, load, options))
@@ -97,4 +134,3 @@ class IndicoWrapper:
                 f"Predictions Failed, {status.status}: {status.result}"
             )
         return [Predictions.get_obj(i) for i in status.result]
-
