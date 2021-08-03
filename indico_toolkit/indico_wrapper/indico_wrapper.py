@@ -17,6 +17,34 @@ from indico_toolkit.types import Predictions
 from indico_toolkit import ToolkitStatusError
 
 
+def retry(exceptions, wait=0.5):
+    """
+    Decorator for retrying functions after specified exceptions are raised
+    Args:
+    exceptions (Exception or Tuple[Exception]): exceptions that should be retried on
+    wait (float): time in seconds to wait before retrying
+    num_retries (int): the number of times to retry, this must be passed into the decorated function as a kwarg 
+    """
+    def retry_decorator(fn):
+        @wraps(fn)
+        def retry_func(*args, **kwargs):
+            num_retries = 5
+            if "num_retries" in kwargs:
+                num_retries = kwargs.get("num_retries")
+            retries = 0
+            while True:
+                try:
+                    return fn(*args, **kwargs)
+                except exceptions as e:
+                    if retries >= num_retries:
+                        raise e
+                    else:
+                        retries += 1
+                        time.sleep(wait)
+        return retry_func
+    return retry_decorator
+
+
 class IndicoWrapper:
     """
     Class for shared API functionality
@@ -61,33 +89,7 @@ class IndicoWrapper:
             )
         )
 
-    def _retry(exceptions, wait=0.5):
-        def retry_decorator(fn):
-            @wraps(fn)
-            def retry_func(*args, **kwargs):
-                num_retries = 5
-                if "num_retries" in kwargs:
-                    num_retries = kwargs.get("num_retries")
-                retries = 0
-                while True:
-                    try:
-                        return fn(*args, **kwargs)
-                    except exceptions as e:
-                        if retries >= num_retries:
-                            raise e
-                        else:
-                            retries += 1
-                            print(
-                                f"Retrying function {fn.__name__} after exception {e}"
-                            )
-                            time.sleep(wait)
-                            continue
-
-            return retry_func
-
-        return retry_decorator
-
-    @_retry(IndicoRequestError)
+    @retry((IndicoRequestError, ConnectionError))
     def get_storage_object(self, storage_url, num_retries=0):
         return self.client.call(RetrieveStorageObject(storage_url))
 
@@ -97,7 +99,7 @@ class IndicoWrapper:
     def get_job_status(self, job_id: int, wait: bool = True):
         return self.client.call(JobStatus(id=job_id, wait=wait))
 
-    @_retry(IndicoRequestError)
+    @retry((IndicoRequestError, ConnectionError))
     def graphQL_request(
         self, graphql_query: str, variables: dict = None, num_retries=5
     ):

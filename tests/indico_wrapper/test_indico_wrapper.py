@@ -2,7 +2,7 @@ from indico import IndicoClient, types
 import pytest
 from indico.errors import IndicoRequestError
 
-from indico_toolkit.indico_wrapper import IndicoWrapper
+from indico_toolkit.indico_wrapper import IndicoWrapper, retry
 from indico_toolkit.types import Extractions
 
 
@@ -33,11 +33,11 @@ def test_get_storage_object_retry(indico_wrapper, storage_url):
     
 
 def test_retry_decor():
-    @IndicoWrapper._retry(Exception)
+    @retry(Exception)
     def no_exceptions():
         return True
     
-    @IndicoWrapper._retry(RuntimeError)
+    @retry((RuntimeError, ConnectionError))
     def raises_exceptions(num_retries=10):
         raise RuntimeError("Test runtime fail")
     

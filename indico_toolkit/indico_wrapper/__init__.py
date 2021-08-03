@@ -1,4 +1,4 @@
-from .indico_wrapper import IndicoWrapper
+from .indico_wrapper import IndicoWrapper, retry
 from .workflow import Workflow
 from .dataset import Datasets
 from .find_related import FindRelated
