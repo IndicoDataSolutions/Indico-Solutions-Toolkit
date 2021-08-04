@@ -21,4 +21,16 @@ ocr_object = wflow.get_ondoc_ocr_from_etl_url(submission_result.etl_url)
 # Highlight Predictions onto source document and write it to disc
 highlighter = Highlighter(submission_result.predictions, PATH_TO_DOCUMENT)
 highlighter.collect_tokens(ocr_object.token_objects)
-highlighter.highlight_pdf("./highlighted_doc.pdf", ocr_object.page_heights_and_widths, include_toc=False)
+highlighter.highlight_pdf(
+    "./highlighted_doc.pdf", ocr_object.page_heights_and_widths, include_toc=False
+)
+
+# You can also have unique color highlights for each label group and write the label above the highlight
+highlighter.highlight_pdf(
+    "./annotated_doc.pdf",
+    ocr_object.page_heights_and_widths,
+    include_toc=False,
+    all_yellow_highlight=False,
+    add_label_annotations=True,
+)
+
