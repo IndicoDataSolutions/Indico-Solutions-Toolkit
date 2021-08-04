@@ -128,3 +128,22 @@ def test_get_label_color_hash():
     assert isinstance(color_hash, dict)
     assert len(color_hash) == 2
     assert "a" in color_hash.keys() and "b" in color_hash.keys()
+
+def test_add_label_annotations(
+    invoice_predictions,
+    invoice_ocr_obj,
+    highlighter_pdf_path,
+):
+    highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
+    highlight.collect_tokens(invoice_ocr_obj.token_objects)
+    with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
+        highlight.highlight_pdf(
+            f.name,
+            invoice_ocr_obj.page_heights_and_widths,
+            add_label_annotations=True,
+        )
+        doc = fitz.open(f.name)
+        alltext = " ".join([page.get_text() for page in doc])
+        all_labels = set([i["label"] for i in invoice_predictions])
+        for label in all_labels:
+            assert label in alltext

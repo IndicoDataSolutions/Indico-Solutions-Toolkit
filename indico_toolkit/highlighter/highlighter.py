@@ -1,6 +1,7 @@
 from typing import List, Union
 from collections import defaultdict
 import fitz
+from fitz import Page
 from fitz.utils import getColor, getColorList
 import numpy as np
 
@@ -43,6 +44,7 @@ class Highlighter(ExtractedTokens):
         all_yellow_highlight: bool = True,
         include_toc: bool = False,
         color_map: dict = None,
+        add_label_annotations: bool = False,
     ):
         """
         Highlights extraction predictions onto a copy of source PDF
@@ -54,7 +56,8 @@ class Highlighter(ExtractedTokens):
             all_yellow_highlight (bool) -- if True, all highlights are yellow, otherwise, each field gets a unique color
             include_toc {bool} -- if True, insert a table of contents of what annotations were made and on what page
             color_map (dict) -- Optionally, specify what highlight color to apply to each field, use get_color_list() method
-                                to see available colors. 
+                                to see available colors.
+            add_label_annotations (bool) -- if True, annotates the label name in small red text above the highlights
                                 
         """
         if all_yellow_highlight:
@@ -78,7 +81,8 @@ class Highlighter(ExtractedTokens):
                     ann.setOpacity(0.5)
                     ann.setColors(stroke=getColor(color))
                     ann.update()
-
+                if add_label_annotations:
+                    self._add_label_annotations(page, tokens, xnorm, ynorm)
             if include_toc:
                 toc_text = self._get_toc_text()
                 doc.insertPage(0, text=toc_text, fontsize=13)
@@ -128,3 +132,35 @@ class Highlighter(ExtractedTokens):
             and "black" not in i.lower()
         ]
 
+    def _add_label_annotations(
+        self,
+        page: Page,
+        tokens: List[dict],
+        xnorm: float,
+        ynorm: float,
+        font_size: int = 5,
+        color: str = "red",
+    ):
+        """
+        Annotate the label name above highlights on the source document
+
+        Args:
+            page (Page): the fitz page object
+            tokens (List[dict]): the tokens for current page
+            xnorm (float): the xnorm value for the page
+            ynorm (float): the ynorm value for the page
+            font_size (int, optional): label font size. Defaults to 5.
+            color (str, optional): label color. Defaults to "red".
+        """
+        captured_preds = set()
+        for token in tokens:
+            if token["prediction_index"] not in captured_preds:
+                text_height = int(
+                    (token["position"]["bottom"] - token["position"]["top"]) * 0.05
+                )
+                point = fitz.Point(
+                    token["position"]["left"] * xnorm,
+                    token["position"]["top"] * ynorm - text_height,
+                )
+                page.insertText(point, token["label"], font_size, color=getColor(color))
+                captured_preds.add(token["prediction_index"])
