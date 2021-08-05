@@ -1,7 +1,7 @@
 from __future__ import (
     annotations,
 )  # from 3.10, don't need for same class reference in class method
-from typing import List
+from typing import List, Union
 import pandas as pd
 import json
 from json import JSONDecodeError
@@ -106,9 +106,7 @@ class Snapshot:
         return sorted(list(label_set))
 
     def merge_by_file_name(
-        self,
-        snap_to_merge: Snapshot,
-        ensure_identical_text: bool = True,
+        self, snap_to_merge: Snapshot, ensure_identical_text: bool = True,
     ):
         """
         Merge extraction labels for identical files. Merge is 'left' and file names / rows only present
@@ -155,12 +153,31 @@ class Snapshot:
         only_keep_key_columns: bool = True,
         convert_label_col_to_json: bool = True,
     ):
-
         if only_keep_key_columns:
             self.drop_unneeded_columns()
         if convert_label_col_to_json:
             self._convert_col_to_json(self.label_col)
         self.df.to_csv(path, index=False)
+
+
+    def get_all_labeled_text(self, label_name: str, return_per_document: bool = False) -> Union[List[List[str], List[str]]]:
+        available_labels = self.get_extraction_label_names()
+        if label_name not in available_labels:
+            raise ToolkitInputError(f"'{label_name}' not present among available labels: {available_labels}")
+        all_labeled_text = []
+        for text, labels in zip(self.df[self.text_col], self.df[self.label_col]):
+            text_found = []
+            for lab in labels:
+                if lab["label"] == label_name:
+                    text_found.append(
+                        text[lab["start"]: lab["end"]]
+                    )
+            if return_per_document:
+                all_labeled_text.append(text_found)
+            else:
+                all_labeled_text.extend(text_found)
+        return all_labeled_text
+        
 
     def __eq__(self, other: Snapshot):
         """
@@ -222,3 +239,7 @@ class Snapshot:
 
     def __repr__(self):
         return f"Snapshot, label_col: {self.label_col}, loc: {self.path_to_snapshot}"
+
+    @property
+    def number_of_samples(self) -> int:
+        return self.df.shape[0]

@@ -1,4 +1,4 @@
-from typing import Tuple, Set, List
+from typing import Tuple, Set, List, Union
 import pandas as pd
 from indico import IndicoClient
 from indico_toolkit.pipelines import FileProcessing
@@ -35,18 +35,26 @@ class AutoClassifier(DocExtraction):
         self._fp.get_file_paths_from_dir(self.directory_path, recursive_search=True)
         self.file_paths = self._fp.file_paths
 
-    def create_classifier(self, verbose: bool = True, batch_size: int = 5):
+    def create_classifier(
+        self,
+        verbose: bool = True,
+        batch_size: int = 5,
+        timeout: Union[None, int] = None,
+    ):
         """
         Collect OCR text and set file classes
         Args:
             verbose (bool, optional): Print updates on OCR progress. Defaults to True.
             batch_size (int, optional): Number of files to submit at a time. Defaults to 5.
+            timeout (Union[int, None]): set an optional timeout parameter for each document OCR
         """
         self._set_full_doc_classes()
         for i, fpaths in enumerate(self._fp.batch_files(batch_size=batch_size)):
             if verbose:
                 print(f"Starting batch {i + 1} of {len(self.file_paths) // batch_size}")
-            self.file_texts.extend(self.run_ocr(fpaths, text_setting="full_text"))
+            self.file_texts.extend(
+                self.run_ocr(fpaths, text_setting="full_text", timeout=timeout)
+            )
 
     def to_csv(self, output_path: str):
         """
@@ -111,17 +119,24 @@ class FirstPageClassifier(DocExtraction):
         )
         self.file_paths = self._fp.file_paths
 
-    def create_classifier(self, verbose: bool = True, batch_size: int = 5):
+    def create_classifier(
+        self,
+        verbose: bool = True,
+        batch_size: int = 5,
+        timeout: Union[int, None] = None,
+    ):
         """
         Collect OCR text and set page-level classes and text
         Args:
             verbose (bool, optional): Print updates on OCR progress. Defaults to True.
             batch_size (int, optional): Number of files to submit at a time. Defaults to 5.
+            timeout (Union[int, None]): set an optional timeout parameter for each document OCR
+
         """
         for i, fpaths in enumerate(self._fp.batch_files(batch_size=batch_size)):
             if verbose:
                 print(f"Starting batch {i + 1} of {len(self.file_paths) // batch_size}")
-            page_text_lists = self.run_ocr(fpaths, "page_texts")
+            page_text_lists = self.run_ocr(fpaths, "page_texts", timeout=timeout)
             for doc, fpath in zip(page_text_lists, fpaths):
                 self._set_page_classes(doc, fpath)
 

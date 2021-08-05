@@ -27,12 +27,13 @@ class DocExtraction(IndicoWrapper):
             self.json_config = custom_config
 
     def run_ocr(
-        self, filepaths: List[str], text_setting: str = None
+        self, filepaths: List[str], text_setting: str = None, timeout: Union[int, None] = None
     ) -> List[Union[StandardOcr, OnDoc, CustomOcr, str]]:
         """
         Args:
             filepaths (List[str]): List of paths to local documents you would like to submit for extraction
             text_setting (str): Options are full_text and page_texts.
+            timeout (Union[int, None]): Optional set a max time to wait for each document to process
 
         Returns:
             extracted_data (List[Union[StandardOcr, OnDoc, CustomOcr, str]]): data from DocumentExtraction converted to OCR objects or string text
@@ -40,7 +41,7 @@ class DocExtraction(IndicoWrapper):
         jobs = self._submit_to_ocr(filepaths)
         extracted_data = []
         for ind, job in enumerate(jobs):
-            status = self.get_job_status(job.id, True)
+            status = self.get_job_status(job.id, True, timeout)
             if status.status == "SUCCESS":
                 result = self.get_storage_object(status.result)
                 if text_setting == "full_text":
