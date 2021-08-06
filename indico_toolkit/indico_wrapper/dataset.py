@@ -60,7 +60,6 @@ class Datasets(IndicoWrapper):
         dataset_name: str,
         filepaths: List[str],
         batch_size: int = 3,
-        post_batch_delay_secs: int = 1,
         verbose: bool = True,
     ) -> Dataset:
         """[summary]
@@ -69,7 +68,6 @@ class Datasets(IndicoWrapper):
             dataset_name (str): create a name for the dataset 
             filepaths (List[str]): files you want to upload
             batch_size (int, optional): number of files to process at a time. Defaults to 3.
-            post_batch_delay_secs (int, optional): number of seconds to pause between batches. Defaults to 1.
             verbose (bool, optional): print updates as each batch processes. Defaults to True.
         """
         fp = FileProcessing(filepaths)
@@ -82,7 +80,6 @@ class Datasets(IndicoWrapper):
                 print(
                     f"Finished batch at {datetime.now().time()}: {number_of_batches} remaining"
                 )
-            time.sleep(post_batch_delay_secs)
         return dataset
 
     def create_dataset(self, filepaths: List[str], dataset_name: str) -> Dataset:
