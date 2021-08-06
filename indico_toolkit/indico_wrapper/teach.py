@@ -111,7 +111,7 @@ class Teach(Datasets):
             task_name=task_name,
             classes=teach_task.labels,
             question=question,
-            datacolumn_name=self.get_col_name_by_id(teach_task.source_column_id),
+            datacolumn_name=self.get_col_name_by_id(self.dataset_id, teach_task.source_column_id),
             task_type=teach_task.task_type,
             data_type=teach_task.data_type,
             num_labelers_required=teach_task.num_labelers_required,
