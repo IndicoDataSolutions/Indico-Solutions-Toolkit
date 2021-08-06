@@ -62,8 +62,9 @@ class Datasets(IndicoWrapper):
         batch_size: int = 3,
         verbose: bool = True,
     ) -> Dataset:
-        """[summary]
-
+        """
+        Create a datase and batch document uploads to not overload queue/services
+        
         Args:
             dataset_name (str): create a name for the dataset 
             filepaths (List[str]): files you want to upload
