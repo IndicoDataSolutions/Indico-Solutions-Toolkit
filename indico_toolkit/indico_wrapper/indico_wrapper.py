@@ -1,16 +1,48 @@
-from typing import List, Dict, Union
+from typing import List, Union
 from indico.queries import (
     RetrieveStorageObject,
     GraphQLRequest,
     JobStatus,
     CreateModelGroup,
     ModelGroupPredict,
+    CreateStorageURLs
 )
 from indico.types import Dataset, ModelGroup
 from indico import IndicoClient
+from indico.errors import IndicoRequestError
+from functools import wraps
+import time
 
 from indico_toolkit.types import Predictions
 from indico_toolkit import ToolkitStatusError
+
+
+def retry(exceptions, wait=0.5):
+    """
+    Decorator for retrying functions after specified exceptions are raised
+    Args:
+    exceptions (Exception or Tuple[Exception]): exceptions that should be retried on
+    wait (float): time in seconds to wait before retrying
+    num_retries (int): the number of times to retry, this must be passed into the decorated function as a kwarg 
+    """
+    def retry_decorator(fn):
+        @wraps(fn)
+        def retry_func(*args, **kwargs):
+            num_retries = 5
+            if "num_retries" in kwargs:
+                num_retries = kwargs.get("num_retries")
+            retries = 0
+            while True:
+                try:
+                    return fn(*args, **kwargs)
+                except exceptions as e:
+                    if retries >= num_retries:
+                        raise e
+                    else:
+                        retries += 1
+                        time.sleep(wait)
+        return retry_func
+    return retry_decorator
 
 
 class IndicoWrapper:
@@ -57,12 +89,17 @@ class IndicoWrapper:
             )
         )
 
+    @retry((IndicoRequestError, ConnectionError))
     def get_storage_object(self, storage_url):
         return self.client.call(RetrieveStorageObject(storage_url))
+
+    def create_storage_urls(self, file_paths: List[str]) -> List[str]:
+        return self.client.call(CreateStorageURLs(files=file_paths))
 
     def get_job_status(self, job_id: int, wait: bool = True):
         return self.client.call(JobStatus(id=job_id, wait=wait))
 
+    @retry((IndicoRequestError, ConnectionError))
     def graphQL_request(self, graphql_query: str, variables: dict = None):
         return self.client.call(
             GraphQLRequest(query=graphql_query, variables=variables)
