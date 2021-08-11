@@ -1,4 +1,5 @@
 import pytest
+from indico.errors import IndicoRequestError
 
 from indico_toolkit.indico_wrapper import IndicoWrapper
 from indico_toolkit.types import Extractions
@@ -17,6 +18,11 @@ def storage_url(indico_wrapper, pdf_filepath):
 def test_get_storage_object(indico_wrapper, storage_url):
     storage_object = indico_wrapper.get_storage_object(storage_url)
     assert isinstance(storage_object, bytes)
+
+
+def test_get_storage_object_retry(indico_wrapper, storage_url):
+    with pytest.raises(IndicoRequestError):
+        _ = indico_wrapper.get_storage_object(storage_url + "bad")
 
 
 def test_graphQL_request(indico_wrapper, dataset_obj):

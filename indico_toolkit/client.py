@@ -1,7 +1,7 @@
 from indico import IndicoClient, IndicoConfig
 from indico.errors import IndicoAuthenticationFailed, IndicoRequestError
 from indico_toolkit.errors import ToolkitAuthError
-from indico_toolkit.indico_wrapper import retry
+from indico_toolkit.retry import retry
 
 
 @retry((IndicoRequestError, ConnectionError))

@@ -3,3 +3,4 @@ __version__ = "1.0.3"
 
 from .errors import *
 from .client import create_client
+from .retry import retry
