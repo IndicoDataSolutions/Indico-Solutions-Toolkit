@@ -5,7 +5,7 @@ import math
 import time
 from datetime import datetime
 from indico import IndicoClient
-from indico.types import Dataset
+from indico.types import Dataset, Workflow
 from indico.queries import (
     GetDataset,
     CreateDataset,
@@ -15,6 +15,7 @@ from indico.queries import (
     ProcessFiles,
     DeleteDataset,
     CreateEmptyDataset,
+    AddDataToWorkflow,
 )
 
 from indico_toolkit.indico_wrapper import IndicoWrapper
@@ -44,6 +45,18 @@ class Datasets(IndicoWrapper):
             ProcessFiles(dataset_id=dataset_id, datafile_ids=datafile_ids, wait=True)
         )
 
+    def add_new_files_to_task(self, workflow_id: id, wait: bool = True) -> Workflow:
+        """
+        Add newly uploaded documents to an existing teach task given the task's associated workflow ID
+        Args:
+            workflow_id (id): workflow ID associated with teach task
+            wait (bool, optional): wait for data to be added. Defaults to True.
+        """
+        workflow = self.client.call(AddDataToWorkflow(workflow_id, wait))
+        if wait:
+            print(f"Data added to all teach tasks associated with {workflow.id}")
+        return workflow
+
     def create_empty_dataset(
         self, dataset_name: str, dataset_type: str = "DOCUMENT"
     ) -> Dataset:
@@ -63,10 +76,10 @@ class Datasets(IndicoWrapper):
         verbose: bool = True,
     ) -> Dataset:
         """
-        Create a datase and batch document uploads to not overload queue/services
-        
+        Create a dataset and batch document uploads to not overload queue/services
+
         Args:
-            dataset_name (str): create a name for the dataset 
+            dataset_name (str): create a name for the dataset
             filepaths (List[str]): files you want to upload
             batch_size (int, optional): number of files to process at a time. Defaults to 3.
             verbose (bool, optional): print updates as each batch processes. Defaults to True.
@@ -84,7 +97,12 @@ class Datasets(IndicoWrapper):
         return dataset
 
     def create_dataset(self, filepaths: List[str], dataset_name: str) -> Dataset:
-        dataset = self.client.call(CreateDataset(name=dataset_name, files=filepaths,))
+        dataset = self.client.call(
+            CreateDataset(
+                name=dataset_name,
+                files=filepaths,
+            )
+        )
         self.dataset_id = dataset.id
         return dataset
 
@@ -127,4 +145,3 @@ class Datasets(IndicoWrapper):
         """
         export = self.client.call(CreateExport(dataset_id=dataset_id, **kwargs))
         return export.id
-
