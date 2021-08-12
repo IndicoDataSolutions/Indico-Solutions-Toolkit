@@ -33,8 +33,9 @@ class Teach(Datasets):
     """
 
     def __init__(self, client: IndicoClient, dataset_id: int, task_id: int = None):
-        super().__init__(client, dataset_id)
-        self.dataset = self.get_dataset()
+        super().__init__(client)
+        self.dataset_id = dataset_id
+        self.dataset = self.get_dataset(dataset_id)
         self.task_id = task_id
         self.df: pd.DataFrame
 
@@ -70,7 +71,7 @@ class Teach(Datasets):
             "name": task_name,
             "processors": processors,
             "dataType": data_type,
-            "datasetId": self.dataset.id,
+            "datasetId": self.dataset_id,
             "numLabelersRequired": num_labelers_required,
             "sourceColumnId": source_col_id,
             "questions": [
@@ -110,7 +111,7 @@ class Teach(Datasets):
             task_name=task_name,
             classes=teach_task.labels,
             question=question,
-            datacolumn_name=self.get_col_name_by_id(teach_task.source_column_id),
+            datacolumn_name=self.get_col_name_by_id(self.dataset_id, teach_task.source_column_id),
             task_type=teach_task.task_type,
             data_type=teach_task.data_type,
             num_labelers_required=teach_task.num_labelers_required,
@@ -135,7 +136,7 @@ class Teach(Datasets):
         if path_to_snapshot:
             self.df = pd.read_csv(path_to_snapshot)
         else:
-            self.df = self.download_export()
+            self.df = self.download_export(self.dataset_id)
         if not row_index_col:
             row_index_col = f"row_index_{self.dataset_id}"
         if not label_col:
