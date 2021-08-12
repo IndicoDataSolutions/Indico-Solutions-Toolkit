@@ -162,6 +162,33 @@ class Snapshot:
             self._convert_col_to_json(self.label_col)
         self.df.to_csv(path, index=False)
 
+    def get_all_labeled_text(
+        self, label_name: str, return_per_document: bool = False
+    ) -> Union[List[List[str], List[str]]]:
+        """
+        Get all of the text that was tagged for a given label
+        Args:
+            label_name (str): name of the label
+            return_per_document (bool, optional): return a list per document or one list with everything.
+                                                  Defaults to False.
+        """
+        available_labels = self.get_extraction_label_names()
+        if label_name not in available_labels:
+            raise ToolkitInputError(
+                f"'{label_name}' not present among available labels: {available_labels}"
+            )
+        all_labeled_text = []
+        for text, labels in zip(self.df[self.text_col], self.df[self.label_col]):
+            text_found = []
+            for lab in labels:
+                if lab["label"] == label_name:
+                    text_found.append(text[lab["start"] : lab["end"]])
+            if return_per_document:
+                all_labeled_text.append(text_found)
+            else:
+                all_labeled_text.extend(text_found)
+        return all_labeled_text
+
     def __eq__(self, other: Snapshot):
         """
         Check if two snapshots can be merged based on common column names
@@ -222,3 +249,7 @@ class Snapshot:
 
     def __repr__(self):
         return f"Snapshot, label_col: {self.label_col}, loc: {self.path_to_snapshot}"
+
+    @property
+    def number_of_samples(self) -> int:
+        return self.df.shape[0]
