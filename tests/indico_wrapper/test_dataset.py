@@ -52,7 +52,6 @@ def test_create_large_doc_dataset(dataset_wrapper, pdf_filepath):
         "mydataset",
         [pdf_filepath, pdf_filepath],
         batch_size=1,
-        post_batch_delay_secs=0,
         verbose=False,
     )
     assert len(dataset.files) == 2
