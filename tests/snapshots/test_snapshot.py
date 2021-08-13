@@ -8,6 +8,7 @@ from indico_toolkit.snapshots import Snapshot
 
 # TODO: tests for exception handling
 
+
 def test_instantiation_wo_params(snapshot_csv_path):
     snap = Snapshot(snapshot_csv_path)
     assert snap.text_col == "document"
@@ -126,3 +127,27 @@ def test_get_extraction_label_names(snapshot_csv_path, snapshot_classes):
     assert len(snapshot_classes) == len(label_list)
     for snapshot_class, test_class in zip(snapshot_classes, label_list):
         assert snapshot_class == test_class
+
+
+def test_number_of_samples(snapshot_csv_path):
+    snap = Snapshot(snapshot_csv_path)
+    assert snap.number_of_samples == 10
+
+
+def test_get_all_labeled_text(snapshot_csv_path):
+    snap = Snapshot(snapshot_csv_path)
+    labeled_text = snap.get_all_labeled_text("Trader's District")
+    assert len(labeled_text) == 10
+    assert isinstance(labeled_text[0], str)
+    assert labeled_text[0] == "CA47"
+
+
+def test_get_all_labeled_text_per_doc(snapshot_csv_path):
+    snap = Snapshot(snapshot_csv_path)
+    labeled_text = snap.get_all_labeled_text(
+        "Trader's District", return_per_document=True
+    )
+    assert len(labeled_text) == 10
+    assert isinstance(labeled_text[0], list)
+    assert len(labeled_text[0]) == 1
+    assert labeled_text[0][0] == "CA47"
