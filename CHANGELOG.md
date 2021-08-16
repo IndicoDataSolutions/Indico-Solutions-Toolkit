@@ -17,3 +17,19 @@
 
 ### Fixed
 * Dependency installation
+
+
+## 1.0.3 8/16/2021
+
+### Added
+* Find from questionnaire ID added to finder class.
+* ModelGroupPredict support added.
+* Added module to get metrics for all models in a group.
+* Multi color highlighting and annotations added for PDF highlighting.
+* Added stagger dataset upload feature for large doc datasets.
+* Added default retry functionality for certain API calls.
+* Added additional snapshot features.
+
+### Fixed
+* Wait kwarg added to submit review method.
+* Better support for dataset creation / adding files to teach tasks.
