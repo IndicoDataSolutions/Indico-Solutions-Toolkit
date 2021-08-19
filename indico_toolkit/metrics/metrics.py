@@ -2,8 +2,10 @@ import pandas as pd
 from typing import List
 from indico import IndicoClient
 
-from .indico_wrapper import IndicoWrapper
+from indico_toolkit.indico_wrapper import IndicoWrapper
 from indico_toolkit import ToolkitInputError
+
+# TODO: update example with correct import path
 
 
 class ExtractionMetrics(IndicoWrapper):
