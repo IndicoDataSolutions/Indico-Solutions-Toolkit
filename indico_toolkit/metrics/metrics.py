@@ -4,8 +4,7 @@ from indico import IndicoClient
 
 from indico_toolkit.indico_wrapper import IndicoWrapper
 from indico_toolkit import ToolkitInputError
-
-# TODO: update example with correct import path
+from .plotting import Plotting
 
 
 class ExtractionMetrics(IndicoWrapper):
@@ -57,6 +56,44 @@ class ExtractionMetrics(IndicoWrapper):
                 cleaned_metrics.append(scores)
         df = pd.DataFrame(cleaned_metrics)
         return df.sort_values(by=["field_name", "model_id"], ascending=False)
+
+    def bar_plot(
+        self,
+        output_path: str,
+        metric: str = "f1Score",
+        span_type: str = "overlap",
+        plot_title: str = "",
+        ids_to_exclude: List[int] = [],
+    ):
+        """
+        Write an html bar plot to disc. Will also open the plot automatically in your browser, where
+        you will interactive functionality and the ability to download a copy as a PNG as well.
+
+        Args:
+            output_path (str): where you want to write plot, e.g. "./myplot.html"
+            span_type (str): options include 'superset', 'exact', 'overlap' or 'token'
+            metric (str, optional): possible values are 'precision', 'recall', 'f1Score', 'falsePositives',
+                                    'falseNegatives', 'truePositives'. Defaults to "f1Score".
+            plot_title (str, optional): Title of the plot. Defaults to "".
+            ids_to_exclude (List[int], optional): Model Ids to exclude from plot.
+        """
+        df = self.get_metrics_df(span_type=span_type)
+        if ids_to_exclude:
+            df = df.drop(df.loc[df["model_id"].isin(ids_to_exclude)].index)
+
+        plotting = Plotting()
+        for model_id in sorted(df["model_id"].unique()):
+            sub_df = df.loc[df["model_id"] == model_id]
+            plotting.add_barplot_data(
+                sub_df["field_name"],
+                sub_df[metric],
+                name=str(model_id),
+                color=None,
+            )
+        plotting.define_layout(
+            yaxis_title=metric, legend_title="Model ID", plot_title=plot_title
+        )
+        plotting.plot(output_path)
 
     def to_csv(
         self, output_path: str, span_type: str = "overlap", select_model_id: int = None

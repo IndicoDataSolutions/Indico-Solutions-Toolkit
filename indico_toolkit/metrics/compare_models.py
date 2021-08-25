@@ -4,6 +4,7 @@ from indico import IndicoClient
 import pandas as pd
 
 
+from .plotting import Plotting
 from .metrics import ExtractionMetrics
 from indico_toolkit import ToolkitInputError
 
@@ -39,7 +40,7 @@ class CompareModels(ExtractionMetrics):
         self.overlapping_fields: Set[str] = None
         self.df: pd.DataFrame = None
 
-    def get_data_df(self, span_type: str = "overlap") -> pd.DataFrame:
+    def get_data(self, span_type: str = "overlap") -> pd.DataFrame:
         """
         Gathers metrics for both models into a dataframe, setting it to self.df
         Args:
@@ -70,14 +71,47 @@ class CompareModels(ExtractionMetrics):
                                     'falseNegatives', 'truePositives'. Defaults to "f1Score".
             include_difference (bool): include a column of the most recent model ID minus the older model ID
         """
-        metric_cols = [f"{metric}{suffix}" for suffix in self._model_suffixes]
-        metric_cols = self._order_by_most_recent_model_col(metric_cols, metric)
+        metric_cols = self._get_metric_col_names(metric)
         cols_to_keep = ["field_name", *metric_cols]
         diff_df = self.df[cols_to_keep].copy()
         if include_difference:
             diff_df["difference"] = diff_df[metric_cols[0]] - diff_df[metric_cols[1]]
             diff_df = diff_df.sort_values(by=["difference"], ascending=False)
         return diff_df
+
+    def bar_plot(
+        self,
+        output_path: str,
+        metric: str = "f1Score",
+        plot_title: str = "",
+        bar_colors: List[str] = ["salmon", "darkblue"],
+    ):
+        """
+        Write an html bar plot to disc. Will also open the plot automatically in your browser, where
+        you will interactive functionality and the ability to download a copy as a PNG as well.
+
+        Args:
+            output_path (str): where you want to write plot, e.g. "./myplot.html"
+            metric (str, optional): possible values are 'precision', 'recall', 'f1Score', 'falsePositives',
+                                    'falseNegatives', 'truePositives'. Defaults to "f1Score".
+            plot_title (str, optional): Title of the plot. Defaults to "".
+            bar_colors (List[str], optional): length two list with the colors for your plot, can be
+                                             css color names, rgb, or hex name .
+                                             Defaults to ["#EEE8AA", "#98FB98"].
+        """
+        metric_cols = self._get_metric_col_names(metric, order_descending=False)
+        plotting = Plotting()
+        for i in range(2):
+            plotting.add_barplot_data(
+                self.df["field_name"],
+                self.df[metric_cols[i]],
+                name=self._id_from_col_name(metric_cols[i]),
+                color=bar_colors[i],
+            )
+        plotting.define_layout(
+            yaxis_title=metric, legend_title="Model ID", plot_title=plot_title
+        )
+        plotting.plot(output_path)
 
     def to_csv(
         self,
@@ -90,10 +124,22 @@ class CompareModels(ExtractionMetrics):
         """
         df.to_csv(output_path, index=False)
 
-    def _order_by_most_recent_model_col(self, metric_cols: List[str], metric: str):
-        return sorted(
-            metric_cols, key=lambda x: int(x.replace(f"{metric}_", "")), reverse=True
+    def get_data_df(self):
+        raise NotImplementedError(
+            "This method is not used by this child class. Use 'df' attribute"
         )
+
+    @staticmethod
+    def _id_from_col_name(col_name: str):
+        return col_name.split("_")[-1]
+
+    def _get_metric_col_names(self, metric: str, order_descending: bool = True):
+        ordered = sorted(
+            self._model_suffixes,
+            key=lambda x: int(x.replace("_", "")),
+            reverse=order_descending,
+        )
+        return [f"{metric}{suffix}" for suffix in ordered]
 
     @staticmethod
     def labelsets_overlap(labelset1: set, labelset2: set):

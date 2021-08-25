@@ -13,7 +13,7 @@ def test_get_data_df(extraction_model_group_id, extraction_model_id, indico_clie
         extraction_model_group_id,
         extraction_model_id,
     )
-    comp.get_data_df()
+    comp.get_data()
     assert isinstance(comp.df, pd.DataFrame)
     assert comp.df.shape[0] > 0
     assert len(comp.non_overlapping_fields) == 0
