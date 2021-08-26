@@ -2,7 +2,7 @@ import pytest
 import tempfile
 import pandas as pd
 
-from indico_toolkit.indico_wrapper import ExtractionMetrics
+from indico_toolkit.metrics import ExtractionMetrics
 
 
 def test_get_metrics(extraction_model_group_id, indico_client):

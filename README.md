@@ -8,6 +8,7 @@ The indico-toolkit provides classes and functions to help achieve the following:
 * Classes that simplify dataset/doc-extraction functionality.
 * Row and line item association.
 * Get metrics for all model IDs in a model group to see how well fields are performing after more labeling.
+* Compare two models via bar plot and data tables.
 * Highlighting extraction predictions on source PDFs.
 * Staggered loop learning retrieval and reformatting.
 * Train a document classification model without labeling.
