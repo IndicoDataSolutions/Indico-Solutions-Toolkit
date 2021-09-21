@@ -33,3 +33,9 @@
 ### Fixed
 * Wait kwarg added to submit review method.
 * Better support for dataset creation / adding files to teach tasks.
+
+## 1.0.5 9/21/2021
+
+### Added
+* Classes for model comparison and model improvement.
+* Plotting functionality for model comparison.
