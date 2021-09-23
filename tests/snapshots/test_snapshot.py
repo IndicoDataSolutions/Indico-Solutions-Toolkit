@@ -151,3 +151,17 @@ def test_get_all_labeled_text_per_doc(snapshot_csv_path):
     assert isinstance(labeled_text[0], list)
     assert len(labeled_text[0]) == 1
     assert labeled_text[0][0] == "CA47"
+
+def test_get_file_names(snapshot_csv_path):
+    snap = Snapshot(snapshot_csv_path)
+    labels = snap.get_extraction_label_names()
+    assert len(snap.get_file_names(labels[0])) == 9
+    assert snap.get_file_names(labels[0], without_label=True) == {'transcation_report_278.pdf'}
+    assert snap.get_file_names(labels[2], without_label=True) == set()
+    with pytest.raises(ToolkitInputError, match=r".* not present among available labels.*"):
+        snap.get_file_names('does_not_exist')
+
+def test_get_label_count(snapshot_csv_path):
+    snap = Snapshot(snapshot_csv_path)
+    assert snap.get_label_count()['Company Name'] == 9
+    assert snap.get_label_count(by_document=False)['Company Name'] == 192

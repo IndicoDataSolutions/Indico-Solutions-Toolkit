@@ -253,3 +253,44 @@ class Snapshot:
     @property
     def number_of_samples(self) -> int:
         return self.df.shape[0]
+    
+    def get_label_count(self, by_document: bool = True):
+        """
+        Get the quantity of occurances each label in the label-set. 
+        Args:
+            by_document (bool, optional): if True, returns quantities of documents with a given label.
+                                                if False, returns quantities of total number of labels within the label-set.
+                                                Defaults to True.
+        """
+        label_count = {label:0 for label in self.get_extraction_label_names()}
+        if by_document:
+            for label in label_count:
+                label_count[label] = len([i for i in self.get_all_labeled_text(label, True) if i])
+        else:
+            for label in label_count:
+                label_count[label] = len([i for i in self.get_all_labeled_text(label)])
+        return label_count
+
+    def get_file_names(self, label_name: str, without_label: bool = False):
+        """
+        Get the file names of all files which are either tagged or not tagged with a given label. 
+        Args:
+            label_name (str): name of the label
+            without_label (bool, optional): returns a set of file name of all files not tagged with label.
+                                                  Defaults to False.
+        """
+        available_labels = self.get_extraction_label_names()
+        if label_name not in available_labels:
+            raise ToolkitInputError(
+                f"'{label_name}' not present among available labels: {available_labels}"
+            )
+        files = set()
+        if without_label:
+            for file, labels in zip(self.df[self.file_name_col], self.df[self.label_col]):
+                if label_name not in {entry['label'] for entry in labels}:
+                    files.add(file)
+        else:
+            for file, labels in zip(self.df[self.file_name_col], self.df[self.label_col]):
+                if label_name in {entry['label'] for entry in labels}:
+                    files.add(file)
+        return files
