@@ -156,9 +156,9 @@ def test_get_file_names(snapshot_csv_path):
     snap = Snapshot(snapshot_csv_path)
     labels = snap.get_extraction_label_names()
     assert len(snap.get_file_names(labels[0])) == 9
-    assert snap.get_file_names(labels[0], without_label=True) == {'transcation_report_278.pdf'}
-    assert snap.get_file_names(labels[2], without_label=True) == set()
-    with pytest.raises(ToolkitInputError, match=r".* not present among available labels.*"):
+    assert snap.get_file_names(labels[0], with_label=False) == {'transcation_report_278.pdf'}
+    assert snap.get_file_names(labels[2], with_label=False) == set()
+    with pytest.raises(ToolkitInputError):
         snap.get_file_names('does_not_exist')
 
 def test_get_label_count(snapshot_csv_path):
