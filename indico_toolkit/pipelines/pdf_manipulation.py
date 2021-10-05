@@ -32,7 +32,7 @@ class ManipulatePDF:
         self._doc = fitz.open(path_to_pdf)
 
     @ensure_doc_close
-    def write_subset_of_pages(self, output_path: str, page_numbers: List[int]):
+    def write_subset_of_pages(self, output_path: str, page_numbers: List[int], **kwargs):
         """
         Write a subset of a PDF's pages to disc
 
@@ -42,7 +42,7 @@ class ManipulatePDF:
         """
         self._validate_page_in_range(max(page_numbers))
         self._doc.select(page_numbers)
-        self._doc.save(output_path)
+        self._doc.save(output_path, **kwargs)
 
     @ensure_doc_close
     def get_page_text(self, page_number: int) -> str:
