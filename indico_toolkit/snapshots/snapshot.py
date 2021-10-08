@@ -39,6 +39,7 @@ class Snapshot:
         self.file_name_col = file_name_col
         if file_name_col is None:
             self._infer_file_name_col()
+        self.label_names = self.get_extraction_label_names()
 
     def remove_extraction_labels(self, labels_to_remove: List[str]):
         """
@@ -52,6 +53,7 @@ class Snapshot:
                 [i for i in label_set if i["label"] not in labels_to_remove]
             )
         self.df[self.label_col] = updated_predictions
+        self.label_names = self.get_extraction_label_names()
 
     def standardize_column_names(
         self,
@@ -93,6 +95,7 @@ class Snapshot:
         """
         self._assert_key_column_names_match(snap_to_add)
         self.df = self.df.append(snap_to_add.df, ignore_index=True)
+        self.label_names = self.get_extraction_label_names()
 
     def get_extraction_label_names(self):
         """
@@ -172,10 +175,9 @@ class Snapshot:
             return_per_document (bool, optional): return a list per document or one list with everything.
                                                   Defaults to False.
         """
-        available_labels = self.get_extraction_label_names()
-        if label_name not in available_labels:
+        if label_name not in self.label_names:
             raise ToolkitInputError(
-                f"'{label_name}' not present among available labels: {available_labels}"
+                f"'{label_name}' not present among available labels: {self.label_names}"
             )
         all_labeled_text = []
         for text, labels in zip(self.df[self.text_col], self.df[self.label_col]):
@@ -191,36 +193,36 @@ class Snapshot:
 
     def get_label_count(self, by_document: bool = True):
         """
-        Get the quantity of occurances each label in the label-set. 
+        Get the quantity of occurances each label in the label-set.
         Args:
             by_document (bool, optional): if True, returns quantities of documents with a given label.
                                                 if False, returns quantities of total number of labels within the label-set.
                                                 Defaults to True.
         """
         label_count = dict()
-        for label in self.get_extraction_label_names():
-            label_count[label] = len([i for i in self.get_all_labeled_text(label, by_document) if i]) # if i only important for by_doc == True
+        for label in self.label_names:
+            label_count[label] = len(
+                [i for i in self.get_all_labeled_text(label, by_document) if i]
+            )  # if i only important for by_doc == True
         return label_count
 
-    def get_file_names(self, label_name: str, with_label: bool = True):
+    def get_files_by_label(self, label_name: str, containing_label: bool = True):
         """
-        Get the file names of all files which are either tagged or not tagged with a given label. 
+        Get the file names of all files which are either tagged or not tagged with a given label.
         Args:
             label_name (str): name of the label
-            with_label (bool, optional): if True, returns a set of file names of all files tagged with label.
+            containing_label (bool, optional): if True, returns a set of file names of all files tagged with label.
                                                 if False, returns a set of file names of all files not tagged with label.
                                                 Defaults to True.
         """
-        available_labels = self.get_extraction_label_names()
-        if label_name not in available_labels:
+        if label_name not in self.label_names:
             raise ToolkitInputError(
-                f"'{label_name}' not present among available labels: {available_labels}"
+                f"'{label_name}' not present among available labels: {self.label_names}"
             )
         files = set()
         for file, labels in zip(self.df[self.file_name_col], self.df[self.label_col]):
-            if label_name in {entry['label'] for entry in labels} and with_label:
-                files.add(file)
-            elif label_name not in {entry['label'] for entry in labels} and not with_label:
+            label_found = label_name in {entry["label"] for entry in labels}
+            if label_found == containing_label:
                 files.add(file)
         return files
 

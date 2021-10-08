@@ -43,8 +43,10 @@ def test_instantiation_bad_label_col(snapshot_csv_path):
 def test_remove_extraction_labels(snapshot_csv_path):
     snap = Snapshot(snapshot_csv_path)
     assert "Trader's Name" in [i["label"] for i in snap.df[snap.label_col].iloc[0]]
+    assert "Trader's Name" in snap.label_names
     snap.remove_extraction_labels(["Trader's Name"])
     assert "Trader's Name" not in [i["label"] for i in snap.df[snap.label_col].iloc[0]]
+    assert "Trader's Name" not in snap.label_names
 
 
 def test_standardize_names(snapshot_csv_path):
@@ -152,14 +154,14 @@ def test_get_all_labeled_text_per_doc(snapshot_csv_path):
     assert len(labeled_text[0]) == 1
     assert labeled_text[0][0] == "CA47"
 
-def test_get_file_names(snapshot_csv_path):
+def test_get_files_by_label(snapshot_csv_path):
     snap = Snapshot(snapshot_csv_path)
-    labels = snap.get_extraction_label_names()
-    assert len(snap.get_file_names(labels[0])) == 9
-    assert snap.get_file_names(labels[0], with_label=False) == {'transcation_report_278.pdf'}
-    assert snap.get_file_names(labels[2], with_label=False) == set()
+    labels = snap.label_names
+    assert len(snap.get_files_by_label(labels[0])) == 9
+    assert snap.get_files_by_label(labels[0], containing_label=False) == {'transcation_report_278.pdf'}
+    assert snap.get_files_by_label(labels[2], containing_label=False) == set()
     with pytest.raises(ToolkitInputError):
-        snap.get_file_names('does_not_exist')
+        snap.get_files_by_label('does_not_exist')
 
 def test_get_label_count(snapshot_csv_path):
     snap = Snapshot(snapshot_csv_path)
