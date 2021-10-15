@@ -82,13 +82,15 @@ def test_prediction_reordering(three_row_invoice_preds, three_row_invoice_tokens
 
 def test_empty_line_items_init(three_row_invoice_preds, three_row_invoice_tokens):
     with pytest.raises(TypeError):
-        LineItems(three_row_invoice_preds,)
+        LineItems(
+            three_row_invoice_preds,
+        )
 
 
 def test_mapped_positions_by_page(three_row_invoice_preds, three_row_invoice_tokens):
     litems = LineItems(
         three_row_invoice_preds,
-        ("work_order_number", "line_date", "work_order_tonnage")
+        ("work_order_number", "line_date", "work_order_tonnage"),
     )
     litems.get_bounding_boxes(three_row_invoice_tokens)
     assert isinstance(litems.mapped_positions_by_page, dict)
@@ -102,10 +104,33 @@ def test_predictions_sorted_by_bbtop(
 ):
     litems = LineItems(
         two_row_bank_statement_preds,
-        ["Deposit Date", "Withdrawal Amount", "Deposit Amount", "Withdrawal Date"]
-        )
+        ["Deposit Date", "Withdrawal Amount", "Deposit Amount", "Withdrawal Date"],
+    )
     litems.get_bounding_boxes(two_row_bank_statement_tokens, raise_for_no_match=False)
     litems.assign_row_number()
     for row in litems.grouped_line_items:
         # without sorting by bbTop, rows would be 1 & 3 length
         assert len(row) == 2
+
+
+def test_predictions_multiline(multiline_preds, multiline_tokens):
+    litems = LineItems(
+        multiline_preds,
+        ["date", "description", "units", "unit_price", "unit_total"],
+    )
+    litems.get_bounding_boxes(multiline_tokens, raise_for_no_match=False)
+    litems.assign_row_number()
+    assert len(litems.grouped_line_items) == 2
+    for row in litems.grouped_line_items:
+        assert len(row) == 5
+
+
+def test_predictions_merge_lines(merged_line_preds, merged_line_tokens):
+    litems = LineItems(
+        merged_line_preds,
+        ["date", "description", "units", "unit_price", "unit_total"],
+        mergeable=["description"],
+    )
+    litems.get_bounding_boxes(merged_line_tokens, raise_for_no_match=False)
+    litems.assign_row_number()
+    assert len(litems.grouped_line_items) == 3

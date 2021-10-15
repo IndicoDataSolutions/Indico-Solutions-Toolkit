@@ -1,4 +1,5 @@
 """Associate row items"""
+from ast import Assert
 from typing import List, Union, Iterable, Dict
 from collections import defaultdict
 from copy import deepcopy
@@ -13,9 +14,9 @@ class LineItems(Association):
     Example Usage:
 
     litems = LineItems(
-            predictions=[{"label": "line_date", "start": 12, "text": "1/2/2021".....}],
-            line_item_fields=["line_value", "line_date"],
-        )
+        predictions=[{"label": "line_date", "start": 12, "text": "1/2/2021".....}],
+        line_item_fields=["line_value", "line_date"],
+    )
     litems.get_bounding_boxes(ocr_tokens=[{"postion"...,},])
     litems.assign_row_number()
 
@@ -27,6 +28,7 @@ class LineItems(Association):
         self,
         predictions: Union[List[dict], Extractions],
         line_item_fields: Iterable[str],
+        mergeable: Iterable[str] = None,
     ):
         """
         Args:
@@ -36,6 +38,14 @@ class LineItems(Association):
         """
         self.predictions = self.validate_prediction_formatting(predictions)
         self.line_item_fields: Iterable[str] = line_item_fields
+        self.mergeable: set = set(mergeable)
+
+        for field in self.mergeable:
+            if field not in self.line_item_fields:
+                raise AssertionError(
+                    f"Field '{field}' listed as mergeable but not present in line_item_fields."
+                )
+
         self._mapped_positions: List[dict] = []
         self._unmapped_positions: List[dict] = []
         self._errored_predictions: List[dict] = []
@@ -51,7 +61,8 @@ class LineItems(Association):
     @staticmethod
     def match_pred_to_token(pred: dict, ocr_tokens: List[dict]):
         """
-        Match and add bounding box metadata to prediction.
+        Match and add bounding box metadata to prediction.  The prediction's
+        bounding box is set to the bounding box of the first contained token.
 
         Args:
             pred (dict): Indico extraction model prediction
@@ -78,7 +89,9 @@ class LineItems(Association):
         return match_token_index
 
     def get_bounding_boxes(
-        self, ocr_tokens: List[dict], raise_for_no_match: bool = True,
+        self,
+        ocr_tokens: List[dict],
+        raise_for_no_match: bool = True,
     ):
         """
         Adds keys for bounding box top/bottom/left/right and page number to line item predictions
@@ -100,6 +113,29 @@ class LineItems(Association):
                 else:
                     print(f"Ignoring Error: {e}")
                     self._errored_predictions.append(pred)
+
+    def merge_lines(self):
+        """
+        If some fields are listed as mergeable, collapse any lines that contain only "mergeable"
+        fields into the previous line.
+        """
+        rows = self.grouped_line_items
+        if not len(rows):
+            return
+
+        # Merge rows down
+        merged_rows = [rows[0]]
+        for row in rows[1:]:
+            labels_to_merge = set(pred["label"] for pred in row)
+            if labels_to_merge <= self.mergeable:
+                merged_rows[-1].extend(row)
+            else:
+                merged_rows.append(row)
+
+        # Reassign row numbers
+        for i, row in enumerate(merged_rows):
+            for pred in row:
+                pred["row_number"] = i + 1
 
     def assign_row_number(self):
         """
@@ -126,6 +162,9 @@ class LineItems(Association):
                 max_top = min(pred["bbTop"], max_top)
                 min_bot = max(pred["bbBot"], min_bot)
             pred["row_number"] = row_number
+
+        if self.mergeable is not None:
+            self.merge_lines()
 
     @property
     def grouped_line_items(self) -> List[List[dict]]:

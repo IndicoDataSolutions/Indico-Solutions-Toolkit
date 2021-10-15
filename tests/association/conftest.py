@@ -44,3 +44,43 @@ def two_row_bank_statement_tokens():
     ) as f:
         tokens = json.load(f)
     return tokens
+
+
+@pytest.fixture(scope="function")
+def multiline_tokens():
+    with open(
+        os.path.join(FILE_PATH, "data/multiline_invoice/tokens.json"),
+        "r",
+    ) as f:
+        tokens = json.load(f)
+    return tokens
+
+
+@pytest.fixture(scope="function")
+def multiline_preds():
+    with open(
+        os.path.join(FILE_PATH, "data/multiline_invoice/preds.json"),
+        "r",
+    ) as f:
+        tokens = json.load(f)
+    return tokens
+
+
+@pytest.fixture(scope="function")
+def merged_line_tokens():
+    with open(
+        os.path.join(FILE_PATH, "data/merged_lines/tokens.json"),
+        "r",
+    ) as f:
+        tokens = json.load(f)
+    return tokens
+
+
+@pytest.fixture(scope="function")
+def merged_line_preds():
+    with open(
+        os.path.join(FILE_PATH, "data/merged_lines/preds.json"),
+        "r",
+    ) as f:
+        tokens = json.load(f)
+    return tokens

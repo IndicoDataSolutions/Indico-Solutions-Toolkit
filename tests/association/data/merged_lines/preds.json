@@ -1,0 +1,146 @@
+[
+    {
+        "start": 286,
+        "end": 294,
+        "label": "date",
+        "text": "10/03/21",
+        "confidence": {
+            "date": 0.99
+        }
+    },
+    {
+        "start": 296,
+        "end": 332,
+        "label": "description",
+        "text": "Egg Sandwich w/ Vegan Egg Substitute",
+        "confidence": {
+            "description": 0.99
+        }
+    },
+    {
+        "start": 471,
+        "end": 473,
+        "label": "units",
+        "text": "30",
+        "confidence": {
+            "units": 0.99
+        }
+    },
+    {
+        "start": 478,
+        "end": 483,
+        "label": "unit_price",
+        "text": "$5.00",
+        "confidence": {
+            "unit_price": 0.99
+        }
+    },
+    {
+        "start": 494,
+        "end": 501,
+        "label": "unit_total",
+        "text": "$150.00",
+        "confidence": {
+            "unit_total": 0.99
+        }
+    },
+    {
+        "start": 502,
+        "end": 510,
+        "label": "date",
+        "text": "10/04/21",
+        "confidence": {
+            "date": 0.99
+        }
+    },
+    {
+        "start": 512,
+        "end": 570,
+        "label": "description",
+        "text": "4/5ths Pounder Hamburger Super Combo, Fries and Mega Drink",
+        "confidence": {
+            "description": 0.99
+        }
+    },
+    {
+        "start": 687,
+        "end": 689,
+        "label": "units",
+        "text": "50",
+        "confidence": {
+            "units": 0.99
+        }
+    },
+    {
+        "start": 694,
+        "end": 700,
+        "label": "unit_price",
+        "text": "$10.00",
+        "confidence": {
+            "unit_price": 0.99
+        }
+    },
+    {
+        "start": 710,
+        "end": 717,
+        "label": "unit_total",
+        "text": "$500.00",
+        "confidence": {
+            "unit_total": 0.99
+        }
+    },
+    {
+        "start": 728,
+        "end": 901,
+        "label": "description",
+        "text": "NOTE: Consuming raw or undercooked meats, poultry, seafood, shellfish, or eggs may increase your risk of foodborne illness, especially if you have certain medical conditions",
+        "confidence": {
+            "description": 0.99
+        }
+    },
+    {
+        "start": 902,
+        "end": 910,
+        "label": "date",
+        "text": "10/05/21",
+        "confidence": {
+            "date": 0.99
+        }
+    },
+    {
+        "start": 912,
+        "end": 921,
+        "label": "description",
+        "text": "Diet Milk",
+        "confidence": {
+            "description": 0.99
+        }
+    },
+    {
+        "start": 1087,
+        "end": 1089,
+        "label": "units",
+        "text": "10",
+        "confidence": {
+            "units": 0.99
+        }
+    },
+    {
+        "start": 1094,
+        "end": 1099,
+        "label": "unit_price",
+        "text": "$3.00",
+        "confidence": {
+            "unit_price": 0.99
+        }
+    },
+    {
+        "start": 1110,
+        "end": 1116,
+        "label": "unit_total",
+        "text": "$30.00",
+        "confidence": {
+            "unit_total": 0.99
+        }
+    }
+]

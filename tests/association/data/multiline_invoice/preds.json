@@ -1,0 +1,92 @@
+[
+    {
+        "start": 171,
+        "end": 179,
+        "label": "date",
+        "text": "10/03/21",
+        "confidence": {
+            "date": 0.99
+        }
+    },
+    {
+        "start": 109,
+        "end": 217,
+        "label": "description",
+        "text": "Egg Sandwich w/ Vegan Egg Substitute",
+        "confidence": {
+            "description": 0.99
+        }
+    },
+    {
+        "start": 241,
+        "end": 243,
+        "label": "units",
+        "text": "30",
+        "confidence": {
+            "units": 0.99
+        }
+    },
+    {
+        "start": 248,
+        "end": 253,
+        "label": "unit_price",
+        "text": "$5.00",
+        "confidence": {
+            "unit_price": 0.99
+        }
+    },
+    {
+        "start": 264,
+        "end": 271,
+        "label": "unit_total",
+        "text": "$150.0",
+        "confidence": {
+            "unit_total": 0.99
+        }
+    },
+    {
+        "start": 272,
+        "end": 280,
+        "label": "date",
+        "text": "10/04/21",
+        "confidence": {
+            "date": 0.99
+        }
+    },
+    {
+        "start": 282,
+        "end": 340,
+        "label": "description",
+        "text": "4/5ths Pounder Hamburger Super Combo, Fries and Mega Drink",
+        "confidence": {
+            "description": 0.99
+        }
+    },
+    {
+        "start": 342,
+        "end": 344,
+        "label": "units",
+        "text": "50",
+        "confidence": {
+            "units": 0.99
+        }
+    },
+    {
+        "start": 349,
+        "end": 355,
+        "label": "unit_price",
+        "text": "$10.00",
+        "confidence": {
+            "unit_price": 0.99
+        }
+    },
+    {
+        "start": 365,
+        "end": 372,
+        "label": "unit_total",
+        "text": "$500.00",
+        "confidence": {
+            "unit_total": 0.99
+        }
+    }
+]
