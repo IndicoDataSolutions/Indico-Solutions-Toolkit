@@ -1,5 +1,6 @@
+import json
 import pandas as pd
-from typing import List
+from typing import List, Dict
 from indico import IndicoClient
 
 from indico_toolkit.indico_wrapper import IndicoWrapper
@@ -12,6 +13,7 @@ class ExtractionMetrics(IndicoWrapper):
         self.client = client
         self.raw_metrics: List[dict] = None
         self.included_models: List[int] = None
+        self.number_of_samples: Dict[int, int] = None
 
     def get_metrics(self, model_group_id: int):
         results = self.graphQL_request(METRIC_QUERY, {"modelGroupId": model_group_id})
@@ -26,6 +28,10 @@ class ExtractionMetrics(IndicoWrapper):
             if isinstance(m["evaluation"]["metrics"]["classMetrics"], list)
         ]
         self.included_models = [model["id"] for model in self.raw_metrics]
+        self.number_of_samples = {
+            model["id"]: json.loads(model["modelInfo"])["number_of_examples"]
+            for model in self.raw_metrics
+        }
 
     def get_metrics_df(
         self, span_type: str = "overlap", select_model_id: int = None
@@ -53,6 +59,7 @@ class ExtractionMetrics(IndicoWrapper):
                 scores = [i for i in metric["metrics"] if i["spanType"] == span_type][0]
                 scores["field_name"] = metric["name"]
                 scores["model_id"] = model["id"]
+                scores["number_of_samples"] = self.number_of_samples[model["id"]]
                 cleaned_metrics.append(scores)
         df = pd.DataFrame(cleaned_metrics)
         return df.sort_values(by=["field_name", "model_id"], ascending=False)
@@ -117,6 +124,7 @@ query modelGroupMetrics($modelGroupId: Int!){
                 modelGroups {
                     models {
                         id
+                        modelInfo
                         evaluation {
                         ... on AnnotationEvaluation {
                             metrics {
