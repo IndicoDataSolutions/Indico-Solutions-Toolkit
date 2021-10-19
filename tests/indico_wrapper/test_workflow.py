@@ -56,4 +56,4 @@ def test_get_submission_results_from_ids(indico_client, module_submission_ids):
     wflow = Workflow(indico_client)
     result = wflow.get_submission_results_from_ids([module_submission_ids[0]])[0]
     assert isinstance(result, WorkflowResult)
-    assert isinstance(result.post_review_predictions, Extractions)
+    assert isinstance(result.predictions, Extractions)

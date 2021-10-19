@@ -124,7 +124,7 @@ class Workflow(IndicoWrapper):
             if return_raw_json:
                 results.append(result)
             else:
-                results.append(WorkflowResult(self.get_storage_object(result)))
+                results.append(WorkflowResult(result))
         return results
 
     def submit_submission_review(

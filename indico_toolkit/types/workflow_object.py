@@ -39,7 +39,7 @@ class WorkflowResult:
         self._set_model_name()
         try:
             return Predictions.get_obj(self.document_results[self.model_name]["final"])
-        except KeyError:
+        except (KeyError, TypeError):
             raise ToolkitStatusError(
                 f"Submission {self.submission_id} has no 'final' predictions. Has it completed human review?"
             )

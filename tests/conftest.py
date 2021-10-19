@@ -31,7 +31,9 @@ HOST_URL = os.environ.get("HOST_URL")
 API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
 API_TOKEN = os.environ.get("API_TOKEN")
 MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
-CLASS_MODEL_NAME = os.environ.get("CLASS_MODEL_NAME", "Toolkit Test Classification Model")
+CLASS_MODEL_NAME = os.environ.get(
+    "CLASS_MODEL_NAME", "Toolkit Test Classification Model"
+)
 
 
 @pytest.fixture(scope="session")
@@ -101,6 +103,7 @@ def _finder_model_result(indico_client, workflow_id):
     result = find.workflow_id(workflow_id)
     return result["model_groups"][0]
 
+
 @pytest.fixture(scope="session")
 def extraction_model_group_id(_finder_model_result):
     return _finder_model_result["id"]
@@ -131,7 +134,7 @@ def function_submission_ids(workflow_id, indico_client, pdf_filepath):
 def wflow_submission_result(indico_client, module_submission_ids) -> dict:
     workflow_wrapper = Workflow(indico_client)
     return workflow_wrapper.get_submission_results_from_ids(
-        [module_submission_ids[0]], timeout=90
+        [module_submission_ids[0]],
     )[0]
 
 
@@ -143,6 +146,7 @@ def model_name():
 @pytest.fixture(scope="session")
 def class_model_name():
     return CLASS_MODEL_NAME
+
 
 @pytest.fixture(scope="session")
 def ondoc_ocr_object(indico_client, pdf_filepath):
