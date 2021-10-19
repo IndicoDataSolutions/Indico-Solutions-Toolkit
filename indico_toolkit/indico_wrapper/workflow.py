@@ -170,6 +170,13 @@ class Workflow(IndicoWrapper):
             time.sleep(1)
         return submission
 
+    def wait_for_submissions_to_process(self, submission_ids: List[int], timeout_per_id: int = 120) -> None:
+        """
+        Wait for submissions to reach a terminal status of "COMPLETE", "FAILED", or "PENDING_REVIEW"
+        """
+        for id in submission_ids:
+            self.wait_for_submission(id, timeout_per_id)
+
     def _get_list_of_submissions(
         self,
         workflow_id: int,
