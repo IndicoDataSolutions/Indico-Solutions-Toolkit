@@ -155,11 +155,16 @@ class Workflow(IndicoWrapper):
         timeout: int = 120,
     ) -> Submission:
         """
-        Wait for submission to reach terminal status of complete, failed, or pending review.
+        Wait for submission to reach terminal status of complete, failed, or pending review/auto-review.
         Raises ToolkitStatusError if max_attempts reached.
         """
         submission = self.get_submission_object(submission_id)
-        while submission.status not in ["COMPLETE", "FAILED", "PENDING_REVIEW"]:
+        while submission.status not in [
+            "COMPLETE",
+            "FAILED",
+            "PENDING_REVIEW",
+            "PENDING_AUTO_REVIEW",
+        ]:
             if timeout == 0:
                 raise ToolkitStatusError(
                     f"Submission {submission_id} didn't reach status COMPLETE."
@@ -170,9 +175,12 @@ class Workflow(IndicoWrapper):
             time.sleep(1)
         return submission
 
-    def wait_for_submissions_to_process(self, submission_ids: List[int], timeout_per_id: int = 120) -> None:
+    def wait_for_submissions_to_process(
+        self, submission_ids: List[int], timeout_per_id: int = 120
+    ) -> None:
         """
-        Wait for submissions to reach a terminal status of "COMPLETE", "FAILED", or "PENDING_REVIEW"
+        Wait for submissions to reach a terminal status of "COMPLETE", "PENDING_AUTO_REVIEW",
+        "FAILED", or "PENDING_REVIEW"
         """
         for id in submission_ids:
             self.wait_for_submission(id, timeout_per_id)
