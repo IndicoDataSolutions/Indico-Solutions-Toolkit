@@ -9,12 +9,12 @@ from indico.queries import (
     GetSubmission,
     WorkflowSubmission,
     SubmissionResult,
-    WaitForSubmissions,
     SubmitReview,
     UpdateWorkflowSettings,
     JobStatus,
 )
 from .indico_wrapper import IndicoWrapper
+from indico_toolkit import ToolkitStatusError
 from indico_toolkit.ocr import OnDoc
 from indico_toolkit.types import WorkflowResult
 
@@ -94,50 +94,43 @@ class Workflow(IndicoWrapper):
     def get_submission_results_from_ids(
         self,
         submission_ids: List[int],
-        timeout: int = 75,
-        ignore_exceptions: bool = False,
+        timeout: int = 120,
+        return_raw_json: bool = False,
+        raise_exception_for_failed: bool = True,
+        return_failed_results: bool = True,
     ) -> List[WorkflowResult]:
         """
         Wait for submission to pass through workflow models and get result. If Review is enabled, result may be retrieved prior to human review.
         Args:
             submission_id (int): Id of submission predictions to retrieve
             timeout (int): seconds permitted for each submission prior to timing out
-            ignore_exceptions (bool): if True, catch exception for unsuccessful submission
-
+            return_raw_json: (bool) = If True return raw json result, otherwise return WorkflowResult object.
+            raise_exception_for_failed (bool): if True, ToolkitStatusError raised for failed submissions
+            return_failed_results (bool): if True, return objects for failed submissions
         Returns:
             List[WorkflowResult]: workflow result objects
         """
         results = []
         for subid in submission_ids:
-            try:
-                job = self.client.call(
-                    SubmissionResult(subid, wait=True, timeout=timeout)
-                )
-            except IndicoRequestError as e:
-                message = f"IndicoRequestError with Submission {subid}: {e}"
-                self._error_handle(message, ignore_exceptions)
-                continue
-            if job.status != "SUCCESS":
-                message = f"{job.status}! Submission {subid}: {job.result}"
-                self._error_handle(message, ignore_exceptions)
-                continue
-            results.append(WorkflowResult(self.get_storage_object(job.result)))
+            submission: Submission = self.wait_for_submission(subid, timeout=timeout)
+            if submission.status == "FAILED":
+                message = f"FAILURE, Submission: {subid}. {submission.errors}"
+                if raise_exception_for_failed:
+                    raise ToolkitStatusError(message)
+                elif not return_failed_results:
+                    print(message)
+                    continue
+            result = self.get_storage_object(submission.result_file)
+            if return_raw_json:
+                results.append(result)
+            else:
+                results.append(WorkflowResult(self.get_storage_object(result)))
         return results
 
-    def wait_for_submissions_to_process(
-        self, submission_ids: List[int], timeout: int = 120
-    ) -> None:
-        """
-        Wait for all submissions to complete workflow processing
-        """
-        return self.client.call(
-            WaitForSubmissions(submission_ids=submission_ids, timeout=timeout)
-        )
-
-    def submit_submission_review(self, submission_id: int, updated_predictions: dict, wait: bool=True):
-        job = self.client.call(
-            SubmitReview(submission_id, changes=updated_predictions)
-        )
+    def submit_submission_review(
+        self, submission_id: int, updated_predictions: dict, wait: bool = True
+    ):
+        job = self.client.call(SubmitReview(submission_id, changes=updated_predictions))
         if wait:
             job = self.client.call(JobStatus(job.id, wait=True))
         return job
@@ -156,23 +149,26 @@ class Workflow(IndicoWrapper):
             )
         )
 
-    def wait_for_submission_status_complete(
+    def wait_for_submission(
         self,
         submission_id: int,
-        seconds_to_sleep_each_loop: int = 2,
-        max_retries: int = 5,
-    ):
-        retry_number = 0
+        timeout: int = 120,
+    ) -> Submission:
+        """
+        Wait for submission to reach terminal status of complete, failed, or pending review.
+        Raises ToolkitStatusError if max_attempts reached.
+        """
         submission = self.get_submission_object(submission_id)
-        while submission.status != "COMPLETE":
-            time.sleep(seconds_to_sleep_each_loop)
-            submission = self.get_submission_object(submission_id)
-            if retry_number == max_retries:
-                raise Exception(
+        while submission.status not in ["COMPLETE", "FAILED", "PENDING_REVIEW"]:
+            if timeout == 0:
+                raise ToolkitStatusError(
                     f"Submission {submission_id} didn't reach status COMPLETE."
                     f"It has status: {submission.status} and errors: {submission.errors}"
                 )
-            retry_number += 1
+            submission = self.get_submission_object(submission_id)
+            timeout -= 1
+            time.sleep(1)
+        return submission
 
     def _get_list_of_submissions(
         self,
