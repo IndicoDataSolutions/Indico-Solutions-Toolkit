@@ -1,7 +1,7 @@
 from __future__ import (
     annotations,
 )  # from 3.10, don't need for same class reference in class method
-from typing import List
+from typing import List, Union
 import pandas as pd
 import json
 from json import JSONDecodeError
@@ -164,7 +164,7 @@ class Snapshot:
 
     def get_all_labeled_text(
         self, label_name: str, return_per_document: bool = False
-    ) -> Union[List[List[str], List[str]]]:
+    ) -> Union[List[List[str]], List[str]]:
         """
         Get all of the text that was tagged for a given label
         Args:
