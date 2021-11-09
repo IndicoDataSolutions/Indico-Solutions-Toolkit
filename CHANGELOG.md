@@ -39,3 +39,9 @@
 ### Added
 * Classes for model comparison and model improvement.
 * Plotting functionality for model comparison.
+
+## 1.0.7 11/9/2021
+
+### Added
+* Positioning class added to assist in relative prediction location validation
+* Added # of samples labeled to metrics class.
