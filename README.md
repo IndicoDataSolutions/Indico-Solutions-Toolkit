@@ -6,7 +6,7 @@ A library to assist Indico IPA development
 The indico-toolkit provides classes and functions to help achieve the following:
 * Easy batch workflow submission and retrieval.
 * Classes that simplify dataset/doc-extraction functionality.
-* Row and line item association.
+* Tools to assist with positioning, e.g. row association, distance between preds, relative position validation.
 * Get metrics for all model IDs in a model group to see how well fields are performing after more labeling.
 * Compare two models via bar plot and data tables.
 * Highlighting extraction predictions on source PDFs.
