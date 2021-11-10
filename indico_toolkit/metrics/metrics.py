@@ -29,7 +29,7 @@ class ExtractionMetrics(IndicoWrapper):
         ]
         self.included_models = [model["id"] for model in self.raw_metrics]
         self.number_of_samples = {
-            model["id"]: json.loads(model["modelInfo"])["number_of_examples"]
+            model["id"]: int(json.loads(model["modelInfo"])["number_of_examples"])
             for model in self.raw_metrics
         }
 
@@ -73,8 +73,9 @@ class ExtractionMetrics(IndicoWrapper):
         ids_to_exclude: List[int] = [],
     ):
         """
-        Write an html bar plot to disc. Will also open the plot automatically in your browser, where
-        you will interactive functionality and the ability to download a copy as a PNG as well.
+        Write an html bar plot to disc to compare model IDs within a model group.
+        Will also open the plot automatically in your browser, where you will interactive
+        functionality and the ability to download a copy as a PNG as well.
 
         Args:
             output_path (str): where you want to write plot, e.g. "./myplot.html"
@@ -99,6 +100,55 @@ class ExtractionMetrics(IndicoWrapper):
             )
         plotting.define_layout(
             yaxis_title=metric, legend_title="Model ID", plot_title=plot_title
+        )
+        plotting.plot(output_path)
+
+    def line_plot(
+        self,
+        output_path: str,
+        metric: str = "f1Score",
+        span_type: str = "overlap",
+        plot_title: str = "",
+        ids_to_exclude: List[int] = [],
+        fields_to_exclude: List[str] = [],
+    ):
+        """
+        Write an html line plot to disc with # of samples on x-axis, a metric on the y-axis and
+        each line representing a distinct field.
+        Will also open the plot automatically in your browser, where you will interactive
+        functionality and the ability to download a copy as a PNG as well.
+
+        Args:
+            output_path (str): where you want to write plot, e.g. "./myplot.html"
+            span_type (str): options include 'superset', 'exact', 'overlap' or 'token'
+            metric (str, optional): possible values are 'precision', 'recall', 'f1Score', 'falsePositives',
+                                    'falseNegatives', 'truePositives'. Defaults to "f1Score".
+            plot_title (str, optional): Title of the plot. Defaults to "".
+            ids_to_exclude (List[int], optional): Model Ids to exclude from plot.
+            fields_to_exclude (List[str], optional): Field Names to exclude from plot.
+        """
+        df = self.get_metrics_df(span_type=span_type)
+        if ids_to_exclude:
+            df = df.drop(df.loc[df["model_id"].isin(ids_to_exclude)].index)
+        if fields_to_exclude:
+            df = df.drop(df.loc[df["field_name"].isin(fields_to_exclude)].index)
+        df = df.sort_values(by=["field_name", "number_of_samples", metric])
+        plotting = Plotting()
+        for field in sorted(df["field_name"].unique()):
+            sub_df = df.loc[df["field_name"] == field].copy()
+            # ensure only one value per # of samples
+            sub_df = sub_df.drop_duplicates(subset=["number_of_samples"])
+            plotting.add_line_data(
+                sub_df["number_of_samples"],
+                sub_df[metric],
+                name=field,
+                color=None,
+            )
+        plotting.define_layout(
+            xaxis_title="Number of Samples",
+            legend_title="Field",
+            plot_title=plot_title,
+            yaxis_title=metric,
         )
         plotting.plot(output_path)
 
