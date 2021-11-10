@@ -3,6 +3,7 @@ import os
 import tempfile
 from copy import deepcopy
 import pandas as pd
+from pandas.util.testing import assert_frame_equal
 from indico_toolkit import ToolkitInputError
 from indico_toolkit.snapshots import Snapshot
 
@@ -87,6 +88,23 @@ def test_to_csv(snapshot_csv_path):
         df = pd.read_csv(tf.name)
         assert df.shape[1] == 3
         assert isinstance(df["target"][0], str)
+
+
+def test_split_and_write_to_csv(snapshot_csv_path):
+    snap = Snapshot(snapshot_csv_path)
+    with tempfile.TemporaryDirectory() as dirpath:
+        snap.split_and_write_to_csv(dirpath, num_splits=3, output_base_name="my_split")
+        original = pd.read_csv(snapshot_csv_path)
+        df1 = pd.read_csv(os.path.join(dirpath, "my_split_1.csv"))
+        df2 = pd.read_csv(os.path.join(dirpath, "my_split_2.csv"))
+        df3 = pd.read_csv(os.path.join(dirpath, "my_split_3.csv"))
+        assert df1.shape[0] == 3
+        assert df2.shape[0] == 3
+        assert df3.shape[0] == 4
+        full = pd.concat([df1, df2, df3]).reset_index(drop=True)
+        assert full.shape[0] == original.shape[0]
+        assert set(full.columns) == set(original.columns)
+        assert set(full["document"].tolist()) == set(original["document"].tolist())
 
 
 def test_merge_by_file_name(snapshot_csv_path):

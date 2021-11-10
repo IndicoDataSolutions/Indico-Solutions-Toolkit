@@ -3,6 +3,7 @@ from __future__ import (
 )  # from 3.10, don't need for same class reference in class method
 from typing import List, Union
 import pandas as pd
+import os
 import json
 from json import JSONDecodeError
 from indico_toolkit import ToolkitInstantiationError, ToolkitInputError
@@ -188,6 +189,30 @@ class Snapshot:
             else:
                 all_labeled_text.extend(text_found)
         return all_labeled_text
+
+    def split_and_write_to_csv(
+        self, output_dir: str, num_splits: int = 5, output_base_name: str = "split_num"
+    ) -> None:
+        """
+        For large files that may face memory constraints, split the file into multiple CSVs and write
+        to disk.
+        Args:
+            output_dir (str): Location where split files will be written.
+            num_splits (int, optional): The number of splits of the CSV. Defaults to 5.
+            output_base_name (str, optional): The base name of the split CSVs: Defaults to "split_num".
+                                              So files would be "split_num_1.csv", "split_num_2.csv", etc.
+        """
+        split_length = self.number_of_samples // num_splits
+        rows_taken = 0
+        for i in range(1, num_splits + 1):
+            if i == num_splits:
+                sub_df = self.df.iloc[rows_taken:]
+            else:
+                sub_df = self.df.iloc[rows_taken : rows_taken + split_length]
+            split_file_loc = os.path.join(output_dir, f"{output_base_name}_{i}.csv")
+            sub_df.to_csv(split_file_loc, index=False)
+            rows_taken += split_length
+            print(f"Wrote split {i} of {num_splits}: {split_file_loc}")
 
     def __eq__(self, other: Snapshot):
         """

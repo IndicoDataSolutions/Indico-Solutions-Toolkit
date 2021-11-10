@@ -1,12 +1,15 @@
 from typing import List
 from indico import IndicoClient
+from indico.errors import IndicoRequestError
 from .indico_wrapper import IndicoWrapper
+from indico_toolkit import retry
 
 
 class FindRelated(IndicoWrapper):
     def __init__(self, client: IndicoClient):
         self.client = client
 
+    @retry(IndicoRequestError, num_retries=2, wait=2)
     def questionnaire_id(self, questionnaire_id: int) -> dict:
         query = """
             query getCrowdlabelQuestionnaire($id: Int!) {
@@ -26,6 +29,7 @@ class FindRelated(IndicoWrapper):
         model_group_res = self.model_group_id(res["questions"][0]["modelGroupId"])
         return model_group_res
 
+    @retry(IndicoRequestError, num_retries=2, wait=2)
     def workflow_id(self, workflow_id: int) -> dict:
         """
         Given a workflow ID returns dictionary obj formatted like:
@@ -52,6 +56,7 @@ class FindRelated(IndicoWrapper):
             "questionnaire_ids": questionnaires,
         }
 
+    @retry(IndicoRequestError, num_retries=2, wait=2)
     def dataset_id(self, dataset_id: int) -> dict:
         query = """
             query GetDataset($id: Int) {
@@ -79,6 +84,7 @@ class FindRelated(IndicoWrapper):
             "questionnaire_ids": [q["id"] for q in questionnaires],
         }
 
+    @retry(IndicoRequestError, num_retries=2, wait=2)
     def model_group_id(self, model_group_id: int) -> dict:
         query = """
             query GetModelGroup($id: Int) {
@@ -112,6 +118,7 @@ class FindRelated(IndicoWrapper):
             "questionnaire_name": questionnaire["name"],
         }
 
+    @retry(IndicoRequestError, num_retries=2, wait=2)
     def model_id(self, model_id: int):
         query = """
             {modelGroups {
@@ -149,6 +156,8 @@ class FindRelated(IndicoWrapper):
             "questionnaire_name": questionnaire["name"],
         }
 
+
+    @retry(IndicoRequestError, num_retries=2, wait=2)
     def _get_workflow_data(
         self, dataset_id: int = None, workflow_id: int = None
     ) -> List[dict]:
@@ -178,6 +187,7 @@ class FindRelated(IndicoWrapper):
         res = self.graphQL_request(query, variables)
         return res["workflows"]["workflows"]
 
+    @retry(IndicoRequestError, num_retries=2, wait=2)
     def _get_questionnaire_by_model_group(self, model_group_id: int) -> dict:
         questionnaires = self._get_all_questionnaires()
         for q in questionnaires:
@@ -186,6 +196,7 @@ class FindRelated(IndicoWrapper):
                 return q
         return {"id": None, "name": None}
 
+    @retry(IndicoRequestError, num_retries=2, wait=2)
     def _get_questionnaires_by_dataset_id(self, dataset_id: int) -> List[dict]:
         questionnaires = self._get_all_questionnaires()
         matching_qs = []
@@ -195,6 +206,7 @@ class FindRelated(IndicoWrapper):
                 matching_qs.append(q)
         return matching_qs
 
+    @retry(IndicoRequestError, num_retries=2, wait=2)
     def _get_all_questionnaires(self) -> List[dict]:
         query = """
             query getCrowdlabelQuestionnaires {
