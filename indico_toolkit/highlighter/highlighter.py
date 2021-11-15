@@ -14,23 +14,27 @@ from indico_toolkit import ToolkitInstantiationError
 
 
 class Highlighter(ExtractedTokens):
-    def __init__(self, predictions: List[dict], path_to_pdf: str):
+    def __init__(self, predictions: List[dict], path_to_pdf: str, mapped_positions: List[dict] = []):
         """
         Highlight predictions using source PDF documents
         Args:
             predictions (List[dict]): Extraction predictions
             path_to_pdf (str): Path to the predictions' doc
-
+        Kwargs:
+            mapped_positions (List[dict]): if you have already collected the positions of the tokens to highlight,
+                                           pass them in here and skip the "collect_tokens" call. You can also 
+                                           pass a filler value for "predictions"
         Example:
             highlight = Highlighter(preds, "./myfile.pdf")
             highlight.collect_tokens(ondoc.token_objects)
             highlight.highlight_pdf(
-                    "./highlighted_myfile.pdf", 
-                    ondoc.page_heights_and_widths, 
+                    "./highlighted_myfile.pdf",
+                    ondoc.page_heights_and_widths,
                     all_yellow_highlight=False
                 )
         """
         super().__init__(predictions)
+        self._mapped_positions = mapped_positions
         if not path_to_pdf.lower().endswith(".pdf"):
             raise ToolkitInstantiationError(
                 f"Highlighter requires PDF files, not {path_to_pdf[-4:]}"
@@ -42,30 +46,32 @@ class Highlighter(ExtractedTokens):
         output_path: str,
         page_dimensions: List[dict],
         all_yellow_highlight: bool = True,
-        include_toc: bool = False,
         color_map: dict = None,
         add_label_annotations: bool = False,
+        add_bookmarks: bool = True,
     ):
         """
         Highlights extraction predictions onto a copy of source PDF
-        
+
         Arguments:
             output_path {str} -- path of labeled PDF copy to create (set to same as pdf_path to overwrite)
-             page_dimensions: {List[dict]} -- page heights and widths from ondocument OCR result, see 
+             page_dimensions: {List[dict]} -- page heights and widths from ondocument OCR result, see
                                               Ondoc class and page_heights_and_widths property
             all_yellow_highlight (bool) -- if True, all highlights are yellow, otherwise, each field gets a unique color
-            include_toc {bool} -- if True, insert a table of contents of what annotations were made and on what page
             color_map (dict) -- Optionally, specify what highlight color to apply to each field, use get_color_list() method
                                 to see available colors.
+            add_bookmarks (book) -- if True, adds per page bookmarks of what labels are found on that page
             add_label_annotations (bool) -- if True, annotates the label name in small red text above the highlights
-                                
+
         """
         if all_yellow_highlight:
             color_map = defaultdict(lambda: "yellow")
         elif color_map is None:
             color_map = self.get_label_color_hash()
         with fitz.open(self.path_to_pdf) as doc:
+            bookmarks = []
             for doc_page, tokens in self.mapped_positions_by_page.items():
+                labels_on_page = set()
                 page = doc[doc_page]
                 xnorm = page.rect[2] / page_dimensions[doc_page]["width"]
                 ynorm = page.rect[3] / page_dimensions[doc_page]["height"]
@@ -76,30 +82,20 @@ class Highlighter(ExtractedTokens):
                         token["position"]["bbRight"] * xnorm,
                         token["position"]["bbBot"] * ynorm,
                     )
+                    labels_on_page.add(token["label"])
                     color = color_map[token["label"]]
                     ann = page.addHighlightAnnot(annotation)
                     ann.setOpacity(0.5)
                     ann.setColors(stroke=getColor(color))
                     ann.update()
+                bookmarks.extend(
+                    [[1, i.replace(" ", "_"), doc_page + 1] for i in labels_on_page]
+                )
                 if add_label_annotations:
                     self._add_label_annotations(page, tokens, xnorm, ynorm)
-            if include_toc:
-                toc_text = self._get_toc_text()
-                doc.insertPage(0, text=toc_text, fontsize=13)
+            if add_bookmarks:
+                doc.setToC(bookmarks)
             doc.save(output_path)
-
-    def _get_toc_text(self) -> str:
-        """
-        If a table of contents is requested, formats and returns the page text
-        """
-        filename = FileProcessing.file_name_from_path(self.path_to_pdf)
-        base_text = f"File: {filename}\n\nPages w/ Extractions found:\n\n"
-        page_strings = list()
-        for page, tokens in self.mapped_positions_by_page.items():
-            label_counts = self._get_page_label_counts(tokens)
-            content = ", ".join(f"{key} ({val})" for key, val in label_counts.items())
-            page_strings.append(f"Page {page + 1}: {content}")
-        return base_text + "\n".join(page_strings)
 
     def _get_page_label_counts(self, tokens: List[dict]):
         already_found = []
