@@ -1,5 +1,5 @@
 """A package to support Indico IPA development"""
-__version__ = "1.0.7"
+__version__ = "1.0.8"
 
 from .errors import *
 from .client import create_client
