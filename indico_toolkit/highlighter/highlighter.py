@@ -49,6 +49,7 @@ class Highlighter(ExtractedTokens):
         color_map: dict = None,
         add_label_annotations: bool = False,
         add_bookmarks: bool = True,
+        highlight_opacity: float = 0.4,
     ):
         """
         Highlights extraction predictions onto a copy of source PDF
@@ -59,9 +60,10 @@ class Highlighter(ExtractedTokens):
                                               Ondoc class and page_heights_and_widths property
             all_yellow_highlight (bool) -- if True, all highlights are yellow, otherwise, each field gets a unique color
             color_map (dict) -- Optionally, specify what highlight color to apply to each field, use get_color_list() method
-                                to see available colors.
+                                to see available colors. Can alternatively put an RGB (normalized 0-1) tuple
             add_bookmarks (book) -- if True, adds per page bookmarks of what labels are found on that page
             add_label_annotations (bool) -- if True, annotates the label name in small red text above the highlights
+            highlight_opacity: (float) -- 0 to 1 opacity of highlight.
 
         """
         if all_yellow_highlight:
@@ -84,9 +86,11 @@ class Highlighter(ExtractedTokens):
                     )
                     labels_on_page.add(token["label"])
                     color = color_map[token["label"]]
+                    if isinstance(color, str):
+                        color = getColor(color)
                     ann = page.addHighlightAnnot(annotation)
-                    ann.setOpacity(0.5)
-                    ann.setColors(stroke=getColor(color))
+                    ann.setOpacity(highlight_opacity)
+                    ann.setColors(stroke=color)
                     ann.update()
                 bookmarks.extend(
                     [[1, i.replace(" ", "_"), doc_page + 1] for i in labels_on_page]
@@ -114,6 +118,7 @@ class Highlighter(ExtractedTokens):
         colors = np.random.choice(
             self.get_color_list(), size=len(label_set), replace=False
         )
+        colors = [getColor(i) for i in colors]
         return dict(zip(label_set, colors))
 
     def get_color_list(self) -> List[str]:
