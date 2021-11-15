@@ -22,15 +22,17 @@ ocr_object = wflow.get_ondoc_ocr_from_etl_url(submission_result.etl_url)
 highlighter = Highlighter(submission_result.predictions, PATH_TO_DOCUMENT)
 highlighter.collect_tokens(ocr_object.token_objects)
 highlighter.highlight_pdf(
-    "./highlighted_doc.pdf", ocr_object.page_heights_and_widths, include_toc=False
+    "./highlighted_doc.pdf", ocr_object.page_heights_and_widths
 )
 
-# You can also have unique color highlights for each label group and write the label above the highlight
+# You can also have unique color highlights for each label group, write the label above the highlight,
+# and add bookmarks of what labels appear on which pages
 highlighter.highlight_pdf(
-    "./annotated_doc.pdf",
+    "./highlighted_doc.pdf",
     ocr_object.page_heights_and_widths,
     include_toc=False,
     all_yellow_highlight=False,
     add_label_annotations=True,
+    add_bookmarks=True,
 )
 
