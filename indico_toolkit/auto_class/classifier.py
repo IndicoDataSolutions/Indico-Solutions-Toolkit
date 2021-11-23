@@ -31,7 +31,7 @@ class AutoClassifier(DocExtraction):
         self._exceptions = []
 
     def set_file_paths(
-        self, accepted_types: Tuple[str] = ("pdf", "tiff", "tif", "doc", "docx", "png")
+        self, accepted_types: Tuple[str] = ("pdf", "tiff", "tif", "doc", "docx", "png", "jpg")
     ) -> None:
         self._fp.get_file_paths_from_dir(
             self.directory_path, accepted_types=accepted_types, recursive_search=True
