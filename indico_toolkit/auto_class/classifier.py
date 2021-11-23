@@ -8,9 +8,9 @@ from indico_toolkit.indico_wrapper import DocExtraction
 class AutoClassifier(DocExtraction):
     def __init__(self, client: IndicoClient, directory_path: str):
         """
-        Create a CSV of OCR text alongside a class label based on a directory structure. 
+        Create a CSV of OCR text alongside a class label based on a directory structure.
         You sould have a base directory containing sub directories where each directory contains
-        a unique file type and only that file type. 
+        a unique file type and only that file type.
 
         Example::
             base_directory/ -> Instantiate with the page to 'base_directory' as your 'directory_path'
@@ -28,14 +28,19 @@ class AutoClassifier(DocExtraction):
         self.file_classes = []
         self.file_texts = []
         self._fp = FileProcessing()
+        self._exceptions = []
 
     def set_file_paths(
-        self, accepted_types: Tuple[str] = ("pdf", "tiff", "tif", "doc", "docx")
+        self, accepted_types: Tuple[str] = ("pdf", "tiff", "tif", "doc", "docx", "png")
     ) -> None:
-        self._fp.get_file_paths_from_dir(self.directory_path, recursive_search=True)
+        self._fp.get_file_paths_from_dir(
+            self.directory_path, accepted_types=accepted_types, recursive_search=True
+        )
         self.file_paths = self._fp.file_paths
 
-    def create_classifier(self, verbose: bool = True, batch_size: int = 5):
+    def create_classifier(
+        self, verbose: bool = True, batch_size: int = 5, catch_exceptions: bool = True
+    ):
         """
         Collect OCR text and set file classes
         Args:
@@ -46,7 +51,13 @@ class AutoClassifier(DocExtraction):
         for i, fpaths in enumerate(self._fp.batch_files(batch_size=batch_size)):
             if verbose:
                 print(f"Starting batch {i + 1} of {len(self.file_paths) // batch_size}")
-            self.file_texts.extend(self.run_ocr(fpaths, text_setting="full_text"))
+            try:
+                self.file_texts.extend(self.run_ocr(fpaths, text_setting="full_text"))
+            except Exception as e:
+                if not catch_exceptions:
+                    raise e
+                self.file_texts.extend([None for i in range(batch_size)])
+                self._exceptions.append(e)
 
     def to_csv(self, output_path: str):
         """
@@ -61,6 +72,14 @@ class AutoClassifier(DocExtraction):
                 "filepaths": self.file_paths,
             }
         )
+        to_drop = df.loc[df["text"].isnull()]
+        if to_drop.shape[0] > 0:
+            print(
+                f"Issue OCRing the following files in batch: {to_drop['filepaths'].tolist()}\n"
+                f"{self._exceptions}"
+                f"Dropping {to_drop.shape[0]} files"
+            )
+            df = df.drop(to_drop.index)
         df.to_csv(output_path, index=False)
 
     def _set_full_doc_classes(self):
@@ -83,7 +102,7 @@ class FirstPageClassifier(DocExtraction):
         """
         Automatically create a 'CSV' to train a first page classification model without labeling.
 
-        A First Page Classifier enables you to identify the first page of documents and to split 
+        A First Page Classifier enables you to identify the first page of documents and to split
         apart bundled documents whenever a 'first page' occurs in the bundle. The files in
         'directory_path' should contain NO bundles- all should be single documents (i.e. no
         single PDF with multiple unique files within).
