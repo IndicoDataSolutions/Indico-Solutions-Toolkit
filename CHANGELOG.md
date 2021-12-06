@@ -58,3 +58,9 @@
 
 * Abillity to include metadata with highlighter
 * Ability to split large snapshots into smaller files
+
+## 1.1.2 12/6/2021
+
+### Added
+
+* Updated functionality for large dataset creation. Batch options allow for more reliable dataset uploads.
