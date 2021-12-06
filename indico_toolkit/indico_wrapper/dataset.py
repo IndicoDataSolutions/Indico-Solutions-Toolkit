@@ -98,7 +98,7 @@ class Datasets(IndicoWrapper):
             filepaths (List[str]): files you want to upload
             num_threads (int, optional): number of threads to use for file upload. Defaults to 3.
             upload_batch_size (int, optional): number of files to upload at a time. Defaults to 3.
-            add_files_batch_size (int, optional): number of files to add to dataset at a time. 
+            add_files_batch_size (int, optional): number of files to add to dataset at a time.
                                                   Defaults to 100.
             process_batch_size (int, optional): number of files to process at a time. Defaults to 5.
             max_download_checks (int, optional): number of times to poll for uploads to complete.
@@ -120,15 +120,17 @@ class Datasets(IndicoWrapper):
                 )
             )
         print("Added Files to dataset, waiting for documents to download")
-        dataset = self.client.call(GetDatasetFileStatus(id=dataset_id))
+        indico_dataset = self.client.call(GetDatasetFileStatus(id=dataset_id))
 
         debouncer = Debouncer(max_timeout=max_download_checks)
-        while self._datafiles_downloading(dataset, debouncer, max_download_checks):
-            dataset = self.client.call(GetDatasetFileStatus(id=dataset_id))
+        while self._datafiles_downloading(
+            indico_dataset, debouncer, max_download_checks
+        ):
+            indico_dataset = self.client.call(GetDatasetFileStatus(id=dataset_id))
             debouncer.backoff()
 
         print("Downloads complete, starting pdf extraction jobs")
-        file_ids = [df.id for df in dataset.files if df.status == "DOWNLOADED"]
+        file_ids = [df.id for df in indico_dataset.files if df.status == "DOWNLOADED"]
         for i in tqdm(range(0, len(file_ids), process_batch_size)):
             self.client.call(
                 _ProcessFiles(
