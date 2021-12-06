@@ -85,6 +85,7 @@ class Datasets(IndicoWrapper):
         filepaths: List[str],
         num_threads: int = 3,
         upload_batch_size: int = 3,
+        add_files_batch_size: int = 100,
         process_batch_size: int = 5,
         max_download_checks: int = 25,
     ):
@@ -97,6 +98,8 @@ class Datasets(IndicoWrapper):
             filepaths (List[str]): files you want to upload
             num_threads (int, optional): number of threads to use for file upload. Defaults to 3.
             upload_batch_size (int, optional): number of files to upload at a time. Defaults to 3.
+            add_files_batch_size (int, optional): number of files to add to dataset at a time. 
+                                                  Defaults to 100.
             process_batch_size (int, optional): number of files to process at a time. Defaults to 5.
             max_download_checks (int, optional): number of times to poll for uploads to complete.
                                                  Necessary because documents can get stuck in a DOWNLOADING
@@ -109,7 +112,6 @@ class Datasets(IndicoWrapper):
         results = self._upload_threaded(fp, num_threads, upload_batch_size)
         print("Uploaded Doucments")
 
-        add_files_batch_size = 100
         for i in tqdm(range(0, len(results), add_files_batch_size)):
             self.client.call(
                 _AddFiles(
@@ -171,7 +173,7 @@ class Datasets(IndicoWrapper):
         dataset = self.get_dataset(dataset_id)
         return next(c.name for c in dataset.datacolumns if c.id == col_id)
 
-    def upload_datafiles(self, filepaths: List) -> List[Dict]:
+    def _upload_datafiles(self, filepaths: List) -> List[Dict]:
         """
         Returns a list of datafile metadata
         """
@@ -193,7 +195,7 @@ class Datasets(IndicoWrapper):
         batches = [batch_fp for batch_fp in fp.batch_files(batch_size)]
         start = time.time()
         with ThreadPoolExecutor(max_workers=num_threads) as ex:
-            futures = ex.map(self.upload_datafiles, batches)
+            futures = ex.map(self._upload_datafiles, batches)
         print(f"all submitted {time.time() - start}")
         df_metadata = []
         for metadata in futures:
