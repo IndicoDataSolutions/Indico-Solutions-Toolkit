@@ -50,6 +50,7 @@ class Highlighter(ExtractedTokens):
         add_label_annotations: bool = False,
         add_bookmarks: bool = True,
         highlight_opacity: float = 0.4,
+        metadata: dict = None,
     ):
         """
         Highlights extraction predictions onto a copy of source PDF
@@ -64,6 +65,7 @@ class Highlighter(ExtractedTokens):
             add_bookmarks (book) -- if True, adds per page bookmarks of what labels are found on that page
             add_label_annotations (bool) -- if True, annotates the label name in small red text above the highlights
             highlight_opacity: (float) -- 0 to 1 opacity of highlight.
+            metadata: (dict) -- Add metadata to a pdf's properties
 
         """
         if all_yellow_highlight:
@@ -99,7 +101,15 @@ class Highlighter(ExtractedTokens):
                     self._add_label_annotations(page, tokens, xnorm, ynorm)
             if add_bookmarks:
                 doc.setToC(bookmarks)
+            if metadata:
+                new_meta = self._get_new_metadata(doc.metadata, metadata)
+                doc.setMetadata(new_meta)
             doc.save(output_path)
+
+    def _get_new_metadata(self, metadata: dict, to_add: dict) -> dict:
+        for key, val in to_add.items():
+            metadata[key] = val
+        return metadata
 
     def _get_page_label_counts(self, tokens: List[dict]):
         already_found = []
