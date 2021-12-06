@@ -18,6 +18,7 @@ setup(
         "pandas>=1.0.3",
         "coverage>=5.5",
         "PyMuPDF==1.18.13",
-        "plotly==5.2.1"
+        "plotly==5.2.1",
+        "tqdm=4.50.0"
     ],
 )

@@ -22,3 +22,4 @@ sphinx-rtd-theme==0.5.2
 sphinx-autodoc-typehints==1.11.1
 black==21.4b0
 plotly==5.2.1
+tqdm==4.50.0
