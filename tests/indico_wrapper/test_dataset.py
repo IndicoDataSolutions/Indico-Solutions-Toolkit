@@ -51,10 +51,8 @@ def test_create_large_doc_dataset(dataset_wrapper, pdf_filepath):
     dataset = dataset_wrapper.create_large_doc_dataset(
         "mydataset",
         [pdf_filepath, pdf_filepath],
-        batch_size=1,
-        verbose=False,
+        upload_batch_size=1,
     )
     assert len(dataset.files) == 2
     for f in dataset.files:
         assert f.status == "PROCESSED"
-
