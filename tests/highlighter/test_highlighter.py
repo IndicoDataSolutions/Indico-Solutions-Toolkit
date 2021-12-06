@@ -117,9 +117,11 @@ def test_add_label_annotations(
             f.name,
             invoice_ocr_obj.page_heights_and_widths,
             add_label_annotations=True,
+            metadata={"keywords": "Something, Something else"}
         )
         doc = fitz.open(f.name)
         alltext = " ".join([page.get_text() for page in doc])
         all_labels = set([i["label"] for i in invoice_predictions])
         for label in all_labels:
             assert label in alltext
+        assert doc.metadata["keywords"] == "Something, Something else"
