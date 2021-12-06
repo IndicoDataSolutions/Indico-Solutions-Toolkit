@@ -1,10 +1,10 @@
-from typing import List
-from functools import wraps
+from typing import List, Dict
+from concurrent.futures import ThreadPoolExecutor
 import pandas as pd
-import math
 import time
-from datetime import datetime
+from tqdm import tqdm
 from indico import IndicoClient
+from indico.client.request import Debouncer
 from indico.types import Dataset, Workflow
 from indico.queries import (
     GetDataset,
@@ -16,8 +16,9 @@ from indico.queries import (
     DeleteDataset,
     CreateEmptyDataset,
     AddDataToWorkflow,
+    GetDatasetFileStatus,
 )
-
+from indico.queries.datasets import _UploadDatasetFiles, _AddFiles, _ProcessFiles
 from indico_toolkit.indico_wrapper import IndicoWrapper
 from indico_toolkit.pipelines import FileProcessing
 
@@ -68,34 +69,6 @@ class Datasets(IndicoWrapper):
         """
         return self.client.call(CreateEmptyDataset(dataset_name, dataset_type))
 
-    def create_large_doc_dataset(
-        self,
-        dataset_name: str,
-        filepaths: List[str],
-        batch_size: int = 3,
-        verbose: bool = True,
-    ) -> Dataset:
-        """
-        Create a dataset and batch document uploads to not overload queue/services
-
-        Args:
-            dataset_name (str): create a name for the dataset
-            filepaths (List[str]): files you want to upload
-            batch_size (int, optional): number of files to process at a time. Defaults to 3.
-            verbose (bool, optional): print updates as each batch processes. Defaults to True.
-        """
-        fp = FileProcessing(filepaths)
-        dataset_id = self.create_empty_dataset(dataset_name).id
-        number_of_batches = int(math.ceil(len(filepaths) / batch_size))
-        for batch_fpaths in fp.batch_files(batch_size):
-            dataset = self.add_files_to_dataset(dataset_id, batch_fpaths)
-            if verbose:
-                number_of_batches -= 1
-                print(
-                    f"Finished batch at {datetime.now().time()}: {number_of_batches} remaining"
-                )
-        return dataset
-
     def create_dataset(self, filepaths: List[str], dataset_name: str) -> Dataset:
         dataset = self.client.call(
             CreateDataset(
@@ -104,6 +77,69 @@ class Datasets(IndicoWrapper):
             )
         )
         self.dataset_id = dataset.id
+        return dataset
+
+    def create_large_doc_dataset(
+        self,
+        dataset_name: str,
+        filepaths: List[str],
+        num_threads: int = 3,
+        upload_batch_size: int = 3,
+        add_files_batch_size: int = 100,
+        process_batch_size: int = 5,
+        max_download_checks: int = 25,
+    ):
+        """
+        Uses a threadpool to upload large documents one at a time
+        and add them to a new dataset
+
+        Args:
+            dataset_name (str): create a name for the dataset
+            filepaths (List[str]): files you want to upload
+            num_threads (int, optional): number of threads to use for file upload. Defaults to 3.
+            upload_batch_size (int, optional): number of files to upload at a time. Defaults to 3.
+            add_files_batch_size (int, optional): number of files to add to dataset at a time.
+                                                  Defaults to 100.
+            process_batch_size (int, optional): number of files to process at a time. Defaults to 5.
+            max_download_checks (int, optional): number of times to poll for uploads to complete.
+                                                 Necessary because documents can get stuck in a DOWNLOADING
+                                                 state. Defaults to 10 (~1 minute)
+        """
+        fp = FileProcessing(filepaths)
+        dataset_id = self.create_empty_dataset(dataset_name).id
+
+        # Upload using an executor - take advantage of multiple uploaders on the platform
+        results = self._upload_threaded(fp, num_threads, upload_batch_size)
+        print("Uploaded Doucments")
+
+        for i in tqdm(range(0, len(results), add_files_batch_size)):
+            self.client.call(
+                _AddFiles(
+                    dataset_id=dataset_id,
+                    metadata=results[i : i + add_files_batch_size],
+                )
+            )
+        print("Added Files to dataset, waiting for documents to download")
+        indico_dataset = self.client.call(GetDatasetFileStatus(id=dataset_id))
+
+        debouncer = Debouncer(max_timeout=max_download_checks)
+        while self._datafiles_downloading(
+            indico_dataset, debouncer, max_download_checks
+        ):
+            indico_dataset = self.client.call(GetDatasetFileStatus(id=dataset_id))
+            debouncer.backoff()
+
+        print("Downloads complete, starting pdf extraction jobs")
+        file_ids = [df.id for df in indico_dataset.files if df.status == "DOWNLOADED"]
+        for i in tqdm(range(0, len(file_ids), process_batch_size)):
+            self.client.call(
+                _ProcessFiles(
+                    dataset_id=dataset_id,
+                    datafile_ids=file_ids[i : i + process_batch_size],
+                )
+            )
+        print("Files processing")
+        dataset = self.client.call(GetDatasetFileStatus(id=dataset_id))
         return dataset
 
     def delete_dataset(self, dataset_id: int) -> bool:
@@ -139,9 +175,44 @@ class Datasets(IndicoWrapper):
         dataset = self.get_dataset(dataset_id)
         return next(c.name for c in dataset.datacolumns if c.id == col_id)
 
+    def _upload_datafiles(self, filepaths: List) -> List[Dict]:
+        """
+        Returns a list of datafile metadata
+        """
+        return self.client.call(_UploadDatasetFiles(files=filepaths))
+
     def _create_export(self, dataset_id: int, **kwargs) -> int:
         """
         Returns export ID
         """
         export = self.client.call(CreateExport(dataset_id=dataset_id, **kwargs))
         return export.id
+
+    def _upload_threaded(
+        self, fp: FileProcessing, num_threads: int, batch_size: int
+    ) -> List[Dict]:
+        """
+        Returns a list of file metadata
+        """
+        batches = [batch_fp for batch_fp in fp.batch_files(batch_size)]
+        start = time.time()
+        with ThreadPoolExecutor(max_workers=num_threads) as ex:
+            futures = ex.map(self._upload_datafiles, batches)
+        print(f"all submitted {time.time() - start}")
+        df_metadata = []
+        for metadata in futures:
+            df_metadata.extend(metadata)
+        return df_metadata
+
+    def _datafiles_downloading(
+        self, dataset: Dataset, debouncer: Debouncer, max_checks: int
+    ) -> bool:
+        """
+        Return True if files are downloading OR max number of checks
+        has been reached
+        """
+        downloaded_or_failed = not all(
+            f.status in ["DOWNLOADED", "FAILED"] for f in dataset.files
+        )
+        too_long = debouncer.timeout < max_checks
+        return downloaded_or_failed and too_long
