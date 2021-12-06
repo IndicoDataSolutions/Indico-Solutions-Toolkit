@@ -51,3 +51,10 @@
 ### Added
 * New line plot for number of samples in metrics class.
 * Update to highlighting class with new flexibility and bookmarks replacing table of contents.
+
+## 1.1.1 12/6/2021
+
+### Added
+
+* Abillity to include metadata with highlighter
+* Ability to split large snapshots into smaller files
