@@ -55,4 +55,4 @@ def test_create_large_doc_dataset(dataset_wrapper, pdf_filepath):
     )
     assert len(dataset.files) == 2
     for f in dataset.files:
-        assert f.status == "PROCESSED"
+        assert f.status == "PROCESSED" or f.status == "EXTRACTING"
