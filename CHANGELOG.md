@@ -39,3 +39,28 @@
 ### Added
 * Classes for model comparison and model improvement.
 * Plotting functionality for model comparison.
+
+## 1.0.7 11/9/2021
+
+### Added
+* Positioning class added to assist in relative prediction location validation
+* Added # of samples labeled to metrics class.
+
+## 1.0.8 11/15/2021
+
+### Added
+* New line plot for number of samples in metrics class.
+* Update to highlighting class with new flexibility and bookmarks replacing table of contents.
+
+## 1.1.1 12/6/2021
+
+### Added
+
+* Abillity to include metadata with highlighter
+* Ability to split large snapshots into smaller files
+
+## 1.1.2 12/6/2021
+
+### Added
+
+* Updated functionality for large dataset creation. Batch options allow for more reliable dataset uploads.

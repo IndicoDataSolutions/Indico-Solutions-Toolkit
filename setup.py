@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="indico-toolkit",
-    version="1.0.6",
+    version="1.1.1",
     packages=find_packages(exclude=["tests"]),
     description="""Tools to assist with Indico IPA development""",
     license="MIT License (See LICENSE)",
@@ -18,6 +18,7 @@ setup(
         "pandas>=1.0.3",
         "coverage>=5.5",
         "PyMuPDF==1.18.13",
-        "plotly==5.2.1"
+        "plotly==5.2.1",
+        "tqdm=4.50.0"
     ],
 )

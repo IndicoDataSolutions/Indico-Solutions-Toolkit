@@ -4,9 +4,6 @@ import pickle
 import tempfile
 import fitz
 from indico_toolkit.highlighter import Highlighter
-from indico_toolkit.ocr import OnDoc
-
-# TODO: test different colored highlights
 
 
 @pytest.fixture(scope="session")
@@ -60,45 +57,20 @@ def test_highlighter_highlight_pdf(
         assert num_highlights == number_of_tokens_to_highlight
 
 
-def test__get_page_label_counts(
+def test_highlighter_bookmarking(
     invoice_predictions, invoice_ocr_obj, highlighter_pdf_path
 ):
     highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
     highlight.collect_tokens(invoice_ocr_obj.token_objects)
-    label_counts = highlight._get_page_label_counts(highlight._mapped_positions)
-    assert label_counts["Vendor"] == 1
-    assert label_counts["Line Item Value"] == 11
-    assert label_counts["Line Item"] == 14
-    assert label_counts["Total"] == 1
-    assert label_counts["Invoice Number"] == 1
-
-
-def test__get_toc_text(invoice_predictions, invoice_ocr_obj, highlighter_pdf_path):
-    highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
-    highlight.collect_tokens(invoice_ocr_obj.token_objects)
-    toc_text = highlight._get_toc_text()
-    assert isinstance(toc_text, str)
-    assert "Page 1" in toc_text
-    assert "Page 2" in toc_text
-    assert "Vendor (1)" in toc_text
-    assert "File: invoice_sample.pdf" in toc_text
-
-
-def test_table_of_contents(invoice_predictions, invoice_ocr_obj, highlighter_pdf_path):
-    highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
-    highlight.collect_tokens(invoice_ocr_obj.token_objects)
-    number_of_tokens_to_highlight = len(highlight._mapped_positions)
     with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
-        highlight.highlight_pdf(
-            f.name, invoice_ocr_obj.page_heights_and_widths, include_toc=True
-        )
+        highlight.highlight_pdf(f.name, invoice_ocr_obj.page_heights_and_widths)
         doc = fitz.open(f.name)
-        assert doc.page_count == 3
-        num_highlights = sum([1 for page in doc for annotation in page.annots()])
-        assert num_highlights == number_of_tokens_to_highlight
-        toc_text = doc[0].get_textpage().extractText()
-        assert "File: invoice_sample.pdf" in toc_text
-
+        toc = doc.getToC()
+        assert len(toc) == 7
+        # 5 first page labels
+        assert len([i for i in toc if i[2] == 1]) == 5
+        # 2 unique second page labels
+        assert len([i for i in toc if i[2] == 2]) == 2
 
 @pytest.mark.parametrize("all_yellow_bool, unique_color_count", [(True, 1), (False, 5)])
 def test_highlight_colors(
@@ -122,12 +94,16 @@ def test_highlight_colors(
         )
         assert len(highlight_colors) == unique_color_count
 
+
 def test_get_label_color_hash():
-    highlight = Highlighter([{"label": "a", "text": "b"}, {"label": "b", "text": "a"}], "something.pdf")
+    highlight = Highlighter(
+        [{"label": "a", "text": "b"}, {"label": "b", "text": "a"}], "something.pdf"
+    )
     color_hash = highlight.get_label_color_hash()
     assert isinstance(color_hash, dict)
     assert len(color_hash) == 2
     assert "a" in color_hash.keys() and "b" in color_hash.keys()
+
 
 def test_add_label_annotations(
     invoice_predictions,
@@ -141,9 +117,11 @@ def test_add_label_annotations(
             f.name,
             invoice_ocr_obj.page_heights_and_widths,
             add_label_annotations=True,
+            metadata={"keywords": "Something, Something else"}
         )
         doc = fitz.open(f.name)
         alltext = " ".join([page.get_text() for page in doc])
         all_labels = set([i["label"] for i in invoice_predictions])
         for label in all_labels:
             assert label in alltext
+        assert doc.metadata["keywords"] == "Something, Something else"
