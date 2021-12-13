@@ -100,9 +100,11 @@ def test_remove_all_by_label(test_extraction_preds):
     extract = Extractions(test_extraction_preds)
     extract._remove_all_by_label("Paydown Amount")
     assert len([i for i in extract.to_list() if i["label"] == "Paydown Amount"]) == 0
+    assert len(extract.removed_predictions) == 3
 
 
 def test_remove_except_max_drop_and_ignore(test_extraction_preds):
     extract = Extractions(test_extraction_preds)
     extract.remove_except_max_confidence(labels=["Paydown Amount"])
     assert len(extract) == 3
+    assert len(extract.removed_predictions) == 2
