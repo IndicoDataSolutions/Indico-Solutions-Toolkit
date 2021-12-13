@@ -8,8 +8,8 @@ from indico.queries import (
     UpdateSubmission,
     GetSubmission,
     WorkflowSubmission,
-    SubmissionResult,
     SubmitReview,
+    WaitForSubmissions,
     UpdateWorkflowSettings,
     JobStatus,
 )
@@ -60,24 +60,6 @@ class Workflow(IndicoWrapper):
             ocr_result.append(page_ocr)
         return OnDoc(ocr_result)
 
-    def get_completed_submission_results(
-        self, workflow_id: int, submission_ids: List[int] = None
-    ) -> List[WorkflowResult]:
-        """
-        Get list of completed and unretrieved workflow results
-        Args:
-            workflow_id (int): workflow to get completed submissions from
-            submission_ids (List[int], optional): Specific IDs to retrieve, if completed. Defaults to None.
-
-        Returns:
-            List[dict]: completed submission results
-        """
-        submissions = self.get_complete_submission_objects(workflow_id, submission_ids)
-        submission_results = self.get_submission_results_from_ids(
-            [sub.id for sub in submissions]
-        )
-        return submission_results
-
     def mark_submission_as_retreived(self, submission_id: int):
         self.client.call(UpdateSubmission(submission_id, retrieved=True))
 
@@ -94,9 +76,9 @@ class Workflow(IndicoWrapper):
     def get_submission_results_from_ids(
         self,
         submission_ids: List[int],
-        timeout: int = 120,
+        timeout: int = 180,
         return_raw_json: bool = False,
-        raise_exception_for_failed: bool = True,
+        raise_exception_for_failed: bool = False,
         return_failed_results: bool = True,
     ) -> List[WorkflowResult]:
         """
@@ -111,8 +93,9 @@ class Workflow(IndicoWrapper):
             List[WorkflowResult]: workflow result objects
         """
         results = []
+        self.wait_for_submissions_to_process(submission_ids, timeout)
         for subid in submission_ids:
-            submission: Submission = self.wait_for_submission(subid, timeout=timeout)
+            submission: Submission = self.get_submission_object(subid)
             if submission.status == "FAILED":
                 message = f"FAILURE, Submission: {subid}. {submission.errors}"
                 if raise_exception_for_failed:
@@ -149,41 +132,14 @@ class Workflow(IndicoWrapper):
             )
         )
 
-    def wait_for_submission(
-        self,
-        submission_id: int,
-        timeout: int = 120,
-    ) -> Submission:
-        """
-        Wait for submission to reach terminal status of complete, failed, or pending review/auto-review.
-        Raises ToolkitStatusError if max_attempts reached.
-        """
-        submission = self.get_submission_object(submission_id)
-        while submission.status not in [
-            "COMPLETE",
-            "FAILED",
-            "PENDING_REVIEW",
-            "PENDING_AUTO_REVIEW",
-        ]:
-            if timeout == 0:
-                raise ToolkitStatusError(
-                    f"Submission {submission_id} didn't reach status COMPLETE."
-                    f"It has status: {submission.status} and errors: {submission.errors}"
-                )
-            submission = self.get_submission_object(submission_id)
-            timeout -= 1
-            time.sleep(1)
-        return submission
-
     def wait_for_submissions_to_process(
-        self, submission_ids: List[int], timeout_per_id: int = 120
+        self, submission_ids: List[int], timeout_seconds: int = 180
     ) -> None:
         """
         Wait for submissions to reach a terminal status of "COMPLETE", "PENDING_AUTO_REVIEW",
         "FAILED", or "PENDING_REVIEW"
         """
-        for id in submission_ids:
-            self.wait_for_submission(id, timeout_per_id)
+        self.client.call(WaitForSubmissions(submission_ids, timeout_seconds))
 
     def _get_list_of_submissions(
         self,
