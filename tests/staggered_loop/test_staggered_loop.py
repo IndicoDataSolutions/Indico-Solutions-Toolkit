@@ -47,8 +47,7 @@ def reviewed_submissions(workflow_id, indico_client, pdf_filepath):
         changes = get_change_formatted_predictions(predictions[0])
         reviewer.accept_review(id_in_review, changes)
         reviewed_ids.append(id_in_review)
-    for sub_id in reviewed_ids:
-        reviewer.wait_for_submission_status_complete(sub_id)
+    reviewer.wait_for_submissions_to_process(reviewed_ids)
     return reviewed_ids
 
 

@@ -1,5 +1,5 @@
 import time
-from typing import List
+from typing import List, Union
 from indico import IndicoClient, IndicoRequestError
 from indico.queries import (
     Submission,
@@ -13,6 +13,7 @@ from indico.queries import (
     UpdateWorkflowSettings,
     JobStatus,
 )
+from indico.queries.submission import SubmissionResult
 from .indico_wrapper import IndicoWrapper
 from indico_toolkit import ToolkitStatusError
 from indico_toolkit.ocr import OnDoc
@@ -103,12 +104,19 @@ class Workflow(IndicoWrapper):
                 elif not return_failed_results:
                     print(message)
                     continue
-            result = self.get_storage_object(submission.result_file)
+            result = self._create_result(submission)
             if return_raw_json:
                 results.append(result)
             else:
                 results.append(WorkflowResult(result))
         return results
+
+    def _create_result(self, submission: Union[Submission, int]):
+        """
+        Assumes you already checked that the submission result is COMPLETE
+        """
+        job = self.client.call(SubmissionResult(submission, wait=True))
+        return self.get_storage_object(job.result)
 
     def submit_submission_review(
         self, submission_id: int, updated_predictions: dict, wait: bool = True
