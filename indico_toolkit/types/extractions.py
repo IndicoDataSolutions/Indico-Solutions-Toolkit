@@ -4,8 +4,6 @@ import pandas as pd
 from copy import deepcopy
 from indico_toolkit.pipelines import FileProcessing
 
-# TODO: add property to list all predicted labels
-
 
 class Extractions:
     """
@@ -14,6 +12,7 @@ class Extractions:
 
     def __init__(self, predictions: List[dict]):
         self._preds = predictions
+        self.removed_predictions = []
 
     @property
     def to_dict_by_label(self) -> Dict[str, list]:
@@ -40,6 +39,8 @@ class Extractions:
                 high_conf_preds.append(pred)
             elif pred["confidence"][label] >= confidence:
                 high_conf_preds.append(pred)
+            else:
+                self.removed_predictions.append(pred)
         self._preds = high_conf_preds
 
     def remove_except_max_confidence(self, labels: List[str]):
@@ -51,7 +52,7 @@ class Extractions:
             if label not in label_set:
                 continue
             max_pred = self._select_max_confidence(label)
-            self._remove_all_by_label(label)
+            self._remove_all_by_label(label, max_pred)
             self._preds.append(max_pred)
 
     def set_confidence_key_to_max_value(self, inplace: bool = True):
@@ -110,7 +111,7 @@ class Extractions:
     def label_set(self):
         return set([i["label"] for i in self._preds])
 
-    def _select_max_confidence(self, label):
+    def _select_max_confidence(self, label: str) -> dict:
         max_pred = None
         confidence = 0
         for pred in self[label]:
@@ -127,11 +128,14 @@ class Extractions:
         """
         return dict(Counter(i["label"] for i in self._preds))
 
-    def _remove_all_by_label(self, label):
+    def _remove_all_by_label(self, label: str, max_pred: dict = None):
         new_preds = []
         for pred in self._preds:
             if pred["label"] != label:
                 new_preds.append(pred)
+            # max_pred is added back in remove_except_max_confidence, don't add it to removed_preds
+            elif pred != max_pred:
+                self.removed_predictions.append(pred)
         self._preds = new_preds
 
     def __len__(self):
