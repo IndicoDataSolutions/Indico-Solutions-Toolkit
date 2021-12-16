@@ -1,5 +1,5 @@
 import time
-from typing import List
+from typing import List, Union
 from indico import IndicoClient, IndicoRequestError
 from indico.queries import (
     Submission,
@@ -8,13 +8,14 @@ from indico.queries import (
     UpdateSubmission,
     GetSubmission,
     WorkflowSubmission,
-    SubmissionResult,
-    WaitForSubmissions,
     SubmitReview,
+    WaitForSubmissions,
     UpdateWorkflowSettings,
     JobStatus,
 )
+from indico.queries.submission import SubmissionResult
 from .indico_wrapper import IndicoWrapper
+from indico_toolkit import ToolkitStatusError
 from indico_toolkit.ocr import OnDoc
 from indico_toolkit.types import WorkflowResult
 
@@ -60,24 +61,6 @@ class Workflow(IndicoWrapper):
             ocr_result.append(page_ocr)
         return OnDoc(ocr_result)
 
-    def get_completed_submission_results(
-        self, workflow_id: int, submission_ids: List[int] = None
-    ) -> List[WorkflowResult]:
-        """
-        Get list of completed and unretrieved workflow results
-        Args:
-            workflow_id (int): workflow to get completed submissions from
-            submission_ids (List[int], optional): Specific IDs to retrieve, if completed. Defaults to None.
-
-        Returns:
-            List[dict]: completed submission results
-        """
-        submissions = self.get_complete_submission_objects(workflow_id, submission_ids)
-        submission_results = self.get_submission_results_from_ids(
-            [sub.id for sub in submissions]
-        )
-        return submission_results
-
     def mark_submission_as_retreived(self, submission_id: int):
         self.client.call(UpdateSubmission(submission_id, retrieved=True))
 
@@ -94,50 +77,51 @@ class Workflow(IndicoWrapper):
     def get_submission_results_from_ids(
         self,
         submission_ids: List[int],
-        timeout: int = 75,
-        ignore_exceptions: bool = False,
+        timeout: int = 180,
+        return_raw_json: bool = False,
+        raise_exception_for_failed: bool = False,
+        return_failed_results: bool = True,
     ) -> List[WorkflowResult]:
         """
         Wait for submission to pass through workflow models and get result. If Review is enabled, result may be retrieved prior to human review.
         Args:
             submission_id (int): Id of submission predictions to retrieve
             timeout (int): seconds permitted for each submission prior to timing out
-            ignore_exceptions (bool): if True, catch exception for unsuccessful submission
-
+            return_raw_json: (bool) = If True return raw json result, otherwise return WorkflowResult object.
+            raise_exception_for_failed (bool): if True, ToolkitStatusError raised for failed submissions
+            return_failed_results (bool): if True, return objects for failed submissions
         Returns:
             List[WorkflowResult]: workflow result objects
         """
         results = []
+        self.wait_for_submissions_to_process(submission_ids, timeout)
         for subid in submission_ids:
-            try:
-                job = self.client.call(
-                    SubmissionResult(subid, wait=True, timeout=timeout)
-                )
-            except IndicoRequestError as e:
-                message = f"IndicoRequestError with Submission {subid}: {e}"
-                self._error_handle(message, ignore_exceptions)
-                continue
-            if job.status != "SUCCESS":
-                message = f"{job.status}! Submission {subid}: {job.result}"
-                self._error_handle(message, ignore_exceptions)
-                continue
-            results.append(WorkflowResult(self.get_storage_object(job.result)))
+            submission: Submission = self.get_submission_object(subid)
+            if submission.status == "FAILED":
+                message = f"FAILURE, Submission: {subid}. {submission.errors}"
+                if raise_exception_for_failed:
+                    raise ToolkitStatusError(message)
+                elif not return_failed_results:
+                    print(message)
+                    continue
+            result = self._create_result(submission)
+            if return_raw_json:
+                results.append(result)
+            else:
+                results.append(WorkflowResult(result))
         return results
 
-    def wait_for_submissions_to_process(
-        self, submission_ids: List[int], timeout: int = 120
-    ) -> None:
+    def _create_result(self, submission: Union[Submission, int]):
         """
-        Wait for all submissions to complete workflow processing
+        Assumes you already checked that the submission result is COMPLETE
         """
-        return self.client.call(
-            WaitForSubmissions(submission_ids=submission_ids, timeout=timeout)
-        )
+        job = self.client.call(SubmissionResult(submission, wait=True))
+        return self.get_storage_object(job.result)
 
-    def submit_submission_review(self, submission_id: int, updated_predictions: dict, wait: bool=True):
-        job = self.client.call(
-            SubmitReview(submission_id, changes=updated_predictions)
-        )
+    def submit_submission_review(
+        self, submission_id: int, updated_predictions: dict, wait: bool = True
+    ):
+        job = self.client.call(SubmitReview(submission_id, changes=updated_predictions))
         if wait:
             job = self.client.call(JobStatus(job.id, wait=True))
         return job
@@ -156,23 +140,14 @@ class Workflow(IndicoWrapper):
             )
         )
 
-    def wait_for_submission_status_complete(
-        self,
-        submission_id: int,
-        seconds_to_sleep_each_loop: int = 2,
-        max_retries: int = 5,
-    ):
-        retry_number = 0
-        submission = self.get_submission_object(submission_id)
-        while submission.status != "COMPLETE":
-            time.sleep(seconds_to_sleep_each_loop)
-            submission = self.get_submission_object(submission_id)
-            if retry_number == max_retries:
-                raise Exception(
-                    f"Submission {submission_id} didn't reach status COMPLETE."
-                    f"It has status: {submission.status} and errors: {submission.errors}"
-                )
-            retry_number += 1
+    def wait_for_submissions_to_process(
+        self, submission_ids: List[int], timeout_seconds: int = 180
+    ) -> None:
+        """
+        Wait for submissions to reach a terminal status of "COMPLETE", "PENDING_AUTO_REVIEW",
+        "FAILED", or "PENDING_REVIEW"
+        """
+        self.client.call(WaitForSubmissions(submission_ids, timeout_seconds))
 
     def _get_list_of_submissions(
         self,

@@ -22,17 +22,6 @@ def test_get_ondoc_ocr_from_etl_url(indico_client, wflow_submission_result):
     assert isinstance(on_doc, OnDoc)
     assert on_doc.total_pages == 2
 
-
-def test_get_completed_submission_results(
-    indico_client, module_submission_ids, workflow_id
-):
-    wflow = Workflow(indico_client)
-    results = wflow.get_completed_submission_results(
-        workflow_id, submission_ids=module_submission_ids
-    )
-    assert isinstance(results, list)
-
-
 def test_mark_submission_as_retreived(indico_client, function_submission_ids):
     wflow = Workflow(indico_client)
     wflow.mark_submission_as_retreived(submission_id=function_submission_ids[0])
@@ -56,4 +45,4 @@ def test_get_submission_results_from_ids(indico_client, module_submission_ids):
     wflow = Workflow(indico_client)
     result = wflow.get_submission_results_from_ids([module_submission_ids[0]])[0]
     assert isinstance(result, WorkflowResult)
-    assert isinstance(result.post_review_predictions, Extractions)
+    assert isinstance(result.predictions, Extractions)
