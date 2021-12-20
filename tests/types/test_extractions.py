@@ -42,8 +42,8 @@ def test_remove_keys(extractions_obj):
 
 def test_remove_keys_not_inplace(extractions_obj):
     keys_to_remove = ["start", "text"]
-    preds = extractions_obj.remove_keys(keys_to_remove, inplace=False)
-    for pred in preds:
+    extractions_obj.remove_keys(keys_to_remove)
+    for pred in extractions_obj._preds:
         for key in keys_to_remove:
             assert key not in pred
 
@@ -96,15 +96,39 @@ def test_extraction_preds():
     ]
 
 
-def test_remove_all_by_label(test_extraction_preds):
-    extract = Extractions(test_extraction_preds)
-    extract._remove_all_by_label("Paydown Amount")
-    assert len([i for i in extract.to_list() if i["label"] == "Paydown Amount"]) == 0
-    assert len(extract.removed_predictions) == 3
-
-
 def test_remove_except_max_drop_and_ignore(test_extraction_preds):
     extract = Extractions(test_extraction_preds)
     extract.remove_except_max_confidence(labels=["Paydown Amount"])
     assert len(extract) == 3
     assert len(extract.removed_predictions) == 2
+
+
+def test_get_text_values(test_extraction_preds):
+    extract = Extractions(test_extraction_preds)
+    text_vals = extract.get_text_values(label="Paydown Amount")
+    assert len(text_vals) == 3
+    assert text_vals == ["a", "b", "c"]
+
+
+def test_remove_all_by_label(test_extraction_preds):
+    extract = Extractions(test_extraction_preds)
+    extract.remove_all_by_label(labels=["Paydown Amount"])
+    assert len(extract._preds) == 2
+    assert len(extract.removed_predictions) == 3
+    assert all([i["label"] == "Paydown Amount" for i in extract.removed_predictions])
+
+
+def test_exist_multiple_vals_for_label(test_extraction_preds):
+    extract = Extractions(test_extraction_preds)
+    assert extract.exist_multiple_vals_for_label("Paydown Amount") == True
+    extract.remove_except_max_confidence(["Paydown Amount"])
+    assert extract.exist_multiple_vals_for_label("Paydown Amount") == False
+
+
+def test_get_most_common_text_value(test_extraction_preds):
+    extract = Extractions(test_extraction_preds)
+    rez = extract.get_most_common_text_value("Paydown Amount")
+    assert rez == None
+    extract._preds.append({"label": "Paydown Amount", "text": "a"})
+    rez = extract.get_most_common_text_value("Paydown Amount")
+    assert rez == "a"

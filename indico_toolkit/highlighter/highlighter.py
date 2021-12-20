@@ -124,7 +124,7 @@ class Highlighter(ExtractedTokens):
         """
         Create a unique random highlight color for each label in hash table
         """
-        label_set = Extractions.get_extraction_labels_set(self._predictions)
+        label_set = Extractions.get_label_set(self._predictions)
         colors = np.random.choice(
             self.get_color_list(), size=len(label_set), replace=False
         )

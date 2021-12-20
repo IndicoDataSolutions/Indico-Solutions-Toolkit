@@ -1,9 +1,9 @@
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Iterable, Union
 from collections import defaultdict, Counter
 import pandas as pd
 from copy import deepcopy
 from indico_toolkit.pipelines import FileProcessing
-
+from indico_toolkit import ToolkitInputError
 
 class Extractions:
     """
@@ -16,6 +16,9 @@ class Extractions:
 
     @property
     def to_dict_by_label(self) -> Dict[str, list]:
+        """
+        Generate a dictionary where key is label string and value is list of all predictions of that label
+        """
         prediction_label_map = defaultdict(list)
         for pred in self._preds:
             prediction_label_map[pred["label"]].append(pred)
@@ -52,12 +55,13 @@ class Extractions:
             if label not in label_set:
                 continue
             max_pred = self._select_max_confidence(label)
-            self._remove_all_by_label(label, max_pred)
+            self.remove_all_by_label([label])
+            self.removed_predictions.remove(max_pred)
             self._preds.append(max_pred)
 
     def set_confidence_key_to_max_value(self, inplace: bool = True):
         """
-        Overwite confidence dictionary to just max confidence float
+        Overwite confidence dictionary to just max confidence float to make preds more readable.
         """
         if inplace:
             self._set_confidence_key_to_max_value(self._preds)
@@ -70,20 +74,25 @@ class Extractions:
             pred["confidence"] = pred["confidence"][pred["label"]]
         return preds
 
-    def remove_keys(
-        self, keys_to_remove: List[str] = ["start", "end"], inplace: bool = True
-    ):
-        if inplace:
-            self._remove_keys(self._preds, keys_to_remove)
-        else:
-            return self._remove_keys(deepcopy(self._preds), keys_to_remove)
-
-    @staticmethod
-    def _remove_keys(preds, keys_to_remove: List[str] = ["start", "end"]):
-        for pred in preds:
+    def remove_keys(self, keys_to_remove: List[str] = ["start", "end"]):
+        """
+        Remove specified keys from prediction dictionaries
+        """
+        for pred in self._preds:
             for key in keys_to_remove:
                 pred.pop(key)
-        return preds
+
+    def remove_all_by_label(self, labels: Iterable[str]):
+        """
+        Remove all predictions in list of labels
+        """
+        preds = []
+        for p in self._preds:
+            if p["label"] in labels:
+                self.removed_predictions.append(p)
+            else:
+                preds.append(p)
+        self._preds = preds
 
     def remove_human_added_predictions(self):
         """
@@ -104,14 +113,26 @@ class Extractions:
         return True
 
     @staticmethod
-    def get_extraction_labels_set(predictions: List[dict]) -> Set[str]:
+    def get_label_set(predictions: List[dict]) -> Set[str]:
+        """
+        Get the included labels from a list of predictions
+        """
         return set([i["label"] for i in predictions])
+
+    def get_text_values(self, label: str) -> List[str]:
+        """
+        Get all text values for a given label
+        """
+        return [i["text"] for i in self._preds if i["label"] == label]
 
     @property
     def label_set(self):
-        return set([i["label"] for i in self._preds])
+        return self.get_label_set(self._preds)
 
     def _select_max_confidence(self, label: str) -> dict:
+        """
+        Get the highest confidence prediction for a given field
+        """
         max_pred = None
         confidence = 0
         for pred in self[label]:
@@ -128,37 +149,56 @@ class Extractions:
         """
         return dict(Counter(i["label"] for i in self._preds))
 
-    def _remove_all_by_label(self, label: str, max_pred: dict = None):
-        new_preds = []
-        for pred in self._preds:
-            if pred["label"] != label:
-                new_preds.append(pred)
-            # max_pred is added back in remove_except_max_confidence, don't add it to removed_preds
-            elif pred != max_pred:
-                self.removed_predictions.append(pred)
-        self._preds = new_preds
+    def exist_multiple_vals_for_label(self, label: str) -> bool:
+        """
+        Check whether multiple unique text vals for field
+        """
+        if len(set(self.get_text_values(label))) > 1:
+            return True
+        return False
+
+    def get_most_common_text_value(self, label: str) -> Union[str, None]:
+        """
+        Return the most common text value. If there is a tie- returns None. 
+        """
+        if label not in self.label_set:
+            raise ToolkitInputError(f"There are no predictions for: '{label}'")
+        text_vals = self.get_text_values(label)
+        if len(set(text_vals)) == 1:
+            return text_vals[0]
+        most_common = Counter(text_vals).most_common(2)
+        if most_common[0][1] > most_common[1][1]:
+            return most_common[0][0]
+        return None
 
     def __len__(self):
         return len(self._preds)
 
     def __repr__(self):
-        return f"Prediction Class, {self.num_predictions} Predictions:\n\n{self._preds}"
+        return f"{self.num_predictions} Extractions:\n\n{self._preds}"
 
     def __getitem__(self, label: str) -> List[dict]:
         return [i for i in self._preds if i["label"] == label]
 
     def to_csv(
-        self, save_path: str, filename: str = "", append_if_exists: bool = True
+        self,
+        save_path: str,
+        filename: str = "",
+        append_if_exists: bool = True,
+        include_start_end: bool = False,
     ) -> None:
         """
         Write three column CSV ('confidence', 'label', 'text')
         Args:
             save_path (str): path to write CSV
+            include_start_end (bool): include columns for start/end indexes
+            append_if_exists (bool): if path exists, append to that CSV
             filename (str, optional): the file where the preds were derived from. Defaults to "".
         """
         preds = self.set_confidence_key_to_max_value(inplace=False)
-        preds = self._remove_keys(preds, keys_to_remove=["start", "end"])
         df = pd.DataFrame(preds)
+        if not include_start_end:
+            df.drop(["start", "end"], axis=1, inplace=True)
         df["filename"] = filename
         if append_if_exists and FileProcessing.file_exists(save_path):
             df.to_csv(save_path, mode="a", header=False, index=False)
