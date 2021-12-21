@@ -146,14 +146,14 @@ def test_positioned_on_same_level_must_be_same_page():
 )
 def test_get_min_distance(input, expected):
     position = Positioning()
-    distance = position.get_min_distance(input[0], input[1])
+    distance = position.get_pythagorean_min_distance(input[0], input[1])
     assert round(distance, 2) == expected
 
 
 def test_get_min_distance_page_exception():
     position = Positioning()
     with pytest.raises(ToolkitInputError):
-        position.get_min_distance(
+        position.get_pythagorean_min_distance(
             generate_mapped_pred(), generate_mapped_pred(page_num=1)
         )
 
@@ -167,8 +167,35 @@ def test_get_min_distance_page_exception():
 )
 def test_get_min_distance_different_pages(input, expected):
     position = Positioning()
-    distance = position.get_min_distance(input[0], input[1], page_height=1000)
+    distance = position.get_pythagorean_min_distance(input[0], input[1], page_height=1000)
     assert round(distance, 2) == expected
+
+
+def test_get_vertical_min_distance():
+    position = Positioning()
+    input = (generate_mapped_pred(), generate_mapped_pred(20, 30, 20, 30))
+    distance = position.get_vertical_min_distance(input[0], input[1], page_height=1000)
+    assert round(distance, 2) == 10
+
+
+@pytest.mark.parametrize(
+    "input, expected",
+    [
+        ((generate_mapped_pred(page_num=2), generate_mapped_pred(0, 10, 20, 30)), 1990),
+        ((generate_mapped_pred(page_num=1), generate_mapped_pred(20, 30)), 970),
+    ],
+)
+def test_get_vertical_min_distance_different_pages(input, expected):
+    position = Positioning()
+    distance = position.get_vertical_min_distance(input[1], input[0], page_height=1000)
+    assert round(distance, 2) == expected
+
+
+def test_get_horizontal_min_distance():
+    position = Positioning()
+    input = (generate_mapped_pred(), generate_mapped_pred(0, 10, 20, 30))
+    distance = position.get_horizontal_min_distance(input[0], input[1])
+    assert round(distance, 2) == 10
 
 
 @pytest.mark.parametrize(
@@ -181,4 +208,17 @@ def test_get_min_distance_different_pages(input, expected):
 )
 def test_distance_between_points(input, expected):
     distance = Positioning._distance_between_points(input[0], input[1])
+    assert round(distance, 2) == expected
+
+
+@pytest.mark.parametrize(
+    "input, expected",
+    [
+        (((10, 10), (10, 20)), 10),
+        (((110, 30), (10, 10)), 120),
+        (((100, 20), (10, 10)), 100),
+    ],
+)
+def test_manhatan_distance_between_points(input, expected):
+    distance = Positioning.manhattan_distance_between_points(input[0], input[1])
     assert round(distance, 2) == expected
