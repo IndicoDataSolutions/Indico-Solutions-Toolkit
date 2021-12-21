@@ -140,7 +140,8 @@ class Positioning:
         """
         Get the horizontal minimum distance between two bounding boxes
         Args:
-
+            left_pos (dict): the position expected to be left
+            right_pos (dict): to position expected to be right
         Returns:
             float: minimum distance
         """
