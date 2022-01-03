@@ -146,8 +146,10 @@ class Positioning:
             raise ToolkitInputError(
                 "Predictions are not on the same page! Must enter a page height"
             )
-        min_distance = abs(pos1["bbLeft"] - pos2["bbRight"])
-        return min_distance
+
+        min_distance_1 = abs(pos1["bbLeft"] - pos2["bbRight"])
+        min_distance_2 = abs(pos1["bbRight"] - pos2["bbLeft"])
+        return min(min_distance_1, min_distance_2)
 
     @staticmethod
     def _distance_between_points(point1: tuple, point2: tuple) -> float:
