@@ -146,14 +146,14 @@ def test_positioned_on_same_level_must_be_same_page():
 )
 def test_get_min_distance(input, expected):
     position = Positioning()
-    distance = position.get_pythagorean_min_distance(input[0], input[1])
+    distance = position.get_min_distance(input[0], input[1])
     assert round(distance, 2) == expected
 
 
 def test_get_min_distance_page_exception():
     position = Positioning()
     with pytest.raises(ToolkitInputError):
-        position.get_pythagorean_min_distance(
+        position.get_min_distance(
             generate_mapped_pred(), generate_mapped_pred(page_num=1)
         )
 
@@ -167,7 +167,7 @@ def test_get_min_distance_page_exception():
 )
 def test_get_min_distance_different_pages(input, expected):
     position = Positioning()
-    distance = position.get_pythagorean_min_distance(input[0], input[1], page_height=1000)
+    distance = position.get_min_distance(input[0], input[1], page_height=1000)
     assert round(distance, 2) == expected
 
 

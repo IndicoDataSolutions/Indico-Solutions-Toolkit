@@ -63,14 +63,14 @@ class Positioning:
             same_level = False
         return same_level
 
-    def get_pythagorean_min_distance(
+    def get_min_distance(
         self, pos1: dict, pos2: dict, page_height: int = None
     ) -> float:
         """
-        Get the minimum distance between any two corners of two bounding boxes
+        Get the minimum distance between any two corners of two bounding boxes via the pythagorean formula.
         Args:
             page_height (int, optional): If you want to measure distances across pages, set the OCR page height
-                                         otherwise locations on separate pages will raise an exception. 
+                                         otherwise locations on separate pages will raise an exception.
                                          Defaults to None.
 
         Returns:
@@ -100,7 +100,7 @@ class Positioning:
                 distances.append(distance)
         min_distance = min(distances)
         if add_page_height:
-            min_distance += (page_height * page_difference)
+            min_distance += page_height * page_difference
         return min_distance
 
     @staticmethod
@@ -131,26 +131,22 @@ class Positioning:
         min_distance = below_pos["bbTop"] - above_pos["bbBot"]
 
         if add_page_height:
-            min_distance += (page_height * page_difference)
+            min_distance += page_height * page_difference
         return min_distance
 
     @staticmethod
-    def get_horizontal_min_distance(
-            left_pos: dict, right_pos: dict) -> float:
+    def get_horizontal_min_distance(pos1: dict, pos2: dict) -> float:
         """
         Get the horizontal minimum distance between two bounding boxes
-        Args:
-            left_pos (dict): the position expected to be left
-            right_pos (dict): to position expected to be right
         Returns:
             float: minimum distance
         """
-        page_difference = abs(left_pos["page_num"] - right_pos["page_num"])
+        page_difference = abs(pos1["page_num"] - pos2["page_num"])
         if page_difference > 0:
             raise ToolkitInputError(
                 "Predictions are not on the same page! Must enter a page height"
             )
-        min_distance = right_pos["bbLeft"] - left_pos["bbRight"]
+        min_distance = abs(pos1["bbLeft"] - pos2["bbRight"])
         return min_distance
 
     @staticmethod
