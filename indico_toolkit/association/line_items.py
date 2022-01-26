@@ -113,18 +113,17 @@ class LineItems(Association):
             key=lambda x: (x["page_num"], x["bbTop"], x["bbLeft"]),
         )
         starting_pred = self._get_first_valid_line_item_pred()
-        max_top = starting_pred["bbTop"]
-        min_bot = starting_pred["bbBot"]
+        max_bot = starting_pred["bbBot"]
         page_number = starting_pred["page_num"]
         row_number = 1
         for pred in self._mapped_positions:
-            if pred["bbTop"] > min_bot or pred["page_num"] != page_number:
+            # if the top of one box equals the bottom of another, we still want a new line
+            if pred["bbTop"] >= max_bot or pred["page_num"] != page_number:
                 row_number += 1
                 page_number = pred["page_num"]
-                max_top, min_bot = pred["bbTop"], pred["bbBot"]
+                max_bot = pred["bbBot"]
             else:
-                max_top = min(pred["bbTop"], max_top)
-                min_bot = max(pred["bbBot"], min_bot)
+                max_bot = max(pred["bbBot"], max_bot)
             pred["row_number"] = row_number
 
     @property
