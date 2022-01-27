@@ -4,6 +4,7 @@ from indico_toolkit.errors import ToolkitInputError
 from .extractions import Extractions
 from .classification import Classification, ClassificationMGP
 
+
 class Predictions:
     """
     Factory class for predictions
