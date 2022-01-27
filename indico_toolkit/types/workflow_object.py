@@ -1,12 +1,17 @@
-from typing import List
-from .predictions import Predictions
+from typing import List, Union
+
 from indico_toolkit import ToolkitStatusError, ToolkitInputError
+
+from .predictions import Predictions
+from .extractions import Extractions
+from .classification import Classification, ClassificationMGP
 
 
 class WorkflowResult:
     def __init__(self, result: dict, model_name: str = None):
         """
         Common functionality for workflow result object
+
         Args:
             result (dict): raw workflow result object
             model_name (str, optional): Extraction/Classification model name . Defaults to None.
@@ -35,7 +40,7 @@ class WorkflowResult:
         return Predictions.get_obj(preds)
 
     @property
-    def post_review_predictions(self) -> List[dict]:
+    def post_review_predictions(self) -> Union[Extractions, Classification, ClassificationMGP]:
         self._set_model_name()
         try:
             return Predictions.get_obj(self.document_results[self.model_name]["final"])
