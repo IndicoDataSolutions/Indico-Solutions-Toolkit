@@ -46,6 +46,10 @@
 * Positioning class added to assist in relative prediction location validation
 * Added # of samples labeled to metrics class.
 
+### Removed
+
+* Teach classes in indico_wrapper
+
 ## 1.0.8 11/15/2021
 
 ### Added
@@ -64,3 +68,14 @@
 ### Added
 
 * Updated functionality for large dataset creation. Batch options allow for more reliable dataset uploads.
+
+## 1.2 1/6/2022
+
+### Added
+
+* New distance measurements in the prediction Positioning class.
+* New Features on the Extractions class: predictions that are removed by any method are saved in an 
+  attribute if they're needed for logs, etc.; get all text values for a particular label; get most 
+  common text value for a particular label. 
+* Better exception handling for Workflow submissions and more flexibility on format of what is returned
+  (allows custom response jsons to avoid the WorkflowResult class).

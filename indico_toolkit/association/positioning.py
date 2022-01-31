@@ -67,10 +67,10 @@ class Positioning:
         self, pos1: dict, pos2: dict, page_height: int = None
     ) -> float:
         """
-        Get the minimum distance between any two corners of two bounding boxes
+        Get the minimum distance between any two corners of two bounding boxes via the pythagorean formula.
         Args:
             page_height (int, optional): If you want to measure distances across pages, set the OCR page height
-                                         otherwise locations on separate pages will raise an exception. 
+                                         otherwise locations on separate pages will raise an exception.
                                          Defaults to None.
 
         Returns:
@@ -100,14 +100,68 @@ class Positioning:
                 distances.append(distance)
         min_distance = min(distances)
         if add_page_height:
-            min_distance += (page_height * page_difference)
+            min_distance += page_height * page_difference
         return min_distance
+
+    @staticmethod
+    def get_vertical_min_distance(
+        above_pos: dict, below_pos: dict, page_height: int = None
+    ) -> float:
+        """
+        Get the vertical minimum distance between two bounding boxes
+        Args:
+            above_pos (dict): the position expected to be above
+            below_pos (dict): to position expected to be below
+            page_height (int, optional): If you want to measure distances across pages, set the OCR page height
+                                         otherwise locations on separate pages will raise an exception.
+                                         Defaults to None.
+
+        Returns:
+            float: minimum distance
+        """
+        add_page_height = False
+        page_difference = abs(above_pos["page_num"] - below_pos["page_num"])
+        if page_difference > 0:
+            if not page_height:
+                raise ToolkitInputError(
+                    "Predictions are not on the same page! Must enter a page height"
+                )
+            else:
+                add_page_height = True
+        min_distance = below_pos["bbTop"] - above_pos["bbBot"]
+
+        if add_page_height:
+            min_distance += page_height * page_difference
+        return min_distance
+
+    @staticmethod
+    def get_horizontal_min_distance(pos1: dict, pos2: dict) -> float:
+        """
+        Get the horizontal minimum distance between two bounding boxes
+        Returns:
+            float: minimum distance
+        """
+        page_difference = abs(pos1["page_num"] - pos2["page_num"])
+        if page_difference > 0:
+            raise ToolkitInputError(
+                "Predictions are not on the same page! Must enter a page height"
+            )
+
+        min_distance_1 = abs(pos1["bbLeft"] - pos2["bbRight"])
+        min_distance_2 = abs(pos1["bbRight"] - pos2["bbLeft"])
+        return min(min_distance_1, min_distance_2)
 
     @staticmethod
     def _distance_between_points(point1: tuple, point2: tuple) -> float:
         x = (point1[0] - point2[0]) ** 2
         y = (point1[1] - point2[1]) ** 2
         return sqrt(x + y)
+
+    @staticmethod
+    def manhattan_distance_between_points(point1: tuple, point2: tuple) -> float:
+        x = abs(point1[0] - point2[0])
+        y = abs(point1[1] - point2[1])
+        return x + y
 
     @staticmethod
     def yaxis_overlap(x: dict, y: dict):

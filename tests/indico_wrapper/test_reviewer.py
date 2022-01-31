@@ -24,7 +24,6 @@ def get_change_formatted_predictions(workflow_result):
     """
     return {workflow_result.model_name: workflow_result.predictions.to_list()}
 
-
 def test_accept_review(submissions_awaiting_review, indico_client, workflow_id):
     reviewer_wrapper = Reviewer(indico_client, workflow_id)
     id_in_review = reviewer_wrapper.get_random_review_id()
@@ -36,7 +35,6 @@ def test_accept_review(submissions_awaiting_review, indico_client, workflow_id):
     submission = reviewer_wrapper.get_submission_object(id_in_review)
     assert submission.status == "COMPLETE"
 
-
 @pytest.mark.dependency()
 def test_reject_from_review(submissions_awaiting_review, indico_client, workflow_id):
     reviewer_wrapper = Reviewer(indico_client, workflow_id)
@@ -44,7 +42,6 @@ def test_reject_from_review(submissions_awaiting_review, indico_client, workflow
     reviewer_wrapper.reject_submission(id_in_review)
     submission = reviewer_wrapper.get_submission_object(id_in_review)
     assert submission.status == "PENDING_ADMIN_REVIEW"
-
 
 @pytest.mark.dependency(depends=["test_reject_from_review"])
 def test_reject_from_admin_review(
