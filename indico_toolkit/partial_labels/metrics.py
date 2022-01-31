@@ -26,10 +26,8 @@ except ImportError:
 
 
 @functools.lru_cache()
-def get_spacy():
+def get_spacy() -> spacy.lang.en.English:
     """
-    FIXME return type of spacy.lang.en.English not working for type annotation
-
     Load English core language model from spacy to use for tokenization. Wrapped
     with lru_cache to ensure that the model is only loaded once.
 
@@ -96,7 +94,7 @@ def calc_f1(recall: float, precision: float) -> float:
 
 def _get_unique_classes(
     true: List[List[Dict[str, Union[int, str]]]],
-    predicted: List[List[Dict[str, Union[int, str]]]],
+    predicted: List[List[Dict[str, Union[int, str]]]]
 ) -> List[str]:
     """
     Given ground truth labels and predictions, take the union of label classes
@@ -113,9 +111,8 @@ def _get_unique_classes(
     return list(set([seq["label"] for seqs in true_and_pred for seq in seqs]))
 
 
-def _convert_to_token_list(
-    annotations: List[Dict[str, Union[int, str]]], doc_idx: int = None
-) -> List[Dict[str, Union[int, str]]]:
+def _convert_to_token_list(annotations: List[Dict[str, Union[int, str]]],
+                           doc_idx: int = None) -> List[Dict[str, Union[int, str]]]:
     """
     Given annotations (labels or predictions) for a single document, use the spacy
     English tokenizer to split the annotations into individual tokens
@@ -151,7 +148,7 @@ def _convert_to_token_list(
 
 def sequence_labeling_token_conf_matrix(
     true: List[List[Dict[str, Union[int, str]]]],
-    predicted: List[List[Dict[str, Union[int, str]]]],
+    predicted: List[List[Dict[str, Union[int, str]]]]
 ) -> Dict[str, Dict[str, List[Dict[str, Union[int, str]]]]]:
     """
     Given ground truth labels and predictions, determine the true positives (TPs),
@@ -187,22 +184,14 @@ def sequence_labeling_token_conf_matrix(
                 ):
 
                     if pred_token["label"] == true_token["label"]:
-                        token_conf_matrix[true_token["label"]]["true_positives"].append(
-                            true_token
-                        )
+                        token_conf_matrix[true_token["label"]]["true_positives"].append(true_token)
                     else:
-                        token_conf_matrix[true_token["label"]][
-                            "false_negatives"
-                        ].append(true_token)
-                        token_conf_matrix[pred_token["label"]][
-                            "false_positives"
-                        ].append(pred_token)
+                        token_conf_matrix[true_token["label"]]["false_negatives"].append(true_token)
+                        token_conf_matrix[pred_token["label"]]["false_positives"].append(pred_token)
 
                     break
             else:
-                token_conf_matrix[true_token["label"]]["false_negatives"].append(
-                    true_token
-                )
+                token_conf_matrix[true_token["label"]]["false_negatives"].append(true_token)
 
         # Calculate false positives
         for pred_token in pred_tokens:
@@ -213,9 +202,7 @@ def sequence_labeling_token_conf_matrix(
                 ):
                     break
             else:
-                token_conf_matrix[pred_token["label"]]["false_positives"].append(
-                    pred_token
-                )
+                token_conf_matrix[pred_token["label"]]["false_positives"].append(pred_token)
 
     return token_conf_matrix
 
@@ -223,9 +210,7 @@ def sequence_labeling_token_conf_matrix(
 def sequence_labeling_conf_matrix(
     true: List[List[Dict[str, Union[int, str]]]],
     predicted: List[List[Dict[str, Union[int, str]]]],
-    equality_fn: Callable[
-        [Dict[str, Union[int, str]], Dict[str, Union[int, str]]], bool
-    ],
+    equality_fn: Callable[[Dict[str, Union[int, str]], Dict[str, Union[int, str]]], bool]
 ) -> Dict[str, Dict[str, List[Dict[str, Union[int, str]]]]]:
     """
     Given ground truth labels and predictions, determine the true positives (TPs),
@@ -263,14 +248,10 @@ def sequence_labeling_conf_matrix(
                 # Use equality function to determine match between ground truth and prediction
                 if equality_fn(true_annotation, pred_annotation):
                     if pred_annotation["label"] == true_annotation["label"]:
-                        conf_matrix[true_annotation["label"]]["true_positives"].append(
-                            true_annotation
-                        )
+                        conf_matrix[true_annotation["label"]]["true_positives"].append(true_annotation)
                         break
             else:
-                conf_matrix[true_annotation["label"]]["false_negatives"].append(
-                    true_annotation
-                )
+                conf_matrix[true_annotation["label"]]["false_negatives"].append(true_annotation)
 
         # Calculate false positives
         for pred_annotation in predicted_annotations:
@@ -281,16 +262,12 @@ def sequence_labeling_conf_matrix(
                 ):
                     break
             else:
-                conf_matrix[pred_annotation["label"]]["false_positives"].append(
-                    pred_annotation
-                )
+                conf_matrix[pred_annotation["label"]]["false_positives"].append(pred_annotation)
 
     return conf_matrix
 
 
-def sequences_overlap(
-    true_seq: Dict[str, Union[int, str]], pred_seq: Dict[str, Union[int, str]]
-) -> bool:
+def sequences_overlap(true_seq: Dict[str, Union[int, str]], pred_seq: Dict[str, Union[int, str]]) -> bool:
     """
     Determine if two annotations overlap
 
@@ -306,9 +283,7 @@ def sequences_overlap(
     return true_seq["start"] < pred_seq["end"] and pred_seq["start"] < true_seq["end"]
 
 
-def sequence_exact_match(
-    true_seq: Dict[str, Union[int, str]], pred_seq: Dict[str, Union[int, str]]
-) -> bool:
+def sequence_exact_match(true_seq: Dict[str, Union[int, str]], pred_seq: Dict[str, Union[int, str]]) -> bool:
     """
     Determine if two annotations are an exact match (with stripped whitespace)
 
@@ -326,9 +301,7 @@ def sequence_exact_match(
     return pred_seq["start"] == true_seq["start"] and pred_seq["end"] == true_seq["end"]
 
 
-def sequence_superset(
-    true_seq: Dict[str, Union[int, str]], pred_seq: Dict[str, Union[int, str]]
-) -> bool:
+def sequence_superset(true_seq: Dict[str, Union[int, str]], pred_seq: Dict[str, Union[int, str]]) -> bool:
     """
     Given a ground truth label and a prediction, determine if the prediction is
     a superset of the ground truth label (with stripped whitespace)
@@ -348,11 +321,9 @@ def sequence_superset(
 
 
 def get_seq_conf_matrix_fn(
-    span_type: str = "token",
-) -> Callable[
-    [List[List[Dict[str, Union[int, str]]]], List[List[Dict[str, Union[int, str]]]]],
-    Dict[str, Dict[str, List[Dict[str, Union[int, str]]]]],
-]:
+    span_type: str = "token"
+) -> Callable[[List[List[Dict[str, Union[int, str]]]], List[List[Dict[str, Union[int, str]]]]],
+              Dict[str, Dict[str, List[Dict[str, Union[int, str]]]]]]:
     """
     Determine what function to use for determining TPs/FPs/FNs based on the
     type of equality function to use.
@@ -366,28 +337,18 @@ def get_seq_conf_matrix_fn(
     """
     valid_span_types = {"token", "equality", "partial", "overlap"}
     if span_type not in valid_span_types:
-        raise ValueError(
-            f"span_type={span_type} is not valid, must be within {valid_span_types}"
-        )
+        raise ValueError(f"span_type={span_type} is not valid, must be within {valid_span_types}")
 
     span_type_fn_mapping = {
         "token": sequence_labeling_token_conf_matrix,
-        "overlap": functools.partial(
-            sequence_labeling_conf_matrix, equality_fn=sequences_overlap
-        ),
-        "exact": functools.partial(
-            sequence_labeling_conf_matrix, equality_fn=sequence_exact_match
-        ),
-        "superset": functools.partial(
-            sequence_labeling_conf_matrix, equality_fn=sequence_superset
-        ),
+        "overlap": functools.partial(sequence_labeling_conf_matrix, equality_fn=sequences_overlap),
+        "exact": functools.partial(sequence_labeling_conf_matrix, equality_fn=sequence_exact_match),
+        "superset": functools.partial(sequence_labeling_conf_matrix, equality_fn=sequence_superset),
     }
     return span_type_fn_mapping[span_type]
 
 
-def strip_whitespace(
-    annotation: Dict[str, Union[int, str]]
-) -> Dict[str, Union[int, str]]:
+def strip_whitespace(annotation: Dict[str, Union[int, str]]) -> Dict[str, Union[int, str]]:
     """
     Given a label annotation, strip whitespace from the start and end of the
     string and adjust the start/end indices of the annotation
@@ -413,7 +374,7 @@ def strip_whitespace(
 def seq_recall(
     true: List[List[Dict[str, Union[int, str]]]],
     predicted: List[List[Dict[str, Union[int, str]]]],
-    span_type: str = "token",
+    span_type: str = "token"
 ) -> Dict[str, float]:
     """
     Given ground truth labels and predictions, determine the recall for
@@ -433,9 +394,7 @@ def seq_recall(
     """
     valid_span_types = {"token", "equality", "partial", "overlap"}
     if span_type not in valid_span_types:
-        raise ValueError(
-            f"span_type={span_type} is not valid, must be within {valid_span_types}"
-        )
+        raise ValueError(f"span_type={span_type} is not valid, must be within {valid_span_types}")
 
     conf_matrix_fn = get_seq_conf_matrix_fn(span_type)
     # Get counts of TP/FP/FN for each class
@@ -451,7 +410,7 @@ def seq_recall(
 def seq_precision(
     true: List[List[Dict[str, Union[int, str]]]],
     predicted: List[List[Dict[str, Union[int, str]]]],
-    span_type: str = "token",
+    span_type: str = "token"
 ) -> Dict[str, float]:
     """
     Given ground truth labels and predictions, determine the precision for
@@ -471,9 +430,7 @@ def seq_precision(
     """
     valid_span_types = {"token", "equality", "partial", "overlap"}
     if span_type not in valid_span_types:
-        raise ValueError(
-            f"span_type={span_type} is not valid, must be within {valid_span_types}"
-        )
+        raise ValueError(f"span_type={span_type} is not valid, must be within {valid_span_types}")
 
     conf_matrix_fn = get_seq_conf_matrix_fn(span_type)
     # Get counts of TP/FP/FN for each class
@@ -531,8 +488,8 @@ def calc_micro_f1(
 def calc_per_class_f1(
     true: List[List[Dict[str, Union[int, str]]]],
     predicted: List[List[Dict[str, Union[int, str]]]],
-    span_type: str = "token",
-) -> Dict[str, Dict[str, Union[float, int]]]:
+    span_type: str = "token"
+) -> OrderedDict[str, Dict[str, Union[float, int]]]:
     """
     Given ground truth labels and predictions, determine the support (TPs+FNs)
     and F1 score for each class.
@@ -545,7 +502,6 @@ def calc_per_class_f1(
 
     Returns:
         results: OrderedDict containing support (TPs + FNs) and F1 score per class
-            Note: Using Dict in return val type annotation to prevent TypeError
     """
     conf_matrix_fn = get_seq_conf_matrix_fn(span_type)
     class_conf_matrices = conf_matrix_fn(true, predicted)
@@ -567,8 +523,8 @@ def calc_sequence_f1(
     true: List[List[Dict[str, Union[int, str]]]],
     predicted: List[List[Dict[str, Union[int, str]]]],
     span_type: str = "token",
-    average: str = None,
-) -> Union[float, Dict[str, Dict[str, Union[float, int]]]]:
+    average: str = None
+) -> Union[float, OrderedDict[str, Dict[str, Union[float, int]]]]:
     """
     Given ground truth labels and predictions, determine F1 score. The F1
     score can be calculated in different ways depending on the average
@@ -606,14 +562,14 @@ def calc_sequence_f1(
     else:
         return f1s_by_class
 
-
 ################################################################
 # All metrics below are not based on existing finetune metrics #
 ################################################################
 
 
 def find_overlapping_sequence(
-    pred: Dict[str, Union[int, str]], labels: List[Dict[str, Union[int, str]]]
+    pred: Dict[str, Union[int, str]],
+    labels: List[Dict[str, Union[int, str]]]
 ) -> Union[Dict[str, Union[int, str]], None]:
     """
     Given a prediction and a set of ground truth labels, find the label sequence
@@ -638,20 +594,17 @@ def find_overlapping_sequence(
 def identify_tps_fps_fns(
     true: List[List[Dict[str, Union[int, str]]]],
     predicted: List[List[Dict[str, Union[int, str]]]],
-    tp_ratio: float = 1,
-    fp_ratio: float = 1,
-    fn_ratio: float = 1,
+    tp_ratio: float = 0,
+    fp_ratio: float = 0,
+    fn_ratio: float = 0,
     random_seed: int = 42,
     tp_match_type: str = "exact",
     fp_match_type: str = "overlap",
     fn_match_type: str = "exact",
     replace_fps: bool = False,
     missing_label_ratio: float = None,
-) -> Tuple[
-    List[List[Dict[str, Union[int, str]]]],
-    List[List[Dict[str, Union[int, str]]]],
-    List[List[Dict[str, Union[int, str]]]],
-]:
+) -> Tuple[List[List[Dict[str, Union[int, str]]]], List[List[Dict[str, Union[int, str]]]],
+           List[List[Dict[str, Union[int, str]]]]]:
     """
     Given ground truth labels and predictions for a sequence labeling model,
     we want to identify the true positives, false positives, and false negatives.
@@ -693,12 +646,12 @@ def identify_tps_fps_fns(
         predicted: List of lists, where each sublist contains predictions for a given document
         tp_ratio: Ratio of true positives to include, sampled randomly across all documents
         fp_ratio: Ratio of false positives to include, sampled randomly across all documents
-        fn_ratio: Ratio of false negatives to include, sampled randomly across all documents
+        fn_ratio
         random_seed: Random seed to use when sampling
         tp_match_type: Type of match in finetune metrics to use for identifying true positives.
             Must be one of ("exact", "overlap")
         fp_match_type: Same as above, but for false positives
-        fn_match_type: Same as above, but for false negatives
+        fn_match_type
         replace_fps: If we replace false positives with overlapping ground truth
             Very strong supervision, because we're relying on the reviewer or labeler
             to tell us the class and start/end of the overlapping ground truth
@@ -766,30 +719,22 @@ def identify_tps_fps_fns(
             flat_fns.extend(slc_fn[label]["false_negatives"])
 
     # Sample from flattened list(s)
-    # Don't need to sample if ratio is 1
-    # If ratio is 0, set flat_XXs back to an empty list
-    if not tp_ratio:
-        flat_tps = []
-    elif tp_ratio != 1:
+    if tp_ratio:
         num_samples = int(tp_ratio * len(flat_tps))
         random.seed(random_seed)
         flat_tps = random.sample(flat_tps, num_samples)
 
-    if not fp_ratio:
-        flat_fps = []
-    elif fp_ratio != 1:
+    if fp_ratio:
         num_samples = int(fp_ratio * len(flat_fps))
         random.seed(random_seed)
         flat_fps = random.sample(flat_fps, num_samples)
 
-    if not fn_ratio:
-        flat_fns = []
-    elif fn_ratio != 1:
+    if fn_ratio:
         num_samples = int(fn_ratio * len(flat_fns))
         random.seed(random_seed)
         flat_fns = random.sample(flat_fns, num_samples)
 
-    # tps, fps, and fns should contain len(true) number of lists
+    # tps, fps, and fns should contains len(true) number of lists
     tps = [[] for _ in range(len(true))]
     fps = [[] for _ in range(len(true))]
     fns = [[] for _ in range(len(true))]
@@ -817,7 +762,6 @@ def identify_tps_fps_fns(
         fns[idx].append(fn)
 
     return tps, fps, fns
-
 
 ###################
 # Complex metrics #
@@ -959,10 +903,8 @@ def calc_micro_metric(
 def seq_recall_precision_f1(
     true: List[List[Dict[str, Union[int, str]]]],
     predicted: List[List[Dict[str, Union[int, str]]]],
-    span_type: str = "token",
-) -> Tuple[
-    Dict[str, float], Dict[str, float], Dict[str, float], Dict[str, Dict[str, int]]
-]:
+    span_type: str = "token"
+) -> Tuple[Dict[str, float], Dict[str, float], Dict[str, float], Dict[str, Dict[str, int]]]:
     """
     Given true and predicted labels, calculate per class precision,
     recall, F1, and and support
@@ -1003,7 +945,7 @@ def seq_recall_precision_f1(
 def find_best_label(
     label_cls: str,
     label_candidates: List[Dict[str, Union[int, str]]],
-    doc_fns: List[Dict[str, Union[int, str]]],
+    doc_fns: List[Dict[str, Union[int, str]]]
 ) -> str:
     """
     Helper function for dedup_test_labels() that is called per label per document
@@ -1029,7 +971,7 @@ def find_best_label(
 
 def dedup_test_labels(
     doc_labels: Dict[str, List[Dict[str, Union[int, str]]]],
-    doc_fns: List[Dict[str, Union[int, str]]],
+    doc_fns: List[Dict[str, Union[int, str]]]
 ) -> Dict[str, str]:
     """
     For classes that should only appear once per document, we need a way
