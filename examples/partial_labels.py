@@ -14,7 +14,6 @@ Outside of Script
 """
 import argparse
 from datetime import datetime
-import pdb
 
 from indico import IndicoClient, IndicoConfig
 from indico_toolkit.staggered_loop import StaggeredLoop
@@ -97,6 +96,8 @@ def main(
     oversample_errs: bool = False,
 ):
     """
+    End to end function to data that has been submitted to a production workflow
+    and reviewed to an existing dataset, teach task, and extraction model
 
     TODO
      * Use max_review_docs and oversample_errs arguments
@@ -118,34 +119,33 @@ def main(
             reviewed, sample from review
         oversample_errs: If True, sample more heavily from documents with more
             discrepancies between model predictions and ground truth
-
-    Returns:
     """
     # Connect to dev
-    dev_client = IndicoClient(IndicoConfig(host=dev_host, api_token_path=dev_api_token_path))
+    dev_client = IndicoClient(
+        IndicoConfig(host=dev_host, api_token_path=dev_api_token_path)
+    )
     dev_stagger = StaggeredLoop(client=dev_client)
 
     # Get dataset details to determine when dataset was last updated. This will serve
     # as a filter to prevent adding duplicate review data
     dataset_details = dev_stagger.get_dataset_details(dataset_id=dev_dataset_id)
-    # print(dataset_details)
 
     # Connect to prod
-    prod_client = IndicoClient(IndicoConfig(host=prod_host, api_token_path=prod_api_token_path))
+    prod_client = IndicoClient(
+        IndicoConfig(host=prod_host, api_token_path=prod_api_token_path)
+    )
     prod_stagger = StaggeredLoop(client=prod_client)
 
     # Pull review data from prod workflow
-    prod_stagger.get_review_data(
+    workflow_results = prod_stagger.get_review_data(
         workflow_id=prod_workflow_id,
-        update_date=datetime.fromtimestamp(float(dataset_details["updatedAt"]))
+        update_date=datetime.fromtimestamp(float(dataset_details["updatedAt"])),
     )
-    # print(prod_stagger._workflow_results)
 
-    # FIXME StaggeredLoop class extends IndicoClient, so strictly has to connect
-    #  to only one environment. This is not necessarily ideal from an API perspective,
-    #  but as a temporary workaround, we will move attributes between the dev and prod
-    #  instances of the class
-    dev_stagger._workflow_results = prod_stagger._workflow_results
+    # StaggeredLoop class extends IndicoClient, so strictly has to connect to
+    # only one environment. As a result, we set the workflow_results attribute
+    # of the dev instance of the class using the review data pulled from prod.
+    dev_stagger.set_workflow_results(workflow_results)
 
     # Get document bytes and text
     dev_stagger.get_document_bytes()
@@ -159,7 +159,7 @@ def main(
     dev_stagger.add_data(
         dataset_id=dev_dataset_id,
         questionnaire_id=dev_questionnaire_id,
-        workflow_id=dev_workflow_id
+        workflow_id=dev_workflow_id,
     )
     dev_stagger.retrain_model(model_group_id=dev_model_group_id)
 
