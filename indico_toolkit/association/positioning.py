@@ -63,6 +63,26 @@ class Positioning:
             same_level = False
         return same_level
 
+    def positions_overlap(
+            self, curr_pos: dict, other_pos: dict, overlap_percent: float
+        ) -> bool:
+        """
+        Returns boolean based on if the area of overlap between the current position and the other position exceeds given percent.
+        Args:
+            curr_pos (dict): The current position
+            other_pos (dict): The position being compared to curr_pos
+            overlap_percent (float): Dictates how much overlap between areas is allowed
+        """
+        if not self.xaxis_overlap(curr_pos, other_pos) or not self.yaxis_overlap(curr_pos, other_pos):
+            return False
+        overlap_x = self.get_horizontal_min_distance(curr_pos, other_pos)
+        overlap_y = self.get_vertical_min_distance(curr_pos, other_pos)
+        overlap_area = abs(overlap_x * overlap_y)
+        curr_area = self.get_area(curr_pos)
+        if overlap_area / curr_area > overlap_percent:
+            return False
+        return True
+
     def get_min_distance(
         self, pos1: dict, pos2: dict, page_height: int = None
     ) -> float:
@@ -150,6 +170,13 @@ class Positioning:
         min_distance_1 = abs(pos1["bbLeft"] - pos2["bbRight"])
         min_distance_2 = abs(pos1["bbRight"] - pos2["bbLeft"])
         return min(min_distance_1, min_distance_2)
+
+    @staticmethod
+    def get_area(pos: dict) -> float:
+        """
+        Gets area of box position
+        """
+        return abs(pos["bbTop"] - pos["bbBot"]) * abs(pos["bbLeft"] - pos["bbRight"])
 
     @staticmethod
     def _distance_between_points(point1: tuple, point2: tuple) -> float:

@@ -135,6 +135,18 @@ def test_positioned_on_same_level_must_be_same_page():
     )
     assert output == False
 
+@pytest.mark.parametrize(
+    "input, expected",
+    [
+        ((generate_mapped_pred(), generate_mapped_pred(5, 15, 5, 15)), True),
+        ((generate_mapped_pred(), generate_mapped_pred()), False),
+    ]
+)
+def test_positions_overlap(input, expected):
+    position = Positioning()
+    output = position.positions_overlap(input[0], input[1], .5)
+    assert output == expected
+
 
 @pytest.mark.parametrize(
     "input, expected",
