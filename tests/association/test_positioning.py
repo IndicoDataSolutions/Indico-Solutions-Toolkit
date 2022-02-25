@@ -99,6 +99,8 @@ def test_positioned_above_same_page_false(input, expected):
         ((generate_mapped_pred(), generate_mapped_pred(11, 20, 6, 15)), False),
         ((generate_mapped_pred(), generate_mapped_pred(11, 20, 1, 9)), True),
         ((generate_mapped_pred(), generate_mapped_pred(11, 20, 4, 15)), True),
+        ((generate_mapped_pred(0, 10, 10, 20), generate_mapped_pred(11, 20, 5, 15)), True),
+        ((generate_mapped_pred(0, 10, 10, 20), generate_mapped_pred(11, 20, 4, 15)), False),
     ]
 )
 def test_positioned_above_overlap_same_page_true(input, expected):

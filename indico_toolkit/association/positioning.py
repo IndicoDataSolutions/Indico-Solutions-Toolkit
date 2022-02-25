@@ -60,11 +60,11 @@ class Positioning:
         is_min_overlap = True
         if below_pos["page_num"] < above_pos["page_num"]:
             raise ToolkitInputError(
-                "Predictions are not on the same page! Must enter a page height"
+                "Predictions are not on the same page!"
             )
         if self.xaxis_overlap(above_pos, below_pos):
             is_above = True
-            horizontal_overlap_distance = self.get_horizontal_min_distance(above_pos, below_pos)
+            horizontal_overlap_distance = abs(max(above_pos["bbLeft"], below_pos["bbLeft"]) - min(above_pos["bbRight"], below_pos["bbRight"]))
             position_width = abs(below_pos["bbLeft"] - below_pos["bbRight"])
             if horizontal_overlap_distance / position_width < min_overlap_percent:
                 is_min_overlap = False
