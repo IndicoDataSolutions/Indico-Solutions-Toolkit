@@ -50,7 +50,6 @@ class Positioning:
         Args:
             above_pos (dict): the position expected to be above
             below_pos (dict): the position expected to be below
-            must_be_same_page (bool, optional): required to be on same page. Defaults to True.
             min_overlap_percent (float, optional): the minimum amount of overlap needed. Defaults to None.
 
         Returns:
