@@ -43,7 +43,7 @@ class Positioning:
         return is_above
 
     def positioned_above_overlap(
-            self, above_pos: dict, below_pos: dict, must_be_same_page: bool = True, min_overlap_percent: float = None
+            self, above_pos: dict, below_pos: dict, min_overlap_percent: float = None
         ) -> bool:
         """
         Check if the location of one box is above another and if the lower box's overlap is at least the given percentage.
@@ -56,29 +56,18 @@ class Positioning:
         Returns:
             bool: True is above_pos is above below_pos and below_pos' amount of overlap is at least min_overlap_percent
         """
+        is_above = False
+        is_min_overlap = True
         if below_pos["page_num"] < above_pos["page_num"]:
-            is_above = False
-        elif below_pos["page_num"] != above_pos["page_num"] and must_be_same_page:
-            is_above = False
-        elif self.xaxis_overlap(above_pos, below_pos):
-            if (
-                below_pos["page_num"] == above_pos["page_num"]
-            ) and not self.yaxis_above(above_pos, below_pos):
-                is_above = False
-            else:
-                is_above = True
-                if not min_overlap_percent:
-                    is_min_overlap = True
-                else:
-                    horizontal_overlap_distance = abs(self.get_horizontal_min_distance(above_pos, below_pos))
-                    horizontal_below_distance = abs(below_pos["bbLeft"] - below_pos["bbRight"])
-                    if horizontal_overlap_distance / horizontal_below_distance < min_overlap_percent:
-                        is_min_overlap = False
-                    else:
-                        is_min_overlap = True
-        else:
-            is_above = False
-            is_min_overlap = False
+            raise ToolkitInputError(
+                "Predictions are not on the same page! Must enter a page height"
+            )
+        if self.xaxis_overlap(above_pos, below_pos):
+            is_above = True
+            horizontal_overlap_distance = self.get_horizontal_min_distance(above_pos, below_pos)
+            position_width = abs(below_pos["bbLeft"] - below_pos["bbRight"])
+            if horizontal_overlap_distance / position_width < min_overlap_percent:
+                is_min_overlap = False
         return is_above and is_min_overlap
 
     def positioned_on_same_level(

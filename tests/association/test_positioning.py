@@ -95,17 +95,25 @@ def test_positioned_above_same_page_false(input, expected):
 @pytest.mark.parametrize(
     "input, expected",
     [
-        ((generate_mapped_pred(page_num=1), generate_mapped_pred(page_num=0)), False),
         ((generate_mapped_pred(), generate_mapped_pred(11, 20, 10, 20)), False),
         ((generate_mapped_pred(), generate_mapped_pred(11, 20, 6, 15)), False),
         ((generate_mapped_pred(), generate_mapped_pred(11, 20, 1, 9)), True),
         ((generate_mapped_pred(), generate_mapped_pred(11, 20, 4, 15)), True),
     ]
 )
-def test_positioned_above_overlap(input, expected):
+def test_positioned_above_overlap_same_page_true(input, expected):
     position = Positioning()
-    output = position.positioned_above_overlap(input[0], input[1], must_be_same_page=True, min_overlap_percent=.5)
+    output = position.positioned_above_overlap(input[0], input[1], min_overlap_percent=.5)
     assert output == expected
+
+def text_positioned_above_overlap_same_page_false():
+    position = Positioning()
+    with pytest.raises(ToolkitInputError):
+        position.positioned_above_overlap(
+            generate_mapped_pred(page_num=1),
+            generate_mapped_pred(),
+            min_overlap_percent=.5
+        )
 
 
 @pytest.mark.parametrize(
