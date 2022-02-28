@@ -108,7 +108,7 @@ def test_positioned_above_overlap_same_page_true(input, expected):
     output = position.positioned_above_overlap(input[0], input[1], min_overlap_percent=.5)
     assert output == expected
 
-def text_positioned_above_overlap_same_page_false():
+def test_positioned_above_overlap_same_page_false():
     position = Positioning()
     with pytest.raises(ToolkitInputError):
         position.positioned_above_overlap(
