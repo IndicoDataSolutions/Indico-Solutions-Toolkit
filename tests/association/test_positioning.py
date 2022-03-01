@@ -92,6 +92,43 @@ def test_positioned_above_same_page_false(input, expected):
     is_above = positioning.positioned_above(input[0], input[1], must_be_same_page=False)
     assert is_above == expected
 
+@pytest.mark.parametrize(
+    "input, expected",
+    [
+        ((generate_mapped_pred(), generate_mapped_pred(11, 20, 10, 20)), False),
+        ((generate_mapped_pred(), generate_mapped_pred(-5, 5, 1, 9)), False),
+        ((generate_mapped_pred(), generate_mapped_pred(11, 20, 6, 15)), False),
+        ((generate_mapped_pred(0, 10, 10, 20), generate_mapped_pred(11, 20, 4, 15)), False),
+        ((generate_mapped_pred(), generate_mapped_pred(11, 20, 1, 9)), True),
+        ((generate_mapped_pred(), generate_mapped_pred(11, 20, 4, 15)), True),
+        ((generate_mapped_pred(0, 10, 10, 20), generate_mapped_pred(11, 20, 5, 15)), True),
+    ]
+)
+def test_positioned_above_overlap_same_page_true(input, expected):
+    position = Positioning()
+    output = position.positioned_above_overlap(input[0], input[1], min_overlap_percent=.5)
+    assert output == expected
+
+def test_positioned_above_overlap_same_page_false():
+    position = Positioning()
+    with pytest.raises(ToolkitInputError):
+        position.positioned_above_overlap(
+            generate_mapped_pred(page_num=1),
+            generate_mapped_pred(),
+            min_overlap_percent=.5
+        )
+@pytest.mark.parametrize(
+    "input, expected",
+    [
+        ((generate_mapped_pred(), generate_mapped_pred(-5, 5, 1, 9)), False),
+        ((generate_mapped_pred(0, 10, 10, 20), generate_mapped_pred(11, 20, 4, 15)), True),
+    ]
+)
+def test_positioned_above_overlap_min_overlap_percent_none(input, expected):
+    position = Positioning()
+    output = position.positioned_above_overlap(input[0], input[1])
+    assert output == expected
+
 
 @pytest.mark.parametrize(
     "input, expected",
@@ -134,7 +171,6 @@ def test_positioned_on_same_level_must_be_same_page():
         generate_mapped_pred(), generate_mapped_pred(page_num=1)
     )
     assert output == False
-
 
 @pytest.mark.parametrize(
     "input, expected",
