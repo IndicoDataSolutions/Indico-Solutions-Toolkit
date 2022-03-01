@@ -46,14 +46,14 @@ class Positioning:
             self, above_pos: dict, below_pos: dict, min_overlap_percent: float = None
         ) -> bool:
         """
-        Check if the location of one box is above another and if the lower box's overlap is at least the given percentage.
+        Check if the location of one box is on the same page and above another and if the lower box's overlap is at least the given percentage.
         Args:
             above_pos (dict): the position expected to be above
             below_pos (dict): the position expected to be below
             min_overlap_percent (float, optional): the minimum amount of overlap needed. Defaults to None.
 
         Returns:
-            bool: True is above_pos is above below_pos and below_pos' amount of overlap is at least min_overlap_percent
+            bool: True if above_pos is above below_pos and below_pos' amount of overlap is at least min_overlap_percent
         """
         is_above = False
         is_min_overlap = True
