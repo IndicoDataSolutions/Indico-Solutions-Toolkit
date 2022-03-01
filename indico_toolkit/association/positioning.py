@@ -65,7 +65,7 @@ class Positioning:
             is_above = True
             horizontal_overlap_distance = abs(max(above_pos["bbLeft"], below_pos["bbLeft"]) - min(above_pos["bbRight"], below_pos["bbRight"]))
             position_width = abs(below_pos["bbLeft"] - below_pos["bbRight"])
-            if horizontal_overlap_distance / position_width < min_overlap_percent and min_overlap_percent:
+            if min_overlap_percent and horizontal_overlap_distance / position_width < min_overlap_percent:
                 is_min_overlap = False
         return is_above and is_min_overlap
 
