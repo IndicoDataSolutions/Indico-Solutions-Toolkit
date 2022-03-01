@@ -16,8 +16,10 @@ setup(
         "requests>=2.22.0",
         "setuptools>=41.4.0",
         "pandas>=1.0.3",
-        "PyMuPDF==1.18.13",
         "plotly==5.2.1",
         "tqdm=4.50.0"
     ],
+    extras_require = {
+        "full": ["PyMuPDF==1.18.13"]
+    }
 )
