@@ -1,3 +1,4 @@
 indico-client==4.9.0
 plotly==5.2.1
 tqdm==4.50.0
+black==21.4b0
