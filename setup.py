@@ -12,6 +12,6 @@ setup(
     install_requires=[
         "indico-client==4.9.0",
         "plotly==5.2.1",
-        "tqdm=4.50.0"
+        "tqdm==4.50.0"
     ],
 )
