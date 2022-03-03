@@ -79,3 +79,13 @@
   common text value for a particular label. 
 * Better exception handling for Workflow submissions and more flexibility on format of what is returned
   (allows custom response jsons to avoid the WorkflowResult class).
+
+## 1.2.2 3/03/2022
+
+### Added
+
+* Updated metrics plot to order ascending based on latest model
+* New feature in Positioning class to calculate overlap between two bounding boxes on the same page
+
+### Fixed 
+* Optional dependencies to support M1 installation
