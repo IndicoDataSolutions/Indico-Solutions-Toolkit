@@ -14,4 +14,7 @@ setup(
         "plotly==5.2.1",
         "tqdm==4.50.0"
     ],
+    extras_require = {
+        "full": ["PyMuPDF==1.18.13"]
+    }
 )
