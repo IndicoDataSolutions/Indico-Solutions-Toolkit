@@ -13,14 +13,9 @@ home-page = "https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit"
 classifiers = [ "License :: OSI Approved :: MIT License",]
 description-file = "README.md"
 requires = [
-    "indico-client>=4.9.0",
-    "numpy>=1.16.0",
-    "Pillow>=6.2.0",
-    "requests>=2.22.0",
-    "setuptools>=41.4.0",
-    "pandas>=1.0.3",
+    "indico-client==4.9.0",
     "plotly==5.2.1",
-    "tqdm==4.50.0",
+    "tqdm==4.50.0"
 ]
 
 [tool.flit.metadata.requires-extra]

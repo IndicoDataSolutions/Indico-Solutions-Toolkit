@@ -5,7 +5,7 @@ solutions_test_token.txt
 *__pycache__/
 *.py[cod]
 *$py.class
-
+*.DS_Store
 # C extensions
 *.so
 
