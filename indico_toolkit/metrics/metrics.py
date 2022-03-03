@@ -88,10 +88,13 @@ class ExtractionMetrics(IndicoWrapper):
         df = self.get_metrics_df(span_type=span_type)
         if ids_to_exclude:
             df = df.drop(df.loc[df["model_id"].isin(ids_to_exclude)].index)
-
+        model_ids = sorted(list(df["model_id"].unique()))
+        field_order = df.loc[df["model_id"] == model_ids[-1]].sort_values(by=metric)["field_name"].tolist()
+        df["field_name"] = df["field_name"].astype("category").cat.set_categories(field_order)
         plotting = Plotting()
-        for model_id in sorted(df["model_id"].unique()):
-            sub_df = df.loc[df["model_id"] == model_id]
+        for model_id in model_ids:
+            sub_df = df.loc[df["model_id"] == model_id].copy()
+            sub_df.sort_values(["field_name"], inplace=True)
             plotting.add_barplot_data(
                 sub_df["field_name"],
                 sub_df[metric],
