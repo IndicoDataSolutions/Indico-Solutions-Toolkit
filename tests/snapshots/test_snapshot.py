@@ -3,7 +3,6 @@ import os
 import tempfile
 from copy import deepcopy
 import pandas as pd
-from pandas.util.testing import assert_frame_equal
 from indico_toolkit import ToolkitInputError
 from indico_toolkit.snapshots import Snapshot
 

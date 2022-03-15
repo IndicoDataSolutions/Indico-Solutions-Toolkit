@@ -21,5 +21,5 @@ def test_write_subset_of_pages(manipulate_pdf_obj, values, num_pages):
         manipulate_pdf_obj.write_subset_of_pages(tf.name, values)
         with fitz.open(tf.name) as doc:
             assert doc.pageCount == num_pages
-            page_text = doc.getPageText(0)
+            page_text = doc.get_page_text(0)
             assert page_text == text_to_match

@@ -65,7 +65,7 @@ def test_highlighter_bookmarking(
     with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
         highlight.highlight_pdf(f.name, invoice_ocr_obj.page_heights_and_widths)
         doc = fitz.open(f.name)
-        toc = doc.getToC()
+        toc = doc.get_toc()
         assert len(toc) == 7
         # 5 first page labels
         assert len([i for i in toc if i[2] == 1]) == 5

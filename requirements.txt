@@ -1,6 +1,6 @@
 indico-client==4.9.0
 python-dateutil==2.8.1
-PyMuPDF==1.18.13
+PyMuPDF==1.19.6
 pytz==2021.1
 pytest==6.2.2
 pytest-dependency==0.5.1
