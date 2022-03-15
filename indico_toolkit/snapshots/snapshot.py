@@ -1,7 +1,7 @@
 from __future__ import (
     annotations,
 )  # from 3.10, don't need for same class reference in class method
-from typing import List, Union
+from typing import List, Union, Tuple
 import pandas as pd
 import os
 import json
@@ -250,12 +250,16 @@ class Snapshot:
             self.text_col = "text"
         elif "document" in self.df.columns:
             self.text_col = "document"
+        elif "source" in self.df.columns:
+            self.text_col = "source"
         else:
             error_message = self._format_column_error_message("text_col")
             raise ToolkitInstantiationError(error_message)
 
     def _infer_label_col(self):
-        question_col = [col for col in self.df.columns if "question" in col]
+        question_col = [
+            col for col in self.df.columns if "question" in col or "target" in col
+        ]
         if len(question_col) != 1:
             error_message = self._format_column_error_message("label_col")
             raise ToolkitInstantiationError(error_message)
@@ -278,3 +282,7 @@ class Snapshot:
     @property
     def number_of_samples(self) -> int:
         return self.df.shape[0]
+
+    @property
+    def shape(self) -> Tuple[int, int]:
+        return self.df.shape
