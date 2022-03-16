@@ -1,7 +1,7 @@
 import pytest
 import tempfile
 import fitz
-from indico_toolkit.pipelines import ManipulatePDF
+from indico_toolkit.pipelines.pdf_manipulation import ManipulatePDF
 
 
 @pytest.fixture(scope="function")

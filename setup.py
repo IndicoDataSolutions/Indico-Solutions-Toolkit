@@ -11,8 +11,10 @@ setup(
     tests_require=["pytest>=5.2.1", "requests-mock>=1.7.0-7", "pytest-dependency==0.5.1", "coverage>=5.5"],
     install_requires=[
         "indico-client==4.9.0",
-        "PyMuPDF==1.19.6",
         "plotly==5.2.1",
         "tqdm==4.50.0"
     ],
+    extras_require = {
+        "full": ["PyMuPDF==1.19.6"]
+    }
 )

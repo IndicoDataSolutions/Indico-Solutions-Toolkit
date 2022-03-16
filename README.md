@@ -24,6 +24,7 @@ The indico-toolkit provides classes and functions to help achieve the following:
 ```
 pip install indico_toolkit
 ```
+* If you want to use PdfHighlighter, install with `pip install 'indico_toolkit[full]'` as PyMuPDF is an optional dependency.
 
 ### Example Useage
 For scripted examples on how to use the toolkit, see the [examples directory](https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit/tree/main/examples) 

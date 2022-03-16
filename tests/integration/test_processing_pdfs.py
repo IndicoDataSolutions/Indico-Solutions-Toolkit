@@ -1,6 +1,7 @@
 import pytest
 import fitz
-from indico_toolkit.pipelines import FileProcessing, ManipulatePDF
+from indico_toolkit.pipelines import FileProcessing
+from indico_toolkit.pipelines.pdf_manipulation import ManipulatePDF
 
 def test_processing_pdfs(pdf_filepath, tmpdir_factory):
     fp = FileProcessing()
