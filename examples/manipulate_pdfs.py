@@ -1,7 +1,8 @@
 """
 Given a dataset of PDFs, write some subset of pages from each PDF to new PDFs
 """
-from indico_toolkit.pipelines import FileProcessing, ManipulatePDF
+from indico_toolkit.pipelines import FileProcessing
+from indico_toolkit.pipelines.pdf_manipulation import ManipulatePDF
 
 PDF_DIRECTORY = "./path/to/your/pdfs/"
 OUTPUT_DIRECTORY = "./path/to/output/pdfs/"

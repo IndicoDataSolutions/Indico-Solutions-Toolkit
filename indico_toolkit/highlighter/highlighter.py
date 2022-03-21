@@ -90,9 +90,9 @@ class Highlighter(ExtractedTokens):
                     color = color_map[token["label"]]
                     if isinstance(color, str):
                         color = getColor(color)
-                    ann = page.addHighlightAnnot(annotation)
-                    ann.setOpacity(highlight_opacity)
-                    ann.setColors(stroke=color)
+                    ann = page.add_highlight_annot(annotation)
+                    ann.set_opacity(highlight_opacity)
+                    ann.set_colors(stroke=color)
                     ann.update()
                 bookmarks.extend(
                     [[1, i.replace(" ", "_"), doc_page + 1] for i in labels_on_page]
@@ -100,10 +100,10 @@ class Highlighter(ExtractedTokens):
                 if add_label_annotations:
                     self._add_label_annotations(page, tokens, xnorm, ynorm)
             if add_bookmarks:
-                doc.setToC(bookmarks)
+                doc.set_toc(bookmarks)
             if metadata:
                 new_meta = self._get_new_metadata(doc.metadata, metadata)
-                doc.setMetadata(new_meta)
+                doc.set_metadata(new_meta)
             doc.save(output_path)
 
     def _get_new_metadata(self, metadata: dict, to_add: dict) -> dict:
@@ -173,5 +173,5 @@ class Highlighter(ExtractedTokens):
                     token["position"]["left"] * xnorm,
                     token["position"]["top"] * ynorm - text_height,
                 )
-                page.insertText(point, token["label"], font_size, color=getColor(color))
+                page.insert_text(point, token["label"], font_size, color=getColor(color))
                 captured_preds.add(token["prediction_index"])

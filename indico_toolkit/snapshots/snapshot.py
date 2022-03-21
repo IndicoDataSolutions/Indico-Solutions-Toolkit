@@ -93,7 +93,7 @@ class Snapshot:
             snap_to_add (Snapshot): Snapshot to add
         """
         self._assert_key_column_names_match(snap_to_add)
-        self.df = self.df.append(snap_to_add.df, ignore_index=True)
+        self.df = pd.concat([self.df, snap_to_add.df], ignore_index=True)
 
     def get_extraction_label_names(self):
         """

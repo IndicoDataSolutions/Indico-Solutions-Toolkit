@@ -25,5 +25,5 @@ test = [
     "pytest-dependency==0.5.1"
 ]
 full = [
-    "PyMuPDF==1.18.13",
+    "PyMuPDF==1.19.6",
 ]

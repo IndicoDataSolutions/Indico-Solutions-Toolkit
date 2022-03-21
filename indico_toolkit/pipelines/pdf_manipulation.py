@@ -51,7 +51,7 @@ class ManipulatePDF:
         NOTE: this is not a replacement for OCR and only meaningful with native PDFs.
         """
         self._validate_page_in_range(page_number)
-        return self._doc.getPageText(page_number)
+        return self._doc.get_page_text(page_number)
 
     def close_doc(self):
         self._doc.close()
