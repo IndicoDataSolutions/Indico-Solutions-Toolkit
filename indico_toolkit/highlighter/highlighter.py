@@ -14,16 +14,13 @@ from indico_toolkit import ToolkitInstantiationError
 
 
 class Highlighter(ExtractedTokens):
-    def __init__(self, predictions: List[dict], path_to_pdf: str, mapped_positions: List[dict] = []):
+    def __init__(self, predictions: List[dict], path_to_pdf: str):
         """
         Highlight predictions using source PDF documents
         Args:
             predictions (List[dict]): Extraction predictions
             path_to_pdf (str): Path to the predictions' doc
-        Kwargs:
-            mapped_positions (List[dict]): if you have already collected the positions of the tokens to highlight,
-                                           pass them in here and skip the "collect_tokens" call. You can also 
-                                           pass a filler value for "predictions"
+        
         Example:
             highlight = Highlighter(preds, "./myfile.pdf")
             highlight.collect_tokens(ondoc.token_objects)
@@ -34,12 +31,22 @@ class Highlighter(ExtractedTokens):
                 )
         """
         super().__init__(predictions)
-        self._mapped_positions = mapped_positions
         if not path_to_pdf.lower().endswith(".pdf"):
             raise ToolkitInstantiationError(
                 f"Highlighter requires PDF files, not {path_to_pdf[-4:]}"
             )
         self.path_to_pdf = path_to_pdf
+
+
+    def set_mapped_positions(self, mapped_positions):
+        """
+        Call this method instead of the super class's collect_tokens method if the token positions are already mapped.
+
+        Arguments:
+            mapped_positions (List[dict])
+        """
+        self._mapped_positions = mapped_positions
+
 
     def highlight_pdf(
         self,
