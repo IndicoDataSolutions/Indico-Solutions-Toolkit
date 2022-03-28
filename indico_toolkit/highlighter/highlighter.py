@@ -3,6 +3,7 @@ from collections import defaultdict
 import fitz
 from fitz import Page
 from fitz.utils import getColor, getColorList
+from faker import Faker
 import numpy as np
 
 from indico_toolkit.association import ExtractedTokens
@@ -57,7 +58,7 @@ class Highlighter(ExtractedTokens):
 
         Arguments:
             output_path {str} -- path of labeled PDF copy to create (set to same as pdf_path to overwrite)
-             page_dimensions: {List[dict]} -- page heights and widths from ondocument OCR result, see
+            page_dimensions: {List[dict]} -- page heights and widths from ondocument OCR result, see
                                               Ondoc class and page_heights_and_widths property
             all_yellow_highlight (bool) -- if True, all highlights are yellow, otherwise, each field gets a unique color
             color_map (dict) -- Optionally, specify what highlight color to apply to each field, use get_color_list() method
@@ -105,6 +106,119 @@ class Highlighter(ExtractedTokens):
                 new_meta = self._get_new_metadata(doc.metadata, metadata)
                 doc.set_metadata(new_meta)
             doc.save(output_path)
+
+    def redact_pdf(
+        self,
+        output_path: str,
+        page_dimensions: List[dict],
+        color_black: bool = True
+    ):
+        """
+        Redact predicted text from a copy of a source PDF. Currently, you still need to convert
+        your PDF to image files afterward to ensure PI is fully removed from the underlying data.
+
+        Arguments:
+            output_path {str} -- path of labeled PDF copy to create (set to same as pdf_path to overwrite)
+            page_dimensions: {List[dict]} -- page heights and widths from ondocument OCR result, see
+                                              Ondoc class and page_heights_and_widths property
+            color_black {bool} -- if True, redactions are made with a black mark, else they are made with a white mark
+        """
+        if color_black:
+            color = (0, 0, 0)
+        else:
+            color = (1, 1, 1)
+        with fitz.open(self.path_to_pdf) as doc:
+            for doc_page, tokens in self.mapped_positions_by_page.items():
+                page = doc[doc_page]
+                xnorm = page.rect[2] / page_dimensions[doc_page]["width"]
+                ynorm = page.rect[3] / page_dimensions[doc_page]["height"]
+                for token in tokens:
+                    annotation = fitz.Rect(
+                        token["position"]["bbLeft"] * xnorm,
+                        token["position"]["bbTop"] * ynorm,
+                        token["position"]["bbRight"] * xnorm,
+                        token["position"]["bbBot"] * ynorm,
+                    )
+                    inflater = annotation.height * 0.1
+                    annotation.x0, annotation.y0 = (
+                        annotation.x0 - inflater,
+                        annotation.y0 - inflater,
+                    )
+                    annotation.x1, annotation.y1 = (
+                        annotation.x1 + inflater,
+                        annotation.y1 + inflater,
+                    )
+                    page.add_redact_annot(annotation, fill=color)
+                page.apply_redactions()
+            doc.save(output_path)
+        print(
+            f"*Important* to ensure that underlying data can't be recovered, convert {output_path} to a png, tif, or scanned pdf file"
+        )
+
+    def redact_and_replace(
+        self,
+        output_path: str,
+        page_dimensions: List[dict],
+        fill_text: dict
+    ):
+        """
+        Redact predicted text from a copy of a source PDF and replace if with fake values based on 
+        label keys. For a full list of fake data options, see: https://github.com/joke2k/faker). 
+
+        Arguments:
+            output_path {str} -- path of labeled PDF copy to create (set to same as pdf_path to overwrite)
+            page_dimensions: {List[dict]} -- page heights and widths from ondocument OCR result, see
+                                              Ondoc class and page_heights_and_widths property
+            fill_text {dict} -- a dictionary where the keys are your labels and the val is an option from the
+                                faker library. Possible options include 'text', 'company', 'currency', 'numerify',
+                                'address', 'name', 'company_email', 'date' and many more. With 'numerify' and
+                                'text', fake data will match the length of the redacted data.
+        Example:
+            # add a key to fill_text for each label in your extraction task w/ allowed fake data method
+            fill_text = dict(member='name', birthday='date', invoice_number='numerify')
+            highlight.redact_and_replace('source.pdf', 'redacted.pdf', fill_text=fill_text)
+        """
+        fake = Faker()
+        with fitz.open(self.path_to_pdf) as doc:
+            for doc_page, tokens in self.mapped_positions_by_page.items():
+                page = doc[doc_page]
+                xnorm = page.rect[2] / page_dimensions[doc_page]["width"]
+                ynorm = page.rect[3] / page_dimensions[doc_page]["height"]
+                for token in tokens:
+                    annotation = fitz.Rect(
+                        token["position"]["bbLeft"] * xnorm,
+                        token["position"]["bbTop"] * ynorm,
+                        token["position"]["bbRight"] * xnorm,
+                        token["position"]["bbBot"] * ynorm,
+                    )
+                    inflater = annotation.height * 0.1
+                    annotation.x0, annotation.y0 = (
+                        annotation.x0 - inflater,
+                        annotation.y0 - inflater,
+                    )
+                    annotation.x1, annotation.y1 = (
+                        annotation.x1 + inflater,
+                        annotation.y1 + inflater,
+                    )
+                    if "label" in token and token["label"] in fill_text:
+                        label_type = fill_text[token["label"]]
+                        if label_type == "numerify":
+                            text = getattr(fake, label_type)(len(token["label"]) * "#")
+                        elif label_type == "text":
+                            text = getattr(fake, label_type)(len(token["label"]))
+                        else:
+                            text = getattr(fake, label_type)()
+                        page.add_redact_annot(
+                            annotation, text=text, fill=(1, 1, 1), fontsize=15
+                        )
+                    else:
+                        # second line of single prediction redacted
+                        page.add_redact_annot(annotation, fill=(1, 1, 1))
+                    page.apply_redactions()
+            doc.save(output_path)
+        print(
+            f"*Important* to ensure that underlying data can't be recovered, convert {output_path} to a png, tif, or scanned pdf file"
+        )
 
     def _get_new_metadata(self, metadata: dict, to_add: dict) -> dict:
         for key, val in to_add.items():

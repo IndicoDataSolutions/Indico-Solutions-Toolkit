@@ -56,6 +56,32 @@ def test_highlighter_highlight_pdf(
         num_highlights = sum([1 for page in doc for annotation in page.annots()])
         assert num_highlights == number_of_tokens_to_highlight
 
+def test_highlighter_redact_pdf(
+    invoice_predictions, invoice_ocr_obj, highlighter_pdf_path
+):
+    highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
+    highlight.collect_tokens(invoice_ocr_obj.token_objects)
+    with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
+        highlight.redact_pdf(f.name, invoice_ocr_obj.page_heights_and_widths)
+        doc = fitz.open(f.name)
+        num_remaining_redact_annot = sum([1 for page in doc for annotation in page.annots(types=[fitz.PDF_ANNOT_REDACT])])
+        assert num_remaining_redact_annot == 0
+
+def test_highlighter_redact_and_replace_pdf(
+    invoice_predictions, invoice_ocr_obj, highlighter_pdf_path
+):
+    highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
+    highlight.collect_tokens(invoice_ocr_obj.token_objects)
+    fill_text = {
+        highlight._mapped_positions[0]["label"]: 'text',
+        highlight._mapped_positions[1]["label"]: 'numerify',
+        highlight._mapped_positions[2]["label"]: 'name',
+    }
+    with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
+        highlight.redact_and_replace(f.name, invoice_ocr_obj.page_heights_and_widths, fill_text)
+        doc = fitz.open(f.name)
+        num_remaining_redact_annot = sum([1 for page in doc for annotation in page.annots(types=[fitz.PDF_ANNOT_REDACT])])
+        assert num_remaining_redact_annot == 0
 
 def test_highlighter_bookmarking(
     invoice_predictions, invoice_ocr_obj, highlighter_pdf_path
