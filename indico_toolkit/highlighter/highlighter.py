@@ -81,12 +81,7 @@ class Highlighter(ExtractedTokens):
                 xnorm = page.rect[2] / page_dimensions[doc_page]["width"]
                 ynorm = page.rect[3] / page_dimensions[doc_page]["height"]
                 for token in tokens:
-                    annotation = fitz.Rect(
-                        token["position"]["bbLeft"] * xnorm,
-                        token["position"]["bbTop"] * ynorm,
-                        token["position"]["bbRight"] * xnorm,
-                        token["position"]["bbBot"] * ynorm,
-                    )
+                    annotation = self._get_annotation(token["position"], xnorm, ynorm)
                     labels_on_page.add(token["label"])
                     color = color_map[token["label"]]
                     if isinstance(color, str):
@@ -117,12 +112,16 @@ class Highlighter(ExtractedTokens):
         Redact predicted text from a copy of a source PDF. Currently, you still need to convert
         your PDF to image files afterward to ensure PI is fully removed from the underlying data.
 
+        Returns num of redactions for testing purposes since apply_redactions() deletes all redact 
+        annotations: (https://github.com/pymupdf/PyMuPDF/issues/434)
+
         Arguments:
             output_path {str} -- path of labeled PDF copy to create (set to same as pdf_path to overwrite)
             page_dimensions: {List[dict]} -- page heights and widths from ondocument OCR result, see
                                               Ondoc class and page_heights_and_widths property
             color_black {bool} -- if True, redactions are made with a black mark, else they are made with a white mark
         """
+        num_redactions = 0
         if color_black:
             color = (0, 0, 0)
         else:
@@ -133,27 +132,15 @@ class Highlighter(ExtractedTokens):
                 xnorm = page.rect[2] / page_dimensions[doc_page]["width"]
                 ynorm = page.rect[3] / page_dimensions[doc_page]["height"]
                 for token in tokens:
-                    annotation = fitz.Rect(
-                        token["position"]["bbLeft"] * xnorm,
-                        token["position"]["bbTop"] * ynorm,
-                        token["position"]["bbRight"] * xnorm,
-                        token["position"]["bbBot"] * ynorm,
-                    )
-                    inflater = annotation.height * 0.1
-                    annotation.x0, annotation.y0 = (
-                        annotation.x0 - inflater,
-                        annotation.y0 - inflater,
-                    )
-                    annotation.x1, annotation.y1 = (
-                        annotation.x1 + inflater,
-                        annotation.y1 + inflater,
-                    )
+                    annotation = self._get_annotation(token["position"], xnorm, ynorm)
                     page.add_redact_annot(annotation, fill=color)
+                num_redactions += sum([1 for _ in page.annots()])
                 page.apply_redactions()
             doc.save(output_path)
         print(
             f"*Important* to ensure that underlying data can't be recovered, convert {output_path} to a png, tif, or scanned pdf file"
         )
+        return num_redactions
 
     def redact_and_replace(
         self,
@@ -164,6 +151,11 @@ class Highlighter(ExtractedTokens):
         """
         Redact predicted text from a copy of a source PDF and replace if with fake values based on 
         label keys. For a full list of fake data options, see: https://github.com/joke2k/faker). 
+
+        If no label found, defaults to redact with white color
+
+        Returns num of redactions for testing purposes since apply_redactions() deletes all redact 
+        annotations: (https://github.com/pymupdf/PyMuPDF/issues/434)
 
         Arguments:
             output_path {str} -- path of labeled PDF copy to create (set to same as pdf_path to overwrite)
@@ -178,48 +170,59 @@ class Highlighter(ExtractedTokens):
             fill_text = dict(member='name', birthday='date', invoice_number='numerify')
             highlight.redact_and_replace('source.pdf', 'redacted.pdf', fill_text=fill_text)
         """
+        num_redactions = 0
         fake = Faker()
         with fitz.open(self.path_to_pdf) as doc:
-            for doc_page, tokens in self.mapped_positions_by_page.items():
+            for pred in self._predictions:
+                pred_positions = [pos for pos in sorted(self._mapped_positions, key=lambda x: x["position"]["bbLeft"]) if pos["text"] == pred["text"]]
+                pred_position = pred_positions[0]
+                # Adjust bbRight to contain right bounding box of pred instead of token
+                pred_position["position"]["bbRight"] = pred_positions[-1]["position"]["bbRight"]
+                doc_page = pred_position["page_num"]
                 page = doc[doc_page]
                 xnorm = page.rect[2] / page_dimensions[doc_page]["width"]
                 ynorm = page.rect[3] / page_dimensions[doc_page]["height"]
-                for token in tokens:
-                    annotation = fitz.Rect(
-                        token["position"]["bbLeft"] * xnorm,
-                        token["position"]["bbTop"] * ynorm,
-                        token["position"]["bbRight"] * xnorm,
-                        token["position"]["bbBot"] * ynorm,
-                    )
-                    inflater = annotation.height * 0.1
-                    annotation.x0, annotation.y0 = (
-                        annotation.x0 - inflater,
-                        annotation.y0 - inflater,
-                    )
-                    annotation.x1, annotation.y1 = (
-                        annotation.x1 + inflater,
-                        annotation.y1 + inflater,
-                    )
-                    if "label" in token and token["label"] in fill_text:
-                        label_type = fill_text[token["label"]]
-                        if label_type == "numerify":
-                            text = getattr(fake, label_type)(len(token["label"]) * "#")
-                        elif label_type == "text":
-                            text = getattr(fake, label_type)(len(token["label"]))
-                        else:
-                            text = getattr(fake, label_type)()
-                        page.add_redact_annot(
-                            annotation, text=text, fill=(1, 1, 1), fontsize=15
-                        )
+                annotation = self._get_annotation(pred_position["position"], xnorm, ynorm)
+                if "label" in pred and pred["label"] in fill_text:
+                    label_type = fill_text[pred["label"]]
+                    if label_type == "numerify":
+                        text = getattr(fake, label_type)(len(pred["text"]) * "#")
+                    elif label_type == "text":
+                        text = getattr(fake, label_type)(max(5, len(pred["text"])))
                     else:
-                        # second line of single prediction redacted
-                        page.add_redact_annot(annotation, fill=(1, 1, 1))
-                    page.apply_redactions()
+                        text = getattr(fake, label_type)()
+                    page.add_redact_annot(
+                        annotation, text=text, fill=False, fontsize=15
+                    )
+                else:
+                    # second line of single prediction redacted
+                    page.add_redact_annot(annotation, fill=(1, 1, 1))
+                num_redactions += sum([1 for _ in page.annots()])
+                page.apply_redactions()
             doc.save(output_path)
         print(
             f"*Important* to ensure that underlying data can't be recovered, convert {output_path} to a png, tif, or scanned pdf file"
         )
+        return num_redactions
 
+    def _get_annotation(self, position: List, xnorm, ynorm):
+        annotation = fitz.Rect(
+            position["bbLeft"] * xnorm,
+            position["bbTop"] * ynorm,
+            position["bbRight"] * xnorm,
+            position["bbBot"] * ynorm,
+        )
+        inflater = annotation.height * 0.1
+        annotation.x0, annotation.y0 = (
+            annotation.x0 - inflater,
+            annotation.y0 - inflater,
+        )
+        annotation.x1, annotation.y1 = (
+            annotation.x1 + inflater,
+            annotation.y1 + inflater,
+        )
+        return annotation
+    
     def _get_new_metadata(self, metadata: dict, to_add: dict) -> dict:
         for key, val in to_add.items():
             metadata[key] = val
