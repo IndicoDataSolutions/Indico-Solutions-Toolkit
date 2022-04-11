@@ -12,7 +12,7 @@ def highlighter_data_path(testdir_file_path):
 
 
 @pytest.fixture(scope="session")
-def highlighter_pdf_path(highlighter_data_path):
+def invoice_pdf_path(highlighter_data_path):
     return os.path.join(highlighter_data_path, "invoice_sample.pdf")
 
 
@@ -26,10 +26,25 @@ def invoice_predictions(highlighter_data_path):
     return pickle.load(open(os.path.join(highlighter_data_path, "predictions.p"), "rb"))
 
 
+@pytest.fixture(scope="session")
+def fcc_pdf_path(highlighter_data_path):
+    return os.path.join(highlighter_data_path,"fcc_doc.pdf")
+
+
+@pytest.fixture(scope="session")
+def fcc_ocr_obj(highlighter_data_path):
+    return pickle.load(open(os.path.join(highlighter_data_path, "fcc_ocr_obj.p"), "rb"))
+
+
+@pytest.fixture(scope = "session")
+def fcc_predictions(highlighter_data_path):
+    return pickle.load(open(os.path.join(highlighter_data_path, "fcc_predictions.p"), "rb"))
+
+
 def test_highlighter_collect_tokens(
-    invoice_predictions, invoice_ocr_obj, highlighter_pdf_path
+    invoice_predictions, invoice_ocr_obj, invoice_pdf_path
 ):
-    highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
+    highlight = Highlighter(invoice_predictions, invoice_pdf_path)
     highlight.collect_tokens(invoice_ocr_obj.token_objects)
     assert len(highlight._errored_predictions) == 0
     assert isinstance(highlight._mapped_positions, list)
@@ -45,9 +60,9 @@ def test_highlighter_collect_tokens(
 
 
 def test_highlighter_highlight_pdf(
-    invoice_predictions, invoice_ocr_obj, highlighter_pdf_path
+    invoice_predictions, invoice_ocr_obj, invoice_pdf_path
 ):
-    highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
+    highlight = Highlighter(invoice_predictions, invoice_pdf_path)
     highlight.collect_tokens(invoice_ocr_obj.token_objects)
     number_of_tokens_to_highlight = len(highlight._mapped_positions)
     with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
@@ -58,9 +73,9 @@ def test_highlighter_highlight_pdf(
         # doc.save("tests/highlighter/data/test_highlighter.pdf")
 
 def test_highlighter_redact_pdf(
-    invoice_predictions, invoice_ocr_obj, highlighter_pdf_path
+    invoice_predictions, invoice_ocr_obj, invoice_pdf_path
 ):
-    highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
+    highlight = Highlighter(invoice_predictions, invoice_pdf_path)
     highlight.collect_tokens(invoice_ocr_obj.token_objects)
     number_of_tokens_to_redact = len(highlight._mapped_positions)
     with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
@@ -70,9 +85,9 @@ def test_highlighter_redact_pdf(
         # doc.save("tests/highlighter/data/test_highlighter_redact.pdf")
 
 def test_highlighter_redact_and_replace_pdf(
-    invoice_predictions, invoice_ocr_obj, highlighter_pdf_path
+    invoice_predictions, invoice_ocr_obj, invoice_pdf_path
 ):
-    highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
+    highlight = Highlighter(invoice_predictions, invoice_pdf_path)
     highlight.collect_tokens(invoice_ocr_obj.token_objects)
     number_of_tokens_to_redact_and_replace = len(highlight._predictions)
     fill_text = {
@@ -89,9 +104,9 @@ def test_highlighter_redact_and_replace_pdf(
         # doc.save("tests/highlighter/data/test_highlighter_redact_and_replace.pdf")
 
 def test_highlighter_bookmarking(
-    invoice_predictions, invoice_ocr_obj, highlighter_pdf_path
+    invoice_predictions, invoice_ocr_obj, invoice_pdf_path
 ):
-    highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
+    highlight = Highlighter(invoice_predictions, invoice_pdf_path)
     highlight.collect_tokens(invoice_ocr_obj.token_objects)
     with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
         highlight.highlight_pdf(f.name, invoice_ocr_obj.page_heights_and_widths)
@@ -107,11 +122,11 @@ def test_highlighter_bookmarking(
 def test_highlight_colors(
     invoice_predictions,
     invoice_ocr_obj,
-    highlighter_pdf_path,
+    invoice_pdf_path,
     all_yellow_bool,
     unique_color_count,
 ):
-    highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
+    highlight = Highlighter(invoice_predictions, invoice_pdf_path)
     highlight.collect_tokens(invoice_ocr_obj.token_objects)
     with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
         highlight.highlight_pdf(
@@ -139,9 +154,9 @@ def test_get_label_color_hash():
 def test_add_label_annotations(
     invoice_predictions,
     invoice_ocr_obj,
-    highlighter_pdf_path,
+    invoice_pdf_path,
 ):
-    highlight = Highlighter(invoice_predictions, highlighter_pdf_path)
+    highlight = Highlighter(invoice_predictions, invoice_pdf_path)
     highlight.collect_tokens(invoice_ocr_obj.token_objects)
     with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
         highlight.highlight_pdf(
@@ -156,3 +171,25 @@ def test_add_label_annotations(
         for label in all_labels:
             assert label in alltext
         assert doc.metadata["keywords"] == "Something, Something else"
+
+
+def test_highlight_two_documents(highlighter_data_path, invoice_predictions, invoice_ocr_obj, invoice_pdf_path, fcc_predictions, fcc_ocr_obj, fcc_pdf_path):
+    highlight = Highlighter(invoice_predictions, invoice_pdf_path)
+    highlight.collect_tokens(invoice_ocr_obj.token_objects)
+    number_of_tokens_to_highlight = len(highlight._mapped_positions)
+    with open(os.path.join(highlighter_data_path,"highlighted_invoice.pdf"), 'wb') as f:
+        highlight.highlight_pdf(f.name, invoice_ocr_obj.page_heights_and_widths)
+        doc = fitz.open(f.name)
+        num_highlights = sum([1 for page in doc for annotation in page.annots()])
+        assert num_highlights == number_of_tokens_to_highlight
+
+
+    highlight_2 = Highlighter(fcc_predictions, fcc_pdf_path)
+    highlight_2.collect_tokens(fcc_ocr_obj.token_objects)
+    number_of_tokens_to_highlight = len(highlight_2._mapped_positions)
+    assert any([t not in highlight._mapped_positions for t in highlight_2._mapped_positions])
+    with open(os.path.join(highlighter_data_path,"highlighted_fcc.pdf"), 'wb') as f:
+        highlight_2.highlight_pdf(f.name, fcc_ocr_obj.page_heights_and_widths)
+        doc = fitz.open(f.name)
+        num_highlights = sum([1 for page in doc for annotation in page.annots()])
+        assert num_highlights == number_of_tokens_to_highlight

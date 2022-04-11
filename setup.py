@@ -12,7 +12,8 @@ setup(
     install_requires=[
         "indico-client==4.9.0",
         "plotly==5.2.1",
-        "tqdm==4.50.0"
+        "tqdm==4.50.0",
+        "faker==13.3.3",
     ],
     extras_require = {
         "full": ["PyMuPDF==1.19.6"]
