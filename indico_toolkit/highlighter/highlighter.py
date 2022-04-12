@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Dict
 from collections import defaultdict
 import fitz
 from fitz import Page
@@ -114,13 +114,12 @@ class Highlighter(ExtractedTokens):
         output_path: str,
         page_dimensions: List[dict],
         color_black: bool = True
-    ):
+    ) -> int:
         """
         Redact predicted text from a copy of a source PDF. Currently, you still need to convert
         your PDF to image files afterward to ensure PI is fully removed from the underlying data.
 
-        Returns num of redactions for testing purposes since apply_redactions() deletes all redact 
-        annotations: (https://github.com/pymupdf/PyMuPDF/issues/434)
+        Returns number of redactions
 
         Arguments:
             output_path {str} -- path of labeled PDF copy to create (set to same as pdf_path to overwrite)
@@ -154,15 +153,14 @@ class Highlighter(ExtractedTokens):
         output_path: str,
         page_dimensions: List[dict],
         fill_text: dict
-    ):
+    ) -> int:
         """
         Redact predicted text from a copy of a source PDF and replace if with fake values based on 
         label keys. For a full list of fake data options, see: https://github.com/joke2k/faker). 
 
         If no label found, defaults to redact with white color
 
-        Returns num of redactions for testing purposes since apply_redactions() deletes all redact 
-        annotations: (https://github.com/pymupdf/PyMuPDF/issues/434)
+        Returns number of redactions 
 
         Arguments:
             output_path {str} -- path of labeled PDF copy to create (set to same as pdf_path to overwrite)
@@ -212,13 +210,19 @@ class Highlighter(ExtractedTokens):
         )
         return num_redactions
 
-    def _get_annotation(self, position: List, xnorm, ynorm):
+    def _get_annotation(
+        self, 
+        position: List, 
+        xnorm: float, 
+        ynorm: float
+    ) -> fitz.Rect:
         annotation = fitz.Rect(
             position["bbLeft"] * xnorm,
             position["bbTop"] * ynorm,
             position["bbRight"] * xnorm,
             position["bbBot"] * ynorm,
         )
+        # ensure that we cover a bit more than the bounding box
         inflater = annotation.height * 0.1
         annotation.x0, annotation.y0 = (
             annotation.x0 - inflater,
@@ -235,7 +239,7 @@ class Highlighter(ExtractedTokens):
             metadata[key] = val
         return metadata
 
-    def _get_page_label_counts(self, tokens: List[dict]):
+    def _get_page_label_counts(self, tokens: List[dict]) -> Dict[str, int]:
         already_found = []
         unique_preds = []
         for token in tokens:
@@ -244,7 +248,7 @@ class Highlighter(ExtractedTokens):
                 unique_preds.append(token)
         return Extractions(unique_preds).label_count_dict
 
-    def get_label_color_hash(self):
+    def get_label_color_hash(self) -> dict:
         """
         Create a unique random highlight color for each label in hash table
         """
