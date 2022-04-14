@@ -19,6 +19,7 @@ The indico-toolkit provides classes and functions to help achieve the following:
 * Finder class to quicky obtain associated model/dataset/workflow Ids.
 * Snapshot merging and manipulation
 * Class to spoof a human reviewer.
+* Gather user metrics and write to disk. 
 
 ### Installation
 ```
