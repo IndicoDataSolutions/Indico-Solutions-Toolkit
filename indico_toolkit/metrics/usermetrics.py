@@ -30,7 +30,7 @@ class UserMetrics(IndicoWrapper):
         """
         Get a dataframe of user metrics in the caller's cluster
         Args:
-            columns (List[str]): List of columns to include in the dataframe (OPTIONAL) - defaults to all 
+            columns (List[str]): List of columns to include in the dataframe (OPTIONAL) - defaults to all
             date (datetime): specific date to query - defaults to current datetime (OPTIONAL)
             filter_user_id (int): user_id to filter for (OPTIONAL)
             filter_email (str): user email to filter for (OPTIONAL)
@@ -83,7 +83,7 @@ class UserMetrics(IndicoWrapper):
         Write a CSV to disc of user metrics from the cluster
         Args:
             output_path (str): path to write CSV on your system, e.g. "./user_metrics.csv"
-            columns (List[str]): List of columns to include in the dataframe (OPTIONAL) - defaults to all 
+            columns (List[str]): List of columns to include in the dataframe (OPTIONAL) - defaults to all
             date (datetime): specific date to query - defaults to current datetime (OPTIONAL)
             filter_user_id (int): user_id to filter for (OPTIONAL)
             filter_email (str): user email to filter for (OPTIONAL)

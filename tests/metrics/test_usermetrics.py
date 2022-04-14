@@ -5,6 +5,7 @@ from typing import List
 
 from indico_toolkit.metrics import UserMetrics
 
+
 @pytest.fixture(scope="module")
 def ex_user_metrics_object(indico_client):
     user_metrics = UserMetrics(indico_client)

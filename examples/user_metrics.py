@@ -14,10 +14,10 @@ client = create_client(HOST, API_TOKEN_PATH)
 Example 1: Create a dataframe of user metrics with columns id, name, and email
 """
 user_metrics = UserMetrics(client)
-df = user_metrics.get_user_metrics_df(columns = ["id", "name", "email"])
+df = user_metrics.get_user_metrics_df(columns=["id", "name", "email"])
 
 """
 Example 2: Write to disk a csv with all availble user metrics columns
 """
-#default column is all
+# default column is all
 user_metrics.to_csv("./my_user_metrics.csv")
