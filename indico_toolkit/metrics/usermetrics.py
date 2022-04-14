@@ -62,3 +62,31 @@ class UserMetrics(IndicoWrapper):
         df = pd.DataFrame(all_user_metrics)
         df.columns = columns
         return df
+
+    def to_csv(
+        self,
+        output_path: str,
+        columns: List[str] = [
+            "id",
+            "name",
+            "email",
+            "enabled",
+            "roles",
+            "created_at",
+            "datasets",
+        ],
+        date: datetime = datetime.now(),
+        filter_user_id: int = None,
+        filter_email: str = None,
+    ):
+        """
+        Write a CSV to disc of user metrics from the cluster
+        Args:
+            output_path (str): path to write CSV on your system, e.g. "./user_metrics.csv"
+            columns (List[str]): List of columns to include in the dataframe (OPTIONAL) - defaults to all 
+            date (datetime): specific date to query - defaults to current datetime (OPTIONAL)
+            filter_user_id (int): user_id to filter for (OPTIONAL)
+            filter_email (str): user email to filter for (OPTIONAL)
+        """
+        df = self.get_user_metrics_df(columns, date, filter_user_id, filter_email)
+        df.to_csv(output_path, index=False)
