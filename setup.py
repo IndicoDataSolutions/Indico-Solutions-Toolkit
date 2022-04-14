@@ -10,7 +10,7 @@ setup(
     author_email="engineering@indico.io",
     tests_require=["pytest>=5.2.1", "requests-mock>=1.7.0-7", "pytest-dependency==0.5.1", "coverage>=5.5"],
     install_requires=[
-        "indico-client==4.9.0",
+        "indico-client==5.0.1",
         "plotly==5.2.1",
         "tqdm==4.50.0"
     ],
