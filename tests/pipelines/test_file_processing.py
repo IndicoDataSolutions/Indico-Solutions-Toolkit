@@ -1,3 +1,4 @@
+import json
 import pytest
 from pathlib import Path
 import os
@@ -53,3 +54,9 @@ def test_remove_specified_files(testdir_file_path):
     fileproc.remove_files_if_processed(processed_files)
     assert file_to_remove not in fileproc.file_paths
 
+
+def test_read_json(testdir_file_path):
+    json_path = os.path.join(testdir_file_path, "data/samples/fin_disc_result.json")
+    obj = FileProcessing.read_json(json_path)
+    assert isinstance(obj, dict)
+    assert "submission_id" in obj
