@@ -1,7 +1,8 @@
 import os
+import json
 from os.path import isfile
 from pathlib import Path
-from typing import List, Tuple, Callable, Iterable
+from typing import List, Tuple, Union, Iterable
 
 
 class FileProcessing:
@@ -61,6 +62,11 @@ class FileProcessing:
                 unprocessed_filepaths.append(filepath)
         print(f"Removing {len(self.file_paths) - len(unprocessed_filepaths)} files from file_paths")
         self.file_paths = unprocessed_filepaths
+
+    @staticmethod
+    def read_json(path_to_json: str) -> Union[dict, list]:
+        with open(path_to_json, "r") as f:
+            return json.load(f)
 
     @staticmethod
     def file_exists(path_to_file: str) -> bool:
