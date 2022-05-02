@@ -45,10 +45,16 @@ class FileProcessing:
             f"Found {len(self.file_paths)} valid files and {len(self.invalid_suffix_paths)} paths with invalid suffixes."
         )
 
-    def move_all_file_paths(self, path_to_dir, destination_dir):
-        for root, dirs, files, in os.walk(path_to_dir):
-            for file in files:
-                os.rename(os.path.join(root, file), f'{destination_dir}/{file}')
+    def move_all_file_paths(
+        self, 
+        path_to_dir,
+        destination_dir,
+        accepted_types: Tuple[str] = ("pdf", "tiff", "tif", "doc", "docx")
+    ):
+        self.get_file_paths_from_dir(path_to_dir, accepted_types, True)
+        for file in self.file_paths:
+            filename = os.path.basename(file)
+            os.rename((file), f'{destination_dir}/{filename}')
 
     def batch_files(self, batch_size: int = 20) -> List[str]:
         for i in range(0, len(self.file_paths), batch_size):
@@ -130,3 +136,9 @@ class FileProcessing:
         if string.lower().endswith(accepted_suffixes):
             return True
         return False
+
+# origin = '/home/indico/Documents/projects/data-set-testing/Location_Start/'
+# destination = '/home/indico/Documents/projects/data-set-testing/Location_Target/'
+# test = FileProcessing()
+
+# test.move_all_file_paths(origin, destination)
