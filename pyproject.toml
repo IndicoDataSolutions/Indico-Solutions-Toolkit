@@ -13,7 +13,7 @@ home-page = "https://github.com/IndicoDataSolutions/Indico-Solutions-Toolkit"
 classifiers = [ "License :: OSI Approved :: MIT License",]
 description-file = "README.md"
 requires = [
-    "indico-client==4.9.0",
+    "indico-client==5.1.1",
     "plotly==5.2.1",
     "tqdm==4.50.0",
     "faker==13.3.3",
