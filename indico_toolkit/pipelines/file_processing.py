@@ -1,9 +1,10 @@
 import os
 import json
-from os.path import isfile
+from os.path import isfile, isdir
 from pathlib import Path
 from typing import List, Tuple, Union, Iterable
-
+import shutil
+import tempfile
 
 class FileProcessing:
     """
@@ -47,14 +48,25 @@ class FileProcessing:
 
     def move_all_file_paths(
         self, 
-        path_to_dir,
+        origin_dir,
         destination_dir,
-        accepted_types: Tuple[str] = ("pdf", "tiff", "tif", "doc", "docx")
+        accepted_types: Tuple[str],
+        copy_files: bool = False,
     ):
-        self.get_file_paths_from_dir(path_to_dir, accepted_types, True)
-        for file in self.file_paths:
-            filename = os.path.basename(file)
-            os.rename((file), f'{destination_dir}/{filename}')
+        self.get_file_paths_from_dir(origin_dir, accepted_types, True)
+        if os.path.isdir(destination_dir):
+            if destination_dir[-1] != '/':
+                destination_dir = f'{destination_dir}/'
+            for initial_filepath in self.file_paths:
+                file_to_be_moved = os.path.basename(initial_filepath)
+                if copy_files == False:
+                    os.rename(initial_filepath, f'{destination_dir}{file_to_be_moved}')
+                else: 
+                    shutil.copyfile(initial_filepath, f'{destination_dir}{file_to_be_moved}') 
+        else:
+            raise Exception(
+                f'{destination_dir} is not a valid directory'
+            )
 
     def batch_files(self, batch_size: int = 20) -> List[str]:
         for i in range(0, len(self.file_paths), batch_size):
@@ -136,9 +148,3 @@ class FileProcessing:
         if string.lower().endswith(accepted_suffixes):
             return True
         return False
-
-# origin = '/home/indico/Documents/projects/data-set-testing/Location_Start/'
-# destination = '/home/indico/Documents/projects/data-set-testing/Location_Target/'
-# test = FileProcessing()
-
-# test.move_all_file_paths(origin, destination)

@@ -31,14 +31,15 @@ def test_get_file_paths_from_dir_recursive(testdir_file_path):
     for fpath in fileproc.file_paths:
         assert fpath.endswith(".json")
 
+
 def test_move_all_filepaths():
     fileproc = FileProcessing()
     with tempfile.TemporaryDirectory() as temp_dir_one:
         temp_dir_two = tempfile.TemporaryDirectory()
         temp = tempfile.NamedTemporaryFile(dir=temp_dir_one, suffix='.pdf')
-        print(temp.name)
-        fileproc.move_all_file_paths(temp_dir_one,temp_dir_two.name)    
+        fileproc.move_all_file_paths(temp_dir_one,temp_dir_two.name,('pdf'),True)    
         assert os.listdir(temp_dir_two.name) == [f'{os.path.basename(temp.name)}']
+
 
 def test_batch_files(testdir_file_path):
     test_dir = os.path.join(testdir_file_path, "data/auto_class/")
