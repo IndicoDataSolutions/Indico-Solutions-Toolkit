@@ -89,3 +89,13 @@
 
 ### Fixed 
 * Optional dependencies to support M1 installation
+
+## 1.2.4 5/03/2022
+
+### Added
+
+* New feature in FileProcessing class to read and return file as json
+* New feature in Highlighter class to redact and replace data in file with spoofed data.
+
+### Fixes 
+* Updates client to 5.0.1
