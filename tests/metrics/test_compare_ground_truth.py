@@ -31,6 +31,7 @@ def generate_pred(
 
 
 # TODO add in a comment for each test to expalin why they are distinct
+# TODO separate out tests to be able to check for different types of failures
 
 
 def test_compare_ground_truth():

@@ -1,4 +1,5 @@
 from typing import List
+from indico_toolkit.association.association import sequences_overlap
 
 
 class CompareGroundTruth:
@@ -25,13 +26,6 @@ class CompareGroundTruth:
                 labels.append(label)
 
         self.labels = labels
-
-    # TODO import this function from toolkit since it already exists
-    def _sequences_overlap(self, x: dict, y: dict) -> bool:
-        """
-        Boolean return value indicates whether or not seqs overlap
-        """
-        return x["start"] < y["end"] and y["start"] < x["end"]
 
     def _get_precision(self, true_p: int, false_p: int) -> float:
         try:
@@ -63,7 +57,7 @@ class CompareGroundTruth:
             for model_pred in self.predictions[label]:
                 model_flag = False
                 for gt_pred in self.ground_truth[label]:
-                    if self._sequences_overlap(
+                    if sequences_overlap(
                         {"start": model_pred["start"], "end": model_pred["end"]},
                         {"start": gt_pred["start"], "end": gt_pred["end"]},
                     ):
@@ -75,7 +69,7 @@ class CompareGroundTruth:
             for gt_pred in self.ground_truth[label]:
                 gt_flag = False
                 for model_pred in self.predictions[label]:
-                    if self._sequences_overlap(
+                    if sequences_overlap(
                         {"start": model_pred["start"], "end": model_pred["end"]},
                         {"start": gt_pred["start"], "end": gt_pred["end"]},
                     ):
