@@ -34,17 +34,17 @@ class CompareGroundTruth:
         return x["start"] < y["end"] and y["start"] < x["end"]
 
     def _get_precision(self, true_p: int, false_p: int) -> float:
-        if not true_p:
-            precision = 0
-        else:
+        try:
             precision = true_p / (true_p + false_p)
+        except ZeroDivisionError:
+            precision = 0
         return precision
 
     def _get_recall(self, true_p: int, false_n: int) -> float:
-        if not true_p:
-            recall = 0
-        else:
+        try:
             recall = true_p / (true_p + false_n)
+        except ZeroDivisionError:
+            recall = 0
         return recall
 
     def _get_base_metrics(self, label: str) -> dict:
@@ -54,12 +54,12 @@ class CompareGroundTruth:
         recall = 0
         precision = 0
 
-        if not self.predictions.get(label, False):
+        if not label in self.predictions:
             false_neg = len(self.ground_truth[label])
-        if not self.ground_truth.get(label, False):
+        if not label in self.ground_truth:
             false_pos = len(self.predictions[label])
 
-        if self.predictions.get(label, False) and self.ground_truth.get(label, False):
+        if label in self.predictions and label in self.ground_truth:
             for model_pred in self.predictions[label]:
                 model_flag = False
                 for gt_pred in self.ground_truth[label]:
@@ -94,11 +94,6 @@ class CompareGroundTruth:
         }
 
     def _build_metrics_dicts(self) -> dict:
-        true_pos = 0
-        false_neg = 0
-        false_pos = 0
-        recall = 0
-        precision = 0
         labels = self.labels
 
         metrics_types = [
