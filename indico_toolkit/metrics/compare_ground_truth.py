@@ -87,9 +87,15 @@ class CompareGroundTruth:
             "recall": recall,
         }
 
-    def _build_metrics_dicts(self) -> dict:
+    def _get_all_label_metrics_dicts(self) -> dict:
         labels = self.labels
 
+        all_label_metrics = {label: self._get_base_metrics(label) for label in labels}
+        self.all_label_metrics = all_label_metrics
+
+        return all_label_metrics
+
+    def _get_overall_label_metrics_dict(self) -> dict:
         metrics_types = [
             "true_positives",
             "false_positives",
@@ -102,12 +108,10 @@ class CompareGroundTruth:
             "false_negatives": 0,
         }
 
-        all_label_metrics = {label: self._get_base_metrics(label) for label in labels}
-
         for metric in metrics_types:
             total_amt = 0
-            for label in all_label_metrics:
-                total_amt += all_label_metrics[label][metric]
+            for label in self.all_label_metrics:
+                total_amt += self.all_label_metrics[label][metric]
                 overall_metrics[metric] = total_amt
 
         overall_metrics["precision"] = self._get_precision(
@@ -117,6 +121,5 @@ class CompareGroundTruth:
             overall_metrics["true_positives"], overall_metrics["false_negatives"]
         )
 
-        self.all_label_metrics = all_label_metrics
         self.overall_metrics = overall_metrics
-        return all_label_metrics
+        return overall_metrics

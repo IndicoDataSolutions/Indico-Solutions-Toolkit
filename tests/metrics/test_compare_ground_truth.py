@@ -1,18 +1,13 @@
 import pytest
 from indico_toolkit.metrics.compare_ground_truth import CompareGroundTruth
 
-# TODO find where gen pred func is in toolkit if it already exists // ask Scott if there is a generate pred func that is already in the toolkit and if not, if we should add it
+
 def generate_pred(
     label="Vendor",
     conf_level=0.85,
     start_index=0,
     end_index=2,
     text="Chili's",
-    # page_num=None,
-    # bbTop=0,
-    # dHeight=9,
-    # bbLeft=0,
-    # dRight=29,
 ):
     return {
         "label": label,
@@ -20,20 +15,12 @@ def generate_pred(
         "start": start_index,
         "end": end_index,
         "confidence": {label: conf_level},
-        #         "page number": page_num,
-        #         "position": {
-        #             "bbTop": bbTop,
-        #             "bbBot": bbTop + dHeight,
-        #             "bbLeft": bbLeft,
-        #             "bbRight": bbLeft + dRight,
-        #         },
     }
 
 
-# TODO add in a comment for each test to expalin why they are distinct
-# TODO separate out tests to be able to check for different types of failures
-
-
+# TODO add in a comment for each test to explain why they are distinct
+# TODO add an additional test for overall metrics
+# TODO Add in more tests - break it out so we can test TP / FN / FP / Recall / Precision separately
 def test_compare_ground_truth():
     ground_truth = {
         "Vendor Name": [
@@ -209,9 +196,10 @@ def test_compare_ground_truth():
             "true_positives": 6,
         },
     }
-    # TODO Add in more tests - break it out so we can test TP / FN / FP / Recall / Precision separately; we also want to be able to test overall metrics separately
     cgt_instance = CompareGroundTruth(ground_truth, predictions)
     cgt_instance._get_labels()
-    cgt_instance._build_metrics_dicts()
+    cgt_instance._get_all_label_metrics_dicts()
     are_metrics_correct = cgt_instance.all_label_metrics
+    cgt_instance._get_overall_label_metrics_dict()
+    print(cgt_instance.overall_metrics)
     assert are_metrics_correct == expected
