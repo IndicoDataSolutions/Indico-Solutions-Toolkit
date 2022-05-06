@@ -26,6 +26,7 @@ class CompareGroundTruth:
                 labels.append(label)
 
         self.labels = labels
+        return labels
 
     def _get_precision(self, true_p: int, false_p: int) -> float:
         try:
