@@ -54,12 +54,12 @@ class FileProcessing:
         copy_files: bool = False,
     ):
         self.get_file_paths_from_dir(origin_dir, accepted_types, True)
-        destination = Path(destination_dir)
-        if destination.is_dir:
+        destination_dir = Path(destination_dir)
+        if destination_dir.is_dir:
             for file in self.file_paths:
                 initial_filepath = Path(file)
                 file_to_be_moved = initial_filepath.name
-                new_path_name = destination / file_to_be_moved
+                new_path_name = destination_dir / file_to_be_moved
                 if copy_files == False:
                     initial_filepath.rename(new_path_name)
                 else: 
