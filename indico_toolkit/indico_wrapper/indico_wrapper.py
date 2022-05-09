@@ -79,7 +79,7 @@ class IndicoWrapper:
         self,
         model_id: int,
         samples: List[str],
-        load: bool = True,
+        load: bool = False,
         options: dict = None,
         wait: bool = True,
     ) -> Union[int, List[Predictions]]:
