@@ -37,8 +37,8 @@ def test_move_all_filepaths():
     with tempfile.TemporaryDirectory() as temp_dir_one:
         temp_dir_two = tempfile.TemporaryDirectory()
         temp = tempfile.NamedTemporaryFile(dir=temp_dir_one, suffix='.pdf')
-        fileproc.move_all_file_paths(temp_dir_one,temp_dir_two.name,('pdf'),True)    
-        assert os.listdir(temp_dir_two.name) == [f'{os.path.basename(temp.name)}']
+        fileproc.move_all_file_paths(temp_dir_one,temp_dir_two.name,('pdf'),True)
+        assert os.listdir(temp_dir_two.name) == [Path(temp.name).name]
 
 
 def test_batch_files(testdir_file_path):

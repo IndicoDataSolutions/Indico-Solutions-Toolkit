@@ -1,7 +1,6 @@
 import os
 import json
 from os.path import isfile, isdir
-import pathlib
 from pathlib import Path
 from typing import List, Tuple, Union, Iterable
 import shutil
@@ -55,13 +54,16 @@ class FileProcessing:
         copy_files: bool = False,
     ):
         self.get_file_paths_from_dir(origin_dir, accepted_types, True)
-        if os.path.isdir(destination_dir):
-            for initial_filepath in self.file_paths:
-                file_to_be_moved = os.path.basename(initial_filepath)
+        destination = Path(destination_dir)
+        if destination.is_dir:
+            for file in self.file_paths:
+                initial_filepath = Path(file)
+                file_to_be_moved = initial_filepath.name
+                new_path_name = destination / file_to_be_moved
                 if copy_files == False:
-                    os.rename(initial_filepath, f'{pathlib.Path(destination_dir).joinpath(file_to_be_moved)}')
+                    initial_filepath.rename(new_path_name)
                 else: 
-                    shutil.copyfile(initial_filepath, f'{pathlib.Path(destination_dir).joinpath(file_to_be_moved)}') 
+                    shutil.copyfile(initial_filepath, new_path_name) 
         else:
             raise Exception(
                 f'{destination_dir} is not a valid directory'
