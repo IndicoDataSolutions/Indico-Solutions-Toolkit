@@ -20,7 +20,8 @@ def test_get_dataset(dataset_wrapper, dataset_id):
 
 
 def test_download_export(dataset_wrapper, dataset_id):
-    df = dataset_wrapper.download_export(dataset_id)
+    labelset_id = dataset_wrapper.get_dataset(dataset_id).labelsets[0].id
+    df = dataset_wrapper.download_export(dataset_id, labelset_id)
     assert isinstance(df, pd.DataFrame)
     assert isinstance(df["text"][0], str)
 
