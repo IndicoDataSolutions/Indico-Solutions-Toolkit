@@ -30,7 +30,7 @@ Create a dataset and then download it
 # Create a dataset and return a dataset object
 dataset_object = datasets.create_dataset(filepaths=fp.file_paths, dataset_name="My dataset")
 # Export is returned as a pandas DataFrame
-df = datasets.download_export()
+df = datasets.download_export(dataset_id=dataset_object.id, labelset_id=dataset_object.labelsets[0].id)
 # view first 5 rows of the dataset as a CSV
 print(df.head())
 # Write to downloaded dataset to CSV
