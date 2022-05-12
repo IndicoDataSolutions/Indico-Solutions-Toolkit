@@ -31,7 +31,7 @@ class Datasets(IndicoWrapper):
         return self.client.call(GetDataset(dataset_id))
 
     def download_export(self, dataset_id: int, labelset_id: int, **kwargs) -> pd.DataFrame:
-        export_id = self._create_export(dataset_id, labelset_id **kwargs)
+        export_id = self._create_export(dataset_id, labelset_id, **kwargs)
         return self.client.call(DownloadExport(export_id))
 
     def add_files_to_dataset(self, dataset_id: int, filepaths: List[str]) -> Dataset:
@@ -185,7 +185,7 @@ class Datasets(IndicoWrapper):
         """
         Returns export ID
         """
-        export = self.client.call(CreateExport(dataset_id=dataset_id, labelset_id=labelset_id **kwargs))
+        export = self.client.call(CreateExport(dataset_id=dataset_id, labelset_id=labelset_id, **kwargs))
         return export.id
 
     def _upload_threaded(
