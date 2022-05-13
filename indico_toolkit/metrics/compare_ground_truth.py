@@ -14,6 +14,45 @@ class CompareGroundTruth:
         self.all_label_metrics: List[dict] = None
         self.overall_metrics: List[dict] = None
 
+    def get_all_label_metrics_dicts(self) -> dict:
+        # TODO run get labels first
+        labels = self.labels
+
+        all_label_metrics = {label: self._get_base_metrics(label) for label in labels}
+        self.all_label_metrics = all_label_metrics
+
+        return all_label_metrics
+
+    def get_overall_label_metrics_dict(self) -> dict:
+        # TODO raise error - if self.all_label... doesn't exist, similar to line_items.py error
+        metrics_types = [
+            "true_positives",
+            "false_positives",
+            "false_negatives",
+        ]
+
+        overall_metrics = {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+        }
+
+        for metric in metrics_types:
+            total_amt = 0
+            for label in self.all_label_metrics:
+                total_amt += self.all_label_metrics[label][metric]
+                overall_metrics[metric] = total_amt
+
+        overall_metrics["precision"] = self._get_precision(
+            overall_metrics["true_positives"], overall_metrics["false_positives"]
+        )
+        overall_metrics["recall"] = self._get_recall(
+            overall_metrics["true_positives"], overall_metrics["false_negatives"]
+        )
+
+        self.overall_metrics = overall_metrics
+        return overall_metrics
+
     def _get_labels(self) -> None:
         labels = []
 
@@ -87,40 +126,3 @@ class CompareGroundTruth:
             "precision": precision,
             "recall": recall,
         }
-
-    def _get_all_label_metrics_dicts(self) -> dict:
-        labels = self.labels
-
-        all_label_metrics = {label: self._get_base_metrics(label) for label in labels}
-        self.all_label_metrics = all_label_metrics
-
-        return all_label_metrics
-
-    def _get_overall_label_metrics_dict(self) -> dict:
-        metrics_types = [
-            "true_positives",
-            "false_positives",
-            "false_negatives",
-        ]
-
-        overall_metrics = {
-            "true_positives": 0,
-            "false_positives": 0,
-            "false_negatives": 0,
-        }
-
-        for metric in metrics_types:
-            total_amt = 0
-            for label in self.all_label_metrics:
-                total_amt += self.all_label_metrics[label][metric]
-                overall_metrics[metric] = total_amt
-
-        overall_metrics["precision"] = self._get_precision(
-            overall_metrics["true_positives"], overall_metrics["false_positives"]
-        )
-        overall_metrics["recall"] = self._get_recall(
-            overall_metrics["true_positives"], overall_metrics["false_negatives"]
-        )
-
-        self.overall_metrics = overall_metrics
-        return overall_metrics
