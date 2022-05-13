@@ -4,3 +4,4 @@ from .dataset import Datasets
 from .find_related import FindRelated
 from .reviewer import Reviewer
 from .doc_extraction import DocExtraction
+from .download import Download
