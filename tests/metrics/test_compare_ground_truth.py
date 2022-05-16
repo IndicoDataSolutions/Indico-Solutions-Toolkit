@@ -238,33 +238,16 @@ def CGT_instance():
 
 
 def test_all_label_metrics(CGT_instance):
-    assert (
-        expected_all_label_metrics["Address"]["false_negatives"]
-        == CGT_instance.get_all_label_metrics_dicts()["Address"]["false_negatives"]
-    )
-    assert (
-        expected_all_label_metrics["Zip"]["false_positives"]
-        == CGT_instance.get_all_label_metrics_dicts()["Zip"]["false_positives"]
-    )
-    assert (
-        expected_all_label_metrics["Amount"]["true_positives"]
-        == CGT_instance.get_all_label_metrics_dicts()["Amount"]["true_positives"]
-    )
-    assert (
-        expected_all_label_metrics["Business Category"]["recall"]
-        == CGT_instance.get_all_label_metrics_dicts()["Business Category"]["recall"]
-    )
-    assert (
-        expected_all_label_metrics["PO Number"]["precision"]
-        == CGT_instance.get_all_label_metrics_dicts()["PO Number"]["precision"]
-    )
-    assert expected_all_label_metrics == CGT_instance.get_all_label_metrics_dicts()
     assert len(expected_all_label_metrics) == len(
         CGT_instance.get_all_label_metrics_dicts()
     )
+    assert expected_all_label_metrics == CGT_instance.get_all_label_metrics_dicts()
 
 
 def test_overall_label_metrics(CGT_instance):
+    assert len(CGT_instance.get_overall_label_metrics_dict()) == len(
+        expected_overall_label_metrics
+    )
     assert (
         CGT_instance.get_overall_label_metrics_dict()["false_negatives"]
         == expected_overall_label_metrics["false_negatives"]
@@ -287,9 +270,6 @@ def test_overall_label_metrics(CGT_instance):
     )
     assert (
         CGT_instance.get_overall_label_metrics_dict() == expected_overall_label_metrics
-    )
-    assert len(CGT_instance.get_overall_label_metrics_dict()) == len(
-        expected_overall_label_metrics
     )
 
 
