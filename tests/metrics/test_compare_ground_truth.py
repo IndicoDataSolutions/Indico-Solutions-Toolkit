@@ -229,87 +229,110 @@ expected_overall_label_metrics = {
 
 
 @pytest.fixture(scope="function")
-def CGT_instance():
-    cgt_instance = CompareGroundTruth(ground_truth, predictions)
-    cgt_instance._get_labels()
-    cgt_instance.get_all_label_metrics_dicts()
-    cgt_instance.get_overall_label_metrics_dict()
-    return cgt_instance
+def ex_cgt_object():
+    cgt_object = CompareGroundTruth(ground_truth, predictions)
+    cgt_object.get_all_label_metrics_dicts()
+    cgt_object.get_overall_label_metrics_dict()
+    return cgt_object
 
 
-def test_all_label_metrics(CGT_instance):
-    assert len(expected_all_label_metrics) == len(
-        CGT_instance.get_all_label_metrics_dicts()
-    )
-    assert expected_all_label_metrics == CGT_instance.get_all_label_metrics_dicts()
-
-
-def test_overall_label_metrics(CGT_instance):
-    assert len(CGT_instance.get_overall_label_metrics_dict()) == len(
-        expected_overall_label_metrics
-    )
-    assert (
-        CGT_instance.get_overall_label_metrics_dict()["false_negatives"]
-        == expected_overall_label_metrics["false_negatives"]
-    )
-    assert (
-        CGT_instance.get_overall_label_metrics_dict()["false_positives"]
-        == expected_overall_label_metrics["false_positives"]
-    )
-    assert (
-        CGT_instance.get_overall_label_metrics_dict()["true_positives"]
-        == expected_overall_label_metrics["true_positives"]
-    )
-    assert (
-        CGT_instance.get_overall_label_metrics_dict()["recall"]
-        == expected_overall_label_metrics["recall"]
-    )
-    assert (
-        CGT_instance.get_overall_label_metrics_dict()["precision"]
-        == expected_overall_label_metrics["precision"]
-    )
-    assert (
-        CGT_instance.get_overall_label_metrics_dict() == expected_overall_label_metrics
-    )
-
-
-def test_labels(CGT_instance):
+def test_labels(ex_cgt_object):
     expected_labels.sort()
-    labels = CGT_instance._get_labels()
-    labels.sort()
+    labels = ex_cgt_object.labels
     assert len(expected_labels) == len(labels)
     assert expected_labels == labels
 
 
-def test_precision(CGT_instance):
-    assert (10 / 13) == CGT_instance._get_precision(true_p=10, false_p=3)
-    assert 0 == CGT_instance._get_precision(true_p=0, false_p=0)
-
-
-def test_recall(CGT_instance):
-    assert (10 / 12) == CGT_instance._get_recall(true_p=10, false_n=2)
-    assert 0 == CGT_instance._get_recall(true_p=0, false_n=0)
-
-
-def test_true_positives(CGT_instance):
-    for label in CGT_instance._get_labels():
+def test_true_positives(ex_cgt_object):
+    for label in ex_cgt_object.labels:
         assert (
             expected_all_label_metrics[label]["true_positives"]
-            == CGT_instance.get_all_label_metrics_dicts()[label]["true_positives"]
+            == ex_cgt_object.all_label_metrics[label]["true_positives"]
         )
 
 
-def test_false_positives(CGT_instance):
-    for label in CGT_instance._get_labels():
+def test_false_positives(ex_cgt_object):
+    for label in ex_cgt_object.labels:
         assert (
             expected_all_label_metrics[label]["false_positives"]
-            == CGT_instance.get_all_label_metrics_dicts()[label]["false_positives"]
+            == ex_cgt_object.all_label_metrics[label]["false_positives"]
         )
 
 
-def test_false_negatives(CGT_instance):
-    for label in CGT_instance._get_labels():
+def test_false_negatives(ex_cgt_object):
+    for label in ex_cgt_object.labels:
         assert (
             expected_all_label_metrics[label]["false_negatives"]
-            == CGT_instance.get_all_label_metrics_dicts()[label]["false_negatives"]
+            == ex_cgt_object.all_label_metrics[label]["false_negatives"]
         )
+
+
+@pytest.mark.parametrize(
+    "input_true_p, input_false_p, expected",
+    [
+        (10, 3, (10 / 13)),
+        (0, 0, 0),
+        (0, 5, 0),
+        (10, 0, 1),
+    ],
+)
+def test_precision(input_true_p, input_false_p, expected, ex_cgt_object):
+    assert expected == ex_cgt_object._get_precision(input_true_p, input_false_p)
+
+
+@pytest.mark.parametrize(
+    "input_true_p, input_false_n, expected",
+    [
+        (11, 2, (11 / 13)),
+        (0, 0, 0),
+        (0, 4, 0),
+        (11, 0, 1),
+    ],
+)
+def test_recall(ex_cgt_object, input_true_p, input_false_n, expected):
+    assert expected == ex_cgt_object._get_recall(input_true_p, input_false_n)
+
+
+def test_all_label_metrics(ex_cgt_object):
+    assert len(expected_all_label_metrics) == len(ex_cgt_object.all_label_metrics)
+    assert expected_all_label_metrics == ex_cgt_object.all_label_metrics
+
+
+def test_overall_label_metrics_true_p(ex_cgt_object):
+    assert (
+        ex_cgt_object.overall_metrics["true_positives"]
+        == expected_overall_label_metrics["true_positives"]
+    )
+
+
+def test_overall_label_metrics_false_p(ex_cgt_object):
+    assert (
+        ex_cgt_object.overall_metrics["false_positives"]
+        == expected_overall_label_metrics["false_positives"]
+    )
+
+
+def test_overall_label_metrics_false_n(ex_cgt_object):
+    assert (
+        ex_cgt_object.overall_metrics["false_negatives"]
+        == expected_overall_label_metrics["false_negatives"]
+    )
+
+
+def test_overall_label_metrics_recall(ex_cgt_object):
+    assert (
+        ex_cgt_object.overall_metrics["recall"]
+        == expected_overall_label_metrics["recall"]
+    )
+
+
+def test_overall_label_metrics_precision(ex_cgt_object):
+    assert (
+        ex_cgt_object.overall_metrics["precision"]
+        == expected_overall_label_metrics["precision"]
+    )
+
+
+def test_overall_label_metrics(ex_cgt_object):
+    assert len(ex_cgt_object.overall_metrics) == len(expected_overall_label_metrics)
+    assert ex_cgt_object.overall_metrics == expected_overall_label_metrics

@@ -1,4 +1,3 @@
-from typing import List
 from indico_toolkit.association.association import sequences_overlap
 
 
@@ -7,15 +6,15 @@ class CompareGroundTruth:
     Compare a set of Ground truth against a set of predictions
     """
 
-    def __init__(self, ground_truth, predictions):
-        self.ground_truth: List[dict] = ground_truth
-        self.predictions: List[dict] = predictions
-        self.labels: List[str] = None
-        self.all_label_metrics: List[dict] = None
-        self.overall_metrics: List[dict] = None
+    def __init__(self, ground_truth: dict, predictions: dict):
+        self.ground_truth = ground_truth
+        self.predictions = predictions
+        self.labels: list[str] = None
+        self.all_label_metrics: dict = None
+        self.overall_metrics: dict = None
 
     def get_all_label_metrics_dicts(self) -> dict:
-        # TODO run get labels first
+        self._get_labels()
         labels = self.labels
 
         all_label_metrics = {label: self._get_base_metrics(label) for label in labels}
@@ -24,7 +23,6 @@ class CompareGroundTruth:
         return all_label_metrics
 
     def get_overall_label_metrics_dict(self) -> dict:
-        # TODO raise error - if self.all_label... doesn't exist, similar to line_items.py error
         metrics_types = [
             "true_positives",
             "false_positives",
@@ -53,7 +51,7 @@ class CompareGroundTruth:
         self.overall_metrics = overall_metrics
         return overall_metrics
 
-    def _get_labels(self) -> None:
+    def _get_labels(self) -> list:
         labels = []
 
         for label in self.ground_truth:
@@ -64,6 +62,7 @@ class CompareGroundTruth:
             if not label in labels:
                 labels.append(label)
 
+        labels.sort()
         self.labels = labels
         return labels
 
