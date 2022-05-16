@@ -13,7 +13,7 @@ Outside of Script
     * https://indicodata.slack.com/archives/CLJGMCK3Q/p1626895835321200
 """
 import argparse
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from indico import IndicoClient, IndicoConfig
 from indico_toolkit.staggered_loop import StaggeredLoop
@@ -26,47 +26,47 @@ def create_argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Train a partial labels model")
     parser.add_argument(
         "--dev_host",
-        required=True,
+        required=False,
         help="Host URL for DEV Indico IPA environment",
     )
     parser.add_argument(
         "--dev_api_token_path",
-        required=True,
+        required=False,
         help="Path to DEV API token to authenticate to dev_host",
     )
     parser.add_argument(
         "--prod_host",
-        required=True,
+        required=False,
         help="Host URL for PROD Indico IPA environment",
     )
     parser.add_argument(
         "--prod_api_token_path",
-        required=True,
+        required=False,
         help="Path to PROD API token to authenticate to prod_host",
     )
     parser.add_argument(
         "--dev_dataset_id",
-        required=True,
+        required=False,
         help="Dataset ID for dev dataset associated w/ prod workflow",
     )
     parser.add_argument(
         "--dev_questionnaire_id",
-        required=True,
+        required=False,
         help="Questionnaire (teach task) ID associated with dev dataset",
     )
     parser.add_argument(
         "--dev_model_group_id",
-        required=True,
+        required=False,
         help="Model Group ID for dev dataset / teach task",
     )
     parser.add_argument(
         "--dev_workflow_id",
-        required=True,
+        required=False,
         help="Workflow ID for dev workflow associated with teach task",
     )
     parser.add_argument(
         "--prod_workflow_id",
-        required=True,
+        required=False,
         help="Workflow ID for prod workflow with review data",
     )
     parser.add_argument(
@@ -137,10 +137,12 @@ def main(
     prod_stagger = StaggeredLoop(client=prod_client)
 
     # Pull review data from prod workflow
+    since = datetime.now() - timedelta(days=1)
     workflow_results = prod_stagger.get_review_data(
         workflow_id=prod_workflow_id,
-        update_date=datetime.fromtimestamp(float(dataset_details["updatedAt"])),
+        update_date=since,
     )
+    print(workflow_results)
 
     # StaggeredLoop class extends IndicoClient, so strictly has to connect to
     # only one environment. As a result, we set the workflow_results attribute
@@ -153,30 +155,43 @@ def main(
 
     # Postprocess and sample review data
     dev_stagger.process_review_data()
-    dev_stagger.sample_data(sample_ratio=1)
+    # dev_stagger.sample_data(sample_ratio=1)
 
-    # # Add data to dev dataset and retrain model
-    dev_stagger.add_data(
-        dataset_id=dev_dataset_id,
-        questionnaire_id=dev_questionnaire_id,
-        workflow_id=dev_workflow_id,
-    )
-    dev_stagger.retrain_model(model_group_id=dev_model_group_id)
+    # # # Add data to dev dataset and retrain model
+    # dev_stagger.add_data(
+    #     dataset_id=dev_dataset_id,
+    #     questionnaire_id=dev_questionnaire_id,
+    #     workflow_id=dev_workflow_id,
+    # )
+    # dev_stagger.retrain_model(model_group_id=dev_model_group_id)
 
 
 if __name__ == "__main__":
     parser = create_argument_parser()
     args = parser.parse_args()
+
+    dev_host = "app.indico.io"
+    prod_host = "app.indico.io"
+    dev_api_token_path = "/home/m/api_keys/prod_api_token.txt"
+    prod_api_token_path = "/home/m/api_keys/prod_api_token.txt"
+    dev_dataset_id = 8781
+    dev_questionnaire_id = None
+    dev_model_group_id = None
+    dev_workflow_id = None
+    prod_workflow_id = 1435
+    max_review_docs = 10
+    oversample_errs = False
+
     main(
-        dev_host=args.dev_host,
-        dev_api_token_path=args.dev_api_token_path,
-        prod_host=args.prod_host,
-        prod_api_token_path=args.prod_api_token_path,
-        dev_dataset_id=args.dev_dataset_id,
-        dev_questionnaire_id=args.dev_questionnaire_id,
-        dev_model_group_id=args.dev_model_group_id,
-        dev_workflow_id=args.dev_workflow_id,
-        prod_workflow_id=args.prod_workflow_id,
-        max_review_docs=args.max_review_docs,
-        oversample_errs=args.oversample_errs,
+        dev_host=dev_host,
+        dev_api_token_path=dev_api_token_path,
+        prod_host=prod_host,
+        prod_api_token_path=prod_api_token_path,
+        dev_dataset_id=dev_dataset_id,
+        dev_questionnaire_id=dev_questionnaire_id,
+        dev_model_group_id=dev_model_group_id,
+        dev_workflow_id=dev_workflow_id,
+        prod_workflow_id=prod_workflow_id,
+        max_review_docs=max_review_docs,
+        oversample_errs=oversample_errs,
     )

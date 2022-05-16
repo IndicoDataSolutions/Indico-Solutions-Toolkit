@@ -63,6 +63,9 @@ class Workflow(IndicoWrapper):
             ocr_result.append(page_ocr)
         return OnDoc(ocr_result)
 
+    def get_file_bytes(self, file_url: str) -> bytes:
+        return self.get_storage_object(file_url)
+
     def get_img_bytes_from_etl_url(self, etl_url: str) -> List[bytes]:
         """
         Get image bytes for each page from workflow result etl output

@@ -1,9 +1,10 @@
-import datetime
+from datetime import datetime, timedelta, timezone
 import io
 import json
 import random
 from typing import Dict, List, Set, Tuple, Union, NewType
 import uuid
+from pathlib import Path
 
 from indico import IndicoClient
 from indico.filters import DocumentReportFilter
@@ -47,6 +48,7 @@ class StaggeredLoop(Workflow):
         # Document, text and labels/predictions from review
         self._local_doc_paths: List[str] = []
         self._document_texts: List[str] = []
+        self._document_paths: List[str] = []
         self._workflow_results: List[WorkflowResult] = []
 
         # Text and labels from review after filtering and sampling
@@ -147,10 +149,10 @@ class StaggeredLoop(Workflow):
         document_filter = DocumentReportFilter(
             # TODO Comment back in when latest version of the client has been deployed
             #  Earlier version of client does not have status as an argument to filter
-            # status="COMPLETED",
+            status="COMPLETE",
             workflow_id=workflow_id,
             updated_at_start_date=update_date,
-            updated_at_end_date=datetime.datetime.now(),
+            updated_at_end_date=datetime.now(),
         )
         for page in self.client.paginate(GetDocumentReport(filters=document_filter)):
             for submissions in page:
@@ -190,22 +192,14 @@ class StaggeredLoop(Workflow):
          https://indicodata.atlassian.net/browse/DEV-8488
         """
         for wf_result in self._workflow_results:
-            img_path = f"/tmp/{str(uuid.uuid1())}.pdf"
-            image_bytes = self.get_img_bytes_from_etl_url(wf_result.etl_url)
-            # For each page, convert to PIL image and write out to PDF
-            imgs = [
-                Image.open(io.BytesIO(page_bytes)).convert("RGB")
-                for page_bytes in image_bytes
-            ]
-            self._local_doc_paths.append(img_path)
-            if len(imgs) == 1:
-                imgs[0].save(img_path)
-            else:
-                imgs[0].save(img_path, save_all=True, append_images=imgs[1:])
-            # submission = self.client.call(GetSubmission(int(wf_result.submission_id)))
-            # image_bytes = self.client.call(RetrieveStorageObject(submission.input_file))
-            # with open(img_path, "wb") as handle:
-            #     handle.write(image_bytes)
+            # TODO: support bundles
+            # TODO: don't assume input_file name is unique
+            basename = Path(wf_result.result["input_file"]).name
+            doc_path = f"/tmp/{basename}"
+            doc_bytes = self.get_file_bytes(wf_result.result["input_file"])
+            with open(doc_path, "wb") as f:
+                f.write(doc_bytes)
+            self._document_paths.append(doc_path)
         print(
             "Downloaded document bytes for all workflow submissions and wrote them to disk"
         )
