@@ -30,10 +30,13 @@ class Datasets(IndicoWrapper):
     def get_dataset(self, dataset_id: int):
         return self.client.call(GetDataset(dataset_id))
 
+<<<<<<< HEAD
     def download_export(self, dataset_id: int, labelset_id: int, **kwargs) -> pd.DataFrame:
         export_id = self._create_export(dataset_id, labelset_id, **kwargs)
         return self.client.call(DownloadExport(export_id))
 
+=======
+>>>>>>> main
     def add_files_to_dataset(self, dataset_id: int, filepaths: List[str]) -> Dataset:
         """
         Upload documents to an existing dataset and wait for them to OCR
@@ -181,6 +184,7 @@ class Datasets(IndicoWrapper):
         """
         return self.client.call(_UploadDatasetFiles(files=filepaths))
 
+<<<<<<< HEAD
     def _create_export(self, dataset_id: int, labelset_id: int, **kwargs) -> int:
         """
         Returns export ID
@@ -188,6 +192,8 @@ class Datasets(IndicoWrapper):
         export = self.client.call(CreateExport(dataset_id=dataset_id, labelset_id=labelset_id, **kwargs))
         return export.id
 
+=======
+>>>>>>> main
     def _upload_threaded(
         self, fp: FileProcessing, num_threads: int, batch_size: int
     ) -> List[Dict]:

@@ -16,7 +16,6 @@ The indico-toolkit provides classes and functions to help achieve the following:
 * Helpful Scripted/Auto Review processing and submission.
 * Common manipulation of prediction/workflow results.
 * Objects to simplify parsing OCR responses.
-* Finder class to quicky obtain associated model/dataset/workflow Ids.
 * Snapshot merging and manipulation
 * Class to spoof a human reviewer.
 

@@ -88,7 +88,7 @@ class IndicoWrapper:
         Args:
             model_id (int): The model ID to submit to
             samples (List[str]): A list containing the text samples you want to submit
-            load (bool, optional): Set to False if you are submitting for object detection. Defaults to True.
+            load (bool, optional): [deprecated] Always set to False. Defaults to False.
             options (dict, optional): Model Prediction options. Defaults to None.
             wait (bool, optional): Wait for predictions to finish. Defaults to True.
 
