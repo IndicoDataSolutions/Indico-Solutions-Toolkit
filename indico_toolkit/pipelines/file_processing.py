@@ -1,9 +1,10 @@
 import os
 import json
-from os.path import isfile
+from os.path import isfile, isdir
 from pathlib import Path
 from typing import List, Tuple, Union, Iterable
-
+import shutil
+import tempfile
 
 class FileProcessing:
     """
@@ -45,6 +46,28 @@ class FileProcessing:
             f"Found {len(self.file_paths)} valid files and {len(self.invalid_suffix_paths)} paths with invalid suffixes."
         )
 
+    def move_all_file_paths(
+        self, 
+        origin_dir: str,
+        destination_dir: str,
+        accepted_types: Tuple[str],
+        copy_files: bool = False,
+    ):
+        self.get_file_paths_from_dir(origin_dir, accepted_types, True)
+        destination_dir = Path(destination_dir)
+        if destination_dir.is_dir:
+            for file in self.file_paths:
+                initial_filepath = Path(file)
+                file_to_be_moved = initial_filepath.name
+                new_path_name = destination_dir / file_to_be_moved
+                if copy_files == False:
+                    initial_filepath.rename(new_path_name)
+                else: 
+                    shutil.copyfile(initial_filepath, new_path_name) 
+        else:
+            raise Exception(
+                f'{destination_dir} is not a valid directory'
+            )
 
     def batch_files(self, batch_size: int = 20) -> List[str]:
         for i in range(0, len(self.file_paths), batch_size):
