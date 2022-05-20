@@ -1,35 +1,37 @@
+from subprocess import list2cmdline
 from indico_toolkit.association.association import sequences_overlap
+from indico_toolkit.types.extractions import Extractions
 
 
 class CompareGroundTruth:
     """
-    Compare a set of Ground truth against a set of predictions
+    Compare a set of ground truths against a set of model predictions on a per document basis.
     """
 
-    def __init__(self, ground_truth: dict, predictions: dict):
-        self.ground_truth = ground_truth
-        self.predictions = predictions
-        self.labels: list[str] = None
+    def __init__(self, ground_truth: list, predictions: list):
+        self.gt_by_label: dict = Extractions(ground_truth).to_dict_by_label
+        self.preds_by_label: dict = Extractions(predictions).to_dict_by_label
+        self.labels: list[str] = list(
+            set(list(self.gt_by_label) + list(self.preds_by_label))
+        )
         self.all_label_metrics: dict = None
         self.overall_metrics: dict = None
 
-    def get_all_label_metrics_dicts(self) -> dict:
-        self._get_labels()
-        labels = self.labels
+    def get_all_label_metrics(self) -> None:
+        self.all_label_metrics = {
+            label: self._get_base_metrics(label) for label in self.labels
+        }
 
-        all_label_metrics = {label: self._get_base_metrics(label) for label in labels}
-        self.all_label_metrics = all_label_metrics
+    def get_overall_metrics(self) -> None:
+        self.get_all_label_metrics
 
-        return all_label_metrics
-
-    def get_overall_label_metrics_dict(self) -> dict:
         metrics_types = [
             "true_positives",
             "false_positives",
             "false_negatives",
         ]
 
-        overall_metrics = {
+        self.overall_metrics = {
             "true_positives": 0,
             "false_positives": 0,
             "false_negatives": 0,
@@ -39,32 +41,16 @@ class CompareGroundTruth:
             total_amt = 0
             for label in self.all_label_metrics:
                 total_amt += self.all_label_metrics[label][metric]
-                overall_metrics[metric] = total_amt
+                self.overall_metrics[metric] = total_amt
 
-        overall_metrics["precision"] = self._get_precision(
-            overall_metrics["true_positives"], overall_metrics["false_positives"]
+        self.overall_metrics["precision"] = self._get_precision(
+            self.overall_metrics["true_positives"],
+            self.overall_metrics["false_positives"],
         )
-        overall_metrics["recall"] = self._get_recall(
-            overall_metrics["true_positives"], overall_metrics["false_negatives"]
+        self.overall_metrics["recall"] = self._get_recall(
+            self.overall_metrics["true_positives"],
+            self.overall_metrics["false_negatives"],
         )
-
-        self.overall_metrics = overall_metrics
-        return overall_metrics
-
-    def _get_labels(self) -> list:
-        labels = []
-
-        for label in self.ground_truth:
-            if not label in labels:
-                labels.append(label)
-
-        for label in self.predictions:
-            if not label in labels:
-                labels.append(label)
-
-        labels.sort()
-        self.labels = labels
-        return labels
 
     def _get_precision(self, true_p: int, false_p: int) -> float:
         try:
@@ -81,47 +67,38 @@ class CompareGroundTruth:
         return recall
 
     def _get_base_metrics(self, label: str) -> dict:
+        """
+        With the current overlap span type calculation, if 2 separate predictions each overlap with a single ground truth, each pred is counted as a true positive. (That is why we don't break out of the loop once a true positive is found.)
+        """
         true_pos = 0
         false_neg = 0
         false_pos = 0
-        recall = 0
-        precision = 0
 
-        if not label in self.predictions:
-            false_neg = len(self.ground_truth[label])
-        if not label in self.ground_truth:
-            false_pos = len(self.predictions[label])
-
-        if label in self.predictions and label in self.ground_truth:
-            for model_pred in self.predictions[label]:
-                model_flag = False
-                for gt_pred in self.ground_truth[label]:
-                    if sequences_overlap(
-                        {"start": model_pred["start"], "end": model_pred["end"]},
-                        {"start": gt_pred["start"], "end": gt_pred["end"]},
-                    ):
+        if not label in self.preds_by_label:
+            false_neg = len(self.gt_by_label[label])
+        elif not label in self.gt_by_label:
+            false_pos = len(self.preds_by_label[label])
+        else:
+            for model_pred in self.preds_by_label[label]:
+                match_found = False
+                for gt_pred in self.gt_by_label[label]:
+                    if sequences_overlap(model_pred, gt_pred):
                         true_pos += 1
-                        model_flag = True
-                if not model_flag:
+                        match_found = True
+                if not match_found:
                     false_pos += 1
-
-            for gt_pred in self.ground_truth[label]:
-                gt_flag = False
-                for model_pred in self.predictions[label]:
-                    if sequences_overlap(
-                        {"start": model_pred["start"], "end": model_pred["end"]},
-                        {"start": gt_pred["start"], "end": gt_pred["end"]},
-                    ):
-                        gt_flag = True
-                if not gt_flag:
+            for gt_pred in self.gt_by_label[label]:
+                match_found = False
+                for model_pred in self.preds_by_label[label]:
+                    if sequences_overlap(model_pred, gt_pred):
+                        match_found = True
+                if not match_found:
                     false_neg += 1
 
-        recall = self._get_recall(true_pos, false_neg)
-        precision = self._get_precision(true_pos, false_pos)
         return {
             "true_positives": true_pos,
             "false_negatives": false_neg,
             "false_positives": false_pos,
-            "precision": precision,
-            "recall": recall,
+            "precision": self._get_precision(true_pos, false_pos),
+            "recall": self._get_recall(true_pos, false_neg),
         }

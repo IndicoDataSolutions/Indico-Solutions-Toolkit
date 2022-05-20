@@ -35,114 +35,67 @@ Variations where there is 0 for one of each type (TP, FP, FN):
     [4] "Business Category" Example: No true positives (includes both FN and FP)  
 """
 
-
-ground_truth = {
-    "Vendor Name": [
-        generate_pred(start_index=0, end_index=11, label="Vendor Name", text="1"),
-        generate_pred(start_index=22, end_index=31, label="Vendor Name", text="2"),
-        generate_pred(start_index=100, end_index=110, label="Vendor Name", text="3"),
-    ],
-    "Amount": [
-        generate_pred(start_index=10, end_index=21, label="Amount", text="1"),
-        generate_pred(start_index=32, end_index=41, label="Amount", text="2"),
-        generate_pred(start_index=110, end_index=120, label="Amount", text="3"),
-    ],
-    "Date": [
-        generate_pred(start_index=10, end_index=15, label="Date", text="1"),
-        generate_pred(start_index=16, end_index=20, label="Date", text="2"),
-        generate_pred(start_index=110, end_index=120, label="Date", text="3"),
-    ],
-    "Address": [
-        generate_pred(start_index=10, end_index=35, label="Address", text="1"),
-        generate_pred(start_index=500, end_index=520, label="Address", text="2"),
-        generate_pred(start_index=600, end_index=620, label="Address", text="3"),
-    ],
-    "Business Category": [
-        generate_pred(
-            start_index=10, end_index=35, label="Business Category", text="1"
-        ),
-        generate_pred(
-            start_index=50, end_index=60, label="Business Category", text="2"
-        ),
-        generate_pred(
-            start_index=71, end_index=79, label="Business Category", text="3"
-        ),
-    ],
-    "City": [
-        generate_pred(start_index=10, end_index=35, label="City", text="1"),
-        generate_pred(start_index=50, end_index=60, label="City", text="2"),
-        generate_pred(start_index=71, end_index=79, label="City", text="3"),
-    ],
-    "State": [
-        generate_pred(start_index=10, end_index=35, label="State", text="1"),
-        generate_pred(start_index=500, end_index=520, label="State", text="2"),
-        generate_pred(start_index=600, end_index=620, label="State", text="3"),
-    ],
-    "Zip": [
-        generate_pred(start_index=100, end_index=106, label="Zip", text="1"),
-        generate_pred(start_index=200, end_index=206, label="Zip", text="2"),
-        generate_pred(start_index=300, end_index=306, label="Zip", text="3"),
-        generate_pred(start_index=400, end_index=406, label="Zip", text="4"),
-        generate_pred(start_index=500, end_index=506, label="Zip", text="5"),
-        generate_pred(start_index=600, end_index=606, label="Zip", text="6"),
-    ],
-}
-predictions = {
-    "Vendor Name": [
-        generate_pred(start_index=3, end_index=7, label="Vendor Name", text="A"),
-        generate_pred(start_index=32, end_index=41, label="Vendor Name", text="B"),
-    ],
-    "Amount": [
-        generate_pred(start_index=13, end_index=17, label="Amount", text="A"),
-        generate_pred(start_index=18, end_index=22, label="Amount", text="B"),
-        generate_pred(start_index=42, end_index=51, label="Amount", text="C"),
-    ],
-    "Date": [
-        generate_pred(start_index=13, end_index=17, label="Date", text="A"),
-        generate_pred(start_index=18, end_index=22, label="Date", text="B"),
-        generate_pred(start_index=42, end_index=51, label="Date", text="C"),
-    ],
-    "Address": [
-        generate_pred(start_index=10, end_index=35, label="Address", text="A"),
-        generate_pred(start_index=500, end_index=522, label="Address", text="B"),
-        generate_pred(start_index=600, end_index=618, label="Address", text="C"),
-    ],
-    "Business Category": [
-        generate_pred(
-            start_index=36, end_index=40, label="Business Category", text="A"
-        ),
-        generate_pred(
-            start_index=61, end_index=70, label="Business Category", text="B"
-        ),
-        generate_pred(
-            start_index=80, end_index=90, label="Business Category", text="C"
-        ),
-        generate_pred(
-            start_index=700, end_index=710, label="Business Category", text="D"
-        ),
-    ],
-    "PO Number": [
-        generate_pred(start_index=36, end_index=40, label="PO Number", text="A"),
-        generate_pred(start_index=61, end_index=70, label="PO Number", text="B"),
-        generate_pred(start_index=80, end_index=90, label="PO Number", text="C"),
-        generate_pred(start_index=700, end_index=710, label="PO Number", text="D"),
-    ],
-    "State": [
-        generate_pred(start_index=10, end_index=35, label="State", text="A"),
-        generate_pred(start_index=500, end_index=522, label="State", text="B"),
-    ],
-    "Zip": [
-        generate_pred(start_index=100, end_index=106, label="Zip", text="A"),
-        generate_pred(start_index=200, end_index=206, label="Zip", text="B"),
-        generate_pred(start_index=300, end_index=306, label="Zip", text="C"),
-        generate_pred(start_index=400, end_index=406, label="Zip", text="D"),
-        generate_pred(start_index=500, end_index=506, label="Zip", text="E"),
-        generate_pred(start_index=600, end_index=606, label="Zip", text="F"),
-        generate_pred(start_index=700, end_index=706, label="Zip", text="G"),
-        generate_pred(start_index=800, end_index=806, label="Zip", text="H"),
-        generate_pred(start_index=900, end_index=906, label="Zip", text="H"),
-    ],
-}
+ground_truth_list = [
+    generate_pred(start_index=0, end_index=11, label="Vendor Name", text="1"),
+    generate_pred(start_index=22, end_index=31, label="Vendor Name", text="2"),
+    generate_pred(start_index=100, end_index=110, label="Vendor Name", text="3"),
+    generate_pred(start_index=10, end_index=21, label="Amount", text="1"),
+    generate_pred(start_index=32, end_index=41, label="Amount", text="2"),
+    generate_pred(start_index=110, end_index=120, label="Amount", text="3"),
+    generate_pred(start_index=10, end_index=15, label="Date", text="1"),
+    generate_pred(start_index=16, end_index=20, label="Date", text="2"),
+    generate_pred(start_index=110, end_index=120, label="Date", text="3"),
+    generate_pred(start_index=10, end_index=35, label="Address", text="1"),
+    generate_pred(start_index=500, end_index=520, label="Address", text="2"),
+    generate_pred(start_index=600, end_index=620, label="Address", text="3"),
+    generate_pred(start_index=10, end_index=35, label="Business Category", text="1"),
+    generate_pred(start_index=50, end_index=60, label="Business Category", text="2"),
+    generate_pred(start_index=71, end_index=79, label="Business Category", text="3"),
+    generate_pred(start_index=10, end_index=35, label="City", text="1"),
+    generate_pred(start_index=50, end_index=60, label="City", text="2"),
+    generate_pred(start_index=71, end_index=79, label="City", text="3"),
+    generate_pred(start_index=10, end_index=35, label="State", text="1"),
+    generate_pred(start_index=500, end_index=520, label="State", text="2"),
+    generate_pred(start_index=600, end_index=620, label="State", text="3"),
+    generate_pred(start_index=100, end_index=106, label="Zip", text="1"),
+    generate_pred(start_index=200, end_index=206, label="Zip", text="2"),
+    generate_pred(start_index=300, end_index=306, label="Zip", text="3"),
+    generate_pred(start_index=400, end_index=406, label="Zip", text="4"),
+    generate_pred(start_index=500, end_index=506, label="Zip", text="5"),
+    generate_pred(start_index=600, end_index=606, label="Zip", text="6"),
+]
+predictions_list = [
+    generate_pred(start_index=3, end_index=7, label="Vendor Name", text="A"),
+    generate_pred(start_index=32, end_index=41, label="Vendor Name", text="B"),
+    generate_pred(start_index=13, end_index=17, label="Amount", text="A"),
+    generate_pred(start_index=18, end_index=22, label="Amount", text="B"),
+    generate_pred(start_index=42, end_index=51, label="Amount", text="C"),
+    generate_pred(start_index=13, end_index=17, label="Date", text="A"),
+    generate_pred(start_index=18, end_index=22, label="Date", text="B"),
+    generate_pred(start_index=42, end_index=51, label="Date", text="C"),
+    generate_pred(start_index=10, end_index=35, label="Address", text="A"),
+    generate_pred(start_index=500, end_index=522, label="Address", text="B"),
+    generate_pred(start_index=600, end_index=618, label="Address", text="C"),
+    generate_pred(start_index=36, end_index=40, label="Business Category", text="A"),
+    generate_pred(start_index=61, end_index=70, label="Business Category", text="B"),
+    generate_pred(start_index=80, end_index=90, label="Business Category", text="C"),
+    generate_pred(start_index=700, end_index=710, label="Business Category", text="D"),
+    generate_pred(start_index=36, end_index=40, label="PO Number", text="A"),
+    generate_pred(start_index=61, end_index=70, label="PO Number", text="B"),
+    generate_pred(start_index=80, end_index=90, label="PO Number", text="C"),
+    generate_pred(start_index=700, end_index=710, label="PO Number", text="D"),
+    generate_pred(start_index=10, end_index=35, label="State", text="A"),
+    generate_pred(start_index=500, end_index=522, label="State", text="B"),
+    generate_pred(start_index=100, end_index=106, label="Zip", text="A"),
+    generate_pred(start_index=200, end_index=206, label="Zip", text="B"),
+    generate_pred(start_index=300, end_index=306, label="Zip", text="C"),
+    generate_pred(start_index=400, end_index=406, label="Zip", text="D"),
+    generate_pred(start_index=500, end_index=506, label="Zip", text="E"),
+    generate_pred(start_index=600, end_index=606, label="Zip", text="F"),
+    generate_pred(start_index=700, end_index=706, label="Zip", text="G"),
+    generate_pred(start_index=800, end_index=806, label="Zip", text="H"),
+    generate_pred(start_index=900, end_index=906, label="Zip", text="H"),
+]
 expected_labels = [
     "Address",
     "Amount",
@@ -219,7 +172,7 @@ expected_all_label_metrics = {
         "true_positives": 6,
     },
 }
-expected_overall_label_metrics = {
+expected_overall_metrics = {
     "true_positives": 17,
     "false_positives": 14,
     "false_negatives": 12,
@@ -230,21 +183,22 @@ expected_overall_label_metrics = {
 
 @pytest.fixture(scope="function")
 def ex_cgt_object():
-    cgt_object = CompareGroundTruth(ground_truth, predictions)
-    cgt_object.get_all_label_metrics_dicts()
-    cgt_object.get_overall_label_metrics_dict()
+    cgt_object = CompareGroundTruth(ground_truth_list, predictions_list)
+    cgt_object.get_all_label_metrics()
+    cgt_object.get_overall_metrics()
     return cgt_object
 
 
 def test_labels(ex_cgt_object):
     expected_labels.sort()
-    labels = ex_cgt_object.labels
-    assert len(expected_labels) == len(labels)
-    assert expected_labels == labels
+    ex_cgt_object.labels.sort()
+    assert len(expected_labels) == len(ex_cgt_object.labels)
+    assert expected_labels == ex_cgt_object.labels
 
 
 def test_true_positives(ex_cgt_object):
     for label in ex_cgt_object.labels:
+        print(label)
         assert (
             expected_all_label_metrics[label]["true_positives"]
             == ex_cgt_object.all_label_metrics[label]["true_positives"]
@@ -301,38 +255,35 @@ def test_all_label_metrics(ex_cgt_object):
 def test_overall_label_metrics_true_p(ex_cgt_object):
     assert (
         ex_cgt_object.overall_metrics["true_positives"]
-        == expected_overall_label_metrics["true_positives"]
+        == expected_overall_metrics["true_positives"]
     )
 
 
 def test_overall_label_metrics_false_p(ex_cgt_object):
     assert (
         ex_cgt_object.overall_metrics["false_positives"]
-        == expected_overall_label_metrics["false_positives"]
+        == expected_overall_metrics["false_positives"]
     )
 
 
 def test_overall_label_metrics_false_n(ex_cgt_object):
     assert (
         ex_cgt_object.overall_metrics["false_negatives"]
-        == expected_overall_label_metrics["false_negatives"]
+        == expected_overall_metrics["false_negatives"]
     )
 
 
 def test_overall_label_metrics_recall(ex_cgt_object):
-    assert (
-        ex_cgt_object.overall_metrics["recall"]
-        == expected_overall_label_metrics["recall"]
-    )
+    assert ex_cgt_object.overall_metrics["recall"] == expected_overall_metrics["recall"]
 
 
 def test_overall_label_metrics_precision(ex_cgt_object):
     assert (
         ex_cgt_object.overall_metrics["precision"]
-        == expected_overall_label_metrics["precision"]
+        == expected_overall_metrics["precision"]
     )
 
 
 def test_overall_label_metrics(ex_cgt_object):
-    assert len(ex_cgt_object.overall_metrics) == len(expected_overall_label_metrics)
-    assert ex_cgt_object.overall_metrics == expected_overall_label_metrics
+    assert len(ex_cgt_object.overall_metrics) == len(expected_overall_metrics)
+    assert ex_cgt_object.overall_metrics == expected_overall_metrics
