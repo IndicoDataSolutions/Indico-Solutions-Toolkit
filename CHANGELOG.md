@@ -90,7 +90,7 @@
 ### Fixed 
 * Optional dependencies to support M1 installation
 
-## 2.0.0 5/20/2022
+## 2.0.1 5/20/2022
 
 ### Added
 
