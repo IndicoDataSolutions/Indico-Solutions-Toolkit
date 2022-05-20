@@ -3,7 +3,7 @@ import pandas as pd
 import tempfile
 import os
 from indico.types import Dataset
-from indico_toolkit import Download
+from indico_toolkit.indico_wrapper import Download
 
 
 @pytest.fixture(scope="module")
