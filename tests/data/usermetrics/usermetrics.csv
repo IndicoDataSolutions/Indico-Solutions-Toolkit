@@ -1,0 +1,2 @@
+id,name,email,enabled,roles,created_at,datasets
+1,John Doe,john.doe@email.com,2022-02-28T16:57:34,True,"['APP_ADMIN', 'TEAM_DEVELOPER', 'CELERY_FLOWER']","[[0001, 'MANAGER'], [0002, 'ANALYST'], [0003, 'LABELER']]"
