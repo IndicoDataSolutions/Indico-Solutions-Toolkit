@@ -5,7 +5,7 @@ from indico.types import Dataset
 
 
 @pytest.fixture(scope="module")
-def dataset_wrapper(indico_client, dataset_obj):
+def dataset_wrapper(indico_client):
     return Datasets(indico_client)
 
 
@@ -17,12 +17,6 @@ def dataset_id(dataset_obj):
 def test_get_dataset(dataset_wrapper, dataset_id):
     dataset = dataset_wrapper.get_dataset(dataset_id)
     assert isinstance(dataset, Dataset)
-
-
-def test_download_export(dataset_wrapper, dataset_id):
-    df = dataset_wrapper.download_export(dataset_id)
-    assert isinstance(df, pd.DataFrame)
-    assert isinstance(df["text"][0], str)
 
 
 def test_add_to_dataset(dataset_wrapper, dataset_id, pdf_filepath):
