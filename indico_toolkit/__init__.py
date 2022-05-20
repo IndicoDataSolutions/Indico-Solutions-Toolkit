@@ -10,7 +10,6 @@ from indico_toolkit.indico_wrapper import (
     retry,
     Workflow,
     Datasets,
-    FindRelated,
     Reviewer,
     DocExtraction,
     Download
