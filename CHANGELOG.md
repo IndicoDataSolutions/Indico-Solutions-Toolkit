@@ -97,4 +97,8 @@
 * New feature in FileProcessing class to read and return file as json
 * New feature in Highlighter class to redact and replace highlights with spoofed data
 * New Download class to support downloading resources from an Indico Cluster
-* Upgrades client to 5.1.3
+* Upgrades client to 5.1.3 and upgrades SDK calls for Indico 5.x compatibility
+
+### Removed
+
+* FindRelated class in indico_wrapper
