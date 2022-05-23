@@ -1,4 +1,3 @@
-from subprocess import list2cmdline
 from indico_toolkit.association.association import sequences_overlap
 from indico_toolkit.types.extractions import Extractions
 
@@ -6,9 +5,13 @@ from indico_toolkit.types.extractions import Extractions
 class CompareGroundTruth:
     """
     Compare a set of ground truths against a set of model predictions on a per document basis.
+    span_type
     """
 
-    def __init__(self, ground_truth: list, predictions: list):
+    def __init__(self, ground_truth: list, predictions: list, span_type: str):
+        self.span_type = (
+            span_type  # Span type string needs to be equal to "exact" or "overlap"
+        )
         self.gt_by_label: dict = Extractions(ground_truth).to_dict_by_label
         self.preds_by_label: dict = Extractions(predictions).to_dict_by_label
         self.labels: list[str] = list(
@@ -19,7 +22,8 @@ class CompareGroundTruth:
 
     def set_all_label_metrics(self) -> None:
         self.all_label_metrics = {
-            label: self._get_base_metrics(label) for label in self.labels
+            label: self._get_base_metrics(label, self.span_type)
+            for label in self.labels
         }
 
     def set_overall_metrics(self) -> None:
@@ -66,13 +70,23 @@ class CompareGroundTruth:
             recall = 0
         return recall
 
-    def _get_base_metrics(self, label: str) -> dict:
+    def _sequences_exact(self, x: dict, y: dict) -> bool:
+        """
+        Boolean return value indicates whether or not seqs are exact
+        """
+        return x["start"] == y["start"] and x["end"] == y["end"]
+
+    # TODO add in other span type functions, ultimately move them to toolkit, within association
+
+    def _get_base_metrics(self, label: str, span_type: str) -> dict:
         """
         With the current overlap span type calculation, if 2 separate predictions each overlap with a single ground truth, each pred is counted as a true positive. (That is why we don't break out of the loop once a true positive is found.)
         """
         true_pos = 0
         false_neg = 0
         false_pos = 0
+        span_types = {"overlap": sequences_overlap, "exact": self._sequences_exact}
+        span_type_func = span_types[span_type]
 
         if not label in self.preds_by_label:
             false_neg = len(self.gt_by_label[label])
@@ -82,7 +96,7 @@ class CompareGroundTruth:
             for model_pred in self.preds_by_label[label]:
                 match_found = False
                 for gt_pred in self.gt_by_label[label]:
-                    if sequences_overlap(model_pred, gt_pred):
+                    if span_type_func(model_pred, gt_pred):
                         true_pos += 1
                         match_found = True
                 if not match_found:
@@ -90,7 +104,7 @@ class CompareGroundTruth:
             for gt_pred in self.gt_by_label[label]:
                 match_found = False
                 for model_pred in self.preds_by_label[label]:
-                    if sequences_overlap(model_pred, gt_pred):
+                    if span_type_func(model_pred, gt_pred):
                         match_found = True
                 if not match_found:
                     false_neg += 1
