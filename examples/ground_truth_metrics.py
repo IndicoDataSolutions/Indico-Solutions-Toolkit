@@ -90,7 +90,7 @@ predictions = [
 ]
 
 # Set the all label metrics and overall metrics for your doc.
-cgt_instance = CompareGroundTruth(ground_truth, predictions)
+cgt_instance = CompareGroundTruth(ground_truth, predictions, "overlap")
 cgt_instance.set_all_label_metrics()
 cgt_instance.set_overall_metrics()
 
