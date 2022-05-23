@@ -17,13 +17,13 @@ class CompareGroundTruth:
         self.all_label_metrics: dict = None
         self.overall_metrics: dict = None
 
-    def get_all_label_metrics(self) -> None:
+    def set_all_label_metrics(self) -> None:
         self.all_label_metrics = {
             label: self._get_base_metrics(label) for label in self.labels
         }
 
-    def get_overall_metrics(self) -> None:
-        self.get_all_label_metrics
+    def set_overall_metrics(self) -> None:
+        self.set_all_label_metrics
 
         metrics_types = [
             "true_positives",

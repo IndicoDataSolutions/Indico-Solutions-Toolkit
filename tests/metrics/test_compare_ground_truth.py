@@ -184,8 +184,8 @@ expected_overall_metrics = {
 @pytest.fixture(scope="function")
 def ex_cgt_object():
     cgt_object = CompareGroundTruth(ground_truth_list, predictions_list)
-    cgt_object.get_all_label_metrics()
-    cgt_object.get_overall_metrics()
+    cgt_object.set_all_label_metrics()
+    cgt_object.set_overall_metrics()
     return cgt_object
 
 
