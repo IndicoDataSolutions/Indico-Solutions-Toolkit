@@ -17,16 +17,21 @@ class CompareGroundTruth:
         self.overall_metrics: dict = None
 
     def set_all_label_metrics(self, span_type: str = "overlap") -> None:
-        """
-        Span type string needs to be equal to "exact" or "overlap"
-        # TODO add in other span types once developed within indico_toolkit.association.association
-        """
-        self.all_label_metrics = {
-            label: self._get_base_metrics(label, span_type) for label in self.labels
-        }
+        if span_type in ["exact", "overlap"]:
+            self.all_label_metrics = {
+                label: self._get_base_metrics(label, span_type) for label in self.labels
+            }
+        else:
+            print(
+                'The span type entered needs to be "exact" or "overlap". The default span type is "overlap".'
+            )
 
     def set_overall_metrics(self) -> None:
-        self.set_all_label_metrics
+        if self.all_label_metrics is None:
+            print(
+                'No span type has been specified. If called, overall metrics for "overlap" span type will be provided.'
+            )
+            self.set_all_label_metrics()
 
         metrics_types = [
             "true_positives",
@@ -78,9 +83,9 @@ class CompareGroundTruth:
 
     def _get_base_metrics(self, label: str, span_type: str) -> dict:
         """
-        With the current overlap span type calculation, if 2 separate predictions each
-        overlap with a single ground truth, each pred is counted as a true positive.
-        (That is why we don't break out of the loop once a true positive is found.)
+        With the current overlap span type calculation, if 2 separate predictions
+        each overlap with a single ground truth, each pred is counted as a true
+        positive. (i.e. There isn't a break out of the loop once a TP is found.)
         """
         true_pos = 0
         false_neg = 0
