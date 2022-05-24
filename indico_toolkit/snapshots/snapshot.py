@@ -49,9 +49,10 @@ class Snapshot:
         """
         updated_predictions = []
         for label_set in self.df[self.label_col]:
-            updated_predictions.append(
-                [i for i in label_set if i["label"] not in labels_to_remove]
-            )
+            for pred in label_set["targets"]:
+                if pred["label"] in labels_to_remove:
+                    label_set["targets"].remove(pred)
+            updated_predictions.append(label_set)
         self.df[self.label_col] = updated_predictions
 
     def standardize_column_names(
@@ -102,7 +103,7 @@ class Snapshot:
         label_column = self.df[self.label_col].tolist()
         label_set = set()
         for labels in label_column:
-            for label in labels:
+            for label in labels["targets"]:
                 label_set.add(label["label"])
         return sorted(list(label_set))
 
@@ -133,7 +134,7 @@ class Snapshot:
         for _, row in merged.iterrows():
             to_merge_label = f"{self.label_col}{suffix}"
             labels = row[self.label_col]
-            if isinstance(row[to_merge_label], list):
+            if isinstance(row[to_merge_label], (dict, list)):
                 if ensure_identical_text:
                     try:
                         assert row[self.text_col] == row[f"{self.text_col}{suffix}"]
@@ -141,7 +142,7 @@ class Snapshot:
                         raise ToolkitInputError(
                             f"Text from {row[self.file_name_col]} doesn't match"
                         )
-                labels.extend(row[to_merge_label])
+                labels["targets"].extend(row[to_merge_label]["targets"])
             else:
                 unmatched_files.append(row[self.file_name_col])
             updated_labels.append(labels)
@@ -181,9 +182,10 @@ class Snapshot:
         all_labeled_text = []
         for text, labels in zip(self.df[self.text_col], self.df[self.label_col]):
             text_found = []
-            for lab in labels:
+            for lab in labels["targets"]:
                 if lab["label"] == label_name:
-                    text_found.append(text[lab["start"] : lab["end"]])
+                    for span in lab["spans"]:
+                        text_found.append(text[span["start"] : span["end"]])
             if return_per_document:
                 all_labeled_text.append(text_found)
             else:
@@ -213,6 +215,28 @@ class Snapshot:
             sub_df.to_csv(split_file_loc, index=False)
             rows_taken += split_length
             print(f"Wrote split {i} of {num_splits}: {split_file_loc}")
+
+    def update_snapshot_shape(self, task_type: str = "annotation"):
+        """
+        Mutates old snapshot df shape into updated df with spans.
+        Args:
+            task_type (str): Task type to specifiy df as (annotation = extraction, classification = classification)
+
+        NOTE: page_num in the span is currently set to None.
+        """
+        for i, targets in enumerate(self.df[self.label_col]):
+            updated_targets = []
+            for span in targets:
+                updated_span = {
+                    "label": span["label"],
+                    "spans": [
+                        {"start": span["start"], "page_num": None, "end": span["end"]}
+                    ],
+                }
+                updated_targets.append(updated_span)
+
+            updated_col = {"targets": updated_targets, "task_type": task_type}
+            self.df.at[i, self.label_col] = updated_col
 
     def __eq__(self, other: Snapshot):
         """
