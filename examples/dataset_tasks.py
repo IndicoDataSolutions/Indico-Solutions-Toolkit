@@ -1,4 +1,4 @@
-from indico_toolkit.indico_wrapper import Datasets
+from indico_toolkit.indico_wrapper import Datasets, Download
 from indico_toolkit.pipelines import FileProcessing
 from indico_toolkit import create_client
 
@@ -9,6 +9,7 @@ API_TOKEN_PATH = "./indico_api_token.txt"
 # Instantiate the datasets class
 client = create_client(HOST, API_TOKEN_PATH)
 datasets = Datasets(client, DATASET_ID)
+downloader = Download(client)
 """
 Example 1:
 
@@ -30,7 +31,7 @@ Create a dataset and then download it
 # Create a dataset and return a dataset object
 dataset_object = datasets.create_dataset(filepaths=fp.file_paths, dataset_name="My dataset")
 # Export is returned as a pandas DataFrame
-df = datasets.download_export()
+df = downloader.get_dataset_dataframe(dataset_id=dataset_object.id, labelset_id=dataset_object.labelsets[0].id)
 # view first 5 rows of the dataset as a CSV
 print(df.head())
 # Write to downloaded dataset to CSV

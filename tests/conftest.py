@@ -1,12 +1,11 @@
 import os
 import pytest
-import json
 from indico.queries import (
     CreateDataset,
     CreateModelGroup,
     GetWorkflow,
     GetDataset,
-    UpdateWorkflowSettings,
+    GraphQLRequest,
     ListWorkflows,
     JobStatus,
     DocumentExtraction,
@@ -16,11 +15,7 @@ from indico import IndicoClient
 from indico.errors import IndicoRequestError
 from indico_toolkit import create_client
 from indico_toolkit.indico_wrapper import (
-    IndicoWrapper,
     Workflow,
-    Datasets,
-    FindRelated,
-    Reviewer,
     DocExtraction,
 )
 
@@ -99,9 +94,47 @@ def workflow_id(indico_client, dataset_obj):
 
 @pytest.fixture(scope="session")
 def _finder_model_result(indico_client, workflow_id):
-    find = FindRelated(indico_client)
-    result = find.workflow_id(workflow_id)
-    return result["model_groups"][0]
+    query = """
+        query ListWorkflows($datasetIds: [Int], $workflowIds: [Int], $limit: Int){
+            workflows(datasetIds: $datasetIds, workflowIds: $workflowIds, limit: $limit){
+                workflows {
+                    id
+                components {
+                        id
+                        componentType
+                        reviewable
+                        filteredClasses
+                        ... on ModelGroupComponent {
+                            taskType
+                            modelType
+                            modelGroup {
+                                      status
+                                      id
+                                      name
+                                      taskType
+                                      questionnaireId
+                                      selectedModel{
+                                        id
+                                      }
+                                }
+                        }
+                    }
+                }
+            }
+        }
+    """
+    components = indico_client.call(
+        GraphQLRequest(query, {"workflowIds": [workflow_id]})
+    )["workflows"]["workflows"][0]
+    model_group = None
+    for component in components["components"]:
+        if (
+            component["componentType"] == "MODEL_GROUP"
+            and component["modelGroup"]["status"] == "COMPLETE"
+        ):
+            model_group = component["modelGroup"]
+            break
+    return model_group
 
 
 @pytest.fixture(scope="session")
