@@ -1,7 +1,6 @@
 """
 Compare a snapshot containing ground truth to a snapshot containing model predictions
 """
-from pydoc import doc
 import pandas as pd
 
 from indico_toolkit.metrics import CompareGroundTruth
@@ -28,46 +27,11 @@ ground_truth = [
         "confidence": {"Vendor Name": 0.85},
     },
     {
-        "label": "Vendor Name",
-        "text": "3",
-        "start": 100,
-        "end": 110,
-        "confidence": {"Vendor Name": 0.85},
-    },
-    {
         "label": "Amount",
         "text": "1",
         "start": 10,
         "end": 21,
         "confidence": {"Amount": 0.85},
-    },
-    {
-        "label": "Amount",
-        "text": "2",
-        "start": 32,
-        "end": 41,
-        "confidence": {"Amount": 0.85},
-    },
-    {
-        "label": "Amount",
-        "text": "3",
-        "start": 110,
-        "end": 120,
-        "confidence": {"Amount": 0.85},
-    },
-    {
-        "label": "Date",
-        "text": "1",
-        "start": 10,
-        "end": 15,
-        "confidence": {"Date": 0.85},
-    },
-    {
-        "label": "Date",
-        "text": "2",
-        "start": 16,
-        "end": 20,
-        "confidence": {"Date": 0.85},
     },
 ]
 predictions = [
@@ -91,41 +55,6 @@ predictions = [
         "start": 13,
         "end": 17,
         "confidence": {"Amount": 0.85},
-    },
-    {
-        "label": "Amount",
-        "text": "B",
-        "start": 18,
-        "end": 22,
-        "confidence": {"Amount": 0.85},
-    },
-    {
-        "label": "Amount",
-        "text": "C",
-        "start": 42,
-        "end": 51,
-        "confidence": {"Amount": 0.85},
-    },
-    {
-        "label": "Date",
-        "text": "A",
-        "start": 13,
-        "end": 17,
-        "confidence": {"Date": 0.85},
-    },
-    {
-        "label": "Date",
-        "text": "B",
-        "start": 18,
-        "end": 22,
-        "confidence": {"Date": 0.85},
-    },
-    {
-        "label": "Date",
-        "text": "C",
-        "start": 42,
-        "end": 51,
-        "confidence": {"Date": 0.85},
     },
 ]
 
