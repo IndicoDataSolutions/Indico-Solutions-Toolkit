@@ -1,5 +1,6 @@
 from indico_toolkit.association.association import sequences_overlap
 from indico_toolkit.types.extractions import Extractions
+from indico_toolkit.errors import ToolkitInputError
 
 
 class CompareGroundTruth:
@@ -22,15 +23,10 @@ class CompareGroundTruth:
                 label: self._get_base_metrics(label, span_type) for label in self.labels
             }
         else:
-            print(
-                'The span type entered needs to be "exact" or "overlap". The default span type is "overlap".'
-            )
+            raise ToolkitInputError("Invalid span type entered.")
 
     def set_overall_metrics(self) -> None:
         if self.all_label_metrics is None:
-            print(
-                'No span type has been specified. If called, overall metrics for "overlap" span type will be provided.'
-            )
             self.set_all_label_metrics()
 
         metrics_types = [

@@ -2,8 +2,9 @@
 Compare a snapshot containing ground truth to a snapshot containing model predictions
 """
 from pydoc import doc
+import pandas as pd
+
 from indico_toolkit.metrics import CompareGroundTruth
-import pprint as p
 
 """
 Example 1: GT and MODEL PREDICTIONS LISTS FOR A SINGLE DOCUMENT: Say you have the lists of prediction dictionaries for the ground truth
@@ -135,17 +136,44 @@ cgt_instance.set_overall_metrics()
 
 # Print results
 print("All label metrics:")
-p.pprint(cgt_instance.all_label_metrics)
-print()
+print(cgt_instance.all_label_metrics)
 print("Overall metrics:")
-p.pprint(cgt_instance.overall_metrics)
+print(cgt_instance.overall_metrics)
 
 """
 Example 2: MULTIPLE DOCS FROM GT SNAPSHOT & MODEL PREDS SNAPSHOT: Say you have the ground truth and the model predictions for a set of documents each in snapshot form. From the GT and Model snapshots, loop through each corresponding document's ground truth and model prediction dictionaries to get the metrics for each label across all documents as well as metrics for the overall set of documents.
-"""
-# TODO build out example - need to figure out expected format (Would it include spans?)
 
+Write to disk a merged snapshot with resulting metrics for each document
 """
-Example 3: PREDS FROM SUBMISSION RESULT JSON & GT IN SNAPSHOT FORM: 
-"""
-# TODO build out example - need to figure out expected format
+# Add in your pathways to your ground truth and model pred snapshot csv's
+preds_df = pd.read_csv("./example_snapshot_predictions.csv")
+gt_df = pd.read_csv("./example_snapshot_groundtruth.csv")
+
+# Create dataframe of the two snapshots, merging on their file name and id
+gt_and_preds_df = pd.merge(gt_df, preds_df, on=["file_name", "file_id"])
+
+# Create extra columns for metrics details to be stored for each document
+All_Label_Metrics = []
+Overall_Label_Metrics = []
+
+# For each document, pull out the ground truth and predictions, instantiate the CGT class, and print out the metrics for each document
+for ind in gt_and_preds_df.index:
+    ground_truth = eval(gt_and_preds_df["Ground_Truth"][ind])
+    preds = eval(gt_and_preds_df["Predictions"][ind])
+    cgt_inst = CompareGroundTruth(ground_truth, preds)
+    cgt_inst.set_all_label_metrics("overlap")
+    cgt_inst.set_overall_metrics()
+
+    All_Label_Metrics.append(cgt_inst.all_label_metrics)
+    Overall_Label_Metrics.append(cgt_inst.overall_metrics)
+
+    print("Metrics for doc with file name", gt_and_preds_df["file_name"][ind])
+    print(cgt_inst.all_label_metrics)
+    print(cgt_inst.overall_metrics)
+
+# Add the by-label and overall metrics to the merged df for reference
+gt_and_preds_df["All_Label_Metrics"] = All_Label_Metrics
+gt_and_preds_df["Overall_Metrics"] = Overall_Label_Metrics
+
+# Write to csv
+gt_and_preds_df.to_csv("./metrics.csv")
