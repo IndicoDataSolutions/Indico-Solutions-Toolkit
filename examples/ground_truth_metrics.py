@@ -141,9 +141,7 @@ print("Overall metrics:")
 print(cgt_instance.overall_metrics)
 
 """
-Example 2: MULTIPLE DOCS FROM GT SNAPSHOT & MODEL PREDS SNAPSHOT: Say you have the ground truth and the model predictions for a set of documents each in snapshot form. From the GT and Model snapshots, loop through each corresponding document's ground truth and model prediction dictionaries to get the metrics for each label across all documents as well as metrics for the overall set of documents.
-
-Write to disk a merged snapshot with resulting metrics for each document
+Example 2: MULTIPLE DOCS FROM GT SNAPSHOT & MODEL PREDS SNAPSHOT: Say you have the ground truth and the model predictions for a set of documents in snapshot form. Write to disk a merged snapshot with resulting metrics for each document.
 """
 # Add in your pathways to your ground truth and model pred snapshot csv's
 preds_df = pd.read_csv("./example_snapshot_predictions.csv")
