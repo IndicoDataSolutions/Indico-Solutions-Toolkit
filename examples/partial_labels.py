@@ -46,39 +46,14 @@ def create_argument_parser() -> argparse.ArgumentParser:
         help="Path to PROD API token to authenticate to prod_host",
     )
     parser.add_argument(
-        "--dev_dataset_id",
-        required=False,
-        help="Dataset ID for dev dataset associated w/ prod workflow",
-    )
-    parser.add_argument(
-        "--dev_questionnaire_id",
-        required=False,
-        help="Questionnaire (teach task) ID associated with dev dataset",
-    )
-    parser.add_argument(
         "--dev_model_group_id",
         required=False,
         help="Model Group ID for dev dataset / teach task",
     )
     parser.add_argument(
-        "--dev_workflow_id",
-        required=False,
-        help="Workflow ID for dev workflow associated with teach task",
-    )
-    parser.add_argument(
         "--prod_workflow_id",
         required=False,
         help="Workflow ID for prod workflow with review data",
-    )
-    parser.add_argument(
-        "--max_review_docs",
-        default=1000,
-        help="Maximum number of documents from review to add to dataset",
-    )
-    parser.add_argument(
-        "--oversample_errs",
-        action="store_true",
-        help="Sample more heavily from documents with more post review corrections",
     )
     return parser
 
@@ -90,7 +65,6 @@ def main(
     prod_api_token_path: str,
     dev_model_group_id: int,
     prod_workflow_id: int,
-    max_review_docs: int = 1000,
     oversample_errs: bool = False,
 ):
     """
@@ -165,22 +139,11 @@ if __name__ == "__main__":
     parser = create_argument_parser()
     args = parser.parse_args()
 
-    dev_host = "dev.indico.io"
-    prod_host = "dev.indico.io"
-    dev_api_token_path = "/home/m/api_keys/dev_api_token.txt"
-    prod_api_token_path = "/home/m/api_keys/dev_api_token.txt"
-    dev_model_group_id = 269652
-    prod_workflow_id = 18936
-    max_review_docs = 10
-    oversample_errs = False
-
     main(
-        dev_host=dev_host,
-        dev_api_token_path=dev_api_token_path,
-        prod_host=prod_host,
-        prod_api_token_path=prod_api_token_path,
-        dev_model_group_id=dev_model_group_id,
-        prod_workflow_id=prod_workflow_id,
-        max_review_docs=max_review_docs,
-        oversample_errs=oversample_errs,
+        dev_host=args.dev_host,
+        dev_api_token_path=args.dev_api_token_path,
+        prod_host=args.prod_host,
+        prod_api_token_path=args.prod_api_token_path,
+        dev_model_group_id=args.dev_model_group_id,
+        prod_workflow_id=args.prod_workflow_id,
     )
