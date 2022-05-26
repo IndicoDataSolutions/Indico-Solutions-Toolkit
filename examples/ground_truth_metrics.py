@@ -20,13 +20,6 @@ ground_truth = [
         "confidence": {"Vendor Name": 0.85},
     },
     {
-        "label": "Vendor Name",
-        "text": "2",
-        "start": 22,
-        "end": 31,
-        "confidence": {"Vendor Name": 0.85},
-    },
-    {
         "label": "Amount",
         "text": "1",
         "start": 10,
@@ -40,13 +33,6 @@ predictions = [
         "text": "A",
         "start": 3,
         "end": 7,
-        "confidence": {"Vendor Name": 0.85},
-    },
-    {
-        "label": "Vendor Name",
-        "text": "B",
-        "start": 32,
-        "end": 41,
         "confidence": {"Vendor Name": 0.85},
     },
     {
