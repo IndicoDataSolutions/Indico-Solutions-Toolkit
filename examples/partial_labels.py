@@ -16,6 +16,7 @@ import argparse
 from datetime import datetime, timedelta
 
 from indico import IndicoClient, IndicoConfig
+from indico_toolkit.indico_wrapper import workflow
 from indico_toolkit.staggered_loop import StaggeredLoop
 
 
@@ -87,10 +88,7 @@ def main(
     dev_api_token_path: str,
     prod_host: str,
     prod_api_token_path: str,
-    dev_dataset_id: int,
-    dev_questionnaire_id: int,
     dev_model_group_id: int,
-    dev_workflow_id: int,
     prod_workflow_id: int,
     max_review_docs: int = 1000,
     oversample_errs: bool = False,
@@ -107,12 +105,7 @@ def main(
         dev_api_token_path: API token path for dev env
         prod_host: Host URL for prod env
         prod_api_token_path: API token path for prod env
-        dev_dataset_id: Dataset ID for dev dataset associated w/ prod workflow
-        dev_questionnaire_id: Questionnaire (teach task) ID associated with dev dataset.
-            Necessary because a dataset can have multiple teach tasks
         dev_model_group_id: Model Group ID for dev dataset / teach task
-        dev_workflow_id: Workflow ID for dev workflow. Required for adding data
-            to teach task and model
         prod_workflow_id: Workflow ID for prod workflow w/ review enabled
         max_review_docs: Maximum number of documents from review to add to dataset
             If max_review_docs is less than the number of docs that have been
@@ -128,6 +121,12 @@ def main(
 
     # Get dataset details to determine when dataset was last updated. This will serve
     # as a filter to prevent adding duplicate review data
+    # TODO: use this again
+
+    related = dev_stagger.model_group_details(model_group_id=dev_model_group_id)
+    dev_dataset_id = related["dataset_id"]
+
+    # TODO: use date last modified
     dataset_details = dev_stagger.get_dataset_details(dataset_id=dev_dataset_id)
 
     # Connect to prod
@@ -137,48 +136,41 @@ def main(
     prod_stagger = StaggeredLoop(client=prod_client)
 
     # Pull review data from prod workflow
-    since = datetime.now() - timedelta(days=1)
+    since = datetime.now() - timedelta(days=7)
     workflow_results = prod_stagger.get_review_data(
         workflow_id=prod_workflow_id,
         update_date=since,
     )
-    print(workflow_results)
+    doc_paths = prod_stagger.get_document_bytes()
+    doc_texts = prod_stagger.get_submission_full_text()
 
     # StaggeredLoop class extends IndicoClient, so strictly has to connect to
     # only one environment. As a result, we set the workflow_results attribute
     # of the dev instance of the class using the review data pulled from prod.
-    dev_stagger.set_workflow_results(workflow_results)
-
-    # Get document bytes and text
-    dev_stagger.get_document_bytes()
-    dev_stagger.get_submission_full_text()
+    dev_stagger.set_workflow_results(workflow_results, doc_paths, doc_texts)
 
     # Postprocess and sample review data
     dev_stagger.process_review_data()
-    # dev_stagger.sample_data(sample_ratio=1)
+    dev_stagger.sample_data(sample_ratio=1, oversample_errors=oversample_errs)
 
     # # # Add data to dev dataset and retrain model
-    # dev_stagger.add_data(
-    #     dataset_id=dev_dataset_id,
-    #     questionnaire_id=dev_questionnaire_id,
-    #     workflow_id=dev_workflow_id,
-    # )
-    # dev_stagger.retrain_model(model_group_id=dev_model_group_id)
+    dev_stagger.add_data(model_group_id=dev_model_group_id, partial=True)
+
+    # Not necessary to update model settings because default is to use partially
+    # labeled data for training when provided
+    dev_stagger.retrain_model(model_group_id=dev_model_group_id)
 
 
 if __name__ == "__main__":
     parser = create_argument_parser()
     args = parser.parse_args()
 
-    dev_host = "app.indico.io"
-    prod_host = "app.indico.io"
-    dev_api_token_path = "/home/m/api_keys/prod_api_token.txt"
-    prod_api_token_path = "/home/m/api_keys/prod_api_token.txt"
-    dev_dataset_id = 8781
-    dev_questionnaire_id = None
-    dev_model_group_id = None
-    dev_workflow_id = None
-    prod_workflow_id = 1435
+    dev_host = "dev.indico.io"
+    prod_host = "dev.indico.io"
+    dev_api_token_path = "/home/m/api_keys/dev_api_token.txt"
+    prod_api_token_path = "/home/m/api_keys/dev_api_token.txt"
+    dev_model_group_id = 269652
+    prod_workflow_id = 18936
     max_review_docs = 10
     oversample_errs = False
 
@@ -187,10 +179,7 @@ if __name__ == "__main__":
         dev_api_token_path=dev_api_token_path,
         prod_host=prod_host,
         prod_api_token_path=prod_api_token_path,
-        dev_dataset_id=dev_dataset_id,
-        dev_questionnaire_id=dev_questionnaire_id,
         dev_model_group_id=dev_model_group_id,
-        dev_workflow_id=dev_workflow_id,
         prod_workflow_id=prod_workflow_id,
         max_review_docs=max_review_docs,
         oversample_errs=oversample_errs,

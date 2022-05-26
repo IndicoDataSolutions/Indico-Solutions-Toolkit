@@ -1,25 +1,19 @@
 from datetime import datetime, timedelta, timezone
-import io
 import json
 import random
-from typing import Dict, List, Set, Tuple, Union, NewType
-import uuid
+from typing import Dict, List, Union, NewType, Optional
 from pathlib import Path
 
 from indico import IndicoClient
 from indico.filters import DocumentReportFilter
-from indico.queries.datasets import AddFiles, GetDataset, ProcessFiles
+from indico.queries.datasets import AddFiles, ProcessFiles
 from indico.queries.document_report import GetDocumentReport
 from indico.queries.questionnaire import (
     AddLabels,
-    GetQuestionnaire,
     GetQuestionnaireExamples,
 )
-from indico.queries.storage import RetrieveStorageObject
-from indico.queries.submission import GetSubmission
 from indico.queries.workflow import AddDataToWorkflow
 import pandas as pd
-from PIL import Image
 
 from indico_toolkit.indico_wrapper import Workflow
 from indico_toolkit.staggered_loop import metrics
@@ -46,7 +40,6 @@ class StaggeredLoop(Workflow):
         self.client = client
 
         # Document, text and labels/predictions from review
-        self._local_doc_paths: List[str] = []
         self._document_texts: List[str] = []
         self._document_paths: List[str] = []
         self._workflow_results: List[WorkflowResult] = []
@@ -60,7 +53,12 @@ class StaggeredLoop(Workflow):
         self._snap_formatted_predictions: List[List[dict]] = []
         self._filenames: List[str] = []
 
-    def set_workflow_results(self, workflow_results: List[WorkflowResult]):
+    def set_workflow_results(
+        self,
+        workflow_results: List[WorkflowResult],
+        doc_paths: List[str],
+        doc_texts: List[str],
+    ) -> None:
         """
         StaggeredLoop functionality typically requires working across multiple
         environments, because users of the platform often use a prod environment
@@ -75,6 +73,103 @@ class StaggeredLoop(Workflow):
             workflow_results: Workflow results to set as attribute of instance of class
         """
         self._workflow_results = workflow_results
+        self._document_paths = doc_paths
+        self._document_texts = doc_texts
+
+    def update_model_settings(self, model_group_id: int, model_training_options: Dict):
+        query = """
+        mutation UpdateModelGroupSettings(
+            $modelGroupId: Int!,
+            $modelTrainingOptions: JSONString,
+        ) {
+            updateModelGroupSettings(
+            modelGroupId: $modelGroupId,
+            modelTrainingOptions: $modelTrainingOptions
+            ) {
+                id
+                modelOptions {
+                    modelTrainingOptions
+                }
+            }
+        }
+        """
+        res = self.graphQL_request(
+            query,
+            {
+                "modelGroupId": model_group_id,
+                "model_training_options": model_training_options,
+            },
+        )[0]
+        return res
+
+    def model_group_details(self, model_group_id: int) -> Dict:
+        query = """
+            query GetModelGroup($id: Int) {
+                modelGroups(modelGroupIds: [$id]) {
+                    modelGroups {
+                        id
+                        name
+                        datasetId
+                        workflowId
+                        questionnaireId
+                        labelset {
+                            id
+                            targetNames {
+                                id
+                                name
+                            }
+                        }
+                        selectedModel {
+                            id
+                        }
+                    }
+                }
+            }
+        """
+        res = self.graphQL_request(query, {"id": model_group_id})["modelGroups"][
+            "modelGroups"
+        ][0]
+        related = {
+            "model_group_name": res["name"],
+            "model_group_id": model_group_id,
+            "selected_model_id": res["selectedModel"]["id"],
+            "dataset_id": res["datasetId"],
+            "workflow_id": res["workflowId"],
+            "labelset_id": res["labelset"]["id"],
+            "questionnaire_id": res["questionnaireId"],
+            "target_name_to_id": {
+                target_name["name"]: target_name["id"]
+                for target_name in res["labelset"]["targetNames"]
+            },
+        }
+        return related
+
+    def get_datafile_page_meta(self, datafile_id: int) -> List[Dict]:
+        """_summary_
+
+        Args:
+            datafile_id (int): ID of datafile
+
+        Returns:
+            List[Dict]: Per page metadata for datafile, including start / end offset
+        """
+        query = """
+            query dataFileQuery($datafile:Int!) {
+                datafile(datafileId:$datafile) {
+                    id
+                    rainbowUrl
+                    pages {
+                        docStartOffset
+                        docEndOffset
+                    }
+                }
+            }
+        """
+        response = self.graphQL_request(
+            graphql_query=query, variables={"datafile": datafile_id}
+        )
+        page_meta = response.get("datafile", {}).get("pages", [])
+        return page_meta
 
     def get_dataset_details(
         self, dataset_id: int
@@ -130,9 +225,6 @@ class StaggeredLoop(Workflow):
         """
         Fetch review data from workflow, using the update_date as a filter
 
-        TODO Could be preferable to filter data by completedAt timestamp instead
-         of updatedAt, but that is more complex
-
         Will also run pre review and post review comparisons here and
         add TP/FP/FN metadata as well
 
@@ -146,19 +238,18 @@ class StaggeredLoop(Workflow):
         """
         # Get list of submission IDs using GetDocumentReport query
         submission_ids = []
+
+        # TODO: deal with timezones...
         document_filter = DocumentReportFilter(
-            # TODO Comment back in when latest version of the client has been deployed
-            #  Earlier version of client does not have status as an argument to filter
-            status="COMPLETE",
+            # status="COMPLETE",
             workflow_id=workflow_id,
             updated_at_start_date=update_date,
             updated_at_end_date=datetime.now(),
         )
         for page in self.client.paginate(GetDocumentReport(filters=document_filter)):
-            for submissions in page:
-                submission_ids.extend(
-                    [sub.submission_id for sub in submissions.input_files]
-                )
+            submission_ids.extend(
+                [sub.submission_id for sub in page if sub.status == "COMPLETE"]
+            )
 
         # Fetch results from submission IDs
         self._workflow_results = self.get_submission_results_from_ids(
@@ -171,26 +262,26 @@ class StaggeredLoop(Workflow):
         )
         return self._workflow_results
 
-    def get_submission_full_text(self):
+    def get_submission_full_text(self) -> List[str]:
         """
         Fetch full text (OCR) from all workflow submissions. Should be run after
         get_review_data()
         """
+        document_texts = []
         for wf_result in self._workflow_results:
             ondoc_result = self.get_ondoc_ocr_from_etl_url(wf_result.etl_url)
-            self._document_texts.append(ondoc_result.full_text)
-        print("Downloaded text (OCR) for all workflow submissions")
+            document_texts.append(ondoc_result.full_text)
 
-    def get_document_bytes(self):
+        print("Downloaded text (OCR) for all workflow submissions")
+        return document_texts
+
+    def get_document_bytes(self) -> List[str]:
         """
         For each workflow submission, extract the storage URL of the underlying
         documents, and then fetch the document bytes using the storage URL and
         save them to disk.
-
-        TODO Replace code that is stitching together PNGs with retrieval of original
-         document upload after content type error is resolved
-         https://indicodata.atlassian.net/browse/DEV-8488
         """
+        document_paths = []
         for wf_result in self._workflow_results:
             # TODO: support bundles
             # TODO: don't assume input_file name is unique
@@ -199,10 +290,11 @@ class StaggeredLoop(Workflow):
             doc_bytes = self.get_file_bytes(wf_result.result["input_file"])
             with open(doc_path, "wb") as f:
                 f.write(doc_bytes)
-            self._document_paths.append(doc_path)
+            document_paths.append(doc_path)
         print(
             "Downloaded document bytes for all workflow submissions and wrote them to disk"
         )
+        return document_paths
 
     @staticmethod
     def preprocess_review_data(
@@ -385,18 +477,18 @@ class StaggeredLoop(Workflow):
     def sample_data(
         self,
         sample_ratio: float,
-        weigh_errors_flag: bool = False,
+        oversample_errors: bool = False,
         random_seed: int = 42,
     ):
         """
         Method to sample portion of review data prior to adding it to a dataset
         and workflow.
 
-        TODO Handle weigh_errors_flag
+        TODO Handle oversample_errors
 
         Args:
             sample_ratio: Ratio of review documents to sample
-            weigh_errors_flag: Determines how to sample documents. If True,
+            oversample_errors: Determines how to sample documents. If True,
                 sample more heavily from documents with more of a discrepancy
                 between pre and post review predictions.
                 Else, sample randomly.
@@ -406,16 +498,33 @@ class StaggeredLoop(Workflow):
         random.seed(random_seed)
         sampled_idxs = random.sample(range(len(self._document_texts)), num_samples)
         for idx in sampled_idxs:
-            self._sampled_doc_paths.append(self._local_doc_paths[idx])
+            self._sampled_doc_paths.append(self._document_paths[idx])
             self._sampled_text.append(self._document_texts[idx])
             self._sampled_review_labels.append(self._filtered_review_labels[idx])
         print(f"Sampled ratio={sample_ratio} of review data")
 
-    def add_data(self, dataset_id: int, questionnaire_id: int, workflow_id: int):
+    def _reformat_labels(self, labels, target_name_to_id):
+        result = []
+        for label in labels:
+            result.append(
+                {
+                    "clsId": target_name_to_id[label["label"]],
+                    "spans": [
+                        {
+                            "start": label["start"],
+                            "end": label["end"],
+                            "pageNum": label["pageNum"],
+                        }
+                    ],
+                }
+            )
+        return result
+
+    def add_data(self, model_group_id: int, partial: bool = True):
         """
         Add processed and sampled review data to dataset and teach task
 
-        TODO Make it easier to debug in the case of a failure by saving out serialized
+        TODO: Make it easier to debug in the case of a failure by saving out serialized
          state of instance of class to a file, and allow user to resume progress from
          a specific stage of this method
 
@@ -425,17 +534,27 @@ class StaggeredLoop(Workflow):
             workflow_id: Workflow ID for workflow associated with dataset and teach task.
                 Required for adding data to teach task
         """
+        print("Finding related IDs (dataset, workflow, etc.)")
+        related = self.model_group_details(model_group_id=model_group_id)
+        questionnaire_id = related["questionnaire_id"]
+        dataset_id = related["dataset_id"]
+        workflow_id = related["workflow_id"]
+        labelset_id = related["labelset_id"]
+        target_name_to_id = related["target_name_to_id"]
+
         # Add files to dataset
+        print(self._sampled_doc_paths)
         dataset = self.client.call(
             AddFiles(dataset_id=dataset_id, files=self._sampled_doc_paths)
         )
-        print(f"Added files to dataset")
 
-        # Save mapping of file names to datafile IDs to later associate with labels
+        # Save mapping of file names to dev datafile IDs to later associate with labels
         datafile_names_to_ids = {
-            f.name: f.id for f in dataset.files if f.status == "DOWNLOADED"
+            Path(f.name).name: f.id for f in dataset.files if f.status == "DOWNLOADED"
         }
+        print("Datafile name to ID map", datafile_names_to_ids)
 
+        print("Processing files...")
         # Process files (run OCR)
         dataset = self.client.call(
             ProcessFiles(
@@ -444,50 +563,67 @@ class StaggeredLoop(Workflow):
                 wait=True,
             )
         )
-        print("Ran OCR on files uploaded to dataset")
+
+        # Double check OCR content
+        # WARNING: these docs paths / datafile IDs are related to the prod environment
+        print(
+            "Ensuring text from prod environment lines up with dev environment doc lengths"
+        )
+        for idx, doc_path in enumerate(self._sampled_doc_paths):
+            datafile_id = datafile_names_to_ids[Path(doc_path).name]
+            text = self._sampled_text[idx]
+            page_meta = self.get_datafile_page_meta(datafile_id)
+            assert (
+                len(text) == page_meta[-1]["docEndOffset"]
+            ), "OCR text does not match -- labels will be misaligned with text"
 
         # Add data to workflow (and teach task) so that we can add labels
+        print("Adding files from dataset to workflow and teach task")
         self.client.call(AddDataToWorkflow(workflow_id=workflow_id, wait=True))
-        print("Added files from dataset to workflow and teach task")
 
         # Create mapping b/w datafile IDs and labels
         datafile_ids_to_labels = {}
         for path, labels in zip(self._sampled_doc_paths, self._sampled_review_labels):
             file_name = path.split("/")[-1]
-            datafile_id = datafile_names_to_ids[file_name]
+            datafile_id = datafile_names_to_ids[Path(file_name).name]
             datafile_ids_to_labels[datafile_id] = labels
 
         # Get unlabeled examples (that we just uploaded) from questionnaire
-        examples = self.client.call(
-            GetQuestionnaireExamples(
-                questionnaire_id=questionnaire_id, num_examples=len(dataset.files)
-            )
-        )
-
-        # Get name of questionnaire and then use it to identify teach task labelset ID
-        questionnaire = self.client.call(
-            GetQuestionnaire(questionnaire_id=questionnaire_id)
-        )
-        dataset = self.client.call(GetDataset(id=dataset_id))
-        labelset_id = dataset.labelset_by_name(questionnaire.name).id
-
         # Add labels to questionnaire (teach task)
         labels = []
-        for example in examples:
-            doc_labels = datafile_ids_to_labels[example.datafile_id]
-            label_dict = {
-                "rowIndex": example.row_index,
-                "target": json.dumps(doc_labels),
-            }
-            labels.append(label_dict)
+        for datafile_id in datafile_ids_to_labels:
+            examples = self.client.call(
+                GetQuestionnaireExamples(
+                    questionnaire_id,
+                    datafile_id=datafile_id,
+                    # Arbitrarily high
+                    num_examples=1000,
+                )
+            )
+
+            for example in examples:
+                doc_labels = datafile_ids_to_labels[example.datafile_id]
+                label_dict = {
+                    "exampleId": example.id,
+                    # This imposes some constraits on input format?
+                    "targets": self._reformat_labels(doc_labels, target_name_to_id),
+                    "partial": partial,
+                    "override": True,
+                    "rejected": False,
+                }
+                labels.append(label_dict)
+
+        if not labels:
+            raise AssertionError("No new labels added -- aborting.")
+
         self.client.call(
             AddLabels(
                 labelset_id=labelset_id,
-                dataset_id=dataset_id,
+                model_group_id=model_group_id,
                 labels=labels,
             )
         )
-        print("Added labels to examples newly added to teach task")
+        print(f"Added {len(labels)} labels to examples newly added to teach task")
 
     def retrain_model(self, model_group_id: int):
         """
@@ -509,7 +645,7 @@ class StaggeredLoop(Workflow):
             }
         }
         """
-        self.graphQL_request(
+        res = self.graphQL_request(
             graphql_query=mutation, variables={"modelGroupId": model_group_id}
         )
         print("Retraining extraction model with new review data")
