@@ -96,17 +96,6 @@ predictions_list = [
     generate_pred(start_index=800, end_index=806, label="Zip", text="H"),
     generate_pred(start_index=900, end_index=906, label="Zip", text="H"),
 ]
-expected_labels = [
-    "Address",
-    "Amount",
-    "Business Category",
-    "City",
-    "Date",
-    "PO Number",
-    "State",
-    "Vendor Name",
-    "Zip",
-]
 expected_all_label_metrics = {
     "Address": {
         "false_negatives": 0,
@@ -190,6 +179,12 @@ def ex_cgt_object():
 
 
 def test_labels(ex_cgt_object):
+    expected_labels = list(
+        set(
+            [item["label"] for item in ground_truth_list]
+            + [item["label"] for item in predictions_list]
+        )
+    )
     assert len(expected_labels) == len(ex_cgt_object.labels)
     assert set(expected_labels) == set(ex_cgt_object.labels)
 

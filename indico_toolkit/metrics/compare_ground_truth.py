@@ -43,22 +43,24 @@ class CompareGroundTruth:
             "false_negatives",
         ]
 
-        self.overall_metrics = {}
+        overall_metrics = {}
 
         for metric in metrics_types:
             total_amt = 0
             for label in self.all_label_metrics:
                 total_amt += self.all_label_metrics[label][metric]
-            self.overall_metrics[metric] = total_amt
+            overall_metrics[metric] = total_amt
 
-        self.overall_metrics["precision"] = self._get_precision(
-            self.overall_metrics["true_positives"],
-            self.overall_metrics["false_positives"],
+        overall_metrics["precision"] = self._get_precision(
+            overall_metrics["true_positives"],
+            overall_metrics["false_positives"],
         )
-        self.overall_metrics["recall"] = self._get_recall(
-            self.overall_metrics["true_positives"],
-            self.overall_metrics["false_negatives"],
+        overall_metrics["recall"] = self._get_recall(
+            overall_metrics["true_positives"],
+            overall_metrics["false_negatives"],
         )
+
+        self.overall_metrics = overall_metrics
 
     def _get_precision(self, true_p: int, false_p: int) -> float:
         try:
