@@ -6,7 +6,7 @@ from indico_toolkit.types import Extractions
 
 class Association(ABC):
     """
-    Base class for matching tokens to extraction predictions. 
+    Base class for matching tokens to extraction predictions.
     """
 
     def __init__(self, predictions: Union[List[dict], Extractions]):
@@ -32,7 +32,7 @@ class Association(ABC):
         for position in self._mapped_positions:
             page_map[position["page_num"]].append(position)
         return page_map
-    
+
     def validate_prediction_formatting(
         self, predictions: Union[List[dict], Extractions]
     ) -> List[dict]:
@@ -43,11 +43,19 @@ class Association(ABC):
     def _is_manually_added_pred(self, prediction: dict) -> bool:
         return Extractions.is_manually_added_prediction(prediction)
 
+
 def sequences_overlap(x: dict, y: dict) -> bool:
     """
     Boolean return value indicates whether or not seqs overlap
     """
     return x["start"] < y["end"] and y["start"] < x["end"]
+
+
+def sequences_exact(self, x: dict, y: dict) -> bool:
+    """
+    Boolean return value indicates whether or not seqs are exact
+    """
+    return x["start"] == y["start"] and x["end"] == y["end"]
 
 
 def _check_if_token_match_found(pred: dict, no_match_indicator: bool):

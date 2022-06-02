@@ -190,15 +190,12 @@ def ex_cgt_object():
 
 
 def test_labels(ex_cgt_object):
-    expected_labels.sort()
-    ex_cgt_object.labels.sort()
     assert len(expected_labels) == len(ex_cgt_object.labels)
-    assert expected_labels == ex_cgt_object.labels
+    assert set(expected_labels) == set(ex_cgt_object.labels)
 
 
 def test_true_positives(ex_cgt_object):
     for label in ex_cgt_object.labels:
-        print(label)
         assert (
             expected_all_label_metrics[label]["true_positives"]
             == ex_cgt_object.all_label_metrics[label]["true_positives"]

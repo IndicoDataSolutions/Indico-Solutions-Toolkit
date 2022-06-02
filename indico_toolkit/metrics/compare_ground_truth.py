@@ -1,4 +1,6 @@
-from indico_toolkit.association.association import sequences_overlap
+from typing import List
+
+from indico_toolkit.association.association import sequences_overlap, sequences_exact
 from indico_toolkit.types.extractions import Extractions
 from indico_toolkit.errors import ToolkitInputError
 
@@ -8,16 +10,19 @@ class CompareGroundTruth:
     Compare a set of ground truths against a set of model predictions on a per document basis.
     """
 
-    def __init__(self, ground_truth: list, predictions: list):
+    def __init__(self, ground_truth: List[dict], predictions: List[dict]):
         self.gt_by_label: dict = Extractions(ground_truth).to_dict_by_label
         self.preds_by_label: dict = Extractions(predictions).to_dict_by_label
-        self.labels: list[str] = list(
+        self.labels: List[str] = list(
             set(list(self.gt_by_label) + list(self.preds_by_label))
         )
         self.all_label_metrics: dict = None
         self.overall_metrics: dict = None
 
     def set_all_label_metrics(self, span_type: str = "overlap") -> None:
+        """
+        The "all_label_metrics" dict includes each label as a key and each label's metrics as the corresponding value.
+        """
         if span_type in ["exact", "overlap"]:
             self.all_label_metrics = {
                 label: self._get_base_metrics(label, span_type) for label in self.labels
@@ -26,6 +31,9 @@ class CompareGroundTruth:
             raise ToolkitInputError("Invalid span type entered.")
 
     def set_overall_metrics(self) -> None:
+        """
+        The "overall_metrics" dict includes the metrics for the entire document. (Key: metric type; value: metric value)
+        """
         if self.all_label_metrics is None:
             self.set_all_label_metrics()
 
@@ -35,17 +43,13 @@ class CompareGroundTruth:
             "false_negatives",
         ]
 
-        self.overall_metrics = {
-            "true_positives": 0,
-            "false_positives": 0,
-            "false_negatives": 0,
-        }
+        self.overall_metrics = {}
 
         for metric in metrics_types:
             total_amt = 0
             for label in self.all_label_metrics:
                 total_amt += self.all_label_metrics[label][metric]
-                self.overall_metrics[metric] = total_amt
+            self.overall_metrics[metric] = total_amt
 
         self.overall_metrics["precision"] = self._get_precision(
             self.overall_metrics["true_positives"],
@@ -70,13 +74,6 @@ class CompareGroundTruth:
             recall = 0
         return recall
 
-    # TODO add in other span type functions (), ultimately move them to toolkit, within association
-    def _sequences_exact(self, x: dict, y: dict) -> bool:
-        """
-        Boolean return value indicates whether or not seqs are exact
-        """
-        return x["start"] == y["start"] and x["end"] == y["end"]
-
     def _get_base_metrics(self, label: str, span_type: str) -> dict:
         """
         With the current overlap span type calculation, if 2 separate predictions
@@ -86,7 +83,7 @@ class CompareGroundTruth:
         true_pos = 0
         false_neg = 0
         false_pos = 0
-        span_types = {"overlap": sequences_overlap, "exact": self._sequences_exact}
+        span_types = {"overlap": sequences_overlap, "exact": sequences_exact}
         span_type_func = span_types[span_type]
 
         if not label in self.preds_by_label:
