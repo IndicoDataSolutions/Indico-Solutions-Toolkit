@@ -4,20 +4,20 @@ A library to assist Indico IPA development
 
 ### Available Functionality
 The indico-toolkit provides classes and functions to help achieve the following:
-* Easy batch workflow submission and retrieval.
-* Classes that simplify dataset/doc-extraction functionality.
-* Tools to assist with positioning, e.g. row association, distance between preds, relative position validation.
-* Get metrics for all model IDs in a model group to see how well fields are performing after more labeling.
-* Compare two models via bar plot and data tables.
-* Highlighting extraction predictions on source PDFs.
-* Staggered loop learning retrieval and reformatting.
-* Train a document classification model without labeling.
-* Train a first page classification model (for bundle splitting) without labeling.
-* Helpful Scripted/Auto Review processing and submission.
+* Easy batch workflow submission and retrieval.[[Example](./examples/submitting_to_workflow.py)] / [[Module](/indico_toolkit/indico_wrapper/workflow.py)]
+* Classes that simplify dataset/doc-extraction functionality. [[Example](./examples/dataset_tasks.py)] / [[Module](/indico_toolkit/indico_wrapper/dataset.py)] 
+* Tools to assist with positioning, e.g. row association, distance between preds, relative position validation. [[Example](./examples/row_association.py)] / [[Module](/indico_toolkit/association/association.py)]
+* Get metrics for all model IDs in a model group to see how well fields are performing after more labeling. [[Example](./examples/model_metrics.py)] / [[Module](/indico_toolkit/metrics/metrics.py)]
+* Compare two models via bar plot and data tables. [[Example](./examples/model_metrics.py)] / [[Module](/indico_toolkit/metrics/plotting.py)]
+* Highlighting extraction predictions on source PDFs. [[Example](./examples/pdf_highlighter.py)] / [[Module](/indico_toolkit/highlighter/highlighter.py)]
+* Staggered loop learning retrieval and reformatting. [[Example](./examples/staggered_loop.py)] / [[Module](/indico_toolkit/staggered_loop/staggered_loop.py)]
+* Train a document classification model without labeling. [[Example](./examples/staggered_loop.py)] / [[Module](/indico_toolkit/staggered_loop/staggered_loop.py)]
+* Train a first page classification model (for bundle splitting) without labeling. [[Example](./examples/staggered_loop.py)] / [[Module](/indico_toolkit/staggered_loop/staggered_loop.py)]
+* Helpful Scripted/Auto Review processing and submission. [[Example](./examples/auto_review_predictions.py)] / [[Module](/indico_toolkit/auto_review/auto_reviewer.py)]
 * Common manipulation of prediction/workflow results.
 * Objects to simplify parsing OCR responses.
-* Snapshot merging and manipulation
-* Class to spoof a human reviewer.
+* Snapshot merging and manipulation [[Example](./examples/merge_snapshots.py)] / [[Module](/indico_toolkit/snapshots/snapshot.py)]
+* Class to spoof a human reviewer. [[Module](/indico_toolkit/indico_wrapper/reviewer.py)]
 
 ### Installation
 ```
