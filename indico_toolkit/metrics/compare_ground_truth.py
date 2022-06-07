@@ -82,6 +82,7 @@ class CompareGroundTruth:
         each overlap with a single ground truth, each pred is counted as a true
         positive. (i.e. There isn't a break out of the loop once a TP is found.)
         """
+        # TODO potentially build in choice on the "multiple true positives" per ground truth prediction by adding conditional
         true_pos = 0
         false_neg = 0
         false_pos = 0
