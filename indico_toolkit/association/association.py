@@ -51,7 +51,7 @@ def sequences_overlap(x: dict, y: dict) -> bool:
     return x["start"] < y["end"] and y["start"] < x["end"]
 
 
-def sequences_exact(self, x: dict, y: dict) -> bool:
+def sequences_exact(x: dict, y: dict) -> bool:
     """
     Boolean return value indicates whether or not seqs are exact
     """
