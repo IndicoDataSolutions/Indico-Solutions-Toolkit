@@ -10,6 +10,7 @@ For all metric calculations below:
     {"start": int, "end": int, "text": str, "label": str, "doc_idx": int}
 - "true" or "predicted" generally refers to a list of label dictionaries of the format above
 """
+import traceback
 from collections import defaultdict, OrderedDict
 import copy
 import functools
@@ -22,6 +23,7 @@ try:
     import numpy as np
     import spacy
 except ImportError:
+    traceback.print_exc()
     raise Exception("Using partial labels requires installing additional packages")
 
 

@@ -273,6 +273,7 @@ class StaggeredLoop(Workflow):
             document_texts.append(ondoc_result.full_text)
 
         print("Downloaded text (OCR) for all workflow submissions")
+        self._document_texts = document_texts
         return document_texts
 
     def get_document_bytes(self) -> List[str]:
