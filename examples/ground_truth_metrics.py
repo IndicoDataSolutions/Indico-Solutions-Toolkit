@@ -66,8 +66,8 @@ gt_df = pd.read_csv("./example_snapshot_groundtruth.csv")
 gt_and_preds_df = pd.merge(gt_df, preds_df, on=["file_name", "file_id"])
 
 # Create extra columns for metrics details to be stored for each document
-All_Label_Metrics = []
-Overall_Label_Metrics = []
+all_label_metrics_lst = []
+overall_label_metrics_lst = []
 
 # For each document, pull out the ground truth and predictions, instantiate the CGT class, and print out the metrics for each document
 for ind in gt_and_preds_df.index:
@@ -77,16 +77,16 @@ for ind in gt_and_preds_df.index:
     cgt_inst.set_all_label_metrics("overlap")
     cgt_inst.set_overall_metrics()
 
-    All_Label_Metrics.append(cgt_inst.all_label_metrics)
-    Overall_Label_Metrics.append(cgt_inst.overall_metrics)
+    all_label_metrics_lst.append(cgt_inst.all_label_metrics)
+    overall_label_metrics_lst.append(cgt_inst.overall_metrics)
 
     print("Metrics for doc with file name", gt_and_preds_df["file_name"][ind])
     print(cgt_inst.all_label_metrics)
     print(cgt_inst.overall_metrics)
 
 # Add the by-label and overall metrics to the merged df for reference
-gt_and_preds_df["All_Label_Metrics"] = All_Label_Metrics
-gt_and_preds_df["Overall_Metrics"] = Overall_Label_Metrics
+gt_and_preds_df["All_Label_Metrics"] = all_label_metrics_lst
+gt_and_preds_df["Overall_Metrics"] = overall_label_metrics_lst
 
 # Write to csv
 gt_and_preds_df.to_csv("./metrics.csv")
