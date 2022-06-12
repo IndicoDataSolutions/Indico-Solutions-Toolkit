@@ -170,10 +170,10 @@ def test_get_all_labeled_text_per_doc(snapshot_csv_path):
     assert labeled_text[0][0] == "WY"
 
 
-def test_update_snapshot_shape(old_snapshot_csv_path):
+def test_update_label_col_format(old_snapshot_csv_path):
     snap = Snapshot(old_snapshot_csv_path)
     old_df = deepcopy(snap.df)
-    snap.update_snapshot_shape(task_type="annotation")
+    snap.update_label_col_format(task_type="annotation")
 
     assert old_df.shape == snap.shape
     assert snap.df[snap.label_col].iloc[0]["task_type"] == "annotation"

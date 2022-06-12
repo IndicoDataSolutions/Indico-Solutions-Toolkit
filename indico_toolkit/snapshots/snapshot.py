@@ -222,9 +222,9 @@ class Snapshot:
             rows_taken += split_length
             print(f"Wrote split {i} of {num_splits}: {split_file_loc}")
 
-    def update_snapshot_shape(self, task_type: str = "annotation"):
+    def update_label_col_format(self, task_type: str = "annotation"):
         """
-        Mutates old snapshot df shape into updated df with spans.
+        Modifies label column to updated format with spans.
         Args:
             task_type (str): Task type to specifiy df as (annotation = extraction, classification = classification)
 
