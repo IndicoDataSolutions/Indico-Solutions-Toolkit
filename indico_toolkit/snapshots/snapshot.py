@@ -230,9 +230,10 @@ class Snapshot:
 
         NOTE: page_num in the span is currently set to None.
         """
-        for i, targets in enumerate(self.df[self.label_col]):
+        updated_column = []
+        for label_set in self.df[self.label_col]:
             updated_targets = []
-            for span in targets:
+            for span in label_set:
                 updated_span = {
                     "label": span["label"],
                     "spans": [
@@ -241,8 +242,8 @@ class Snapshot:
                 }
                 updated_targets.append(updated_span)
 
-            updated_col = {"targets": updated_targets, "task_type": task_type}
-            self.df.at[i, self.label_col] = updated_col
+            updated_column.append({"task_type": task_type, "targets": updated_targets})
+        self.df[self.label_col] = updated_column
 
     def __eq__(self, other: Snapshot):
         """
