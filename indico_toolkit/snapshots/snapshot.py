@@ -49,9 +49,15 @@ class Snapshot:
         """
         updated_predictions = []
         for label_set in self.df[self.label_col]:
-            for pred in label_set["targets"]:
-                if pred["label"] in labels_to_remove:
-                    label_set["targets"].remove(pred)
+            label_set.update(
+                {
+                    "targets": [
+                        i
+                        for i in label_set["targets"]
+                        if i["label"] not in labels_to_remove
+                    ]
+                }
+            )
             updated_predictions.append(label_set)
         self.df[self.label_col] = updated_predictions
 
