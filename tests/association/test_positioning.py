@@ -207,6 +207,54 @@ def test_get_min_distance_different_pages(input, expected):
     assert round(distance, 2) == expected
 
 
+def test_get_horizontal_overlap_different_pages():
+    position = Positioning()
+    with pytest.raises(ToolkitInputError):
+        position.get_horizontal_overlap(
+            generate_mapped_pred(page_num=1),
+            generate_mapped_pred(),
+        )
+
+
+@pytest.mark.parametrize(
+    "input, expected",
+    [
+        ((generate_mapped_pred(0, 10, 0, 10), generate_mapped_pred(10, 20, 20, 40)), 0.0),
+        ((generate_mapped_pred(0, 10, 10, 20), generate_mapped_pred(10, 20, 0, 10)), 0.0),
+        ((generate_mapped_pred(0, 10, 0, 10), generate_mapped_pred(10, 20, 0, 5)), 1.0),
+        ((generate_mapped_pred(0, 10, 0, 5), generate_mapped_pred(10, 20, 0, 10)), 0.5),
+    ],
+)
+def test_get_horizontal_overlap(input, expected):
+    position = Positioning()
+    overlap = position.get_horizontal_overlap(input[0], input[1])
+    assert round(overlap, 2) == expected
+
+
+def test_get_vertical_overlap_different_pages():
+    position = Positioning()
+    with pytest.raises(ToolkitInputError):
+        position.get_vertical_overlap(
+            generate_mapped_pred(page_num=1),
+            generate_mapped_pred(),
+        )
+
+
+@pytest.mark.parametrize(
+    "input, expected",
+    [
+        ((generate_mapped_pred(0, 10, 0, 10), generate_mapped_pred(20, 40, 10, 20)), 0.0),
+        ((generate_mapped_pred(10, 20, 0, 10), generate_mapped_pred(0, 10, 10, 20)), 0.0),
+        ((generate_mapped_pred(0, 10, 0, 10), generate_mapped_pred(0, 5, 10, 20)), 1.0),
+        ((generate_mapped_pred(0, 5, 0, 10), generate_mapped_pred(0, 10, 10, 20)), 0.5),
+    ],
+)
+def test_get_vertical_overlap(input, expected):
+    position = Positioning()
+    overlap = position.get_vertical_overlap(input[0], input[1])
+    assert round(overlap, 2) == expected
+
+
 def test_get_vertical_min_distance():
     position = Positioning()
     input = (generate_mapped_pred(), generate_mapped_pred(20, 30, 20, 30))

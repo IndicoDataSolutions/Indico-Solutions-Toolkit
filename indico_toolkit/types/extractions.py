@@ -5,6 +5,7 @@ from copy import deepcopy
 from indico_toolkit.pipelines import FileProcessing
 from indico_toolkit import ToolkitInputError
 
+
 class Extractions:
     """
     Functionality for common extraction prediction use cases
