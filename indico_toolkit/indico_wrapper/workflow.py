@@ -1,7 +1,9 @@
-import time
 from typing import List, Union
 from indico import IndicoClient, IndicoRequestError
 from indico.queries import (
+    AddModelGroupComponent,
+    GetWorkflow,
+    GetDataset,
     Submission,
     SubmissionFilter,
     ListSubmissions,
@@ -17,6 +19,8 @@ from indico.queries.submission import SubmissionResult
 from .indico_wrapper import IndicoWrapper
 from indico_toolkit import ToolkitStatusError
 from indico_toolkit.ocr import OnDoc
+from indico.types import NewLabelsetArguments, NewQuestionnaireArguments
+from indico.types import Workflow as IndicoWorkflowObject
 from indico_toolkit.types import WorkflowResult
 
 
@@ -31,6 +35,58 @@ class Workflow(IndicoWrapper):
 
     def __init__(self, client: IndicoClient):
         self.client = client
+
+    def add_mg_component(
+        self,
+        workflow_id: int,
+        dataset_id: int,
+        model_name: str,
+        source_col: str,
+        target_col: str,
+        after_component_type: str = "INPUT_OCR_EXTRACTION",
+        new_labelset_args: NewLabelsetArguments = None,
+        new_questionnaire_args: NewQuestionnaireArguments = None,
+        model_training_options: dict = None,
+        model_type: str = None,
+    ) -> IndicoWorkflowObject:
+        """
+        Adds a new model group to a workflow, optionally with a customized questionnaire.
+        Available on 5.0+ only.
+
+        Args:
+            dataset_id (int): id of the dataset that the model will be trained on
+            workflow_id (int): id of the workflow that the model will belong to
+            model_name (str): the name for your model
+            source_col (str): the csv column that contained the text
+            target_col (str): the csv column that contained the labels
+            after_component_type (str): The type of the previous component, or step, that should precede this step.
+                Typically, this prior component would be something like "INPUT_OCR_EXTRACTION" or "INPUT_IMAGE".
+            new_labelset_args (NewLabelsetArguments): if needed, new labelset to add.
+                Only use if not using labelset_column_id.
+            new_questionnaire_args (NewQuestionnaireArguments): Customize the questionnaire associated with this model group.
+            model_training_options (dict): Additional options for training. If the model_type is FINETUNE, this can include the base_model, which should be one of "default", "roberta", "small", "multilingual", "fast", "textcnn", or "fasttextcnn".
+            model_type (str): The model type to use, defaults to the default model type for the dataset type. Valid options are "ENSEMBLE", "TFIDF_LR", "TFIDF_GBT", "STANDARD", "FINETUNE", "OBJECT_DETECTION", "RATIONALIZED", "FORM_EXTRACTION", and "DOCUMENT".
+        Returns:
+            Indico Workflow object with updated component list, which will contain the added Model Group
+        """
+        wflow = self.client.call(GetWorkflow(workflow_id))
+        dataset = self.client.call(GetDataset(dataset_id))
+        after_component = wflow.component_by_type(after_component_type)
+
+        return self.client.call(
+            AddModelGroupComponent(
+                workflow_id=wflow.id,
+                dataset_id=dataset.id,
+                name=model_name,
+                after_component_id=after_component.id,
+                source_column_id=dataset.datacolumn_by_name(source_col).id,
+                labelset_column_id=dataset.labelset_by_name(target_col).id,
+                new_labelset_args=new_labelset_args,
+                new_questionnaire_args=new_questionnaire_args,
+                model_training_options=model_training_options,
+                model_type=model_type,
+            )
+        )
 
     def submit_documents_to_workflow(
         self, workflow_id: int, pdf_filepaths: List[str]
