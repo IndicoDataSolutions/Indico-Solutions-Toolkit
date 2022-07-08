@@ -212,4 +212,8 @@ def doc_extraction_standard(indico_client):
 
 @pytest.fixture(scope="session")
 def snapshot_csv_path(testdir_file_path):
+    return os.path.join(testdir_file_path, "data/snapshots/updated_snapshot.csv")
+
+@pytest.fixture(scope="session")
+def old_snapshot_csv_path(testdir_file_path):
     return os.path.join(testdir_file_path, "data/snapshots/snapshot.csv")
