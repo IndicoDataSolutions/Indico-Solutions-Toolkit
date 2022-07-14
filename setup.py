@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="indico-toolkit",
@@ -15,7 +15,7 @@ setup(
         "coverage>=5.5",
     ],
     install_requires=[
-        "indico-client==5.1.3",
+        "indico-client>=5.1.4",
         "plotly==5.2.1",
         "tqdm==4.50.0",
         "faker==13.3.3",
