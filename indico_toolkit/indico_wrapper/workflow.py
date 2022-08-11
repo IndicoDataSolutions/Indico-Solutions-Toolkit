@@ -39,7 +39,7 @@ class Workflow(IndicoWrapper):
     ) -> Workflow:
         """
         Args:
-            workflow_id (int): Workflow to get
+            workflow_id (int): Workflow id to query for
         """
         return self.client.call(
             GetWorkflow(workflow_id)

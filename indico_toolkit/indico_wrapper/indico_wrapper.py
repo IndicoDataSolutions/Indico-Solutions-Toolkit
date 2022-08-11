@@ -47,6 +47,8 @@ class IndicoWrapper:
             model_name (str): the name for your model
             source_col (str): the csv column that contained the text
             target_col (str): the csv column that contained the labels
+            after_component_id (int, optional): The workflow component that precedes this model group. If None, will be set
+                                                programmatically to the id of the Input OCR Extraction component. Defaults to None.
             wait (bool, optional): Wait for the model to finish training. Defaults to False.
 
         Returns:
