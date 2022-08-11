@@ -7,12 +7,14 @@ from indico.queries import (
     ListSubmissions,
     UpdateSubmission,
     GetSubmission,
+    GetWorkflow,
     WorkflowSubmission,
     SubmitReview,
     WaitForSubmissions,
     UpdateWorkflowSettings,
     JobStatus,
 )
+from indico.types import Workflow
 from indico.queries.submission import SubmissionResult
 from .indico_wrapper import IndicoWrapper
 from indico_toolkit import ToolkitStatusError
@@ -31,6 +33,17 @@ class Workflow(IndicoWrapper):
 
     def __init__(self, client: IndicoClient):
         self.client = client
+
+    def get_workflow(
+        self, workflow_id: int
+    ) -> Workflow:
+        """
+        Args:
+            workflow_id (int): Workflow to get
+        """
+        return self.client.call(
+            GetWorkflow(workflow_id)
+        )
 
     def submit_documents_to_workflow(
         self, workflow_id: int, pdf_filepaths: List[str]
