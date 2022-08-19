@@ -5,7 +5,7 @@ import time
 from tqdm import tqdm
 from indico import IndicoClient
 from indico.client.request import Debouncer
-from indico.types import Dataset, Workflow
+from indico.types import Dataset, Workflow, OcrEngine
 from indico.queries import (
     GetDataset,
     CreateDataset,
@@ -55,7 +55,10 @@ class Datasets(IndicoWrapper):
         return workflow
 
     def create_empty_dataset(
-        self, dataset_name: str, dataset_type: str = "DOCUMENT"
+        self,
+        dataset_name: str,
+        dataset_type: str = "DOCUMENT",
+        ocr_engine: OcrEngine = OcrEngine.OMNIPAGE,
     ) -> Dataset:
         """
         Create an empty dataset
@@ -63,13 +66,19 @@ class Datasets(IndicoWrapper):
             name (str): Name of the dataset
             dataset_type (str, optional): TEXT, IMAGE, or DOCUMENT. Defaults to "DOCUMENT".
         """
-        return self.client.call(CreateEmptyDataset(dataset_name, dataset_type))
+        return self.client.call(CreateEmptyDataset(dataset_name, dataset_type, ocr_engine))
 
-    def create_dataset(self, filepaths: List[str], dataset_name: str) -> Dataset:
+    def create_dataset(
+        self,
+        filepaths: List[str],
+        dataset_name: str,
+        ocr_engine: OcrEngine = OcrEngine.OMNIPAGE,
+    ) -> Dataset:
         dataset = self.client.call(
             CreateDataset(
                 name=dataset_name,
                 files=filepaths,
+                ocr_engine=ocr_engine,
             )
         )
         self.dataset_id = dataset.id
