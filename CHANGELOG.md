@@ -102,3 +102,18 @@
 ### Removed
 
 * FindRelated class in indico_wrapper
+
+## 2.0.2 8/31/2022
+
+### Added
+
+* Upgrades client to 5.1.4
+* New feature to now support staggered looped learning
+* Ground truth compare feature to compare a snapshot against model predictions and receive analytics
+* Modifies IndioWrapper class to updated CreateModelGroup call to work with Indico 5.x
+* Updates Snapshot class to account for updated target spans
+* Updates Add Model calls to aligh with 5.1.4 components
+
+### Fixed
+
+* Issue where highlighter annotated labels would be upside down and reversed
