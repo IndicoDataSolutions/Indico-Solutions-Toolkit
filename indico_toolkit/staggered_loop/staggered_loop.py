@@ -220,7 +220,7 @@ class StaggeredLoop(Workflow):
         return dataset_details
 
     def get_review_data(
-        self, workflow_id: int, update_date: datetime
+        self, workflow_id: int, update_date: datetime, selected_submission_ids: List[int] = None
     ) -> List[WorkflowResult]:
         """
         Fetch review data from workflow, using the update_date as a filter
@@ -232,24 +232,29 @@ class StaggeredLoop(Workflow):
             workflow_id: ID of production workflow with review enabled
             update_date: Update date for dataset in dev. Used to only capture
                 submissions that have been updated since then
+            selected_submission_ids: Specific submission IDs selected by user to use to retrain model
 
         Returns:
             workflow_results: Review data fetched from workflow
         """
-        # Get list of submission IDs using GetDocumentReport query
-        submission_ids = []
 
-        # TODO: deal with timezones...
-        document_filter = DocumentReportFilter(
-            # status="COMPLETE",
-            workflow_id=workflow_id,
-            updated_at_start_date=update_date,
-            updated_at_end_date=datetime.now(),
-        )
-        for page in self.client.paginate(GetDocumentReport(filters=document_filter)):
-            submission_ids.extend(
-                [sub.submission_id for sub in page if sub.status == "COMPLETE"]
+        if selected_submission_ids:
+            submission_ids = selected_submission_ids
+        else:
+            # Get list of submission IDs using GetDocumentReport query
+            submission_ids = []
+
+            # TODO: deal with timezones...
+            document_filter = DocumentReportFilter(
+                # status="COMPLETE",
+                workflow_id=workflow_id,
+                updated_at_start_date=update_date,
+                updated_at_end_date=datetime.now(),
             )
+            for page in self.client.paginate(GetDocumentReport(filters=document_filter)):
+                submission_ids.extend(
+                    [sub.submission_id for sub in page if sub.status == "COMPLETE"]
+                )
 
         # Fetch results from submission IDs
         self._workflow_results = self.get_submission_results_from_ids(
