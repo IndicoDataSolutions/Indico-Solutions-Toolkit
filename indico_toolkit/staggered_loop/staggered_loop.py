@@ -6,6 +6,7 @@ from pathlib import Path
 
 from indico import IndicoClient
 from indico.filters import DocumentReportFilter
+from indico.queries import GetSubmission
 from indico.queries.datasets import AddFiles, ProcessFiles
 from indico.queries.document_report import GetDocumentReport
 from indico.queries.questionnaire import (
@@ -220,7 +221,10 @@ class StaggeredLoop(Workflow):
         return dataset_details
 
     def get_review_data(
-        self, workflow_id: int, update_date: datetime, selected_submission_ids: List[int] = None
+            self, workflow_id: int,
+            update_date: datetime,
+            selected_submission_ids: List[int] = None,
+            reviewer_ids: List[int] = None
     ) -> List[WorkflowResult]:
         """
         Fetch review data from workflow, using the update_date as a filter
@@ -232,6 +236,8 @@ class StaggeredLoop(Workflow):
             workflow_id: ID of production workflow with review enabled
             update_date: Update date for dataset in dev. Used to only capture
                 submissions that have been updated since then
+            reviewer_ids: User IDs of specific reviewers. Used to select submissions only
+                reviewed by specified reviewers
             selected_submission_ids: Specific submission IDs selected by user to use to retrain model
 
         Returns:
@@ -251,10 +257,19 @@ class StaggeredLoop(Workflow):
                 updated_at_start_date=update_date,
                 updated_at_end_date=datetime.now(),
             )
-            for page in self.client.paginate(GetDocumentReport(filters=document_filter)):
-                submission_ids.extend(
-                    [sub.submission_id for sub in page if sub.status == "COMPLETE"]
-                )
+            if reviewer_ids:
+                for page in self.client.paginate(GetDocumentReport(filters=document_filter)):
+                    for sub in page:
+                        if sub.status == "COMPLETE":
+                            submission = self.client.call(GetSubmission(sub.submission_id))
+                            for review in submission.reviews:
+                                if review.created_by in reviewer_ids:
+                                    submission_ids.append(sub.submission_id)
+            else:
+                for page in self.client.paginate(GetDocumentReport(filters=document_filter)):
+                    submission_ids.extend(
+                        [sub.submission_id for sub in page if sub.status == "COMPLETE"]
+                    )
 
         # Fetch results from submission IDs
         self._workflow_results = self.get_submission_results_from_ids(
