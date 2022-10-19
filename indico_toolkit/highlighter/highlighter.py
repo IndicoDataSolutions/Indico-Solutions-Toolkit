@@ -292,6 +292,7 @@ class Highlighter(ExtractedTokens):
             color (str, optional): label color. Defaults to "red".
         """
         captured_preds = set()
+        page.clean_contents()
         for token in tokens:
             if token["prediction_index"] not in captured_preds:
                 text_height = int(

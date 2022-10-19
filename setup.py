@@ -1,8 +1,8 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="indico-toolkit",
-    version="2.0.1",
+    version="2.0.2",
     packages=find_packages(exclude=["tests"]),
     description="""Tools to assist with Indico IPA development""",
     license="MIT License (See LICENSE)",
@@ -15,7 +15,7 @@ setup(
         "coverage>=5.5",
     ],
     install_requires=[
-        "indico-client==5.1.3",
+        "indico-client>=5.1.4",
         "plotly==5.2.1",
         "tqdm==4.50.0",
         "faker==13.3.3",

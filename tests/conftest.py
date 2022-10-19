@@ -6,7 +6,6 @@ from indico.queries import (
     GetWorkflow,
     GetDataset,
     GraphQLRequest,
-    ListWorkflows,
     JobStatus,
     DocumentExtraction,
     RetrieveStorageObject,
@@ -70,18 +69,18 @@ def dataset_obj(indico_client):
 def workflow_id(indico_client, dataset_obj):
     workflow_id = os.environ.get("WORKFLOW_ID")
     if not workflow_id:
+        workflow = indico_client.call(GetWorkflow(dataset_obj.id))
         indico_client.call(
             CreateModelGroup(
                 name="Solutions Toolkit Test Model",
                 dataset_id=dataset_obj.id,
                 source_column_id=dataset_obj.datacolumn_by_name("text").id,
                 labelset_id=dataset_obj.labelset_by_name("question_1620").id,
+                workflow_id=workflow.id,
+                after_component_id=workflow.component_by_type("INPUT_OCR_EXTRACTION").id,
                 wait=True,
             )
         )
-        workflow_id = indico_client.call(ListWorkflows(dataset_ids=[dataset_obj.id]))[
-            0
-        ].id
     else:
         try:
             indico_client.call(GetWorkflow(workflow_id=workflow_id))
@@ -212,4 +211,8 @@ def doc_extraction_standard(indico_client):
 
 @pytest.fixture(scope="session")
 def snapshot_csv_path(testdir_file_path):
+    return os.path.join(testdir_file_path, "data/snapshots/updated_snapshot.csv")
+
+@pytest.fixture(scope="session")
+def old_snapshot_csv_path(testdir_file_path):
     return os.path.join(testdir_file_path, "data/snapshots/snapshot.csv")

@@ -7,7 +7,7 @@ from indico.queries import (
     ModelGroupPredict,
     CreateStorageURLs
 )
-from indico.types import Dataset, ModelGroup
+from indico.types import Dataset, ModelGroup, Workflow
 from indico import IndicoClient
 from indico.errors import IndicoRequestError
 
@@ -32,42 +32,51 @@ class IndicoWrapper:
     def train_model(
         self,
         dataset: Dataset,
+        workflow: Workflow,
         model_name: str,
         source_col: str,
         target_col: str,
+        after_component_id: int = None,
         wait: bool = False,
     ) -> ModelGroup:
         """
         Train an Indico model 
         Args:
             dataset (Dataset): A dataset object (should represent an uploaded CSV dataset)
+            workflow (Workflow): A workflow object to the corresponding dataset
             model_name (str): the name for your model
             source_col (str): the csv column that contained the text
             target_col (str): the csv column that contained the labels
+            after_component_id (int, optional): The workflow component that precedes this model group. If None, will be set
+                                                programmatically to the id of the Input OCR Extraction component. Defaults to None.
             wait (bool, optional): Wait for the model to finish training. Defaults to False.
 
         Returns:
             ModelGroup: Model group object
         """
+        if not after_component_id:
+            after_component_id = workflow.component_by_type("INPUT_OCR_EXTRACTION").id
         return self.client.call(
             CreateModelGroup(
                 name=model_name,
                 dataset_id=dataset.id,
                 source_column_id=dataset.datacolumn_by_name(source_col).id,
                 labelset_id=dataset.labelset_by_name(target_col).id,
+                workflow_id=workflow.id,
+                after_component_id=after_component_id,
                 wait=wait,
             )
         )
 
     @retry((IndicoRequestError, ConnectionError))
-    def get_storage_object(self, storage_url):
+    def get_storage_object(self, storage_url: str):
         return self.client.call(RetrieveStorageObject(storage_url))
 
     def create_storage_urls(self, file_paths: List[str]) -> List[str]:
         return self.client.call(CreateStorageURLs(files=file_paths))
 
-    def get_job_status(self, job_id: int, wait: bool = True):
-        return self.client.call(JobStatus(id=job_id, wait=wait))
+    def get_job_status(self, job_id: int, wait: bool = True, timeout: float = None):
+        return self.client.call(JobStatus(id=job_id, wait=wait, timeout=timeout))
 
     @retry((IndicoRequestError, ConnectionError))
     def graphQL_request(self, graphql_query: str, variables: dict = None):
