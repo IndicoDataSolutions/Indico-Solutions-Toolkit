@@ -1,6 +1,7 @@
 from indico_toolkit import create_client
 from indico_toolkit.snapshots import Snapshot
 from indico_toolkit.indico_wrapper import Datasets
+from indico.queries import CreateWorkflow
 
 HOST = "app.indico.io"
 API_TOKEN_PATH = "./indico_api_token.txt"
@@ -41,12 +42,19 @@ With that merged snapshot, you can now use the toolkit to upload and train a mod
 client = create_client(HOST, API_TOKEN_PATH)
 dataset = Datasets(client)
 uploaded_dataset = dataset.create_dataset([OUTPUT_PATH], dataset_name="my_dataset")
+
+workflow = client.call(CreateWorkflow(dataset_id=dataset.dataset_id, name="New Dataset"))
+
 print(f"My Dataset ID is {uploaded_dataset.id}")
 model = dataset.train_model(
-    uploaded_dataset,
-    model_name="my_model",
+    dataset=uploaded_dataset,
+    workflow=workflow,
+    model_name="my_merged_model",
     source_col=main_snap.text_col,
     target_col=main_snap.label_col,
     wait=False,
 )
 print(f"My Model Group ID is {model.id}")
+
+
+
