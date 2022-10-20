@@ -5,7 +5,7 @@ import time
 from tqdm import tqdm
 from indico import IndicoClient
 from indico.client.request import Debouncer
-from indico.types import Dataset, Workflow
+from indico.types import Dataset, Workflow, OcrEngine, OmnipageOcrOptionsInput, ReadApiOcrOptionsInput, TableReadOrder
 from indico.queries import (
     GetDataset,
     CreateDataset,
@@ -19,6 +19,7 @@ from indico.queries import (
     GetDatasetFileStatus,
 )
 from indico.queries.datasets import _UploadDatasetFiles, _AddFiles, _ProcessFiles
+from indico_toolkit.errors import ToolkitInputError
 from indico_toolkit.indico_wrapper import IndicoWrapper
 from indico_toolkit.pipelines import FileProcessing
 
@@ -35,7 +36,7 @@ class Datasets(IndicoWrapper):
         Upload documents to an existing dataset and wait for them to OCR
         """
         dataset = self.client.call(
-            AddFiles(dataset_id=dataset_id, files=filepaths, wait=True)
+            AddFiles(dataset_id=dataset_id, files=filepaths, wait=True, auto_process=True)
         )
         datafile_ids = [f.id for f in dataset.files if f.status == "DOWNLOADED"]
         return self.client.call(
@@ -65,11 +66,53 @@ class Datasets(IndicoWrapper):
         """
         return self.client.call(CreateEmptyDataset(dataset_name, dataset_type))
 
-    def create_dataset(self, filepaths: List[str], dataset_name: str) -> Dataset:
+    def create_dataset(self, filepaths: List[str], dataset_name: str, dataset_type:str = "DOCUMENT", read_api=True, **kwargs) -> Dataset:
+        acceptable_settings = {
+            "auto_rotate": bool,
+            "single_column": bool,
+            "upscale_images": bool,
+            "languages": list,
+        }
+        ocr_engine = OcrEngine.READAPI 
+        ocr_settings = ReadApiOcrOptionsInput = {
+            "auto_rotate" : True,
+            "single_column": False,
+            "upscale_images": False,
+            "languages": ["ENG"]
+        }
+        
+        if not read_api:
+            acceptable_settings.update({
+                "force_render": bool,
+                "native_layout": bool,
+                "native_pdf": bool,
+                "table_read_order": TableReadOrder
+            })
+            ocr_engine = OcrEngine.OMNIPAGE
+            ocr_settings.update({
+                "force_render": True,
+                "native_layout": False,
+                "native_pdf": False,
+                "table_read_order": TableReadOrder.ROW
+            })
+            ocr_settings = OmnipageOcrOptionsInput = ocr_settings
+            
+        ocr_settings.update(kwargs)
+        try:
+            for key in ocr_settings.keys():
+                if not isinstance(ocr_settings[key], acceptable_settings[key]):
+                    raise ToolkitInputError(f"{key} invalid type of {type(ocr_settings[key])}, expected type {acceptable_settings[key]}")
+        except KeyError:
+            raise ToolkitInputError(f"{key} is not a valid OCR setting for type {ocr_engine.name}")
+            
         dataset = self.client.call(
             CreateDataset(
                 name=dataset_name,
                 files=filepaths,
+                dataset_type=dataset_type,
+                ocr_engine=ocr_engine,
+                read_api_ocr_options= ocr_settings if ocr_engine == OcrEngine.READAPI else None,
+                omnipage_ocr_options= ocr_settings if ocr_engine == OcrEngine.OMNIPAGE else None
             )
         )
         self.dataset_id = dataset.id
