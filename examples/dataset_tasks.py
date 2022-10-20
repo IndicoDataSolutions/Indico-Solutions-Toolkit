@@ -25,14 +25,28 @@ for paths in fp.batch_files(batch_size=2):
     print(f"Uploaded {len(paths)} files")
 """
 Example 2:
-
-Create a dataset and then download it
+Create a dataset with ReadAPI
+ReadAPI is the default OCR option for dataset creation
+ocr options can be included as kwargs
+ReadAPI kwargs w/ defaults:
+    "auto_rotate" (bool): True,
+    "single_column" (bool): False,
+    "upscale_images" (bool): False,
+    "languages" (list): ["ENG"]
 """
-# Create a dataset and return a dataset object
-dataset_object = datasets.create_dataset(filepaths=fp.file_paths, dataset_name="My dataset")
-# Export is returned as a pandas DataFrame
-df = downloader.get_dataset_dataframe(dataset_id=dataset_object.id, labelset_id=dataset_object.labelsets[0].id)
-# view first 5 rows of the dataset as a CSV
-print(df.head())
-# Write to downloaded dataset to CSV
-df.to_csv("./mydataset.csv")
+dataset_object = datasets.create_dataset(filepaths=fp.file_paths, dataset_name="My ReadAPI dataset", auto_rotate=False, single_column=True)
+"""
+Example 3:
+Create a dataset with Omnipage
+ocr options can be included as kwargs
+Omnipage kwargs w/ defaults:
+    "auto_rotate" (bool): True,
+    "single_column" (bool): False,
+    "upscale_images" (bool): False,
+    "languages" (list): ["ENG"],
+    "force_render": True,
+    "native_layout": False,
+    "native_pdf": False,
+    "table_read_order": TableReadOrder.ROW
+"""
+dataset_object = datasets.create_dataset(filepaths=fp.file_paths, dataset_name="My Omnipage dataset", read_api=False, auto_rotate=False, native_layout=True)
