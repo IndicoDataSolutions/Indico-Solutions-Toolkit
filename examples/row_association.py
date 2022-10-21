@@ -9,11 +9,28 @@ PREDICTIONS = [
 OCR_TOKENS = [
         {
         "page_num": 0,
+        "doc_offset":{
+            "start":12,
+            "end":18
+        },
         "position": {
             "bbBot": 100,
             "bbTop": 0,
             "bbLeft": 423,
             "bbRight": 833
+            },
+        },
+        {
+        "page_num": 0,
+        "doc_offset":{
+            "start":20,
+            "end":23
+        },
+        "position": {
+            "bbBot": 200,
+            "bbTop": 0,
+            "bbLeft": 623,
+            "bbRight": 866
             },
         },
     ]   
