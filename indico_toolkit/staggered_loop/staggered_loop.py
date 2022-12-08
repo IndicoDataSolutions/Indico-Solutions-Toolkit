@@ -534,7 +534,7 @@ class StaggeredLoop(Workflow):
                         {
                             "start": label["start"],
                             "end": label["end"],
-                            "pageNum": label["page_num"],
+                            "pageNum": label["pageNum"],
                         }
                     ],
                 }
