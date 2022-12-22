@@ -175,10 +175,9 @@ class Positioning:
         """
         if "position" not in tokens[0].keys() and "page_num" not in tokens[0].keys():
             raise ToolkitInputError(
-                "Token argument is missing required key(s): page_num and/or position"
+                "Token list argument is missing required key(s): page_num and/or position"
             )
         if include_overlap == True:
-            # print("You wanted to include overlapping tokens.")
             return [token for token in tokens if
             self.on_same_page(bbox, token)
             and self.yaxis_overlap(bbox, token["position"]) and self.xaxis_overlap(bbox, token["position"])] 

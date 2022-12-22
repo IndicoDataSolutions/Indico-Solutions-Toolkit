@@ -1,5 +1,6 @@
 import pytest
-
+import json
+import os
 from indico_toolkit.association import Positioning, positioning
 from indico_toolkit.errors import ToolkitInputError
 
@@ -21,6 +22,15 @@ def generate_mapped_pred(
         "page_num": page_num,
     }
 
+FILE_PATH = os.path.dirname(os.path.abspath(__file__))
+
+@pytest.fixture(scope="function")
+def bbox_token_page():
+    with open(os.path.join(FILE_PATH, "data/token_page/tokens.json"),
+    "r",
+    ) as f:
+        tokens = json.load(f)
+    return tokens
 
 @pytest.mark.parametrize(
     "input, expected",
@@ -306,3 +316,24 @@ def test_distance_between_points(input, expected):
 def test_manhatan_distance_between_points(input, expected):
     distance = Positioning.manhattan_distance_between_points(input[0], input[1])
     assert round(distance, 2) == expected
+
+def test_tokens_within_bounds(bbox_token_page):
+    box = generate_mapped_pred(1260, 1465, 610, 1210, page_num=0)
+    positioning = Positioning()
+    bounds = positioning.tokens_within_bounds(box, bbox_token_page)
+    for token in bounds:
+        assert "false" not in token["text"] and "edge" not in token["text"]
+    for token in bounds:
+        assert "true" in token["text"]
+    assert len(bounds) == 18
+    edges = positioning.tokens_within_bounds(box, bbox_token_page, include_overlap=True)
+    for token in edges:
+        assert "false" not in token["text"]
+    for token in edges:
+        assert "true" in token["text"] or "edge" in token["text"]
+    assert len(edges) == 38
+    null_box = generate_mapped_pred()
+    null = positioning.tokens_within_bounds(null_box, bbox_token_page)
+    assert null == []
+    with pytest.raises(ToolkitInputError):
+        positioning.tokens_within_bounds(box, [{}])
