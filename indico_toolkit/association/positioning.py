@@ -166,23 +166,23 @@ class Positioning:
         else:
             return 0.0
     
-    def tokens_within_bounds(self, bbox: dict, tokens: List[dict], include_overlap: bool=False):
+    def tokens_within_bounds(self, bbox: dict, ocr_tokens: List[dict], include_overlap: bool=False):
         """
         Accept a dict of bounding box dimensions with a page number,
         along with a list of ocr tokens either from raw or OnDoc object.
         Return all tokens that lie within bounding box.
         Tokens with partial overlap are excluded by default.
         """
-        if "position" not in tokens[0].keys() and "page_num" not in tokens[0].keys():
+        if "position" not in ocr_tokens[0].keys() and "page_num" not in ocr_tokens[0].keys():
             raise ToolkitInputError(
                 "Token list argument is missing required key(s): page_num and/or position"
             )
         if include_overlap == True:
-            return [token for token in tokens if
+            return [token for token in ocr_tokens if
             self.on_same_page(bbox, token)
             and self.yaxis_overlap(bbox, token["position"]) and self.xaxis_overlap(bbox, token["position"])] 
         else:
-            return [token for token in tokens if 
+            return [token for token in ocr_tokens if 
             self.on_same_page(bbox, token)
             and token["position"]["bbLeft"] > bbox["bbLeft"]
             and token["position"]["bbRight"] < bbox["bbRight"]
