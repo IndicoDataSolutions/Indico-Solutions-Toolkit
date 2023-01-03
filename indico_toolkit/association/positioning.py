@@ -173,7 +173,7 @@ class Positioning:
         Return all tokens that lie within bounding box.
         Tokens with partial overlap are excluded by default.
         """
-        if "position" not in ocr_tokens[0].keys() and "page_num" not in ocr_tokens[0].keys():
+        if "position" not in ocr_tokens[0].keys() or "page_num" not in ocr_tokens[0].keys():
             raise ToolkitInputError(
                 "Token list argument is missing required key(s): page_num and/or position"
             )
