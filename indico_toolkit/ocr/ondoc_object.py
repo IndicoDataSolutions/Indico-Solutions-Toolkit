@@ -90,19 +90,3 @@ class OnDoc:
         if metric == "mean":
             return np.mean(confidence)
         return np.median(confidence)
-    
-    def tokens_within_bounds(self, bbox: dict, page_number: int = 0) -> List[dict]:
-        """
-        Accept a dict of bounding box dimensions and a page number,
-        and return all tokens that lie within that bounding box.
-        Tokens with partial overlap are exluded by default.
-        """
-        if page_number >= len(self.ondoc):
-            raise Exception(
-                "Page number outside of document range"
-            )
-        return [token for token in self.ondoc[page_number]["tokens"] if 
-        token["position"]["bbLeft"] > bbox["bbLeft"]
-        and token["position"]["bbRight"] < bbox["bbRight"]
-        and token["position"]["bbTop"] > bbox["bbTop"]
-        and token["position"]["bbBot"] < bbox["bbBot"]]
