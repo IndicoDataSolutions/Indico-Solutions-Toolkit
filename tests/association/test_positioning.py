@@ -347,4 +347,4 @@ def test_get_tokens_within_bounds_throws_error(bbox_token_page):
 def test_get_tokens_within_bounds_throws_error():
     positioning = Positioning()
     with pytest.raises(ToolkitInputError):
-        positioning.get_tokens_within_bounds(input, [{}])
+        positioning.get_tokens_within_bounds(generate_mapped_pred(), [{}])
