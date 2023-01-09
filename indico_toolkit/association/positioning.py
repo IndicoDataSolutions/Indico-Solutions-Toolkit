@@ -182,7 +182,7 @@ class Positioning:
         Returns:
             List[dict]: list of OCR tokens that fall within the specified bounding box
         """
-        if "position" not in ocr_tokens[0].keys() or "page_num" not in ocr_tokens[0].keys():
+        if "position" not in ocr_tokens[0] or "page_num" not in ocr_tokens[0]:
             raise ToolkitInputError(
                 "Token list argument is missing required key(s): page_num and/or position"
             )

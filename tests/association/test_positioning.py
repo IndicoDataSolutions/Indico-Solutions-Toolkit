@@ -317,23 +317,30 @@ def test_manhatan_distance_between_points(input, expected):
     distance = Positioning.manhattan_distance_between_points(input[0], input[1])
     assert round(distance, 2) == expected
 
-def test_tokens_within_bounds(bbox_token_page):
-    box = generate_mapped_pred(1260, 1465, 610, 1210, page_num=0)
+def test_get_tokens_within_bounds(bbox_token_page):
+    box = generate_mapped_pred(300, 360, 290, 450, page_num=0)
     positioning = Positioning()
-    bounds = positioning.tokens_within_bounds(box, bbox_token_page)
+    bounds = positioning.get_tokens_within_bounds(box, bbox_token_page)
     for token in bounds:
         assert "false" not in token["text"] and "edge" not in token["text"]
     for token in bounds:
         assert "true" in token["text"]
-    assert len(bounds) == 18
-    edges = positioning.tokens_within_bounds(box, bbox_token_page, include_overlap=True)
+    assert len(bounds) == 1
+
+def test_get_tokens_within_bounds_including_overlap(bbox_token_page):
+    box = generate_mapped_pred(300, 360, 290, 450, page_num=0)
+    positioning = Positioning()
+    edges = positioning.get_tokens_within_bounds(box, bbox_token_page, include_overlap=True)
     for token in edges:
         assert "false" not in token["text"]
     for token in edges:
         assert "true" in token["text"] or "edge" in token["text"]
-    assert len(edges) == 38
+    assert len(edges) == 2
+
+def test_get_tokens_within_bounds_throws_error(bbox_token_page):
     null_box = generate_mapped_pred()
-    null = positioning.tokens_within_bounds(null_box, bbox_token_page)
+    positioning = Positioning()
+    null = positioning.get_tokens_within_bounds(null_box, bbox_token_page)
     assert null == []
     with pytest.raises(ToolkitInputError):
-        positioning.tokens_within_bounds(box, [{}])
+        positioning.get_tokens_within_bounds(null_box, [{}])
