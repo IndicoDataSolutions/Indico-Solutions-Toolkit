@@ -321,26 +321,30 @@ def test_get_tokens_within_bounds(bbox_token_page):
     box = generate_mapped_pred(300, 360, 290, 450, page_num=0)
     positioning = Positioning()
     bounds = positioning.get_tokens_within_bounds(box, bbox_token_page)
-    for token in bounds:
-        assert "false" not in token["text"] and "edge" not in token["text"]
-    for token in bounds:
-        assert "true" in token["text"]
     assert len(bounds) == 1
+    assert "true" in bounds[0]["text"]
 
-def test_get_tokens_within_bounds_including_overlap(bbox_token_page):
+def test_get_tokens_within_bounds_excludes_overlap(bbox_token_page):
+    box = generate_mapped_pred(300, 360, 290, 450, page_num=0)
+    positioning = Positioning()
+    bounds = positioning.get_tokens_within_bounds(box, bbox_token_page)
+    assert "false" not in bounds[0]["text"] and "edge" not in bounds[0]["text"]
+
+def test_get_tokens_within_bounds_includes_overlap(bbox_token_page):
     box = generate_mapped_pred(300, 360, 290, 450, page_num=0)
     positioning = Positioning()
     edges = positioning.get_tokens_within_bounds(box, bbox_token_page, include_overlap=True)
-    for token in edges:
-        assert "false" not in token["text"]
+    assert len(edges) == 2
     for token in edges:
         assert "true" in token["text"] or "edge" in token["text"]
-    assert len(edges) == 2
 
 def test_get_tokens_within_bounds_throws_error(bbox_token_page):
     null_box = generate_mapped_pred()
     positioning = Positioning()
     null = positioning.get_tokens_within_bounds(null_box, bbox_token_page)
     assert null == []
+
+def test_get_tokens_within_bounds_throws_error():
+    positioning = Positioning()
     with pytest.raises(ToolkitInputError):
-        positioning.get_tokens_within_bounds(null_box, [{}])
+        positioning.get_tokens_within_bounds(input, [{}])
