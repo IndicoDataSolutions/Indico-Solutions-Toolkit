@@ -166,7 +166,7 @@ class Positioning:
         else:
             return 0.0
     
-    def tokens_within_bounds(self, bbox: dict, ocr_tokens: List[dict], include_overlap: bool=False):
+    def get_tokens_within_bounds(self, bbox: dict, ocr_tokens: List[dict], include_overlap: bool=False) -> List[dict]:
         """
         Accept a dict of bounding box dimensions with a page number,
         along with a list of ocr tokens either from raw or OnDoc object.
