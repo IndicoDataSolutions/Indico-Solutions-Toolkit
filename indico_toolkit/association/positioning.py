@@ -168,10 +168,19 @@ class Positioning:
     
     def get_tokens_within_bounds(self, bbox: dict, ocr_tokens: List[dict], include_overlap: bool=False) -> List[dict]:
         """
-        Accept a dict of bounding box dimensions with a page number,
-        along with a list of ocr tokens either from raw or OnDoc object.
-        Return all tokens that lie within bounding box.
-        Tokens with partial overlap are excluded by default.
+        Args:
+            bbox (dict): dict with target box dimensions and page number
+                bbox = {
+                    bbTop: int
+                    bbBot: int
+                    bbLeft: int
+                    bbRight: int
+                    page_num: int
+                }
+            ocr_tokens (List[dict]): on-doc OCR token output from raw or OnDoc class
+            include_overlap (bool, optional): Determines whether to include tokens partially inside bbox. Defaults to False.
+        Returns:
+            List[dict]: list of OCR tokens that fall within the specified bounding box
         """
         if "position" not in ocr_tokens[0].keys() or "page_num" not in ocr_tokens[0].keys():
             raise ToolkitInputError(
