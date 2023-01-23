@@ -1,1 +1,2 @@
 import pytest
+from indico_toolkit.structure import Structure
