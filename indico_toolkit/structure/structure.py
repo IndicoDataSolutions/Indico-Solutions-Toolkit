@@ -14,11 +14,17 @@ from indico.queries import (
 )
 from indico.types import OcrEngine, OmnipageOcrOptionsInput, ReadApiOcrOptionsInput, TableReadOrder
 from indico.types import Workflow
-from indico_wrapper import Datasets
+from indico_toolkit.indico_wrapper import Datasets
 
 class Structure:
     def __init__(
-        self, client, path_to_file: str, read_api: bool = True, single_column: bool = False, workflow_id: int = None
+        self,
+        client,
+        path_to_file: str,
+        read_api: bool = True,
+        single_column: bool = False,
+        dataset_id: int = None,
+        workflow_id: int = None
     ):
         self.client = client
         self.path_to_file = path_to_file
@@ -97,5 +103,4 @@ class Structure:
         )
         self.workflow_id = self.workflow.id
         self.ocr_id = self.workflow.component_by_type("INPUT_OCR_EXTRACTION").id
-        print("Workflow created")
         sleep(2)
