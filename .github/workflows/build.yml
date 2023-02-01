@@ -10,9 +10,10 @@ jobs:
     env:
       API_TOKEN: ${{ secrets.TEST_API_TOKEN }}
       DATASET_ID: ${{ secrets.DATASET_ID }}
+      PDF_DATASET_ID: ${{ secrets.PDF_DATASET_ID }}
       MODEL_NAME: ${{ secrets.MODEL_NAME }}
       WORKFLOW_ID: ${{ secrets.WORKFLOW_ID }}
-      HOST_URL: app.indico.io
+      HOST_URL: try.indico.io
     
     steps:
       - name: Checkout sources
