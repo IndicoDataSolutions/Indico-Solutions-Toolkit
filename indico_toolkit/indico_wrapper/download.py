@@ -97,7 +97,6 @@ class Download:
         for i, row in tqdm.tqdm(export_df.iterrows()):
             basename = os.path.basename(row[file_name_col])
             pdf_bytes = self._retrieve_storage_object(row[file_url_col])
-            print(pdf_bytes)
             with open(os.path.join(output_dir, basename), "wb") as fd:
                 fd.write(pdf_bytes)
             if max_files_to_download and i + 1 == max_files_to_download:
@@ -160,6 +159,7 @@ class Download:
             }
         """
         result = self.client.call(GraphQLRequest(query, {"id": dataset_id}))
-        if result["dataset"]["files"][0]["fileType"] != "CSV":
-            raise ToolkitInputError(f"The file uploaded to {dataset_id} is not a CSV")
-        return result["dataset"]["files"][0]["rainbowUrl"]
+        for file in result["dataset"]["files"]: # loop through in case there are other file types uploaded to dataset
+            if file["fileType"] == "CSV":
+                return file["rainbowUrl"]
+        raise ToolkitInputError(f"There are no CSVs uploaded to {dataset_id}")
