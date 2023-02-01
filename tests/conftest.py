@@ -5,7 +5,6 @@ from indico.queries import (
     CreateModelGroup,
     GetWorkflow,
     GetDataset,
-    GraphQLRequest,
     JobStatus,
     DocumentExtraction,
     RetrieveStorageObject,
@@ -28,6 +27,7 @@ MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
 CLASS_MODEL_NAME = os.environ.get(
     "CLASS_MODEL_NAME", "Toolkit Test Classification Model"
 )
+PDF_DATASET_ID = os.environ.get("PDF_DATASET_ID")
 
 
 @pytest.fixture(scope="session")
@@ -77,7 +77,9 @@ def workflow_id(indico_client, dataset_obj):
                 source_column_id=dataset_obj.datacolumn_by_name("text").id,
                 labelset_id=dataset_obj.labelset_by_name("question_1620").id,
                 workflow_id=workflow.id,
-                after_component_id=workflow.component_by_type("INPUT_OCR_EXTRACTION").id,
+                after_component_id=workflow.component_by_type(
+                    "INPUT_OCR_EXTRACTION"
+                ).id,
                 wait=True,
             )
         )
@@ -92,58 +94,13 @@ def workflow_id(indico_client, dataset_obj):
 
 
 @pytest.fixture(scope="session")
-def _finder_model_result(indico_client, workflow_id):
-    query = """
-        query ListWorkflows($datasetIds: [Int], $workflowIds: [Int], $limit: Int){
-            workflows(datasetIds: $datasetIds, workflowIds: $workflowIds, limit: $limit){
-                workflows {
-                    id
-                components {
-                        id
-                        componentType
-                        reviewable
-                        filteredClasses
-                        ... on ModelGroupComponent {
-                            taskType
-                            modelType
-                            modelGroup {
-                                      status
-                                      id
-                                      name
-                                      taskType
-                                      questionnaireId
-                                      selectedModel{
-                                        id
-                                      }
-                                }
-                        }
-                    }
-                }
-            }
-        }
-    """
-    components = indico_client.call(
-        GraphQLRequest(query, {"workflowIds": [workflow_id]})
-    )["workflows"]["workflows"][0]
-    model_group = None
-    for component in components["components"]:
-        if (
-            component["componentType"] == "MODEL_GROUP"
-            and component["modelGroup"]["status"] == "COMPLETE"
-        ):
-            model_group = component["modelGroup"]
-            break
-    return model_group
+def extraction_model_group_id():
+    return 1751
 
 
 @pytest.fixture(scope="session")
-def extraction_model_group_id(_finder_model_result):
-    return _finder_model_result["id"]
-
-
-@pytest.fixture(scope="session")
-def extraction_model_id(_finder_model_result):
-    return _finder_model_result["selectedModel"]["id"]
+def extraction_model_id():
+    return 3233
 
 
 @pytest.fixture(scope="module")
@@ -194,6 +151,7 @@ def ondoc_ocr_object(indico_client, pdf_filepath):
 
 @pytest.fixture(scope="session")
 def standard_ocr_object(indico_client, pdf_filepath):
+    # TODO: this can be static-- probably should be "ondoc" as well
     job = indico_client.call(
         DocumentExtraction(
             files=[pdf_filepath], json_config={"preset_config": "standard"}
@@ -213,6 +171,12 @@ def doc_extraction_standard(indico_client):
 def snapshot_csv_path(testdir_file_path):
     return os.path.join(testdir_file_path, "data/snapshots/updated_snapshot.csv")
 
+
 @pytest.fixture(scope="session")
 def old_snapshot_csv_path(testdir_file_path):
     return os.path.join(testdir_file_path, "data/snapshots/snapshot.csv")
+
+
+@pytest.fixture(scope="session")
+def pdf_dataset_obj(indico_client):
+    return indico_client.call(GetDataset(PDF_DATASET_ID))

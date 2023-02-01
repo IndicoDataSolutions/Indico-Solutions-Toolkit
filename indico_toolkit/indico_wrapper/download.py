@@ -97,6 +97,7 @@ class Download:
         for i, row in tqdm.tqdm(export_df.iterrows()):
             basename = os.path.basename(row[file_name_col])
             pdf_bytes = self._retrieve_storage_object(row[file_url_col])
+            print(pdf_bytes)
             with open(os.path.join(output_dir, basename), "wb") as fd:
                 fd.write(pdf_bytes)
             if max_files_to_download and i + 1 == max_files_to_download:
