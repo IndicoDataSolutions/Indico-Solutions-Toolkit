@@ -21,8 +21,8 @@ from indico_toolkit.indico_wrapper import (
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 
-HOST_URL = os.environ.get("HOST_URL", "app.indico.io")
-API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH", "../api_tokens/nateshim_app_indico_api_token.txt")
+HOST_URL = os.environ.get("HOST_URL")
+API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
 API_TOKEN = os.environ.get("API_TOKEN")
 MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
 CLASS_MODEL_NAME = os.environ.get(
