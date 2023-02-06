@@ -1,5 +1,4 @@
-import pandas as pd
-from typing import Tuple, Set, List
+from typing import Tuple, Set
 from indico import IndicoClient
 from indico_toolkit.indico_wrapper import Datasets, Workflow, Teach
 from indico_toolkit.pipelines import FileProcessing
@@ -9,7 +8,7 @@ from .queries import GetExampleIds, GetTeachDetails, LabelTeachTask
 class AutoPopulator:
     def __init__(self, client: IndicoClient, directory_path: str):
         """
-        Create a CSV of OCR text alongside a class label based on a directory structure.
+        Label and train a model based on a directory structure.
         You should have a base directory containing sub directories where each directory contains
         a unique file type and only that file type.
 
@@ -40,8 +39,12 @@ class AutoPopulator:
         self.file_paths = self._fp.file_paths
 
     def create_populator(
-        self, verbose: bool = True, catch_exceptions: bool = True
-    ):
+            self, 
+            dataset_name: str, 
+            workflow_name: str, 
+            teach_task_name: str,
+            labelset_name: str = None
+        ):
         """
         Label and train model based on provided file structure
         Args:
@@ -49,17 +52,19 @@ class AutoPopulator:
             verbose (bool, optional): Print updates on OCR progress. Defaults to True.
             batch_size (int, optional): Number of files to submit at a time. Defaults to 5.
         """
+        if not labelset_name:
+            labelset_name = f"{teach_task_name}_labelset"
         self._set_full_doc_classes()
         # Create empty dataset
         datasets = Datasets(self.client)
-        dataset = datasets.create_dataset(self.file_paths, "My dataset")
+        dataset = datasets.create_dataset(self.file_paths, dataset_name)
         # Create workflow
         workflows = Workflow(self.client)
-        workflow = workflows.create_workflow("My workflow", dataset.id)
+        workflow = workflows.create_workflow(workflow_name, dataset.id)
         # Add classifier teach task to workflow (should know labels from parent directory)
         teach = Teach(self.client)
         teach_task_id = teach.add_teach_task(
-            "My Teach Task",
+            teach_task_name,
             "my_labelset_name",
             list(self.model_classes),
             dataset,
@@ -68,10 +73,9 @@ class AutoPopulator:
         # Retrieve examples and match filename
         labelset_id, model_group_id, target_name_map = self._get_teach_task_details(teach_task_id)
         examples = self._get_examples(model_group_id)
-        # Apply labels using Ids mapped in 3
-        targets_list = [{"clsId": target_name_map[self.file_to_class[examples[ex_id]]]} for ex_id in examples.keys()] 
+        # Apply labels using target_name_map
         labels = [
-            {"exampleId": ex_id, "targets": targets_list} for ex_id in examples.keys()
+            {"exampleId": ex_id, "targets": [{"clsId": target_name_map[self.file_to_class[examples[ex_id]]]}]} for ex_id in examples.keys()
         ]
         self.client.call(
             LabelTeachTask(
@@ -98,21 +102,6 @@ class AutoPopulator:
         for target in target_names:
             target_name_map[target["name"]] = target["id"]
         return labelset_id, model_group_id, target_name_map
-
-    def _convert_label(self, label, target_name_map) -> List[dict]:
-        updated_labels = []
-        for target in label["targets"]:
-            updated_spans = []
-            for span in target["spans"]:
-                span["pageNum"] = span["page_num"]
-                del span["page_num"]
-                updated_spans.append(span)
-            updated_label = {
-                "clsId": target_name_map[target["label"]],
-                "spans": updated_spans,
-            }
-            updated_labels.append(updated_label)
-        return updated_labels
     
     def _set_full_doc_classes(self):
         self.file_to_class = dict(zip([self._fp.file_name_from_path(f) for f in self._fp.file_paths], self._fp.parent_directory_of_filepaths))
