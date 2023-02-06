@@ -6,6 +6,7 @@ from indico.queries import (
     SubmissionFilter,
     ListSubmissions,
     UpdateSubmission,
+    CreateWorkflow,
     GetSubmission,
     GetWorkflow,
     WorkflowSubmission,
@@ -33,6 +34,21 @@ class Workflow(IndicoWrapper):
 
     def __init__(self, client: IndicoClient):
         self.client = client
+    
+    def create_workflow(
+        self,
+        name: str,  
+        dataset_id: int
+    ) -> Workflow:
+        """
+        Args:
+            name (str): Name of workflow
+            dataset_id (int): ID of corresponding dataset
+        """
+        workflow = self.client.call(
+            CreateWorkflow(name=name, dataset_id=dataset_id)
+        )
+        return workflow
 
     def get_workflow(
         self, workflow_id: int
