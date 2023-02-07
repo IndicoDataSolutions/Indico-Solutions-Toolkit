@@ -135,22 +135,6 @@ class Teach(IndicoWrapper):
             task_name
         ).model_group.questionnaire_id
 
-    def add_class_filter(
-        self, classes_to_filter: List[str], classification_task_name: str, workflow: Workflow, last_component_id: int
-    ):
-        filtered = AddLinkClassificationComponent(
-            workflow_id=workflow.id,
-            after_component_id=last_component_id,
-            model_group_id=workflow.model_group_by_name(
-                classification_task_name
-            ).model_group.id,
-            filtered_classes=[classes_to_filter],
-            labels="actual",
-        )
-        self.workflow = self.client.call(filtered)
-        print("Added class filter")
-
-
     def get_teach_details(self, teach_task_id: int):
         return self.client.call(GetTeachDetails(teach_task_id))
 

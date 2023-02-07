@@ -1,11 +1,17 @@
 from indico_toolkit.types.extractions import Extractions
 from indico import IndicoClient
-from indico.types import Submission, Job
+from indico.types import Submission, Job, Workflow as IndicoTypesWorkflow
 from tests.conftest import MODEL_NAME
 from indico_toolkit.indico_wrapper import Workflow
 from indico_toolkit.ocr import OnDoc
 from indico_toolkit.types import WorkflowResult, Predictions
 
+
+def test_create_workflow(indico_client, dataset_obj):
+    wflow = Workflow(indico_client)
+    new_workflow = wflow.create_workflow("My workflow", dataset_obj.id)
+    assert isinstance(new_workflow, IndicoTypesWorkflow)
+    assert new_workflow.name == "My workflow"
 
 def test_submit_documents_to_workflow(indico_client, pdf_filepath, workflow_id):
     wflow = Workflow(indico_client)

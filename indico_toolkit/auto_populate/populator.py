@@ -3,8 +3,6 @@ from indico import IndicoClient
 from indico_toolkit.indico_wrapper import Datasets, Workflow, Teach
 from indico_toolkit.pipelines import FileProcessing
 
-from .queries import GetExampleIds, GetTeachDetails, LabelTeachTask
-
 class AutoPopulator:
     def __init__(self, client: IndicoClient, directory_path: str):
         """
@@ -65,34 +63,26 @@ class AutoPopulator:
         teach = Teach(self.client)
         teach_task_id = teach.add_teach_task(
             teach_task_name,
-            "my_labelset_name",
+            labelset_name,
             list(self.model_classes),
             dataset,
             workflow,
         )
         # Retrieve examples and match filename
-        labelset_id, model_group_id, target_name_map = self._get_teach_task_details(teach_task_id)
-        examples = self._get_examples(model_group_id)
+        labelset_id, model_group_id, target_name_map = self._get_teach_task_details(teach, teach_task_id)
+        examples = self._get_examples(teach, model_group_id)
         # Apply labels using target_name_map
         labels = [
             {"exampleId": ex_id, "targets": [{"clsId": target_name_map[self.file_to_class[examples[ex_id]]]}]} for ex_id in examples.keys()
         ]
-        self.client.call(
-            LabelTeachTask(
-                labelsetId=labelset_id, labels=labels, modelGroupId=model_group_id
-            )
-        )
+        teach.label_teach_task(label_set_id=labelset_id, labels=labels, model_group_id=model_group_id)
     
-    def _get_examples(self, modelgroup_id: int):
-        examples = self.client.call(
-            GetExampleIds(modelGroupId=modelgroup_id, limit=1000)
-        )
+    def _get_examples(self, teach: Teach, modelgroup_id: int):
+        examples = teach.get_example_ids(model_group_id=modelgroup_id, limit=1000)
         return {i["id"] : i["datafile"]["name"] for i in examples["modelGroup"]["pagedExamples"]["examples"]}
     
-    def _get_teach_task_details(self, teach_task_id: int):
-        teach_task_details = self.client.call(
-            GetTeachDetails(teach_task_id=teach_task_id)
-        )
+    def _get_teach_task_details(self, teach: Teach, teach_task_id: int):
+        teach_task_details = teach.get_teach_details(teach_task_id=teach_task_id)
         labelset_id = teach_task_details["questionnaire"]["question"]["labelset"]["id"]
         model_group_id = teach_task_details["questionnaire"]["question"]["modelGroupId"]
         target_names = teach_task_details["questionnaire"]["question"]["labelset"][
