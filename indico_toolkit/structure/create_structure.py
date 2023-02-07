@@ -126,7 +126,7 @@ class Structure:
                 **ocr_settings,
             )
         )
-        print(f"dataset created with id: {self.dataset.id}")
+        print(f"Dataset created with id: {self.dataset.id}")
         return self.dataset
 
     def create_duplicate_dataset(
@@ -201,6 +201,7 @@ class Structure:
         self.workflow_id = self.workflow.id
         self.ocr_id = self.workflow.component_by_type("INPUT_OCR_EXTRACTION").id
         sleep(2)
+        print(f"Workflow created with ID: {self.worfklow.id}")
         return self.workflow
 
     def add_teach_task(
@@ -240,11 +241,6 @@ class Structure:
 
         TODO: clean up kwargs to advanced model training options
         """
-        if model_type not in model_map.keys():
-            raise ToolkitInputError(
-                f"{model_type} not found. Available options include {[model for model in model_map.keys()]}"
-            )
-
         model_map = {
             "classification": ModelTaskType.CLASSIFICATION,
             "form_extraction": ModelTaskType.FORM_EXTRACTION,
@@ -254,6 +250,11 @@ class Structure:
             "annotation": ModelTaskType.ANNOTATION,
             "classification_unbundling": ModelTaskType.CLASSIFICATION_UNBUNDLING,
         }
+        if model_type not in model_map.keys():
+            raise ToolkitInputError(
+                f"{model_type} not found. Available options include {[model for model in model_map.keys()]}"
+            )
+
         prev_comp_id = previous_component_id if previous_component_id else self.ocr_id
         if (
             (not self.dataset and not dataset_id)
