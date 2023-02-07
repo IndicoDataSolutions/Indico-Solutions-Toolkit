@@ -13,6 +13,8 @@ jobs:
       PDF_DATASET_ID: ${{ secrets.PDF_DATASET_ID }}
       MODEL_NAME: ${{ secrets.MODEL_NAME }}
       WORKFLOW_ID: ${{ secrets.WORKFLOW_ID }}
+      MODEL_ID: ${{ secrets.MODEL_ID }} 
+      MODEL_GROUP_ID: ${{ secrets.MODEL_GROUP_ID }}
       HOST_URL: try.indico.io
     
     steps:

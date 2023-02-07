@@ -20,15 +20,20 @@ from indico_toolkit.indico_wrapper import (
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 
+# The following ENV Variables must be set
 HOST_URL = os.environ.get("HOST_URL")
 API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
 API_TOKEN = os.environ.get("API_TOKEN")
-MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
-CLASS_MODEL_NAME = os.environ.get(
-    "CLASS_MODEL_NAME", "Toolkit Test Classification Model"
-)
-PDF_DATASET_ID = os.environ.get("PDF_DATASET_ID")
 
+# the following five env variables are associated as part of same extraction workflow based on 
+# financial disclosure CSV snapshot and associated workflow
+DATASET_ID = os.environ.get("DATASET_ID")
+WORKFLOW_ID = os.environ.get("WORKFLOW_ID")
+MODEL_GROUP_ID = os.environ.get("MODEL_GROUP_ID")
+MODEL_ID = os.environ.get("MODEL_ID")
+MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
+
+PDF_DATASET_ID = os.environ.get("PDF_DATASET_ID")
 
 @pytest.fixture(scope="session")
 def indico_client() -> IndicoClient:
@@ -47,8 +52,7 @@ def pdf_filepath():
 
 @pytest.fixture(scope="session")
 def dataset_obj(indico_client):
-    dataset_id = os.environ.get("DATASET_ID")
-    if not dataset_id:
+    if not DATASET_ID:
         dataset = indico_client.call(
             CreateDataset(
                 name="Solutions Toolkit Test Dataset",
@@ -57,18 +61,17 @@ def dataset_obj(indico_client):
         )
     else:
         try:
-            dataset = indico_client.call(GetDataset(id=dataset_id))
+            dataset = indico_client.call(GetDataset(id=DATASET_ID))
         except IndicoRequestError:
             raise ValueError(
-                f"Dataset with ID {dataset_id} does not exist or you do not have access to it"
+                f"Dataset with ID {DATASET_ID} does not exist or you do not have access to it"
             )
     return dataset
 
 
 @pytest.fixture(scope="session")
 def workflow_id(indico_client, dataset_obj):
-    workflow_id = os.environ.get("WORKFLOW_ID")
-    if not workflow_id:
+    if not WORKFLOW_ID:
         workflow = indico_client.call(GetWorkflow(dataset_obj.id))
         indico_client.call(
             CreateModelGroup(
@@ -85,22 +88,22 @@ def workflow_id(indico_client, dataset_obj):
         )
     else:
         try:
-            indico_client.call(GetWorkflow(workflow_id=workflow_id))
+            indico_client.call(GetWorkflow(workflow_id=WORKFLOW_ID))
         except IndicoRequestError:
             raise ValueError(
-                f"Workflow with ID {workflow_id} does not exist or you do not have access to it"
+                f"Workflow with ID {WORKFLOW_ID} does not exist or you do not have access to it"
             )
-    return workflow_id
+    return WORKFLOW_ID
 
 
 @pytest.fixture(scope="session")
 def extraction_model_group_id():
-    return 1751
+    return MODEL_GROUP_ID
 
 
 @pytest.fixture(scope="session")
 def extraction_model_id():
-    return 3233
+    return MODEL_ID
 
 
 @pytest.fixture(scope="module")
@@ -130,11 +133,6 @@ def wflow_submission_result(indico_client, module_submission_ids) -> dict:
 @pytest.fixture(scope="session")
 def model_name():
     return MODEL_NAME
-
-
-@pytest.fixture(scope="session")
-def class_model_name():
-    return CLASS_MODEL_NAME
 
 
 @pytest.fixture(scope="session")

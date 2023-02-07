@@ -23,8 +23,8 @@ def static_extract_preds(static_extract_results, model_name):
     return static_extract_results["results"]["document"]["results"][model_name]
 
 @pytest.fixture(scope="module")
-def static_class_preds(static_class_results, class_model_name):
-    return static_class_results["results"]["document"]["results"][class_model_name]
+def static_class_preds(static_class_results):
+    return static_class_results["results"]["document"]["results"]["Toolkit Test Classification Model"]
 
 @pytest.fixture(scope="function")
 def extractions_obj(static_extract_preds):
