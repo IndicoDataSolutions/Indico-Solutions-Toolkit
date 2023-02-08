@@ -98,12 +98,12 @@ def workflow_id(indico_client, dataset_obj):
 
 @pytest.fixture(scope="session")
 def extraction_model_group_id():
-    return MODEL_GROUP_ID
+    return int(MODEL_GROUP_ID)
 
 
 @pytest.fixture(scope="session")
 def extraction_model_id():
-    return MODEL_ID
+    return int(MODEL_ID)
 
 
 @pytest.fixture(scope="module")
