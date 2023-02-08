@@ -159,6 +159,7 @@ class Download:
             }
         """
         result = self.client.call(GraphQLRequest(query, {"id": dataset_id}))
-        if result["dataset"]["files"][0]["fileType"] != "CSV":
-            raise ToolkitInputError(f"The file uploaded to {dataset_id} is not a CSV")
-        return result["dataset"]["files"][0]["rainbowUrl"]
+        for file in result["dataset"]["files"]: # loop through in case there are other file types uploaded to dataset
+            if file["fileType"] == "CSV":
+                return file["rainbowUrl"]
+        raise ToolkitInputError(f"There are no CSVs uploaded to {dataset_id}")
