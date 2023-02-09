@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List
 from indico import IndicoClient
 from indico.types import Dataset, Workflow
 from indico.types.model_group import ModelTaskType
@@ -6,7 +6,6 @@ from indico.queries import (
     AddModelGroupComponent,
     GraphQLRequest,
     NewLabelsetArguments,
-    AddLinkClassificationComponent,
 )
 from indico_toolkit.indico_wrapper import IndicoWrapper
 
@@ -34,6 +33,15 @@ class GetTeachDetails(GraphQLRequest):
         }
     """
 
+    def __init__(self, *, teach_task_id: int):
+        super().__init__(
+            self.GET_TEACH_DETAILS,
+            variables={"teach_task_id": teach_task_id},
+        )
+
+    def process_response(self, response):
+        return super().process_response(response)
+
 class GetExampleIds(GraphQLRequest):
     GET_EXAMPLES = """
         query getExamplesList($modelGroupId: Int!, $filters: ExampleFilter, $skip: Int, $before: Int, $after: Int, $limit: Int, $desc: Boolean, $orderBy: ExampleOrder) {
@@ -60,10 +68,10 @@ class GetExampleIds(GraphQLRequest):
         }
     """
 
-    def __init__(self, *, modelGroupId: int, limit: int):
+    def __init__(self, *, model_group_id: int, limit: int):
         super().__init__(
             self.GET_EXAMPLES,
-            variables={"modelGroupId": modelGroupId, "limit": limit},
+            variables={"modelGroupId": model_group_id, "limit": limit},
         )
 
     def process_response(self, response):
@@ -85,13 +93,13 @@ class LabelTeachTask(GraphQLRequest):
         }
     """
 
-    def __init__(self, *, labelsetId: int, labels, modelGroupId: int):
+    def __init__(self, *, label_set_id: int, labels, model_group_id: int):
         super().__init__(
             self.LABEL_TASK,
             variables={
-                "labelsetId": labelsetId,
+                "labelsetId": label_set_id,
                 "labels": labels,
-                "modelGroupId": modelGroupId,
+                "modelGroupId": model_group_id,
             },
         )
 
@@ -136,13 +144,13 @@ class Teach(IndicoWrapper):
         ).model_group.questionnaire_id
 
     def get_teach_details(self, teach_task_id: int):
-        return self.client.call(GetTeachDetails(teach_task_id))
+        return self.client.call(GetTeachDetails(teach_task_id=teach_task_id))
 
     def get_example_ids(self, model_group_id: int, limit: int):
-        return self.client.call(GetExampleIds(model_group_id, limit))
+        return self.client.call(GetExampleIds(model_group_id=model_group_id, limit=limit))
     
     def label_teach_task(self, label_set_id: int, labels: dict, model_group_id: int):
-        return self.client.call(LabelTeachTask(label_set_id, labels, model_group_id))
+        return self.client.call(LabelTeachTask(label_set_id=label_set_id, labels=labels, model_group_id=model_group_id))
 
 
     
