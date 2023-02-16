@@ -29,7 +29,7 @@ dataset = structure.create_dataset(
 
 # creates workflow
 # optionaly provide dataset id. If not, inferred from structure.dataset.id
-structure.create_workflow("Workflow Name", dataset.id)
+workflow = structure.create_workflow("Workflow Name", dataset.id)
 
 # creates extraction model
 # optional kwarg for advanced training options: auto_negative_scaling=False
@@ -37,6 +37,8 @@ structure.add_teach_task(
     task_name="Teach Task Name",
     labelset_name="Extraction Labelset",
     target_names=["Label 1", "Label2"],
+    dataset_id=dataset.id,
+    workflow_id=workflow.id,
     model_type="annotation",
     auto_negative_scaling=False,
 )
