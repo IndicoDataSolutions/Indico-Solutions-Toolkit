@@ -1,7 +1,6 @@
 import tempfile
 import shutil
 import os
-from time import sleep
 from typing import List
 
 from indico.queries import (
@@ -10,7 +9,6 @@ from indico.queries import (
     NewLabelsetArguments,
     AddModelGroupComponent,
     GetWorkflow,
-    AddLinkClassificationComponent,
     GetDataset,
 )
 from indico.types import (
@@ -297,28 +295,7 @@ class Structure:
                 model_training_options=kwargs,
             )
         )
-        self.last_component_id = self.workflow.components[-1].id
-        self.last_questionnaire_id = self.workflow.model_group_by_name(
-            task_name
-        ).model_group.questionnaire_id
-        print(f"Component Added with Teach ID:{self.last_questionnaire_id} ")
-        sleep(3)
-
-    def add_class_filter(
-        self, classes_to_filter: List[str], classification_task_name: str
-    ):
-        if not self.last_component_id or not self.workflow:
-            raise ToolkitInputError(
-                "Need to have a last component ID for classification model and workflow obj"
-            )
-        filtered = AddLinkClassificationComponent(
-            workflow_id=self.workflow.id,
-            after_component_id=self.last_component_id,
-            model_group_id=self.workflow.model_group_by_name(
-                classification_task_name
-            ).model_group.id,
-            filtered_classes=[classes_to_filter],
-            labels="actual",
+        print(
+            f"Newly created teach task with teach_id: {workflow.components[-1].model_group.questionnaire_id}"
         )
-        self.workflow = self.client.call(filtered)
-        print("Added class filter")
+        return Workflow
