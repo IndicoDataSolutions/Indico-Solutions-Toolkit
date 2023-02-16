@@ -46,7 +46,7 @@ class Structure:
         """
         read_api_settings = {
             "auto_rotate": True,
-            "single_column": True,
+            "single_column": False,
             "upscale_images": True,
             "languages": ["ENG"],
         }
