@@ -21,8 +21,8 @@ from indico_toolkit.indico_wrapper import (
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 # The following ENV Variables must be set
-HOST_URL = os.environ.get("HOST_URL")
-API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
+HOST_URL = os.environ.get("HOST_URL", "try.indico.io")
+API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH", "../../api_tokens/nateshim_try_indico_api_token.txt")
 API_TOKEN = os.environ.get("API_TOKEN")
 
 # the following five env variables are associated as part of same extraction workflow based on 
