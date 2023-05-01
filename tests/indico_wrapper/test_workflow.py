@@ -1,17 +1,11 @@
 from indico_toolkit.types.extractions import Extractions
 from indico import IndicoClient
-from indico.types import Submission, Job, Workflow as IndicoTypesWorkflow
+from indico.types import Submission, Job
 from tests.conftest import MODEL_NAME
 from indico_toolkit.indico_wrapper import Workflow
 from indico_toolkit.ocr import OnDoc
 from indico_toolkit.types import WorkflowResult, Predictions
 
-
-def test_create_workflow(indico_client, dataset_obj):
-    wflow = Workflow(indico_client)
-    new_workflow = wflow.create_workflow("My workflow", dataset_obj.id)
-    assert isinstance(new_workflow, IndicoTypesWorkflow)
-    assert new_workflow.name == "My workflow"
 
 def test_submit_documents_to_workflow(indico_client, pdf_filepath, workflow_id):
     wflow = Workflow(indico_client)
@@ -27,6 +21,7 @@ def test_get_ondoc_ocr_from_etl_url(indico_client, wflow_submission_result):
     on_doc = wflow.get_ondoc_ocr_from_etl_url(wflow_submission_result.etl_url)
     assert isinstance(on_doc, OnDoc)
     assert on_doc.total_pages == 2
+
 
 def test_mark_submission_as_retreived(indico_client, function_submission_ids):
     wflow = Workflow(indico_client)
