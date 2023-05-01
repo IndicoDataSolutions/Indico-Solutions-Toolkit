@@ -1,4 +1,5 @@
 import tempfile
+import json
 import shutil
 import os
 from typing import List
@@ -20,8 +21,8 @@ from indico.types import (
 from indico.types import Workflow
 from indico_toolkit.errors import ToolkitInputError
 
-from utils import ModelTaskType
-
+from .queries import *
+from .utils import ModelTaskType
 
 class Structure:
     def __init__(self, client):
@@ -191,16 +192,29 @@ class Structure:
 
         workflow = self.client.call(
             AddModelGroupComponent(
-                workflow_id=self.workflow.id,
+                workflow_id=workflow.id,
                 name=task_name,
-                dataset_id=self.dataset.id,
+                dataset_id=dataset.id,
                 source_column_id=column_id,
                 after_component_id=prev_comp_id,
                 new_labelset_args=new_labelset,
-                model_training_options=kwargs,
+                model_training_options=json.dumps(kwargs),
             )
         )
         print(
             f"Newly created teach task with teach_id: {workflow.components[-1].model_group.questionnaire_id}"
         )
-        return Workflow
+        return workflow
+    
+
+
+    def get_teach_details(self, teach_task_id: int):
+        return self.client.call(GetTeachDetails(teach_task_id=teach_task_id))
+
+    def get_example_ids(self, model_group_id: int, limit: int):
+        return self.client.call(GetExampleIds(model_group_id=model_group_id, limit=limit))
+    
+    def label_teach_task(self, label_set_id: int, labels: dict, model_group_id: int):
+        return self.client.call(LabelTeachTask(label_set_id=label_set_id, labels=labels, model_group_id=model_group_id))
+
+
