@@ -224,7 +224,7 @@ class AutoPopulator:
         return labels
     
     def _get_classification_labels(self, model_group_id: int, target_name_map: dict, labels_to_drop: List[str] = None):
-        examples = self.structure.get_example_ids(model_group_id)
+        examples = self.structure.get_example_ids(model_group_id, limit=1000)
         labels = []
         if labels_to_drop is None:
             labels = [

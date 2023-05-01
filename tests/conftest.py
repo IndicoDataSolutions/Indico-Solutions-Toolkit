@@ -2,7 +2,7 @@ import os
 import pytest
 from indico.queries import (
     CreateDataset,
-    CreateModelGroup,
+    AddModelGroupComponent,
     GetWorkflow,
     GetDataset,
     JobStatus,
@@ -16,6 +16,7 @@ from indico_toolkit.indico_wrapper import (
     Workflow,
     DocExtraction,
 )
+from indico_toolkit.structure.create_structure import Structure
 
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -75,7 +76,7 @@ def workflow_id(indico_client, dataset_obj):
     if not WORKFLOW_ID:
         workflow = indico_client.call(GetWorkflow(dataset_obj.id))
         indico_client.call(
-            CreateModelGroup(
+            AddModelGroupComponent(
                 name="Solutions Toolkit Test Model",
                 dataset_id=dataset_obj.id,
                 source_column_id=dataset_obj.datacolumn_by_name("text").id,

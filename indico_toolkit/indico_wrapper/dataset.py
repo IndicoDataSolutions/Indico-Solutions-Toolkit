@@ -109,6 +109,7 @@ class Datasets(IndicoWrapper):
                 _AddFiles(
                     dataset_id=dataset_id,
                     metadata=results[i : i + add_files_batch_size],
+                    autoprocess=True
                 )
             )
         print("Added Files to dataset, waiting for documents to download")
