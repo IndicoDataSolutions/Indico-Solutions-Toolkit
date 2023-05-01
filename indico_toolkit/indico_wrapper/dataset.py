@@ -12,7 +12,6 @@ from indico.queries import (
     CreateExport,
     DownloadExport,
     AddFiles,
-    ProcessFiles,
     DeleteDataset,
     CreateEmptyDataset,
     AddDataToWorkflow,
@@ -35,12 +34,9 @@ class Datasets(IndicoWrapper):
         Upload documents to an existing dataset and wait for them to OCR
         """
         dataset = self.client.call(
-            AddFiles(dataset_id=dataset_id, files=filepaths, wait=True)
+            AddFiles(dataset_id=dataset_id, files=filepaths, autoprocess=True, wait=True)
         )
-        datafile_ids = [f.id for f in dataset.files if f.status == "DOWNLOADED"]
-        return self.client.call(
-            ProcessFiles(dataset_id=dataset_id, datafile_ids=datafile_ids, wait=True)
-        )
+        return dataset
 
     def add_new_files_to_task(self, workflow_id: id, wait: bool = True) -> Workflow:
         """

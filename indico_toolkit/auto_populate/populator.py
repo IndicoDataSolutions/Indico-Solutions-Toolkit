@@ -222,6 +222,19 @@ class AutoPopulator:
                 {"exampleId": old_to_new[old_example_id], "targets": targets_list}
             )
         return labels
+    
+    def _get_classification_labels(self, model_group_id: int, target_name_map: dict, labels_to_drop: List[str] = None):
+        examples = self.structure.get_example_ids(model_group_id)
+        labels = []
+        if labels_to_drop is None:
+            labels = [
+                {"exampleId": ex_id, "targets": [{"clsId": target_name_map[self.file_to_class[examples[ex_id]]]}]} for ex_id in examples.keys()
+            ]
+        else:
+            labels = [
+                {"exampleId": ex_id, "targets": [{"clsId": target_name_map[self.file_to_class[examples[ex_id]]]}]} for ex_id in examples.keys() if self.file_to_class[examples[ex_id]] not in labels_to_drop
+            ]
+        return labels        
 
     def _convert_label(self, label, target_name_map) -> List[dict]:
         updated_labels = []

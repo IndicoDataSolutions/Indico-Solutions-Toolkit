@@ -1,5 +1,6 @@
 import os
 import pytest
+import time
 from indico.queries import GetWorkflow
 from indico.types import Workflow
 from indico_toolkit.auto_populate import AutoPopulator
@@ -29,6 +30,7 @@ def test_create_classification_workflow_too_few_classes(
 def test_copy_workflow(indico_client, dataset_obj, workflow_id):
     auto_populator = AutoPopulator(indico_client)
     original_workflow = indico_client.call(GetWorkflow(workflow_id))
+    time.sleep(2)
     new_workflow = auto_populator.copy_workflow(
         dataset_id=dataset_obj.id,
         teach_task_id=original_workflow.components[-1].model_group.questionnaire_id,
