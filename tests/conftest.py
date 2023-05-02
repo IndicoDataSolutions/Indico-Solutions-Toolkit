@@ -74,7 +74,8 @@ def dataset_obj(indico_client):
 @pytest.fixture(scope="session")
 def workflow_id(indico_client, dataset_obj):
     if not WORKFLOW_ID:
-        workflow = indico_client.call(GetWorkflow(dataset_obj.id))
+        structure = Structure(indico_client)
+        workflow = structure.create_workflow(name="Solutions Toolkit Test Workflow", dataset_id=dataset_obj.id)
         indico_client.call(
             AddModelGroupComponent(
                 name="Solutions Toolkit Test Model",
