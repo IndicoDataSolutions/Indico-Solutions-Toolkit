@@ -3,6 +3,7 @@ import pytest
 from indico.queries import (
     CreateDataset,
     AddModelGroupComponent,
+    NewLabelsetArguments,
     GetWorkflow,
     GetDataset,
     JobStatus,
@@ -17,6 +18,7 @@ from indico_toolkit.indico_wrapper import (
     DocExtraction,
 )
 from indico_toolkit.structure.create_structure import Structure
+from indico_toolkit.structure.utils import ModelTaskType
 
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -73,22 +75,34 @@ def dataset_obj(indico_client):
 
 @pytest.fixture(scope="session")
 def workflow_id(indico_client, dataset_obj):
+    global WORKFLOW_ID
     if not WORKFLOW_ID:
         structure = Structure(indico_client)
         workflow = structure.create_workflow(name="Solutions Toolkit Test Workflow", dataset_id=dataset_obj.id)
-        indico_client.call(
-            AddModelGroupComponent(
-                name="Solutions Toolkit Test Model",
-                dataset_id=dataset_obj.id,
-                source_column_id=dataset_obj.datacolumn_by_name("text").id,
-                labelset_id=dataset_obj.labelset_by_name("question_1620").id,
-                workflow_id=workflow.id,
-                after_component_id=workflow.component_by_type(
-                    "INPUT_OCR_EXTRACTION"
-                ).id,
-                wait=True,
-            )
+        target_names = [
+            "<PAD>",
+            "Asset Value",
+            "Date of Appointment",
+            "Department",
+            "Income Amount",
+            "Liability Amount",
+            "Liability Type",
+            "Name",
+            "Position",
+            "Previous Organization",
+            "Previous Position"
+        ]
+
+        workflow = structure.add_teach_task(
+            task_name="Teach Task Name",
+            labelset_name="Extraction Labelset",
+            target_names=target_names,
+            dataset_id=dataset_obj.id,
+            workflow_id=workflow.id,
+            model_type="annotation",
+            data_column="text"
         )
+        WORKFLOW_ID = workflow.id
     else:
         try:
             indico_client.call(GetWorkflow(workflow_id=WORKFLOW_ID))

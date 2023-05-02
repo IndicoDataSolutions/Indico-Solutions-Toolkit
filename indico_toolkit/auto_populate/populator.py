@@ -106,7 +106,7 @@ class AutoPopulator:
         return workflow
 
     def copy_workflow(
-        self, dataset_id: int, teach_task_id: int, workflow_name: str, labelset_id: int = None
+        self, dataset_id: int, teach_task_id: int, workflow_name: str, labelset_id: int = None, data_column: str = None
     ) -> Workflow:
         """
         Create duplicate workflow from dataset and corresponding teach task in same Indico platform.
@@ -115,6 +115,7 @@ class AutoPopulator:
             teach_task_id (int): The teach task id of the corresponding teach task to the dataset
             workflow_name (string): The name of the newly created workflow
             labelset_id (int, optional): The labelset id of the corresponding labelset to the dataset
+            data_column_id (str, optional): The datacolumn id of the corresponding dataset
         Returns:
             Workflow: a Workflow object representation of the newly created workflow
         """
@@ -161,6 +162,7 @@ class AutoPopulator:
             dataset_id=dataset.id,
             workflow_id=workflow.id,
             model_type=model_type,
+            data_column=data_column if data_column else "document"
         )
         # Get labels for new teach task
         (
