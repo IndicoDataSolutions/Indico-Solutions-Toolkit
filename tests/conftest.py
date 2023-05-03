@@ -32,6 +32,7 @@ API_TOKEN = os.environ.get("API_TOKEN")
 # financial disclosure CSV snapshot and associated workflow
 DATASET_ID = os.environ.get("DATASET_ID")
 WORKFLOW_ID = os.environ.get("WORKFLOW_ID")
+TEACH_TASK_ID = os.environ.get("TEACH_TASK_ID")
 MODEL_GROUP_ID = os.environ.get("MODEL_GROUP_ID")
 MODEL_ID = os.environ.get("MODEL_ID")
 MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
@@ -111,6 +112,11 @@ def workflow_id(indico_client, dataset_obj):
                 f"Workflow with ID {WORKFLOW_ID} does not exist or you do not have access to it"
             )
     return WORKFLOW_ID
+
+
+@pytest.fixture(scope="session")
+def teach_task_id():
+    return int(TEACH_TASK_ID)
 
 
 @pytest.fixture(scope="session")

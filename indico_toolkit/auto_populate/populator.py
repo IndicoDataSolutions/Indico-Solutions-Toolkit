@@ -220,9 +220,10 @@ class AutoPopulator:
             old_example_id = row[0]
             targets_list = loads(row[2])
             targets_list = self._convert_label(targets_list, new_target_name_map)
-            labels.append(
-                {"exampleId": old_to_new[old_example_id], "targets": targets_list}
-            )
+            if old_to_new.get(old_example_id):
+                labels.append(
+                    {"exampleId": old_to_new[old_example_id], "targets": targets_list}
+                )
         return labels
     
     def _get_classification_labels(self, model_group_id: int, target_name_map: dict, labels_to_drop: List[str] = None):
