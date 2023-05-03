@@ -32,7 +32,7 @@ API_TOKEN = os.environ.get("API_TOKEN")
 # financial disclosure CSV snapshot and associated workflow
 DATASET_ID = os.environ.get("DATASET_ID")
 WORKFLOW_ID = os.environ.get("WORKFLOW_ID")
-TEACH_TASK_ID = os.environ.get("TEACH_TASK_ID")
+TEACH_TASK_ID = os.environ.get("TEACH_TASK_ID", 1746)
 MODEL_GROUP_ID = os.environ.get("MODEL_GROUP_ID")
 MODEL_ID = os.environ.get("MODEL_ID")
 MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
