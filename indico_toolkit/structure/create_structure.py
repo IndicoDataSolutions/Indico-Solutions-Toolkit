@@ -24,6 +24,7 @@ from indico_toolkit.errors import ToolkitInputError
 from .queries import *
 from .utils import ModelTaskType
 
+
 class Structure:
     def __init__(self, client):
         self.client = client
@@ -205,16 +206,18 @@ class Structure:
             f"Newly created teach task with teach_id: {workflow.components[-1].model_group.questionnaire_id}"
         )
         return workflow
-    
-
 
     def get_teach_details(self, teach_task_id: int):
         return self.client.call(GetTeachDetails(teach_task_id=teach_task_id))
 
     def get_example_ids(self, model_group_id: int, limit: int):
-        return self.client.call(GetExampleIds(model_group_id=model_group_id, limit=limit))
-    
+        return self.client.call(
+            GetExampleIds(model_group_id=model_group_id, limit=limit)
+        )
+
     def label_teach_task(self, label_set_id: int, labels: dict, model_group_id: int):
-        return self.client.call(LabelTeachTask(label_set_id=label_set_id, labels=labels, model_group_id=model_group_id))
-
-
+        return self.client.call(
+            LabelTeachTask(
+                label_set_id=label_set_id, labels=labels, model_group_id=model_group_id
+            )
+        )

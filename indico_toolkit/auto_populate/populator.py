@@ -25,18 +25,10 @@ class AutoPopulator:
         self._fp = FileProcessing()
         self._exceptions = []
 
-    def set_file_paths(
+    def _set_file_paths(
         self,
         directory_path: str,
-        accepted_types: Tuple[str] = (
-            "pdf",
-            "tiff",
-            "tif",
-            "doc",
-            "docx",
-            "png",
-            "jpg",
-        ),
+        accepted_types: Tuple[str],
     ) -> None:
         self._fp.get_file_paths_from_dir(
             directory_path, accepted_types=accepted_types, recursive_search=True
@@ -45,10 +37,20 @@ class AutoPopulator:
 
     def create_auto_classification_workflow(
         self,
+        directory_path: str,
         dataset_name: str,
         workflow_name: str,
         teach_task_name: str,
-        labelset_name: str = None,
+        accepted_types: Tuple[str] = (
+            "pdf",
+            "tiff",
+            "tif",
+            "doc",
+            "docx",
+            "png",
+            "jpg",
+            "txt",
+        ),
     ) -> Workflow:
         """
         Label and train a model based on a directory structure or existing teach task.
@@ -61,15 +63,16 @@ class AutoPopulator:
             base_directory/disclosures/ -> folder containing only disclosures
             etc. etc.
         Args:
+            directory_path (str): Path to a directory containing your filepath structure
             dataset_name (str): Name of created dataset
             worlflow_name (str): Name of created workflow
             teach_task_name (str): Name of created teach task
-            labelset_name (str, optional): Name of created labelset. Defaults to None.
+            accepted_types (Tuple[str], optional): List of accepted file types to search use 
         Returns:
             Workflow: a Workflow object representation of the newly created workflow
         """
-        if not labelset_name:
-            labelset_name = f"{teach_task_name}_labelset"
+        self._set_file_paths(directory_path, accepted_types)
+        labelset_name = f"{teach_task_name}_labelset"
         self._set_full_doc_classes()
         # Create empty dataset
         optional_ocr_options = {
@@ -106,37 +109,33 @@ class AutoPopulator:
         return workflow
 
     def copy_workflow(
-        self, dataset_id: int, teach_task_id: int, workflow_name: str, labelset_id: int = None, data_column: str = None
+        self,
+        dataset_id: int,
+        teach_task_id: int,
+        workflow_name: str,
+        data_column: str = "document",
     ) -> Workflow:
         """
         Create duplicate workflow from dataset and corresponding teach task in same Indico platform.
+        Note: Does not work with datasets created with a snapshot
         Args:
             dataset_id (int): The dataset id of the dataset you wish to copy
             teach_task_id (int): The teach task id of the corresponding teach task to the dataset
             workflow_name (string): The name of the newly created workflow
-            labelset_id (int, optional): The labelset id of the corresponding labelset to the dataset
-            data_column_id (str, optional): The datacolumn id of the corresponding dataset
+            data_column_id (str, optional): The datacolumn id of the corresponding dataset. Defaults to 'document'
         Returns:
             Workflow: a Workflow object representation of the newly created workflow
         """
         dataset = self.client.call(GetDataset(dataset_id))
+        (
+            old_labelset_id,
+            old_model_group_id,
+            old_target_name_map,
+        ) = self._get_teach_task_details(teach_task_id=teach_task_id)
         # get dataset snapshot
-        if not labelset_id:
-            export = self.client.call(
-                CreateExport(
-                    dataset_id=dataset.id,
-                    labelset_id=dataset.labelsets[0].id,
-                    wait=True
-                )
-            )
-        else:
-            export = self.client.call(
-                CreateExport(
-                    dataset_id=dataset.id, 
-                    labelset_id=labelset_id, 
-                    wait=True
-                )
-            )
+        export = self.client.call(
+            CreateExport(dataset_id=dataset.id, labelset_id=old_labelset_id, wait=True)
+        )
         csv = self.client.call(DownloadExport(export.id))
         print("Obtained snapshot")
 
@@ -145,10 +144,6 @@ class AutoPopulator:
             name=workflow_name, dataset_id=dataset_id
         )
         print("Created workflow")
-
-        _, old_model_group_id, old_target_name_map = self._get_teach_task_details(
-            teach_task_id=teach_task_id
-        )
         target_names = list(old_target_name_map.keys())
         old_model_group = self.client.call(
             GetModelGroup(id=old_model_group_id, wait=True)
@@ -162,7 +157,7 @@ class AutoPopulator:
             dataset_id=dataset.id,
             workflow_id=workflow.id,
             model_type=model_type,
-            data_column=data_column if data_column else "document"
+            data_column=data_column,
         )
         # Get labels for new teach task
         (
@@ -225,29 +220,48 @@ class AutoPopulator:
                     {"exampleId": old_to_new[old_example_id], "targets": targets_list}
                 )
         return labels
-    
-    def _get_classification_labels(self, model_group_id: int, target_name_map: dict, labels_to_drop: List[str] = None):
+
+    def _get_classification_labels(
+        self,
+        model_group_id: int,
+        target_name_map: dict,
+        labels_to_drop: List[str] = None,
+    ):
         examples = self.structure.get_example_ids(model_group_id, limit=1000)
-        examples = {i["id"] : i["datafile"]["name"] for i in examples["modelGroup"]["pagedExamples"]["examples"]}
+        examples = {
+            i["id"]: i["datafile"]["name"]
+            for i in examples["modelGroup"]["pagedExamples"]["examples"]
+        }
         labels = []
         if labels_to_drop is None:
             labels = [
-                {"exampleId": ex_id, "targets": [{"clsId": target_name_map[self.file_to_class[examples[ex_id]]]}]} for ex_id in examples.keys()
+                {
+                    "exampleId": ex_id,
+                    "targets": [
+                        {"clsId": target_name_map[self.file_to_class[examples[ex_id]]]}
+                    ],
+                }
+                for ex_id in examples.keys()
             ]
         else:
             labels = [
-                {"exampleId": ex_id, "targets": [{"clsId": target_name_map[self.file_to_class[examples[ex_id]]]}]} for ex_id in examples.keys() if self.file_to_class[examples[ex_id]] not in labels_to_drop
+                {
+                    "exampleId": ex_id,
+                    "targets": [
+                        {"clsId": target_name_map[self.file_to_class[examples[ex_id]]]}
+                    ],
+                }
+                for ex_id in examples.keys()
+                if self.file_to_class[examples[ex_id]] not in labels_to_drop
             ]
-        return labels        
+        return labels
 
     def _convert_label(self, label, target_name_map) -> List[dict]:
         updated_labels = []
         for target in label["targets"]:
             updated_spans = []
             if not target.get("spans"):
-                updated_label = {
-                    "clsId": target_name_map[target["label"]]
-                }
+                updated_label = {"clsId": target_name_map[target["label"]]}
             else:
                 for span in target["spans"]:
                     span["pageNum"] = span["page_num"]
