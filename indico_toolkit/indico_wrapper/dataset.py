@@ -58,7 +58,7 @@ class Datasets(IndicoWrapper):
         self,
         dataset_name: str,
         dataset_type: str = "DOCUMENT",
-        ocr_engine: OcrEngine = OcrEngine.OMNIPAGE,
+        ocr_engine: OcrEngine = OcrEngine.READAPI,
     ) -> Dataset:
         """
         Create an empty dataset
@@ -72,7 +72,7 @@ class Datasets(IndicoWrapper):
         self,
         filepaths: List[str],
         dataset_name: str,
-        ocr_engine: OcrEngine = OcrEngine.OMNIPAGE,
+        ocr_engine: OcrEngine = OcrEngine.READAPI,
     ) -> Dataset:
         dataset = self.client.call(
             CreateDataset(
