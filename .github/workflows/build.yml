@@ -39,7 +39,7 @@ jobs:
 
       - name: Run tests and build coverage file
         run: |
-          pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=app tests/ | tee pytest-coverage.txt
+          pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov= tests/ | tee pytest-coverage.txt
 
       - name: Print pytest-coverage contents
         run: cat ./pytest-coverage.txt
