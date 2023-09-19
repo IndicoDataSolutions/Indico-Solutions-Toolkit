@@ -39,7 +39,7 @@ jobs:
 
       - name: Run tests and build coverage file
         run: |
-          pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov= tests/ | tee pytest-coverage.txt
+          pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=indico_toolkit tests/ | tee pytest-coverage.txt
 
       - name: Pytest coverage comment
         uses: MishaKav/pytest-coverage-comment@main
@@ -48,7 +48,7 @@ jobs:
           junitxml-path: ./pytest.xml
           title: Indico Data Coveraege Report
           badge-title: Test Coverage
-          
+
 
       - name: Check the output coverage
         run: |
