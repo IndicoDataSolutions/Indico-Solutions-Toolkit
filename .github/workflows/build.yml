@@ -45,6 +45,7 @@ jobs:
         uses: MishaKav/pytest-coverage-comment@main
         with:
           pytest-coverage-path: ./pytest-coverage.txt
+          id: coverageComment
           junitxml-path: ./pytest.xml
           title: Indico Data Coveraege Report
           badge-title: Test Coverage
