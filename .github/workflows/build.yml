@@ -47,7 +47,7 @@ jobs:
         with:
           pytest-coverage-path: ./pytest-coverage.txt
           junitxml-path: ./pytest.xml
-          title: Indico Data Coverage Report
+          title: Indico Toolkit Coverage Report
           badge-title: Test Coverage
           default-branch: main
 
