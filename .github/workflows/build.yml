@@ -51,11 +51,9 @@ jobs:
           badge-title: Test Coverage
           default-branch: main
 
-
       - name: Check the output coverage
         run: |
           echo "Coverage Percantage - ${{ steps.coverageComment.outputs.coverage }}"
-          echo "Summary Report - ${{ steps.coverageComment.outputs.summaryReport }}"
           echo "Coverage Warnings - ${{ steps.coverageComment.outputs.warnings }}"
           echo "Coverage Errors - ${{ steps.coverageComment.outputs.errors }}"
           echo "Coverage Failures - ${{ steps.coverageComment.outputs.failures }}"
