@@ -50,6 +50,7 @@ jobs:
           title: Indico Toolkit Coverage Report
           badge-title: Test Coverage
           default-branch: main
+          create-new-comment: true
 
       - name: Check the output coverage
         run: |
