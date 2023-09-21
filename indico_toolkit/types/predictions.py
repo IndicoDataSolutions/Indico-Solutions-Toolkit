@@ -11,10 +11,21 @@ class Prediction:
     text: str
     label: str
     confidences: dict[Label, float]
+    spans: list[Span]
 
     @property
     def confidence(self) -> float:
         return self.confidences[self.label]
+
+    @property
+    def span(self) -> Span:
+        if len(self.spans) != 1:
+            raise MultiValueError(
+                f"This prediction contains {len(self.spans)} spans. "
+                "Use `Prediction.spans` instead."
+            )
+
+        return self.spans[0]
 
     def accept(self) -> None:
         """
