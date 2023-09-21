@@ -7,14 +7,8 @@ Label: TypeAlias = str
 @dataclass
 class Classification:
     model: str
+    label: str
     confidences: dict[Label, float]
-
-    @property
-    def label(self) -> str:
-        highest_confidence_pair = sorted(
-            self.confidences.items(), key=lambda pair: pair[1], reverse=True
-        )[0]
-        return highest_confidence_pair[0]
 
     @property
     def confidence(self) -> float:
