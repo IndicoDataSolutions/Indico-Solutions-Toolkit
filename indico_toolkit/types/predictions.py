@@ -6,6 +6,7 @@ Label: TypeAlias = str
 
 @dataclass
 class Prediction:
+    field_id: int
     model: str
     text: str
     label: str

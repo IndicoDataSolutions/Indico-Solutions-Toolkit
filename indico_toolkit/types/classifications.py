@@ -6,6 +6,7 @@ Label: TypeAlias = str
 
 @dataclass
 class Classification:
+    field_id: int
     model: str
     label: str
     confidences: dict[Label, float]
