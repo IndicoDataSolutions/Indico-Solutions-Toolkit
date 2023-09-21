@@ -5,7 +5,7 @@ from .classifications import Classification
 from .errors import MultiValueError
 from .lists import PredictionList
 
-ModelName: TypeAlias = str
+Model: TypeAlias = str
 
 
 @dataclass
@@ -20,7 +20,7 @@ class Document:
     id: int
     filename: str
     etl_output: str
-    classifications: dict[ModelName, Classification]
+    classifications: dict[Model, Classification]
     pre_review: PredictionList
     auto_review: PredictionList
     hitl_review: PredictionList
