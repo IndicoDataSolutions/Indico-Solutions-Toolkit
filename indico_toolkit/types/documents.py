@@ -34,7 +34,7 @@ class Document:
         if len(classifications) != 1:
             raise MultiValueError(
                 f"This document contains {len(classifications)} classifications. "
-                "Use `document.classifications` instead."
+                "Use `Document.classifications` instead."
             )
 
         return classifications[0]
@@ -253,7 +253,7 @@ class Document:
                             )
                             break
             subdocuments.append(
-                SubDocument(
+                Subdocument(
                     span_id=span_id,
                     classification=classification,
                     final=PredictionList(final),
