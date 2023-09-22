@@ -1,9 +1,15 @@
 from collections.abc import Callable
+from typing import TYPE_CHECKING, TypeVar
 
-from .predictions import Prediction
+if TYPE_CHECKING:
+    from typing import Self
+
+from .predictions import Classification, Extraction, Prediction
+
+PredictionType = TypeVar("PredictionType", bound=Prediction)
 
 
-class PredictionList(list[Prediction]):
+class PredictionList(list[PredictionType]):
     def where(
         self,
         *,
@@ -11,30 +17,36 @@ class PredictionList(list[Prediction]):
         label: str | None = None,
         min_confidence: float | None = None,
         max_confidence: float | None = None,
-        predicate: Callable[[Prediction], bool] | None = None,
-    ) -> "PredictionList":
+        predicate: Callable[[PredictionType], bool] | None = None,
+    ) -> "Self":
         """
-        Return a new `PredictionList` containing `Prediction`s
+        Return a new `PredictionList[PredictionType]` containing `PredictionType`s
         that match the specified filters.
         """
         ...
 
     def apply(
         self,
-        function: Callable[[Prediction], None],
-    ) -> "PredictionList":
+        function: Callable[[PredictionType], None],
+    ) -> "Self":
         """
         Apply a function to a list of predictions.
         """
         ...
 
-    def accept(self) -> "PredictionList":
+
+class ClassificationList(PredictionList[Classification]):
+    ...
+
+
+class ExtractionList(PredictionList[Extraction]):
+    def accept(self) -> "ExtractionList":
         """
         Mark predictions as accepted for Autoreview.
         """
         ...
 
-    def reject(self) -> "PredictionList":
+    def reject(self) -> "ExtractionList":
         """
         Mark predictions as rejected for Autoreview.
         """

@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import TypeAlias
 
-from .classifications import Classification
 from .errors import MultipleValuesError, ResultFileError
-from .lists import PredictionList
+from .lists import ClassificationList, ExtractionList
+from .predictions import Classification, Extraction
 
 Model: TypeAlias = str
 
@@ -12,7 +12,7 @@ Model: TypeAlias = str
 class Subdocument:
     span_id: int
     classification: Classification
-    final: PredictionList
+    final: ExtractionList
 
 
 @dataclass
@@ -20,24 +20,22 @@ class Document:
     id: int
     filename: str
     etl_output: str
-    classifications: dict[Model, Classification]
-    pre_review: PredictionList
-    auto_review: PredictionList
-    hitl_review: PredictionList
-    final: PredictionList
+    classifications: ClassificationList
+    pre_review: ExtractionList
+    auto_review: ExtractionList
+    hitl_review: ExtractionList
+    final: ExtractionList
     subdocuments: list[Subdocument]
 
     @property
     def classification(self) -> Classification:
-        classifications = list(self.classifications.values())
-
-        if len(classifications) != 1:
+        if len(self.classifications) != 1:
             raise MultipleValuesError(
-                f"This document contains {len(classifications)} classifications. "
+                f"This document contains {len(self.classifications)} classifications. "
                 "Use `Document.classifications` instead."
             )
 
-        return classifications[0]
+        return self.classifications[0]
 
     @staticmethod
     def from_result(result: dict[str, object]) -> "Document":
@@ -53,7 +51,7 @@ class Document:
         version = result.get("file_version")
 
         if version == 1:
-            pre_review, hitl_review, auto_review, final = Document.get_predictions_v1(
+            pre_review, hitl_review, auto_review, final = Document.get_extractions_v1(
                 result
             )
             classification, classifications = Document.get_classifications_v1(result)
@@ -77,7 +75,7 @@ class Document:
                 **extraction_models,
                 **classification_models,
             }
-            final = Document.get_predictions_v2_and_v3(result, all_models)
+            final = Document.get_extractions_v2_and_v3(result, all_models)
             classification, classifications = Document.get_classifications_v2_and_v3(
                 result, classification_models
             )
@@ -92,14 +90,14 @@ class Document:
             classification=classification,
             classifications=classifications,
             subdocuments=subdocuments,
-            pre_review=PredictionList(pre_review),
-            hitl_review=PredictionList(hitl_review),
-            auto_review=PredictionList(auto_review),
-            final=PredictionList(final),
+            pre_review=ExtractionList(pre_review),
+            hitl_review=ExtractionList(hitl_review),
+            auto_review=ExtractionList(auto_review),
+            final=ExtractionList(final),
         )
 
     @staticmethod
-    def get_predictions_v1(result_dict: dict):
+    def get_extractions_v1(result_dict: dict):
         pre_review, hitl_review, auto_review, final = [], [], [], []
         model_results = result_dict["results"]["document"]["results"]
         review_active = "reviews_meta" in result_dict
@@ -107,7 +105,7 @@ class Document:
         for model, results in model_results.items():
             if isinstance(results, list):
                 final.extend(
-                    Prediction.from_result(pred, model=model) for pred in results
+                    Extraction.from_result(pred, model=model) for pred in results
                 )
             elif isinstance(results, dict):
                 if review_active:
@@ -115,19 +113,19 @@ class Document:
                         results["pre_review"], dict
                     ):  # classification, review
                         pre_review.append(
-                            Prediction.from_result(results["pre_review"], model=model)
+                            Extraction.from_result(results["pre_review"], model=model)
                         )
                         final.append(
-                            Prediction.from_result(results["final"], model=model)
+                            Extraction.from_result(results["final"], model=model)
                         )
                     else:
                         pre_review.extend(
-                            Prediction.from_result(pred, model=model)
+                            Extraction.from_result(pred, model=model)
                             for pred in results["pre_review"]
                         )
                         final.extend(
                             [
-                                Prediction.from_result(pred, model=model)
+                                Extraction.from_result(pred, model=model)
                                 for pred in results["final"]
                             ]
                         )
@@ -138,7 +136,7 @@ class Document:
                             ):
                                 hitl_review.extend(
                                     [
-                                        Prediction.from_result(pred, model=model)
+                                        Extraction.from_result(pred, model=model)
                                         for pred in post_review_preds
                                     ]
                                 )
@@ -147,12 +145,12 @@ class Document:
                             ):
                                 auto_review.extend(
                                     [
-                                        Prediction.from_result(pred, model=model)
+                                        Extraction.from_result(pred, model=model)
                                         for pred in post_review_preds
                                     ]
                                 )
                 else:  # classification, no review
-                    final.append(Prediction.from_result(results, model=model))
+                    final.append(Extraction.from_result(results, model=model))
         return pre_review, hitl_review, auto_review, final
 
     @staticmethod
@@ -184,12 +182,12 @@ class Document:
         return classification, classifications
 
     @staticmethod
-    def get_predictions_v2_and_v3(result: dict, models: dict):
+    def get_extractions_v2_and_v3(result: dict, models: dict):
         final = []
         for model_id in models:
             final.extend(
                 [
-                    Prediction.from_result(pred, model=models[model_id])
+                    Extraction.from_result(pred, model=models[model_id])
                     for pred in result["model_results"]["ORIGINAL"][model_id]
                 ]
             )
@@ -246,7 +244,7 @@ class Document:
                     for span in extraction_pred["spans"]:
                         if span["page_num"] in pages:
                             final.append(
-                                Prediction.from_result(
+                                Extraction.from_result(
                                     extraction_pred,
                                     model=extraction_models[extraction_model],
                                 )
@@ -256,7 +254,7 @@ class Document:
                 Subdocument(
                     span_id=span_id,
                     classification=classification,
-                    final=PredictionList(final),
+                    final=ExtractionList(final),
                 )
             )
         return subdocuments
