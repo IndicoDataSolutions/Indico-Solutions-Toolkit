@@ -3,6 +3,7 @@ from enum import StrEnum
 
 
 class ReviewType(StrEnum):
+    ADMIN = "admin"
     AUTO = "auto"
     MANUAL = "manual"
 
