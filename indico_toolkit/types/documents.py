@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import TypeAlias
 
 from .classifications import Classification
-from .errors import MultiValueError
+from .errors import MultipleValuesError, ResultFileError
 from .lists import PredictionList
 
 Model: TypeAlias = str
@@ -32,7 +32,7 @@ class Document:
         classifications = list(self.classifications.values())
 
         if len(classifications) != 1:
-            raise MultiValueError(
+            raise MultipleValuesError(
                 f"This document contains {len(classifications)} classifications. "
                 "Use `Document.classifications` instead."
             )

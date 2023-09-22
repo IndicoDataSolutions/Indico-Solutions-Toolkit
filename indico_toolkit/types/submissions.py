@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from .documents import Document
-from .errors import MultiValueError
+from .errors import MultipleValuesError, ResultFileError
 from .reviews import Review
 
 
@@ -19,7 +19,7 @@ class Submission:
     @property
     def document(self) -> Document:
         if self.bundled:
-            raise MultiValueError(
+            raise MultipleValuesError(
                 f"This submission contains {len(self.documents)} documents. "
                 "Use `Submission.documents` instead."
             )

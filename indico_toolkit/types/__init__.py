@@ -1,6 +1,6 @@
 from .classifications import Classification
 from .documents import Document, Subdocument
-from .errors import MultiValueError, ResultError
+from .errors import MultipleValuesError, ResultFileError
 from .lists import PredictionList
 from .predictions import Prediction
 from .reviews import Review, ReviewType
@@ -10,10 +10,10 @@ from .submissions import Submission
 __all__ = (
     "Classification",
     "Document",
-    "MultiValueError",
+    "MultipleValuesError",
     "Prediction",
     "PredictionList",
-    "ResultError",
+    "ResultFileError",
     "Review",
     "ReviewType",
     "Span",

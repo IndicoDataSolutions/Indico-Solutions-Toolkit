@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 from typing import TypeAlias
 
+from .errors import MultipleValuesError
+from .spans import Span
+
 Label: TypeAlias = str
 
 
@@ -20,7 +23,7 @@ class Prediction:
     @property
     def span(self) -> Span:
         if len(self.spans) != 1:
-            raise MultiValueError(
+            raise MultipleValuesError(
                 f"This prediction contains {len(self.spans)} spans. "
                 "Use `Prediction.spans` instead."
             )
