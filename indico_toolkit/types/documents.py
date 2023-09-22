@@ -1,9 +1,12 @@
 from dataclasses import dataclass
+from functools import partial
 from typing import TypeAlias
 
-from .errors import MultipleValuesError, ResultFileError
+from .errors import MultipleValuesError
 from .lists import ClassificationList, ExtractionList
 from .predictions import Classification, Extraction
+from .reviews import Review, ReviewType
+from .utils import exists, get
 
 Model: TypeAlias = str
 
@@ -31,25 +34,85 @@ class Document:
     def classification(self) -> Classification:
         if len(self.classifications) != 1:
             raise MultipleValuesError(
-                f"This document contains {len(self.classifications)} classifications. "
+                f"Document has {len(self.classifications)} classifications. "
                 "Use `Document.classifications` instead."
             )
 
         return self.classifications[0]
+
+    @classmethod
+    def _from_v1_result(cls, result: object, reviews: list[Review]) -> "Document":
+        """
+        Classify, Extract, and Classify+Extract Workflows.
+        """
+        results = get(result, "results", dict)
+        document = get(results, "document", dict)
+        results = get(document, "results", dict)
+
+        classifications = ClassificationList()
+        pre_review = ExtractionList()
+        auto_review = ExtractionList()
+        hitl_review = ExtractionList()
+        final = ExtractionList()
+
+        for model, predictions_by_review in results.items():
+            if exists(predictions_by_review, "pre_review", dict):
+                classification_dict = get(predictions_by_review, "pre_review", dict)
+                classification = Classification._from_v1_result(
+                    model, classification_dict
+                )
+                classifications.append(classification)
+            elif exists(predictions_by_review, "pre_review", list):
+                pre_review_list = get(predictions_by_review, "pre_review", list)
+                post_reviews_list = get(predictions_by_review, "post_reviews", list)
+                auto_review_list = cls._get_post_review_list(
+                    post_reviews_list, reviews, ReviewType.AUTO
+                )
+                hitl_review_list = cls._get_post_review_list(
+                    post_reviews_list, reviews, ReviewType.MANUAL
+                )
+                final_list = get(predictions_by_review, "final", list)
+
+                extraction_for_model = partial(Extraction._from_v1_result, model)
+
+                pre_review.extend(map(extraction_for_model, pre_review_list))
+                auto_review.extend(map(extraction_for_model, auto_review_list))
+                hitl_review.extend(map(extraction_for_model, hitl_review_list))
+                final.extend(map(extraction_for_model, final_list))
+
+        return Document(
+            id=0,  # v1 sumissions do not have file IDs.
+            filename="",  # v1 submissions do not include the original filename.
+            etl_output=get(result, "etl_output", str),
+            classifications=classifications,
+            pre_review=pre_review,
+            auto_review=auto_review,
+            hitl_review=hitl_review,
+            final=final,
+            subdocuments=[],  # v1 submissions do not have unbundled subdocuments.
+        )
+
+    @staticmethod
+    def _get_post_review_list(
+        post_reviews_list: list[list[object]],
+        reviews: list[Review],
+        review_type: ReviewType,
+    ) -> list[object]:
+        """
+        Return the `post_reviews` list that matches the first non-rejected review of the
+        specified type, or an empty list if there are no matches.
+        """
+        for post_review_list, review in zip(post_reviews_list, reviews):
+            if review.type == review_type and not review.rejected:
+                return post_review_list
+        else:
+            return []
 
     @staticmethod
     def from_result(result: dict[str, object]) -> "Document":
         """
         Factory function to produce a Document from a portion of a result file.
         """
-        id = result.get("submissionfile_id", result.get("submission_id"))
-        filename = result.get("input_filename")
-        etl_output = result.get("etl_output")
-
-        # if review not activated in workflow, only populate "final" key
-        pre_review, hitl_review, auto_review, final, subdocuments = [], [], [], [], []
-        version = result.get("file_version")
-
         if version == 1:
             pre_review, hitl_review, auto_review, final = Document.get_extractions_v1(
                 result

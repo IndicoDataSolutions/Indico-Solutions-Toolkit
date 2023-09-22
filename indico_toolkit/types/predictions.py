@@ -3,6 +3,7 @@ from typing import TypeAlias
 
 from .errors import MultipleValuesError
 from .spans import Span
+from .utils import exists, get
 
 Label: TypeAlias = str
 
@@ -19,17 +20,24 @@ class Prediction:
         try:
             return self.confidences[self.label]
         except KeyError as key_error:
-            raise AttributeError("This prediction has no confidences.") from key_error
+            raise AttributeError(
+                "Prediction has no confidence for `{label!r}`."
+            ) from key_error
 
 
 @dataclass
 class Classification(Prediction):
     @staticmethod
-    def from_result(result: dict[str, object]) -> "Classification":
+    def _from_v1_result(model: str, classification: object) -> "Classification":
         """
-        Factory function to produce a `Classification` from a portion of a result file.
+        Classify, Extract, and Classify+Extract Workflows.
         """
-        ...
+        return Classification(
+            model=model,
+            field_id=get(classification, "field_id", int),
+            label=get(classification, "label", str),
+            confidences=get(classification, "confidence", dict),
+        )
 
 
 @dataclass
@@ -41,7 +49,7 @@ class Extraction(Prediction):
     def span(self) -> Span:
         if len(self.spans) != 1:
             raise MultipleValuesError(
-                f"This extraction contains {len(self.spans)} spans. "
+                f"Extraction has {len(self.spans)} spans. "
                 "Use `Extraction.spans` instead."
             )
 
@@ -58,6 +66,34 @@ class Extraction(Prediction):
         Mark extraction as rejected for Auto Review.
         """
         ...
+
+    @staticmethod
+    def _from_v1_result(model: str, extraction: object) -> "Extraction":
+        """
+        Classify, Extract, and Classify+Extract Workflows.
+        """
+        if exists(extraction, "field_id", int):
+            # Pre-review extractions have field IDs.
+            field_id = get(extraction, "field_id", int)
+        else:
+            # Post-review extractions don't.
+            field_id = 0
+
+        if exists(extraction, "confidence", dict):
+            # Pre-review extractions have confidence dicts.
+            confidences = get(extraction, "confidence", dict)
+        else:
+            # Post-review extractions don't.
+            confidences = {}
+
+        return Extraction(
+            model=model,
+            field_id=field_id,
+            label=get(extraction, "label", str),
+            confidences=confidences,
+            text=get(extraction, "text", str),
+            spans=[Span._from_v1_result(extraction)],
+        )
 
     @staticmethod
     def from_result(result: dict[str, object], model: str) -> "Extraction":

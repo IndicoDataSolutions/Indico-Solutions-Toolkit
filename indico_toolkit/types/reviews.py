@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 from enum import StrEnum
 
+from .errors import ResultFileError
+from .utils import get
+
 
 class ReviewType(StrEnum):
     ADMIN = "admin"
@@ -17,8 +20,19 @@ class Review:
     type: ReviewType
 
     @staticmethod
-    def from_result(result: dict[str, object]) -> "Review":
+    def _from_v1_result(review: object) -> "Review":
         """
-        Factory function to produce a `Review` from a portion of a result file.
+        Classify, Extract, and Classify+Extract Workflows.
         """
-        ...
+        try:
+            notes = get(review, "review_notes", str)
+        except ResultFileError:
+            notes = ""  # Notes may be null.
+
+        return Review(
+            id=get(review, "review_id", int),
+            reviewer_id=get(review, "reviewer_id", int),
+            notes=notes,
+            rejected=get(review, "review_rejected", bool),
+            type=ReviewType(get(review, "review_type", str)),
+        )
