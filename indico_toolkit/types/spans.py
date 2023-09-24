@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 
+from .errors import ResultFileError
 from .utils import exists, get
 
 
 @dataclass
 class Span:
-    start: int
-    end: int
+    start: int | None
+    end: int | None
     page: int
 
     @staticmethod
@@ -14,17 +15,13 @@ class Span:
         """
         Classify, Extract, and Classify+Extract Workflows.
         """
-        if exists(span, "start", int):
+        try:
             start = get(span, "start", int)
-        else:
-            # Post-review extractions may not have an start key.
-            start = 0
-
-        if exists(span, "end", int):
             end = get(span, "end", int)
-        else:
-            # Post-review extractions may not have an end key.
-            end = 0
+        except ResultFileError:
+            # Post-review extractions may not have start and end keys.
+            start = None
+            end = None
 
         if exists(span, "page_num", int):
             # Pre-review extractions use the page_num key.

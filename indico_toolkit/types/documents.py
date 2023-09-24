@@ -20,8 +20,8 @@ class Subdocument:
 
 @dataclass
 class Document:
-    id: int
-    filename: str
+    id: int | None
+    filename: str | None
     etl_output: str
     classifications: ClassificationList
     pre_review: ExtractionList
@@ -81,8 +81,8 @@ class Document:
                 final.extend(map(extraction_for_model, final_list))
 
         return Document(
-            id=0,  # v1 sumissions do not have file IDs.
-            filename="",  # v1 submissions do not include the original filename.
+            id=None,  # v1 sumissions do not have file IDs.
+            filename=None,  # v1 submissions do not include the original filename.
             etl_output=get(result, "etl_output", str),
             classifications=classifications,
             pre_review=pre_review,

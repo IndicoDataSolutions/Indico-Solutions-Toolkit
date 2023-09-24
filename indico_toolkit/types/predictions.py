@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import TypeAlias
 
-from .errors import MultipleValuesError
+from .errors import MultipleValuesError, ResultFileError
 from .spans import Span
-from .utils import exists, get
+from .utils import get
 
 Label: TypeAlias = str
 
@@ -70,12 +70,10 @@ class Extraction(Prediction):
         """
         Classify, Extract, and Classify+Extract Workflows.
         """
-        if exists(extraction, "confidence", dict):
-            # Pre-review extractions have confidence dicts.
+        try:
             confidences = get(extraction, "confidence", dict)
-        else:
-            # Post-review extractions don't.
-            confidences = {}
+        except ResultFileError:
+            confidences = {}  # Post-review extractions don't have confidence dicts.
 
         return Extraction(
             model=model,

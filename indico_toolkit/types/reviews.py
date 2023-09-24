@@ -15,7 +15,7 @@ class ReviewType(StrEnum):
 class Review:
     id: int
     reviewer_id: int
-    notes: str
+    notes: str | None
     rejected: bool
     type: ReviewType
 
@@ -27,7 +27,7 @@ class Review:
         try:
             notes = get(review, "review_notes", str)
         except ResultFileError:
-            notes = ""  # Notes may be null.
+            notes = None  # Notes may be null.
 
         return Review(
             id=get(review, "review_id", int),
