@@ -69,7 +69,7 @@ class Document:
                     post_reviews_list, reviews, ReviewType.AUTO
                 )
                 hitl_review_list = cls._get_post_review_list(
-                    post_reviews_list, reviews, ReviewType.MANUAL
+                    post_reviews_list, reviews, ReviewType.HITL
                 )
 
                 try:
