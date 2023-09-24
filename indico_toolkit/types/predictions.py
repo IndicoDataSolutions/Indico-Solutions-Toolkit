@@ -11,7 +11,6 @@ Label: TypeAlias = str
 @dataclass
 class Prediction:
     model: str
-    field_id: int
     label: str
     confidences: dict[Label, float]
 
@@ -34,7 +33,6 @@ class Classification(Prediction):
         """
         return Classification(
             model=model,
-            field_id=get(classification, "field_id", int),
             label=get(classification, "label", str),
             confidences=get(classification, "confidence", dict),
         )
@@ -72,13 +70,6 @@ class Extraction(Prediction):
         """
         Classify, Extract, and Classify+Extract Workflows.
         """
-        if exists(extraction, "field_id", int):
-            # Pre-review extractions have field IDs.
-            field_id = get(extraction, "field_id", int)
-        else:
-            # Post-review extractions don't.
-            field_id = 0
-
         if exists(extraction, "confidence", dict):
             # Pre-review extractions have confidence dicts.
             confidences = get(extraction, "confidence", dict)
@@ -88,7 +79,6 @@ class Extraction(Prediction):
 
         return Extraction(
             model=model,
-            field_id=field_id,
             label=get(extraction, "label", str),
             confidences=confidences,
             text=get(extraction, "text", str),
