@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from functools import partial
 from typing import TypeAlias
 
-from .errors import MultipleValuesError
+from .errors import MultipleValuesError, ResultFileError
 from .lists import ClassificationList, ExtractionList
 from .predictions import Classification, Extraction
 from .reviews import Review, ReviewType
@@ -71,7 +71,12 @@ class Document:
                 hitl_review_list = cls._get_post_review_list(
                     post_reviews_list, reviews, ReviewType.MANUAL
                 )
-                final_list = get(predictions_by_review, "final", list)
+
+                try:
+                    final_list = get(predictions_by_review, "final", list)
+                except ResultFileError:
+                    # Rejected submissions do not have final predictions.
+                    final_list = []
 
                 extraction_for_model = partial(Extraction._from_v1_result, model)
 
