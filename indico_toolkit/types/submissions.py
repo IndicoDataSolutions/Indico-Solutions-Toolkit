@@ -54,8 +54,8 @@ class Submission:
         """
         if exists(result, "results", dict) and not exists(result, "reviews_meta", list):
             raise ResultFileError(
-                "Result has no review information. "
-                "Use `SubmissionResult` to retrieve the result."
+                "Result file has no review information. "
+                "Use `SubmissionResult` to retrieve the result file."
             )
 
         reviews_meta = get(result, "reviews_meta", list)
