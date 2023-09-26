@@ -200,6 +200,11 @@ class UnbundlingMetrics(ExtractionMetrics):
 
     """
     def get_metrics(self, model_group_id: int):
+        """
+        Collect all metrics available based on a Model Group ID for an Unbundling model
+        Args:
+            model_group_id (int): Model Group ID that you're interestd in (available within the Explain UI)
+        """
         results = self.graphQL_request(METRIC_QUERY, {"modelGroupId": model_group_id})
         if len(results["modelGroups"]["modelGroups"]) == 0:
             raise ToolkitInputError(
