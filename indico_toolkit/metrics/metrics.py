@@ -35,7 +35,7 @@ class ExtractionMetrics(IndicoWrapper):
         self.included_models: List[int] = None
         self.number_of_samples: Dict[int, int] = None
 
-    def get_extraction_metrics(self, model_group_id: int):
+    def get_metrics(self, model_group_id: int):
         results = self.graphQL_request(METRIC_QUERY, {"modelGroupId": model_group_id})
         if len(results["modelGroups"]["modelGroups"]) == 0:
             raise ToolkitInputError(
