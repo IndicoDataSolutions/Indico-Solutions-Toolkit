@@ -1,6 +1,7 @@
 from math import sqrt
 
 from indico_toolkit.errors import ToolkitInputError
+from typing import List
 
 
 class Positioning:
@@ -164,6 +165,38 @@ class Positioning:
             return vertical_overlap_distance / position_height
         else:
             return 0.0
+    
+    def get_tokens_within_bounds(self, bbox: dict, ocr_tokens: List[dict], include_overlap: bool=False) -> List[dict]:
+        """
+        Args:
+            bbox (dict): dict with target box dimensions and page number
+                bbox = {
+                    bbTop: int
+                    bbBot: int
+                    bbLeft: int
+                    bbRight: int
+                    page_num: int
+                }
+            ocr_tokens (List[dict]): on-doc OCR token output from raw or OnDoc class
+            include_overlap (bool, optional): Determines whether to include tokens partially inside bbox. Defaults to False.
+        Returns:
+            List[dict]: list of OCR tokens that fall within the specified bounding box
+        """
+        if "position" not in ocr_tokens[0] or "page_num" not in ocr_tokens[0]:
+            raise ToolkitInputError(
+                "Token list argument is missing required key(s): page_num and/or position"
+            )
+        if include_overlap == True:
+            return [token for token in ocr_tokens if
+            self.on_same_page(bbox, token)
+            and self.yaxis_overlap(bbox, token["position"]) and self.xaxis_overlap(bbox, token["position"])] 
+        else:
+            return [token for token in ocr_tokens if 
+            self.on_same_page(bbox, token)
+            and token["position"]["bbLeft"] > bbox["bbLeft"]
+            and token["position"]["bbRight"] < bbox["bbRight"]
+            and token["position"]["bbTop"] > bbox["bbTop"]
+            and token["position"]["bbBot"] < bbox["bbBot"]]
 
     @staticmethod
     def get_vertical_min_distance(

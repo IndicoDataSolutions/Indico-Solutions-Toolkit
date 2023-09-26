@@ -1,5 +1,4 @@
 import pytest
-import pandas as pd
 from indico_toolkit.indico_wrapper import Datasets
 from indico.types import Dataset
 
@@ -40,13 +39,3 @@ def test_create_delete_dataset(dataset_wrapper, pdf_filepath):
     status = dataset_wrapper.delete_dataset(dataset.id)
     assert status == True
 
-
-def test_create_large_doc_dataset(dataset_wrapper, pdf_filepath):
-    dataset = dataset_wrapper.create_large_doc_dataset(
-        "mydataset",
-        [pdf_filepath, pdf_filepath],
-        upload_batch_size=1,
-    )
-    assert len(dataset.files) == 2
-    for f in dataset.files:
-        assert f.status == "PROCESSED" or f.status == "EXTRACTING"

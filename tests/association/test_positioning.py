@@ -1,5 +1,6 @@
 import pytest
-
+import json
+import os
 from indico_toolkit.association import Positioning, positioning
 from indico_toolkit.errors import ToolkitInputError
 
@@ -21,6 +22,15 @@ def generate_mapped_pred(
         "page_num": page_num,
     }
 
+FILE_PATH = os.path.dirname(os.path.abspath(__file__))
+
+@pytest.fixture(scope="function")
+def bbox_token_page():
+    with open(os.path.join(FILE_PATH, "data/token_page/tokens.json"),
+    "r",
+    ) as f:
+        tokens = json.load(f)
+    return tokens
 
 @pytest.mark.parametrize(
     "input, expected",
@@ -306,3 +316,35 @@ def test_distance_between_points(input, expected):
 def test_manhatan_distance_between_points(input, expected):
     distance = Positioning.manhattan_distance_between_points(input[0], input[1])
     assert round(distance, 2) == expected
+
+def test_get_tokens_within_bounds(bbox_token_page):
+    box = generate_mapped_pred(300, 360, 290, 450, page_num=0)
+    positioning = Positioning()
+    bounds = positioning.get_tokens_within_bounds(box, bbox_token_page)
+    assert len(bounds) == 1
+    assert "true" in bounds[0]["text"]
+
+def test_get_tokens_within_bounds_excludes_overlap(bbox_token_page):
+    box = generate_mapped_pred(300, 360, 290, 450, page_num=0)
+    positioning = Positioning()
+    bounds = positioning.get_tokens_within_bounds(box, bbox_token_page)
+    assert "false" not in bounds[0]["text"] and "edge" not in bounds[0]["text"]
+
+def test_get_tokens_within_bounds_includes_overlap(bbox_token_page):
+    box = generate_mapped_pred(300, 360, 290, 450, page_num=0)
+    positioning = Positioning()
+    edges = positioning.get_tokens_within_bounds(box, bbox_token_page, include_overlap=True)
+    assert len(edges) == 2
+    for token in edges:
+        assert "true" in token["text"] or "edge" in token["text"]
+
+def test_get_tokens_within_bounds_throws_error(bbox_token_page):
+    null_box = generate_mapped_pred()
+    positioning = Positioning()
+    null = positioning.get_tokens_within_bounds(null_box, bbox_token_page)
+    assert null == []
+
+def test_get_tokens_within_bounds_throws_error():
+    positioning = Positioning()
+    with pytest.raises(ToolkitInputError):
+        positioning.get_tokens_within_bounds(generate_mapped_pred(), [{}])

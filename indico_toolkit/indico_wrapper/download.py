@@ -1,9 +1,16 @@
 import os
+from io import StringIO
 import pandas as pd
 from indico.types.export import Export
 from indico import IndicoClient, IndicoRequestError
 from indico_toolkit import retry, ToolkitInputError
-from indico.queries import RetrieveStorageObject, DownloadExport, CreateExport, GetSubmission
+from indico.queries import (
+    RetrieveStorageObject,
+    DownloadExport,
+    CreateExport,
+    GraphQLRequest,
+    GetSubmission
+)
 import tqdm
 
 
@@ -16,7 +23,11 @@ class Download:
         self.client = client
 
     def get_dataset_pdfs(
-        self, dataset_id: int, labelset_id: int, output_dir: str, max_files_to_download: int = None
+        self,
+        dataset_id: int,
+        labelset_id: int,
+        output_dir: str,
+        max_files_to_download: int = None,
     ) -> int:
         """Download PDFs from an uploaded dataset to a local directory
 
@@ -45,10 +56,22 @@ class Download:
         )
         return num_files_downloaded
 
-    def get_dataset_dataframe(
+    def get_uploaded_csv_dataframe(self, dataset_id: int) -> pd.DataFrame:
+        """
+        Get a dataframe from a CSV that has been uploaded to the platform
+        Args:
+            dataset_id (int): id of the dataset
+        Returns:
+            pd.DataFrame: a dataframe representation of the CSV you uploaded
+        """
+        url = self._get_csv_download_url(dataset_id)
+        string_df = self._retrieve_storage_object(url)
+        return pd.read_csv(StringIO(string_df))
+
+    def get_snapshot_dataframe(
         self, dataset_id: int, labelset_id: int, file_info: bool = True, **kwargs
     ) -> pd.DataFrame:
-        """Download a text representation of your dataset. For additional arguments,
+        """Download a snapshot. For additional arguments,
         see documentation for CreateExport in the Python SDK.
 
         Args:
@@ -59,7 +82,9 @@ class Download:
         Returns:
             pd.DataFrame: DataFrame with full document text and additional metadata
         """
-        export = self._create_export(dataset_id, labelset_id, file_info=file_info, **kwargs)
+        export = self._create_export(
+            dataset_id, labelset_id, file_info=file_info, **kwargs
+        )
         return self._download_export(export.id)
 
     def get_submission_pdf(
@@ -103,7 +128,12 @@ class Download:
 
     @retry((IndicoRequestError, ConnectionError))
     def _create_export(
-        self, dataset_id: int, labelset_id: int, file_info: bool = True, wait: bool = True, **kwargs
+        self,
+        dataset_id: int,
+        labelset_id: int,
+        file_info: bool = True,
+        wait: bool = True,
+        **kwargs,
     ) -> Export:
         """
         Create an export object that can be used to download datasets. For additional
@@ -120,10 +150,32 @@ class Download:
         """
         return self.client.call(
             CreateExport(
-                dataset_id=dataset_id, file_info=file_info, labelset_id=labelset_id, wait=wait, **kwargs
+                dataset_id=dataset_id,
+                file_info=file_info,
+                labelset_id=labelset_id,
+                wait=wait,
+                **kwargs,
             )
         )
 
     @retry((IndicoRequestError, ConnectionError))
     def _retrieve_storage_object(self, url: str):
         return self.client.call(RetrieveStorageObject(url))
+
+    def _get_csv_download_url(self, dataset_id: int) -> str:
+        query = """
+            query getDataURL($id: Int!) {
+                dataset(id: $id) {
+                    files {
+                    fileType
+                    id
+                    rainbowUrl
+                    }
+                }
+            }
+        """
+        result = self.client.call(GraphQLRequest(query, {"id": dataset_id}))
+        for file in result["dataset"]["files"]: # loop through in case there are other file types uploaded to dataset
+            if file["fileType"] == "CSV":
+                return file["rainbowUrl"]
+        raise ToolkitInputError(f"There are no CSVs uploaded to {dataset_id}")
