@@ -68,7 +68,7 @@ def test_get_reviewed_prediction_data(workflow_id, indico_client, reviewed_submi
     for predictions in stagger._snap_formatted_predictions:
         assert isinstance(predictions, list)
         for pred in predictions:
-            assert set(pred.keys()) == set(["label", "start", "end"])
+            assert set(pred.keys()) == set(["label", "start", "end", "page_num"])
 
 
 def test_to_csv(stagger_wrapper, reviewed_submissions, workflow_id):

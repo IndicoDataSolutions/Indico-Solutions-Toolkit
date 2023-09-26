@@ -1,6 +1,7 @@
 from math import sqrt
 
 from indico_toolkit.errors import ToolkitInputError
+from typing import List
 
 
 class Positioning:
@@ -63,9 +64,8 @@ class Positioning:
             )
         if self.xaxis_overlap(above_pos, below_pos) and self.yaxis_above(above_pos, below_pos):
             is_above = True
-            horizontal_overlap_distance = abs(max(above_pos["bbLeft"], below_pos["bbLeft"]) - min(above_pos["bbRight"], below_pos["bbRight"]))
-            position_width = abs(below_pos["bbLeft"] - below_pos["bbRight"])
-            if min_overlap_percent and horizontal_overlap_distance / position_width < min_overlap_percent:
+            overlap_amount = self.get_horizontal_overlap(above_pos, below_pos)
+            if min_overlap_percent and overlap_amount < min_overlap_percent:
                 is_min_overlap = False
         return is_above and is_min_overlap
 
@@ -129,6 +129,74 @@ class Positioning:
         if add_page_height:
             min_distance += page_height * page_difference
         return min_distance
+
+    def get_horizontal_overlap(self, pos1: dict, pos2: dict) -> float:
+        """
+        Get the amount of horizontal overlap between two bounding boxes.
+        Returns:
+            float: percentage of pos2 that horizontally overlaps with pos1
+        """
+        page_difference = abs(pos1["page_num"] - pos2["page_num"])
+        if page_difference > 0:
+            raise ToolkitInputError(
+                "Predictions are not on the same page!"
+            )
+        if self.xaxis_overlap(pos1, pos2):
+            horizontal_overlap_distance = abs(max(pos1["bbLeft"], pos2["bbLeft"]) - min(pos1["bbRight"], pos2["bbRight"]))
+            position_width = abs(pos2["bbLeft"] - pos2["bbRight"])
+            return horizontal_overlap_distance / position_width
+        else:
+            return 0.0
+
+    def get_vertical_overlap(self, pos1: dict, pos2: dict) -> float:
+        """
+        Get the amount of vertical overlap between two bounding boxes.
+        Returns:
+            float: percentage of pos2 that vertically overlaps with pos1
+        """
+        page_difference = abs(pos1["page_num"] - pos2["page_num"])
+        if page_difference > 0:
+            raise ToolkitInputError(
+                "Predictions are not on the same page!"
+            )
+        if self.yaxis_overlap(pos1, pos2):
+            vertical_overlap_distance = abs(max(pos1["bbTop"], pos2["bbTop"]) - min(pos1["bbBot"], pos2["bbBot"]))
+            position_height = abs(pos2["bbTop"] - pos2["bbBot"])
+            return vertical_overlap_distance / position_height
+        else:
+            return 0.0
+    
+    def get_tokens_within_bounds(self, bbox: dict, ocr_tokens: List[dict], include_overlap: bool=False) -> List[dict]:
+        """
+        Args:
+            bbox (dict): dict with target box dimensions and page number
+                bbox = {
+                    bbTop: int
+                    bbBot: int
+                    bbLeft: int
+                    bbRight: int
+                    page_num: int
+                }
+            ocr_tokens (List[dict]): on-doc OCR token output from raw or OnDoc class
+            include_overlap (bool, optional): Determines whether to include tokens partially inside bbox. Defaults to False.
+        Returns:
+            List[dict]: list of OCR tokens that fall within the specified bounding box
+        """
+        if "position" not in ocr_tokens[0] or "page_num" not in ocr_tokens[0]:
+            raise ToolkitInputError(
+                "Token list argument is missing required key(s): page_num and/or position"
+            )
+        if include_overlap == True:
+            return [token for token in ocr_tokens if
+            self.on_same_page(bbox, token)
+            and self.yaxis_overlap(bbox, token["position"]) and self.xaxis_overlap(bbox, token["position"])] 
+        else:
+            return [token for token in ocr_tokens if 
+            self.on_same_page(bbox, token)
+            and token["position"]["bbLeft"] > bbox["bbLeft"]
+            and token["position"]["bbRight"] < bbox["bbRight"]
+            and token["position"]["bbTop"] > bbox["bbTop"]
+            and token["position"]["bbBot"] < bbox["bbBot"]]
 
     @staticmethod
     def get_vertical_min_distance(

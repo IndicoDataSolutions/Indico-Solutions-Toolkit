@@ -5,8 +5,6 @@ from indico.queries import (
     CreateModelGroup,
     GetWorkflow,
     GetDataset,
-    GraphQLRequest,
-    ListWorkflows,
     JobStatus,
     DocumentExtraction,
     RetrieveStorageObject,
@@ -22,14 +20,20 @@ from indico_toolkit.indico_wrapper import (
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 
+# The following ENV Variables must be set
 HOST_URL = os.environ.get("HOST_URL")
 API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
 API_TOKEN = os.environ.get("API_TOKEN")
-MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
-CLASS_MODEL_NAME = os.environ.get(
-    "CLASS_MODEL_NAME", "Toolkit Test Classification Model"
-)
 
+# the following five env variables are associated as part of same extraction workflow based on 
+# financial disclosure CSV snapshot and associated workflow
+DATASET_ID = os.environ.get("DATASET_ID")
+WORKFLOW_ID = os.environ.get("WORKFLOW_ID")
+MODEL_GROUP_ID = os.environ.get("MODEL_GROUP_ID")
+MODEL_ID = os.environ.get("MODEL_ID")
+MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
+
+PDF_DATASET_ID = os.environ.get("PDF_DATASET_ID")
 
 @pytest.fixture(scope="session")
 def indico_client() -> IndicoClient:
@@ -48,8 +52,7 @@ def pdf_filepath():
 
 @pytest.fixture(scope="session")
 def dataset_obj(indico_client):
-    dataset_id = os.environ.get("DATASET_ID")
-    if not dataset_id:
+    if not DATASET_ID:
         dataset = indico_client.call(
             CreateDataset(
                 name="Solutions Toolkit Test Dataset",
@@ -58,93 +61,49 @@ def dataset_obj(indico_client):
         )
     else:
         try:
-            dataset = indico_client.call(GetDataset(id=dataset_id))
+            dataset = indico_client.call(GetDataset(id=DATASET_ID))
         except IndicoRequestError:
             raise ValueError(
-                f"Dataset with ID {dataset_id} does not exist or you do not have access to it"
+                f"Dataset with ID {DATASET_ID} does not exist or you do not have access to it"
             )
     return dataset
 
 
 @pytest.fixture(scope="session")
 def workflow_id(indico_client, dataset_obj):
-    workflow_id = os.environ.get("WORKFLOW_ID")
-    if not workflow_id:
+    if not WORKFLOW_ID:
+        workflow = indico_client.call(GetWorkflow(dataset_obj.id))
         indico_client.call(
             CreateModelGroup(
                 name="Solutions Toolkit Test Model",
                 dataset_id=dataset_obj.id,
                 source_column_id=dataset_obj.datacolumn_by_name("text").id,
                 labelset_id=dataset_obj.labelset_by_name("question_1620").id,
+                workflow_id=workflow.id,
+                after_component_id=workflow.component_by_type(
+                    "INPUT_OCR_EXTRACTION"
+                ).id,
                 wait=True,
             )
         )
-        workflow_id = indico_client.call(ListWorkflows(dataset_ids=[dataset_obj.id]))[
-            0
-        ].id
     else:
         try:
-            indico_client.call(GetWorkflow(workflow_id=workflow_id))
+            indico_client.call(GetWorkflow(workflow_id=WORKFLOW_ID))
         except IndicoRequestError:
             raise ValueError(
-                f"Workflow with ID {workflow_id} does not exist or you do not have access to it"
+                f"Workflow with ID {WORKFLOW_ID} does not exist or you do not have access to it"
             )
-    return workflow_id
+    return WORKFLOW_ID
 
 
 @pytest.fixture(scope="session")
-def _finder_model_result(indico_client, workflow_id):
-    query = """
-        query ListWorkflows($datasetIds: [Int], $workflowIds: [Int], $limit: Int){
-            workflows(datasetIds: $datasetIds, workflowIds: $workflowIds, limit: $limit){
-                workflows {
-                    id
-                components {
-                        id
-                        componentType
-                        reviewable
-                        filteredClasses
-                        ... on ModelGroupComponent {
-                            taskType
-                            modelType
-                            modelGroup {
-                                      status
-                                      id
-                                      name
-                                      taskType
-                                      questionnaireId
-                                      selectedModel{
-                                        id
-                                      }
-                                }
-                        }
-                    }
-                }
-            }
-        }
-    """
-    components = indico_client.call(
-        GraphQLRequest(query, {"workflowIds": [workflow_id]})
-    )["workflows"]["workflows"][0]
-    model_group = None
-    for component in components["components"]:
-        if (
-            component["componentType"] == "MODEL_GROUP"
-            and component["modelGroup"]["status"] == "COMPLETE"
-        ):
-            model_group = component["modelGroup"]
-            break
-    return model_group
+def extraction_model_group_id():
+    return int(MODEL_GROUP_ID)
 
 
 @pytest.fixture(scope="session")
-def extraction_model_group_id(_finder_model_result):
-    return _finder_model_result["id"]
-
-
-@pytest.fixture(scope="session")
-def extraction_model_id(_finder_model_result):
-    return _finder_model_result["selectedModel"]["id"]
+def extraction_model_id():
+    return int(MODEL_ID)
 
 
 @pytest.fixture(scope="module")
@@ -177,11 +136,6 @@ def model_name():
 
 
 @pytest.fixture(scope="session")
-def class_model_name():
-    return CLASS_MODEL_NAME
-
-
-@pytest.fixture(scope="session")
 def ondoc_ocr_object(indico_client, pdf_filepath):
     job = indico_client.call(
         DocumentExtraction(
@@ -195,6 +149,7 @@ def ondoc_ocr_object(indico_client, pdf_filepath):
 
 @pytest.fixture(scope="session")
 def standard_ocr_object(indico_client, pdf_filepath):
+    # TODO: this can be static-- probably should be "ondoc" as well
     job = indico_client.call(
         DocumentExtraction(
             files=[pdf_filepath], json_config={"preset_config": "standard"}
@@ -212,4 +167,14 @@ def doc_extraction_standard(indico_client):
 
 @pytest.fixture(scope="session")
 def snapshot_csv_path(testdir_file_path):
+    return os.path.join(testdir_file_path, "data/snapshots/updated_snapshot.csv")
+
+
+@pytest.fixture(scope="session")
+def old_snapshot_csv_path(testdir_file_path):
     return os.path.join(testdir_file_path, "data/snapshots/snapshot.csv")
+
+
+@pytest.fixture(scope="session")
+def pdf_dataset_obj(indico_client):
+    return indico_client.call(GetDataset(PDF_DATASET_ID))

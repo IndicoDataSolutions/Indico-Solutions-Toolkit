@@ -30,7 +30,6 @@ highlighter.highlight_pdf(
 highlighter.highlight_pdf(
     "./highlighted_doc.pdf",
     ocr_object.page_heights_and_widths,
-    include_toc=False,
     all_yellow_highlight=False,
     add_label_annotations=True,
     add_bookmarks=True,

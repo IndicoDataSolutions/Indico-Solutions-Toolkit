@@ -10,9 +10,12 @@ jobs:
     env:
       API_TOKEN: ${{ secrets.TEST_API_TOKEN }}
       DATASET_ID: ${{ secrets.DATASET_ID }}
+      PDF_DATASET_ID: ${{ secrets.PDF_DATASET_ID }}
       MODEL_NAME: ${{ secrets.MODEL_NAME }}
       WORKFLOW_ID: ${{ secrets.WORKFLOW_ID }}
-      HOST_URL: app.indico.io
+      MODEL_ID: ${{ secrets.MODEL_ID }} 
+      MODEL_GROUP_ID: ${{ secrets.MODEL_GROUP_ID }}
+      HOST_URL: try.indico.io
     
     steps:
       - name: Checkout sources
@@ -27,6 +30,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
+          python -m pip install -e .[full]
       
       - name: Run formatter
         run: |

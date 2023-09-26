@@ -23,16 +23,4 @@ fp.get_file_paths_from_dir("./datasets/disclosures/")
 for paths in fp.batch_files(batch_size=2):
     datasets.add_files_to_dataset(paths)
     print(f"Uploaded {len(paths)} files")
-"""
-Example 2:
 
-Create a dataset and then download it
-"""
-# Create a dataset and return a dataset object
-dataset_object = datasets.create_dataset(filepaths=fp.file_paths, dataset_name="My dataset")
-# Export is returned as a pandas DataFrame
-df = downloader.get_dataset_dataframe(dataset_id=dataset_object.id, labelset_id=dataset_object.labelsets[0].id)
-# view first 5 rows of the dataset as a CSV
-print(df.head())
-# Write to downloaded dataset to CSV
-df.to_csv("./mydataset.csv")

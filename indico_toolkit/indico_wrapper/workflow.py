@@ -7,12 +7,14 @@ from indico.queries import (
     ListSubmissions,
     UpdateSubmission,
     GetSubmission,
+    GetWorkflow,
     WorkflowSubmission,
     SubmitReview,
     WaitForSubmissions,
     UpdateWorkflowSettings,
     JobStatus,
 )
+from indico.types import Workflow
 from indico.queries.submission import SubmissionResult
 from .indico_wrapper import IndicoWrapper
 from indico_toolkit import ToolkitStatusError
@@ -32,6 +34,17 @@ class Workflow(IndicoWrapper):
     def __init__(self, client: IndicoClient):
         self.client = client
 
+    def get_workflow(
+        self, workflow_id: int
+    ) -> Workflow:
+        """
+        Args:
+            workflow_id (int): Workflow id to query for
+        """
+        return self.client.call(
+            GetWorkflow(workflow_id)
+        )
+
     def submit_documents_to_workflow(
         self, workflow_id: int, pdf_filepaths: List[str]
     ) -> List[int]:
@@ -49,8 +62,10 @@ class Workflow(IndicoWrapper):
     def get_ondoc_ocr_from_etl_url(self, etl_url: str) -> OnDoc:
         """
         Get ondocument OCR object from workflow result etl output
+
         Args:
             etl_url (str): url from "etl_output" key of workflow result json
+
         Returns:
             OnDoc: 'ondocument' OCR object
         """
@@ -60,6 +75,26 @@ class Workflow(IndicoWrapper):
             page_ocr = self.get_storage_object(page["page_info"])
             ocr_result.append(page_ocr)
         return OnDoc(ocr_result)
+
+    def get_file_bytes(self, file_url: str) -> bytes:
+        return self.get_storage_object(file_url)
+
+    def get_img_bytes_from_etl_url(self, etl_url: str) -> List[bytes]:
+        """
+        Get image bytes for each page from workflow result etl output
+
+        Args:
+            etl_url (str): url from "etl_output" key of workflow result json
+
+        Returns:
+            image_bytes
+        """
+        image_bytes = []
+        etl_response = self.get_storage_object(etl_url)
+        for page in etl_response["pages"]:
+            page_bytes = self.get_storage_object(page["image"])
+            image_bytes.append(page_bytes)
+        return image_bytes
 
     def mark_submission_as_retreived(self, submission_id: int):
         self.client.call(UpdateSubmission(submission_id, retrieved=True))
@@ -81,15 +116,20 @@ class Workflow(IndicoWrapper):
         return_raw_json: bool = False,
         raise_exception_for_failed: bool = False,
         return_failed_results: bool = True,
+        ignore_deleted_submissions: bool = False,
     ) -> List[WorkflowResult]:
         """
-        Wait for submission to pass through workflow models and get result. If Review is enabled, result may be retrieved prior to human review.
+        Wait for submission to pass through workflow models and get result. If Review is enabled,
+        result may be retrieved prior to human review.
+
         Args:
-            submission_id (int): Id of submission predictions to retrieve
+            submission_ids (List[int]): Ids of submission predictions to retrieve
             timeout (int): seconds permitted for each submission prior to timing out
             return_raw_json: (bool) = If True return raw json result, otherwise return WorkflowResult object.
             raise_exception_for_failed (bool): if True, ToolkitStatusError raised for failed submissions
             return_failed_results (bool): if True, return objects for failed submissions
+            ignore_deleted_submissions (bool): if True, ignore deleted submissions
+
         Returns:
             List[WorkflowResult]: workflow result objects
         """
@@ -104,7 +144,11 @@ class Workflow(IndicoWrapper):
                 elif not return_failed_results:
                     print(message)
                     continue
+            if submission.deleted and ignore_deleted_submissions:
+                continue
             result = self._create_result(submission)
+            # Add path to original input file to result
+            result["input_file"] = submission.input_file
             if return_raw_json:
                 results.append(result)
             else:

@@ -35,6 +35,9 @@ To run the test suite you will need to set the following environment variables: 
 You can also set WORKFLOW_ID (workflow w/ single extraction model), MODEL_NAME (extraction model name) 
 and DATASET_ID (uploaded dataset). If you don't set these 3 env variables, test configuration will 
 upload a dataset and create a workflow. 
+
+Note: spacy isn't a requirement to install the package, but is a requirement to run the full test suite
+as it is part of "staggered loop".
 ```
 pytest
 ```
