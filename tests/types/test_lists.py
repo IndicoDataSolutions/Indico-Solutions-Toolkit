@@ -22,6 +22,7 @@ class TestClassificationList:
                         "Label B": 0.5,
                         "Label C": 0.75,
                     },
+                    {},
                 ),
                 Classification(
                     "Model B",
@@ -31,6 +32,7 @@ class TestClassificationList:
                         "Label B": 0.5,
                         "Label C": 0.75,
                     },
+                    {},
                 ),
                 Classification(
                     "Model C",
@@ -40,6 +42,7 @@ class TestClassificationList:
                         "Label B": 0.5,
                         "Label C": 0.75,
                     },
+                    {},
                 ),
             ]
         )
@@ -140,6 +143,7 @@ class TestExtractionList:
                         "Label B": 0.5,
                         "Label C": 0.75,
                     },
+                    {},
                     "Text A",
                     [],
                 ),
@@ -151,6 +155,7 @@ class TestExtractionList:
                         "Label B": 0.5,
                         "Label C": 0.75,
                     },
+                    {},
                     "Text B",
                     [],
                 ),
@@ -162,6 +167,7 @@ class TestExtractionList:
                         "Label B": 0.5,
                         "Label C": 0.75,
                     },
+                    {},
                     "Text C",
                     [],
                 ),

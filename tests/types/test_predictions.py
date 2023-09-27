@@ -22,6 +22,21 @@ class TestV1Classification:
         assert classification.label == "Email"
         assert classification.confidence == 0.5
         assert classification.confidences["Email"] == 0.5
+        assert not classification.extras
+
+    @staticmethod
+    def test_extras() -> None:
+        classification = Classification._from_v1_result(
+            "Test Model",
+            {
+                "confidence": {},
+                "label": "",
+                "some_other_field": 123,
+            },
+        )
+
+        assert isinstance(classification.extras, dict)
+        assert classification.extras["some_other_field"] == 123
 
 
 class TestV1Extraction:
@@ -53,6 +68,23 @@ class TestV1Extraction:
         assert extraction.span.start == 33
         assert extraction.span.end == 62
         assert extraction.span.page == 1
+        assert not extraction.extras
+
+    @staticmethod
+    def test_extras() -> None:
+        extraction = Extraction._from_v1_result(
+            "Test Model",
+            {
+                "confidence": {},
+                "label": "",
+                "page_num": 0,
+                "text": "",
+                "some_other_field": 123,
+            },
+        )
+
+        assert instance(extraction.extras, dict)
+        assert extraction.extras["some_other_field"] == 123
 
     @staticmethod
     def test_post_review() -> None:
@@ -72,6 +104,23 @@ class TestV1Extraction:
         assert extraction.span.start is None
         assert extraction.span.end is None
         assert extraction.span.page == 1
+        assert not extraction.extras
 
         with pytest.raises(AttributeError):
             extraction.confidence
+
+    @staticmethod
+    def test_extras() -> None:
+        extraction = Extraction._from_v1_result(
+            "Test Model",
+            {
+                "confidence": {},
+                "label": "",
+                "page_num": 0,
+                "text": "",
+                "some_other_field": 123,
+            },
+        )
+
+        assert isinstance(extraction.extras, dict)
+        assert extraction.extras["some_other_field"] == 123

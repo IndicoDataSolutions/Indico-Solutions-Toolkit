@@ -1,3 +1,4 @@
+from collections.abc import Collection
 from dataclasses import dataclass
 from typing import TypeAlias
 
@@ -13,6 +14,7 @@ class Prediction:
     model: str
     label: str
     confidences: dict[Label, float]
+    extras: dict[str, object]
 
     @property
     def confidence(self) -> float:
@@ -23,11 +25,18 @@ class Prediction:
                 "Prediction has no confidence for `{label!r}`."
             ) from key_error
 
+    @staticmethod
+    def _extras_from_result(result: object, omit: Collection[str]) -> dict[str, object]:
+        if not isinstance(result, dict):
+            return {}
+
+        return {key: value for key, value in result.items() if key not in omit}
+
 
 @dataclass
 class Classification(Prediction):
-    @staticmethod
-    def _from_v1_result(model: str, classification: object) -> "Classification":
+    @classmethod
+    def _from_v1_result(cls, model: str, classification: object) -> "Classification":
         """
         Classify, Extract, and Classify+Extract Workflows.
         """
@@ -35,6 +44,9 @@ class Classification(Prediction):
             model=model,
             label=get(classification, "label", str),
             confidences=get(classification, "confidence", dict),
+            extras=cls._extras_from_result(
+                classification, omit=("confidence", "label")
+            ),
         )
 
 
@@ -65,8 +77,8 @@ class Extraction(Prediction):
         """
         ...
 
-    @staticmethod
-    def _from_v1_result(model: str, extraction: object) -> "Extraction":
+    @classmethod
+    def _from_v1_result(cls, model: str, extraction: object) -> "Extraction":
         """
         Classify, Extract, and Classify+Extract Workflows.
         """
@@ -81,6 +93,18 @@ class Extraction(Prediction):
             confidences=confidences,
             text=get(extraction, "text", str),
             spans=[Span._from_v1_result(extraction)],
+            extras=cls._extras_from_result(
+                extraction,
+                omit=(
+                    "confidence",
+                    "end",
+                    "label",
+                    "page_num",
+                    "pageNum",
+                    "start",
+                    "text",
+                ),
+            ),
         )
 
     @staticmethod
