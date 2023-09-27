@@ -31,10 +31,10 @@ def test_create_classification_workflow_too_few_classes(
         )
 
 
-def test_copy_workflow(indico_client, dataset_obj, workflow_id, teach_task_id):
+def test_copy_teach_task(indico_client, dataset_obj, workflow_id, teach_task_id):
     auto_populator = AutoPopulator(indico_client)
     original_workflow = indico_client.call(GetWorkflow(workflow_id))
-    new_workflow = auto_populator.copy_workflow(
+    new_workflow = auto_populator.copy_teach_task(
         dataset_id=dataset_obj.id,
         teach_task_id=teach_task_id,
         workflow_name=f"{original_workflow.name}_Copied",

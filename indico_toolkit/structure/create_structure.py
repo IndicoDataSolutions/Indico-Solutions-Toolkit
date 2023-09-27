@@ -149,6 +149,7 @@ class Structure:
         workflow_id: int,
         model_type: str = "annotation",
         data_column: str = "document",
+        prev_comp_id: int = None,
         **kwargs,
     ) -> Workflow:
         """
@@ -175,13 +176,15 @@ class Structure:
             "classification": ModelTaskType.CLASSIFICATION,
             "annotation": ModelTaskType.ANNOTATION,
             "classification_unbundling": ModelTaskType.CLASSIFICATION_UNBUNDLING,
+            "classification_multiple": ModelTaskType.CLASSIFICATION_MULTIPLE,
         }
         if model_type not in model_map.keys():
             raise ToolkitInputError(
                 f"{model_type} not found. Available options include {[model for model in model_map.keys()]}"
             )
         workflow = self.client.call(GetWorkflow(workflow_id))
-        prev_comp_id = workflow.component_by_type("INPUT_OCR_EXTRACTION").id
+        if not prev_comp_id:
+            prev_comp_id = workflow.component_by_type("INPUT_OCR_EXTRACTION").id
 
         column_id = dataset.datacolumn_by_name(data_column).id
         new_labelset = NewLabelsetArguments(
