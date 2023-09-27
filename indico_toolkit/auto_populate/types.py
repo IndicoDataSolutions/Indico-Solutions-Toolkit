@@ -6,12 +6,11 @@ class Example:
     id: int
     data_file_name: str
 
-@dataclass
 class ExampleList:
-    examples: List[Example]
+    def __init__(self, examples: List[Example]):
+        self.examples = examples
     
-    @staticmethod
-    def _get_example(self, example_id: int):
+    def get_example(self, example_id: int) -> Example:
         """
         Returns example with matching example_id. If no matching example id found, return None
         """
@@ -20,8 +19,7 @@ class ExampleList:
                 return example
         return None
     
-    @staticmethod
-    def _get_example_id(self, example_data_file_name: str) -> int:
+    def get_example_id(self, example_data_file_name: str) -> int:
         """
         Returns id for a specific example with the same name as example_data_file_name. If no matching example found, return None
         Assumes no duplicate filenames in dataset

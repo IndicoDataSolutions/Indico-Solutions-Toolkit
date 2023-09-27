@@ -181,7 +181,7 @@ class AutoPopulator:
         # Label new teach task
         result = self.structure.label_teach_task(
             label_set_id=new_labelset_id,
-            labels=labels,
+            labels=[dataclasses.asdict(label) for label in labels],
             model_group_id=new_model_group_id,
         )
         if result["submitLabelsV2"]["success"] == False:
@@ -196,7 +196,7 @@ class AutoPopulator:
         new_target_name_map: dict,
         rename_labels: Dict[str, str],
         remove_labels: List[str]
-    ):
+    ) -> List[LabelInput]:
         labels = []
         # Retrieve examples and match against filename
         old_examples = self.structure.get_example_ids(
@@ -231,8 +231,8 @@ class AutoPopulator:
             targets_list = self._convert_label(
                 targets_list, new_target_name_map
             )
-            new_example_id = new_examples._get_example_id(
-                old_examples._get_example(example_id=old_example_id)
+            new_example_id = new_examples.get_example_id(
+                old_examples.get_example(old_example_id)
             )
             if new_example_id:
                 labels.append(LabelInput(new_example_id, targets_list))
@@ -243,7 +243,7 @@ class AutoPopulator:
         model_group_id: int,
         target_name_map: dict,
         labels_to_drop: List[str] = None,
-    ):
+    ) -> List[LabelInput]:
         examples = self.structure.get_example_ids(model_group_id, limit=1000)
         examples = [
             Example(i["id"], i["datafile"]["name"])
@@ -276,7 +276,7 @@ class AutoPopulator:
     
     def _convert_label(
         self, targets_list: List[dict], target_name_map: dict
-    ) -> List[dict]:
+    ) -> List[LabelInst]:
         updated_labels = []
         for target in targets_list["targets"]:
             updated_label = LabelInst(target_name_map[target["label"]])
