@@ -69,13 +69,27 @@ class Extraction(Prediction):
         """
         Mark extraction as accepted for Auto Review.
         """
-        ...
+        if "rejected" in self.extras:
+            del self.extras["rejected"]
+
+        self.extras["accepted"] = True
+
+    @property
+    def accepted(self) -> bool:
+        return "accepted" in self.extras and bool(self.extras["accepted"])
 
     def reject(self) -> None:
         """
         Mark extraction as rejected for Auto Review.
         """
-        ...
+        if "accepted" in self.extras:
+            del self.extras["accepted"]
+
+        self.extras["rejected"] = True
+
+    @property
+    def rejected(self) -> bool:
+        return "rejected" in self.extras and bool(self.extras["rejected"])
 
     @classmethod
     def _from_v1_result(cls, model: str, extraction: object) -> "Extraction":

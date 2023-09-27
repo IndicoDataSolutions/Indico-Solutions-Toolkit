@@ -254,3 +254,18 @@ class TestExtractionList:
         extractions.apply(reverse).apply(truncate)
 
         assert extractions[0].text == "A t"
+
+    @staticmethod
+    def test_accept_reject(extractions: ExtractionList) -> None:
+        assert not extractions[0].accepted
+        assert not extractions[0].rejected
+
+        extractions.accept()
+
+        assert extractions[0].accepted
+        assert not extractions[0].rejected
+
+        extractions.reject()
+
+        assert not extractions[0].accepted
+        assert extractions[0].rejected

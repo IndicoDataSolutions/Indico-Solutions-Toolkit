@@ -124,3 +124,20 @@ class TestV1Extraction:
 
         assert isinstance(extraction.extras, dict)
         assert extraction.extras["some_other_field"] == 123
+
+    @staticmethod
+    def test_accept_reject() -> None:
+        extraction = Extraction("", "", {}, {}, "", [])
+
+        assert not extraction.accepted
+        assert not extraction.rejected
+
+        extraction.accept()
+
+        assert extraction.accepted
+        assert not extraction.rejected
+
+        extraction.reject()
+
+        assert not extraction.accepted
+        assert extraction.rejected

@@ -65,13 +65,15 @@ class ExtractionList(PredictionList[Extraction]):
         """
         Mark predictions as accepted for Autoreview.
         """
-        ...
+        self.apply(lambda e: e.accept())
+        return self
 
     def reject(self) -> "ExtractionList":
         """
         Mark predictions as rejected for Autoreview.
         """
-        ...
+        self.apply(lambda e: e.reject())
+        return self
 
     def to_changes(self) -> dict[str, object]:
         """
