@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from typing import Self
 
 from .predictions import Classification, Extraction, Prediction
+from .utils import nfilter
 
 PredictionType = TypeVar("PredictionType", bound=Prediction)
 
@@ -23,7 +24,24 @@ class PredictionList(list[PredictionType]):
         Return a new `PredictionList[PredictionType]` containing `PredictionType`s
         that match the specified filters.
         """
-        ...
+        predicates = []
+
+        if model is not None:
+            predicates.append(lambda p: p.model == model)
+
+        if label is not None:
+            predicates.append(lambda p: p.label == label)
+
+        if min_confidence is not None:
+            predicates.append(lambda p: p.confidence >= min_confidence)
+
+        if max_confidence is not None:
+            predicates.append(lambda p: p.confidence <= max_confidence)
+
+        if predicate is not None:
+            predicates.append(predicate)
+
+        return type(self)(nfilter(predicates, self))
 
     def apply(
         self,
@@ -32,7 +50,10 @@ class PredictionList(list[PredictionType]):
         """
         Apply a function to a list of predictions.
         """
-        ...
+        for prediction in self:
+            function(prediction)
+
+        return self
 
 
 class ClassificationList(PredictionList[Classification]):
