@@ -44,12 +44,17 @@ class AutoPopulator:
         accepted_types: Tuple[str] = (
             "pdf",
             "tiff",
-            "tif",
+            "csv",
             "doc",
             "docx",
             "png",
+            "jpeg",
             "jpg",
+            "pptx",
             "txt",
+            "xls",
+            "xlsx",
+            "rtf"
         ),
     ) -> Workflow:
         """
