@@ -2,8 +2,9 @@ import json
 from pathlib import Path
 
 import pytest
-from indico_toolkit.types import Document, ResultFileError, Submission
 from pytest_mock import MockerFixture
+
+from indico_toolkit.types import Document, ResultFileError, Submission
 
 data_folder = Path(__file__).parent.parent / "data" / "types"
 

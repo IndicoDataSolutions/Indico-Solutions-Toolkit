@@ -1,5 +1,13 @@
 import pytest
-from indico_toolkit.types import Document, MultipleValuesError, Review, ReviewType
+
+from indico_toolkit.types import (
+    ClassificationList,
+    Document,
+    ExtractionList,
+    MultipleValuesError,
+    Review,
+    ReviewType,
+)
 
 
 class TestV1Document:
@@ -100,9 +108,15 @@ class TestV1Document:
         assert document.etl_output == "indico-file:///etl_output.json"
         assert document.classification.label == "Email"
         assert document.subdocuments == []
+        assert isinstance(document.classifications, ClassificationList)
+        assert len(document.classifications) == 1
+        assert isinstance(document.pre_review, ExtractionList)
         assert len(document.pre_review) == 4
+        assert isinstance(document.auto_review, ExtractionList)
         assert len(document.auto_review) == 3
+        assert isinstance(document.hitl_review, ExtractionList)
         assert len(document.hitl_review) == 2
+        assert isinstance(document.final, ExtractionList)
         assert len(document.final) == 1
 
     @staticmethod

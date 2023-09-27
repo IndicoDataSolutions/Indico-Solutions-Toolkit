@@ -1,4 +1,5 @@
 import pytest
+
 from indico_toolkit.types import ResultFileError
 from indico_toolkit.types.utils import exists, get
 
