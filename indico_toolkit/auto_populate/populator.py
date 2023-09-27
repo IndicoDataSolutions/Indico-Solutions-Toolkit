@@ -232,7 +232,7 @@ class AutoPopulator:
                 targets_list, new_target_name_map
             )
             new_example_id = new_examples.get_example_id(
-                old_examples.get_example(old_example_id)
+                old_examples.get_example(old_example_id).data_file_name
             )
             if new_example_id:
                 labels.append(LabelInput(new_example_id, targets_list))
