@@ -1,4 +1,5 @@
-from typing import TypeVar
+from collections.abc import Iterable, Iterator
+from typing import Callable, TypeVar
 
 from .errors import ResultFileError
 
@@ -28,3 +29,15 @@ def get(result: object, key: str, value_type: type[Value]) -> Value:
             f"Result object `{type(result)!r}` does not have a value for "
             f"key `{key!r}` with type `{value_type}`."
         )
+
+
+def nfilter(
+    predicates: Iterable[Callable[[Value], bool]], values: Iterable[Value]
+) -> Iterator[Value]:
+    """
+    Apply multiple filter predicates to a iterable of values.
+    """
+    for predicate in predicates:
+        values = filter(predicate, values)
+
+    yield from values

@@ -1,7 +1,7 @@
 import pytest
 
 from indico_toolkit.types import ResultFileError
-from indico_toolkit.types.utils import exists, get
+from indico_toolkit.types.utils import exists, get, nfilter
 
 
 def test_exists() -> None:
@@ -40,3 +40,17 @@ def test_get() -> None:
 
     with pytest.raises(ResultFileError):
         assert get(result, "none", list)
+
+
+def test_nfilter() -> None:
+    values = list(
+        nfilter(
+            [
+                lambda s: s != "a",
+                lambda s: s != "c",
+            ],
+            ["a", "b", "c"],
+        )
+    )
+
+    assert values == ["b"]
