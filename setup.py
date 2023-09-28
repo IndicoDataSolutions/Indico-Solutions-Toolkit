@@ -12,7 +12,6 @@ setup(
         "pytest>=5.2.1",
         "requests-mock>=1.7.0-7",
         "pytest-dependency==0.5.1",
-        "coverage>=5.5",
     ],
     install_requires=[
         "indico-client>=5.1.4",
