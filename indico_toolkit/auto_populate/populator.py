@@ -29,10 +29,6 @@ class AutoPopulator:
         self.client = client
         self.structure = Structure(client)
         self._exceptions = []
-        # Auto classification class variables
-        # Can parse this out to spoof model based on filename of given file_paths assuming they map to provided snapshot
-        self.file_paths = []
-        self.file_to_class = {}
         self._fp = FileProcessing()
 
     def create_auto_classification_workflow(
@@ -76,9 +72,18 @@ class AutoPopulator:
         Returns:
             Workflow: a Workflow object representation of the newly created workflow
         """
-        self._set_file_paths(directory_path, accepted_types)
+        self._fp.get_file_paths_from_dir(
+            directory_path, accepted_types=accepted_types, recursive_search=True
+        )
+        file_paths = self._fp.file_paths
         labelset_name = f"{teach_task_name}_labelset"
-        self._set_full_doc_classes()
+        file_to_targets = dict(
+            zip(
+                [self._fp.file_name_from_path(f) for f in self._fp.file_paths],
+                [[{"label": parent_directory}] for parent_directory in self._fp.parent_directory_of_filepaths]
+            )
+        )
+        classes = [value[0]["label"] for value in file_to_targets.values()]
         # Create empty dataset
         optional_ocr_options = {
             "auto_rotate": False,
@@ -87,7 +92,7 @@ class AutoPopulator:
         }
         dataset = self.structure.create_dataset(
             dataset_name=dataset_name,
-            files_to_upload=self.file_paths,
+            files_to_upload=file_paths,
             read_api=True,
             single_column=False,
             **optional_ocr_options,
@@ -98,7 +103,7 @@ class AutoPopulator:
         workflow = self.structure.add_teach_task(
             task_name=teach_task_name,
             labelset_name=labelset_name,
-            target_names=list(self.model_classes),
+            target_names=classes,
             dataset_id=dataset.id,
             workflow_id=workflow.id,
             model_type="classification",
@@ -107,7 +112,11 @@ class AutoPopulator:
         labelset_id, model_group_id, target_name_map = self._get_teach_task_details(
             teach_task_id
         )
-        labels = self._get_classification_labels(model_group_id, target_name_map)
+        if len(classes) < 2:
+            raise ToolkitPopulationError(
+                f"You must have documents in at least 2 directories, you only have {len(classes)}"
+            )
+        labels = self._get_labels_by_filename(model_group_id, file_to_targets, target_name_map)
         self.structure.label_teach_task(
             label_set_id=labelset_id, labels=[dataclasses.asdict(label) for label in labels], model_group_id=model_group_id
         )
@@ -175,10 +184,19 @@ class AutoPopulator:
         ) = self._get_teach_task_details(
             workflow.components[-1].model_group.questionnaire_id
         )
-        labels = self._get_labels(
-            old_model_group.id,
+        # Get file_to_targets from export CSV
+        file_to_targets = {}
+        for _, row in csv.iterrows():
+            # Check for NaN filled rows
+            if isinstance(row[2], float):
+                continue
+            filename = row[-2]
+            targets_list = loads(row[2])["targets"]
+            file_to_targets[filename] = targets_list
+
+        labels = self._get_labels_by_filename(
             new_model_group_id,
-            csv,
+            file_to_targets,
             new_target_name_map,
             rename_labels,
             remove_labels
@@ -193,79 +211,47 @@ class AutoPopulator:
             raise ToolkitPopulationError("Error: Failed to submit labels")
         return workflow
 
-    def _get_labels(
+    def _get_labels_by_filename(
         self,
-        old_model_group_id: int,
-        new_model_group_id: int,
-        export_csv: pd.DataFrame,
-        new_target_name_map: dict,
-        rename_labels: Dict[str, str],
-        remove_labels: List[str]
+        model_group_id: int,
+        file_to_targets: dict,
+        target_name_map: dict,
+        rename_labels: Dict[str, str] = None,
+        remove_labels: List[str] = None
     ) -> List[LabelInput]:
+        """
+        Args:
+            model_group_id (int): ID of the model group to be labeled
+            file_to_targets (dict): mapping in the format {filename : targets_list}
+            target_name_map (dict): mapping of field name to corresponding target ID
+            rename_labels (dict, optional): Dictionary in format {old_label_name : new_label_name} 
+            remove_labels (list, optional): List of labels to remove from old teach task
+        Returns:
+            Workflow: a Workflow object representation of the newly created workflow
+        """
         labels = []
         # Retrieve examples and match against filename
-        old_examples = self.structure.get_example_ids(
-            model_group_id=old_model_group_id, limit=1000
+        examples = self.structure.get_example_ids(
+            model_group_id=model_group_id, limit=1000
         )
-        time.sleep(5)
-        new_examples = self.structure.get_example_ids(
-            model_group_id=new_model_group_id, limit=1000
-        )
-        old_examples = ExampleList(
+        examples = ExampleList(
             examples=[
                 Example(i["id"], i["datafile"]["name"])
-                for i in old_examples["modelGroup"]["pagedExamples"]["examples"]
+                for i in examples["modelGroup"]["pagedExamples"]["examples"]
             ]
         )
-        new_examples = ExampleList(
-            examples=[
-                Example(i["id"], i["datafile"]["name"])
-                for i in new_examples["modelGroup"]["pagedExamples"]["examples"]
-            ]
-        )
-        # Get labels with new example id and old example targets
-        for _, row in export_csv.iterrows():
-            if isinstance(row[2], float):
-                continue
-            old_example_id = row[0]
-            targets_list = loads(row[2])
+
+        for filename, targets_list in file_to_targets.items():
             if rename_labels or remove_labels:
                 targets_list = self._edit_labels(
                     targets_list, rename_labels, remove_labels
                 )
             targets_list = self._convert_label(
-                targets_list, new_target_name_map
+                targets_list, target_name_map
             )
-            new_example_id = new_examples.get_example_id(
-                old_examples.get_example(old_example_id).data_file_name
-            )
-            if new_example_id:
-                labels.append(LabelInput(new_example_id, targets_list))
-        return labels
-
-    def _get_classification_labels(
-        self,
-        model_group_id: int,
-        target_name_map: dict,
-        labels_to_drop: List[str] = None,
-    ) -> List[LabelInput]:
-        examples = self.structure.get_example_ids(model_group_id, limit=1000)
-        examples = [
-            Example(i["id"], i["datafile"]["name"])
-            for i in examples["modelGroup"]["pagedExamples"]["examples"]
-        ]
-        labels = [
-            LabelInput(
-                example.id,
-                [
-                    LabelInst(
-                        target_name_map[self.file_to_class[example.data_file_name]]
-                    )
-                ],
-            )
-            for example in examples
-            if not labels_to_drop or self.file_to_class[example.data_file_name] not in labels_to_drop
-        ]
+            example_id = examples.get_example_id(filename)
+            if example_id:
+                labels.append(LabelInput(example_id, targets_list))
         return labels
 
     def _edit_labels(
@@ -273,8 +259,8 @@ class AutoPopulator:
     ):
         new_targets_list = []
         for target in targets_list:
-            if target["label"] not in remove_labels:
-                if rename_labels.get(target["label"]):
+            if remove_labels and target["label"] not in remove_labels:
+                if rename_labels and rename_labels.get(target["label"]):
                     target["label"] = rename_labels[target["label"]]
                 new_targets_list.append(target)
         return new_targets_list
@@ -283,7 +269,7 @@ class AutoPopulator:
         self, targets_list: List[dict], target_name_map: dict
     ) -> List[LabelInst]:
         updated_labels = []
-        for target in targets_list["targets"]:
+        for target in targets_list:
             updated_label = LabelInst(target_name_map[target["label"]])
             if target.get("spans"):
                 updated_spans = [
@@ -309,32 +295,3 @@ class AutoPopulator:
         for target in target_names:
             target_name_map[target["name"]] = target["id"]
         return labelset_id, model_group_id, target_name_map
-
-    def _set_full_doc_classes(self):
-        self.file_to_class = dict(
-            zip(
-                [self._fp.file_name_from_path(f) for f in self._fp.file_paths],
-                self._fp.parent_directory_of_filepaths,
-            )
-        )
-        self._check_class_minimum()
-
-    def _set_file_paths(
-        self,
-        directory_path: str,
-        accepted_types: Tuple[str],
-    ) -> None:
-        self._fp.get_file_paths_from_dir(
-            directory_path, accepted_types=accepted_types, recursive_search=True
-        )
-        self.file_paths = self._fp.file_paths
-
-    def _check_class_minimum(self) -> None:
-        if len(self.model_classes) < 2:
-            raise ToolkitPopulationError(
-                f"You must have documents in at least 2 directories, you only have {self.model_classes}"
-            )
-
-    @property
-    def model_classes(self) -> Set[str]:
-        return set(self.file_to_class.values())

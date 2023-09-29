@@ -14,7 +14,7 @@ def test_create_classification_workflow(indico_client, testdir_file_path):
         "My workflow",
         "My teach task",
     )
-    assert len(auto_populator.file_paths) == 2
+    assert len(auto_populator._fp.file_paths) == 2
     assert isinstance(new_workflow, Workflow)
 
 
