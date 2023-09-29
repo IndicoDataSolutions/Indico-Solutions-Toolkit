@@ -190,10 +190,10 @@ class AutoPopulator:
             # Check for NaN filled rows
             if isinstance(row[2], float):
                 continue
-            filename = row[-2]
+            old_example_id = row[0]
+            old_examples = self._get_example_list(old_model_group_id)
             targets_list = loads(row[2])["targets"]
-            file_to_targets[filename] = targets_list
-
+            file_to_targets[old_examples.get_example(old_example_id).data_file_name] = targets_list
         labels = self._get_labels_by_filename(
             new_model_group_id,
             file_to_targets,
@@ -231,15 +231,7 @@ class AutoPopulator:
         """
         labels = []
         # Retrieve examples and match against filename
-        examples = self.structure.get_example_ids(
-            model_group_id=model_group_id, limit=1000
-        )
-        examples = ExampleList(
-            examples=[
-                Example(i["id"], i["datafile"]["name"])
-                for i in examples["modelGroup"]["pagedExamples"]["examples"]
-            ]
-        )
+        examples = self._get_example_list(model_group_id)
 
         for filename, targets_list in file_to_targets.items():
             if rename_labels or remove_labels:
@@ -295,3 +287,15 @@ class AutoPopulator:
         for target in target_names:
             target_name_map[target["name"]] = target["id"]
         return labelset_id, model_group_id, target_name_map
+    
+    def _get_example_list(self, model_group_id: int, limit=1000):
+        examples = self.structure.get_example_ids(
+            model_group_id=model_group_id, limit=limit
+        )
+        examples = ExampleList(
+            examples=[
+                Example(i["id"], i["datafile"]["name"])
+                for i in examples["modelGroup"]["pagedExamples"]["examples"]
+            ]
+        )
+        return examples
