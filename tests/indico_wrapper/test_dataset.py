@@ -1,3 +1,6 @@
+"""
+Test Datasets class methods
+"""
 import pytest
 from indico_toolkit.indico_wrapper import Datasets
 from indico.types import Dataset
