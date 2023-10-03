@@ -48,7 +48,7 @@ class TestClassificationList:
         )
 
     @staticmethod
-    def test_model(classifications: ClassificationList) -> None:
+    def test_where_model(classifications: ClassificationList) -> None:
         filtered = classifications.where(model="Model A")
 
         assert isinstance(filtered, ClassificationList)
@@ -56,7 +56,7 @@ class TestClassificationList:
         assert filtered[0].model == "Model A"
 
     @staticmethod
-    def test_label(classifications: ClassificationList) -> None:
+    def test_where_label(classifications: ClassificationList) -> None:
         filtered = classifications.where(label="Label A")
 
         assert isinstance(filtered, ClassificationList)
@@ -64,7 +64,7 @@ class TestClassificationList:
         assert filtered[0].label == "Label A"
 
     @staticmethod
-    def test_min_confidence(classifications: ClassificationList) -> None:
+    def test_where_min_confidence(classifications: ClassificationList) -> None:
         filtered = classifications.where(min_confidence=0.75)
 
         assert isinstance(filtered, ClassificationList)
@@ -72,7 +72,7 @@ class TestClassificationList:
         assert filtered[0].confidence == 0.75
 
     @staticmethod
-    def test_max_confidence(classifications: ClassificationList) -> None:
+    def test_where_max_confidence(classifications: ClassificationList) -> None:
         filtered = classifications.where(max_confidence=0.25)
 
         assert isinstance(filtered, ClassificationList)
@@ -80,7 +80,7 @@ class TestClassificationList:
         assert filtered[0].confidence == 0.25
 
     @staticmethod
-    def test_predicate(classifications: ClassificationList) -> None:
+    def test_where_predicate(classifications: ClassificationList) -> None:
         filtered = classifications.where(predicate=lambda c: 0.4 < c.confidence < 0.6)
 
         assert isinstance(filtered, ClassificationList)
@@ -88,7 +88,7 @@ class TestClassificationList:
         assert filtered[0].confidence == 0.5
 
     @staticmethod
-    def test_multi_chain_where(classifications: ClassificationList) -> None:
+    def test_where_multi_chain(classifications: ClassificationList) -> None:
         multi_filtered = classifications.where(
             min_confidence=0.4,
             max_confidence=0.6,
@@ -117,7 +117,7 @@ class TestClassificationList:
         assert classifications[0].label == "A lebaL"
 
     @staticmethod
-    def test_chain_apply(classifications: ClassificationList) -> None:
+    def test_apply_chain(classifications: ClassificationList) -> None:
         def reverse(classification: Classification) -> None:
             classification.label = "".join(reversed(classification.label))
 
@@ -175,7 +175,7 @@ class TestExtractionList:
         )
 
     @staticmethod
-    def test_model(extractions: ExtractionList) -> None:
+    def test_where_model(extractions: ExtractionList) -> None:
         filtered = extractions.where(model="Model A")
 
         assert isinstance(filtered, ExtractionList)
@@ -183,7 +183,7 @@ class TestExtractionList:
         assert filtered[0].model == "Model A"
 
     @staticmethod
-    def test_label(extractions: ExtractionList) -> None:
+    def test_where_label(extractions: ExtractionList) -> None:
         filtered = extractions.where(label="Label A")
 
         assert isinstance(filtered, ExtractionList)
@@ -191,7 +191,7 @@ class TestExtractionList:
         assert filtered[0].label == "Label A"
 
     @staticmethod
-    def test_min_confidence(extractions: ExtractionList) -> None:
+    def test_where_min_confidence(extractions: ExtractionList) -> None:
         filtered = extractions.where(min_confidence=0.75)
 
         assert isinstance(filtered, ExtractionList)
@@ -199,7 +199,7 @@ class TestExtractionList:
         assert filtered[0].confidence == 0.75
 
     @staticmethod
-    def test_max_confidence(extractions: ExtractionList) -> None:
+    def test_where_max_confidence(extractions: ExtractionList) -> None:
         filtered = extractions.where(max_confidence=0.25)
 
         assert isinstance(filtered, ExtractionList)
@@ -207,7 +207,7 @@ class TestExtractionList:
         assert filtered[0].confidence == 0.25
 
     @staticmethod
-    def test_predicate(extractions: ExtractionList) -> None:
+    def test_where_predicate(extractions: ExtractionList) -> None:
         filtered = extractions.where(predicate=lambda e: 0.4 < e.confidence < 0.6)
 
         assert isinstance(filtered, ExtractionList)
@@ -215,7 +215,7 @@ class TestExtractionList:
         assert filtered[0].confidence == 0.5
 
     @staticmethod
-    def test_multi_chain_where(extractions: ExtractionList) -> None:
+    def test_where_multi_chain(extractions: ExtractionList) -> None:
         multi_filtered = extractions.where(
             min_confidence=0.4,
             max_confidence=0.6,
@@ -244,7 +244,7 @@ class TestExtractionList:
         assert extractions[0].text == "A txeT"
 
     @staticmethod
-    def test_chain_apply(extractions: ExtractionList) -> None:
+    def test_apply_chain(extractions: ExtractionList) -> None:
         def reverse(extraction: Extraction) -> None:
             extraction.text = "".join(reversed(extraction.text))
 
