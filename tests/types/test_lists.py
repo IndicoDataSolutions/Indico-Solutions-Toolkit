@@ -48,6 +48,14 @@ class TestClassificationList:
         )
 
     @staticmethod
+    def test_labels(classifications: ClassificationList) -> None:
+        assert classifications.labels == {"Label A", "Label B", "Label C"}
+
+    @staticmethod
+    def test_models(classifications: ClassificationList) -> None:
+        assert classifications.models == {"Model A", "Model B", "Model C"}
+
+    @staticmethod
     def test_where_model(classifications: ClassificationList) -> None:
         filtered = classifications.where(model="Model A")
 
@@ -173,6 +181,14 @@ class TestExtractionList:
                 ),
             ]
         )
+
+    @staticmethod
+    def test_labels(extractions: ExtractionList) -> None:
+        assert extractions.labels == {"Label A", "Label B", "Label C"}
+
+    @staticmethod
+    def test_models(extractions: ExtractionList) -> None:
+        assert extractions.models == {"Model A", "Model B", "Model C"}
 
     @staticmethod
     def test_where_model(extractions: ExtractionList) -> None:

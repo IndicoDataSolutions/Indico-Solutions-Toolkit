@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from functools import reduce
 
 from .documents import Document
 from .errors import MultipleValuesError, ResultFileError
@@ -26,6 +27,28 @@ class Submission:
             )
 
         return self.documents[0]
+
+    @property
+    def labels(self) -> set[str]:
+        """
+        Return the all of the labels for this submission.
+        """
+        return reduce(
+            lambda labels, document: labels | document.labels,
+            self.documents,
+            set(),
+        )
+
+    @property
+    def models(self) -> set[str]:
+        """
+        Return the all of the models for this submission.
+        """
+        return reduce(
+            lambda models, document: models | document.models,
+            self.documents,
+            set(),
+        )
 
     @property
     def rejected(self) -> bool:

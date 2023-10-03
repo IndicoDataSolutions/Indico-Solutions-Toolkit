@@ -11,6 +11,20 @@ PredictionType = TypeVar("PredictionType", bound=Prediction)
 
 
 class PredictionList(list[PredictionType]):
+    @property
+    def labels(self) -> set[str]:
+        """
+        Return the all of the labels for these predictions.
+        """
+        return set(prediction.label for prediction in self)
+
+    @property
+    def models(self) -> set[str]:
+        """
+        Return the all of the models for these predictions.
+        """
+        return set(prediction.model for prediction in self)
+
     def where(
         self,
         *,

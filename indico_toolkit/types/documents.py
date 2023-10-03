@@ -40,6 +40,32 @@ class Document:
 
         return self.classifications[0]
 
+    @property
+    def labels(self) -> set[str]:
+        """
+        Return the all of the labels for this document.
+        """
+        return (
+            self.classifications.labels
+            | self.pre_review.labels
+            | self.auto_review.labels
+            | self.hitl_review.labels
+            | self.final.labels
+        )
+
+    @property
+    def models(self) -> set[str]:
+        """
+        Return the all of the models for this document.
+        """
+        return (
+            self.classifications.models
+            | self.pre_review.models
+            | self.auto_review.models
+            | self.hitl_review.models
+            | self.final.models
+        )
+
     @classmethod
     def _from_v1_result(cls, result: object, reviews: list[Review]) -> "Document":
         """

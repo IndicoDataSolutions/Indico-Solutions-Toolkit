@@ -10,6 +10,118 @@ from indico_toolkit.types import (
 )
 
 
+class TestDocument:
+    @staticmethod
+    def test_labels() -> None:
+        document = Document._from_v1_result(
+            {
+                "file_version": 1,
+                "submission_id": 11,
+                "etl_output": "indico-file:///etl_output.json",
+                "results": {
+                    "document": {
+                        "results": {
+                            "Email": {
+                                "pre_review": [
+                                    {
+                                        "label": "Label A",
+                                        "confidence": {},
+                                        "page_num": 0,
+                                        "text": "MICHAEL WELBORN SERVICES, INC",
+                                    },
+                                ],
+                                "post_reviews": [
+                                    [
+                                        {
+                                            "text": "47576",
+                                            "label": "Label B",
+                                            "pageNum": 1,
+                                        },
+                                    ],
+                                    [
+                                        {
+                                            "text": "47576",
+                                            "label": "Label C",
+                                            "pageNum": 1,
+                                        },
+                                    ],
+                                ],
+                                "final": [
+                                    {
+                                        "text": "47576",
+                                        "label": "Label D",
+                                        "pageNum": 1,
+                                    },
+                                ],
+                            },
+                            "Classification": {
+                                "pre_review": {
+                                    "confidence": {},
+                                    "label": "Label E",
+                                },
+                            },
+                        },
+                    }
+                },
+            },
+            [
+                Review(0, 0, None, False, ReviewType.AUTO),
+                Review(0, 0, None, False, ReviewType.HITL),
+            ],
+        )
+
+        assert document.labels == {
+            "Label A",
+            "Label B",
+            "Label C",
+            "Label D",
+            "Label E",
+        }
+
+    @staticmethod
+    def test_models() -> None:
+        document = Document._from_v1_result(
+            {
+                "file_version": 1,
+                "submission_id": 11,
+                "etl_output": "indico-file:///etl_output.json",
+                "results": {
+                    "document": {
+                        "results": {
+                            "Model A": {
+                                "pre_review": [
+                                    {
+                                        "label": "Label A",
+                                        "confidence": {},
+                                        "page_num": 0,
+                                        "text": "MICHAEL WELBORN SERVICES, INC",
+                                    },
+                                ],
+                                "post_reviews": [],
+                                "final": [
+                                    {
+                                        "text": "47576",
+                                        "label": "Label D",
+                                        "pageNum": 1,
+                                    },
+                                ],
+                            },
+                            "Model B": {
+                                "pre_review": {
+                                    "confidence": {},
+                                    "label": "Label E",
+                                },
+                            },
+                        },
+                    }
+                },
+            },
+            [],
+        )
+
+        assert document.models == {"Model A", "Model B"}
+
+
 class TestV1Document:
     @staticmethod
     def test_from_result() -> None:
@@ -175,3 +287,113 @@ class TestV1Document:
 
         with pytest.raises(MultipleValuesError):
             document.classification
+
+    @staticmethod
+    def test_labels() -> None:
+        document = Document._from_v1_result(
+            {
+                "file_version": 1,
+                "submission_id": 11,
+                "etl_output": "indico-file:///etl_output.json",
+                "results": {
+                    "document": {
+                        "results": {
+                            "Email": {
+                                "pre_review": [
+                                    {
+                                        "label": "Label A",
+                                        "confidence": {},
+                                        "page_num": 0,
+                                        "text": "MICHAEL WELBORN SERVICES, INC",
+                                    },
+                                ],
+                                "post_reviews": [
+                                    [
+                                        {
+                                            "text": "47576",
+                                            "label": "Label B",
+                                            "pageNum": 1,
+                                        },
+                                    ],
+                                    [
+                                        {
+                                            "text": "47576",
+                                            "label": "Label C",
+                                            "pageNum": 1,
+                                        },
+                                    ],
+                                ],
+                                "final": [
+                                    {
+                                        "text": "47576",
+                                        "label": "Label D",
+                                        "pageNum": 1,
+                                    },
+                                ],
+                            },
+                            "Classification": {
+                                "pre_review": {
+                                    "confidence": {},
+                                    "label": "Label E",
+                                },
+                            },
+                        },
+                    }
+                },
+            },
+            [
+                Review(0, 0, None, False, ReviewType.AUTO),
+                Review(0, 0, None, False, ReviewType.HITL),
+            ],
+        )
+
+        assert document.labels == {
+            "Label A",
+            "Label B",
+            "Label C",
+            "Label D",
+            "Label E",
+        }
+
+    @staticmethod
+    def test_models() -> None:
+        document = Document._from_v1_result(
+            {
+                "file_version": 1,
+                "submission_id": 11,
+                "etl_output": "indico-file:///etl_output.json",
+                "results": {
+                    "document": {
+                        "results": {
+                            "Model A": {
+                                "pre_review": [
+                                    {
+                                        "label": "Label A",
+                                        "confidence": {},
+                                        "page_num": 0,
+                                        "text": "MICHAEL WELBORN SERVICES, INC",
+                                    },
+                                ],
+                                "post_reviews": [],
+                                "final": [
+                                    {
+                                        "text": "47576",
+                                        "label": "Label D",
+                                        "pageNum": 1,
+                                    },
+                                ],
+                            },
+                            "Model B": {
+                                "pre_review": {
+                                    "confidence": {},
+                                    "label": "Label E",
+                                },
+                            },
+                        },
+                    }
+                },
+            },
+            [],
+        )
+
+        assert document.models == {"Model A", "Model B"}
