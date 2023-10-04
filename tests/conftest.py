@@ -2,7 +2,8 @@ import os
 import pytest
 from indico.queries import (
     CreateDataset,
-    CreateModelGroup,
+    AddModelGroupComponent,
+    NewLabelsetArguments,
     GetWorkflow,
     GetDataset,
     JobStatus,
@@ -16,6 +17,8 @@ from indico_toolkit.indico_wrapper import (
     Workflow,
     DocExtraction,
 )
+from indico_toolkit.structure.create_structure import Structure
+from indico_toolkit.structure.utils import ModelTaskType
 
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -25,15 +28,17 @@ HOST_URL = os.environ.get("HOST_URL")
 API_TOKEN_PATH = os.environ.get("API_TOKEN_PATH")
 API_TOKEN = os.environ.get("API_TOKEN")
 
-# the following five env variables are associated as part of same extraction workflow based on 
+# the following five env variables are associated as part of same extraction workflow based on
 # financial disclosure CSV snapshot and associated workflow
 DATASET_ID = os.environ.get("DATASET_ID")
 WORKFLOW_ID = os.environ.get("WORKFLOW_ID")
+TEACH_TASK_ID = os.environ.get("TEACH_TASK_ID")
 MODEL_GROUP_ID = os.environ.get("MODEL_GROUP_ID")
 MODEL_ID = os.environ.get("MODEL_ID")
 MODEL_NAME = os.environ.get("MODEL_NAME", "Solutions Toolkit Test Model")
 
 PDF_DATASET_ID = os.environ.get("PDF_DATASET_ID")
+
 
 @pytest.fixture(scope="session")
 def indico_client() -> IndicoClient:
@@ -71,21 +76,34 @@ def dataset_obj(indico_client):
 
 @pytest.fixture(scope="session")
 def workflow_id(indico_client, dataset_obj):
+    global WORKFLOW_ID
     if not WORKFLOW_ID:
-        workflow = indico_client.call(GetWorkflow(dataset_obj.id))
-        indico_client.call(
-            CreateModelGroup(
-                name="Solutions Toolkit Test Model",
-                dataset_id=dataset_obj.id,
-                source_column_id=dataset_obj.datacolumn_by_name("text").id,
-                labelset_id=dataset_obj.labelset_by_name("question_1620").id,
-                workflow_id=workflow.id,
-                after_component_id=workflow.component_by_type(
-                    "INPUT_OCR_EXTRACTION"
-                ).id,
-                wait=True,
-            )
+        structure = Structure(indico_client)
+        workflow = structure.create_workflow(name="Solutions Toolkit Test Workflow", dataset_id=dataset_obj.id)
+        target_names = [
+            "<PAD>",
+            "Asset Value",
+            "Date of Appointment",
+            "Department",
+            "Income Amount",
+            "Liability Amount",
+            "Liability Type",
+            "Name",
+            "Position",
+            "Previous Organization",
+            "Previous Position"
+        ]
+
+        workflow = structure.add_teach_task(
+            task_name="Teach Task Name",
+            labelset_name="Extraction Labelset",
+            target_names=target_names,
+            dataset_id=dataset_obj.id,
+            workflow_id=workflow.id,
+            model_type="annotation",
+            data_column="text"
         )
+        WORKFLOW_ID = workflow.id
     else:
         try:
             indico_client.call(GetWorkflow(workflow_id=WORKFLOW_ID))
@@ -94,6 +112,11 @@ def workflow_id(indico_client, dataset_obj):
                 f"Workflow with ID {WORKFLOW_ID} does not exist or you do not have access to it"
             )
     return WORKFLOW_ID
+
+
+@pytest.fixture(scope="session")
+def teach_task_id():
+    return int(TEACH_TASK_ID)
 
 
 @pytest.fixture(scope="session")

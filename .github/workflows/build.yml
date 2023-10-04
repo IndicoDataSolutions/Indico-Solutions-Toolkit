@@ -15,6 +15,7 @@ jobs:
       WORKFLOW_ID: ${{ secrets.WORKFLOW_ID }}
       MODEL_ID: ${{ secrets.MODEL_ID }} 
       MODEL_GROUP_ID: ${{ secrets.MODEL_GROUP_ID }}
+      TEACH_TASK_ID: ${{ secrets.TEACH_TASK_ID }}
       HOST_URL: try.indico.io
     
     steps:
