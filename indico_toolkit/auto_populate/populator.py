@@ -227,7 +227,7 @@ class AutoPopulator:
             rename_labels (dict, optional): Dictionary in format {old_label_name : new_label_name} 
             remove_labels (list, optional): List of labels to remove from old teach task
         Returns:
-            Workflow: a Workflow object representation of the newly created workflow
+            A list of LabelInput to be ingested by the platform via submitLabelsV2 
         """
         labels = []
         # Retrieve examples and match against filename
