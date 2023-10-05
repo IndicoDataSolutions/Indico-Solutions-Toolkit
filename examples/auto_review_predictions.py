@@ -1,7 +1,6 @@
 """
 Submit documents to a workflow, auto review them and submit them for human review
 """
-from indico_toolkit import auto_review
 from indico_toolkit.auto_review import (
     AutoReviewFunction,
     AutoReviewer,
@@ -32,7 +31,7 @@ predictions = wf_results[0].predictions.to_list()
 
 # Set up review functions and review predictions
 functions = [
-    AutoReviewFunction(remove_by_confidence, kwargs={"conf_threshold": 0.90}),
+    AutoReviewFunction(remove_by_confidence, kwargs={"conf_threshold": 0.90}), # will default to all labels if labels is not provided
     AutoReviewFunction(accept_by_confidence, labels=["Name", "Amount"])
 ]
 auto_reviewer = AutoReviewer(predictions, functions)
