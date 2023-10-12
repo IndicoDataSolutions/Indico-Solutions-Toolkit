@@ -6,7 +6,12 @@ class AutoReviewFunction:
     auto review
 
     Args:
-        function (Callable): method to be invoked when applying reviews
+        function (Callable): method to be invoked when applying reviews. 
+        The Callable must have the following arguments in the following order:
+            predictions (List[dict]),
+            labels (List[str]),
+            **kwargs,
+
         labels (List[str]): list of labels to invoke method on. Defaults to all labels
         kwargs (Dict[str, str]): dictionary containing additional arguments needed in calling function
     """
@@ -20,7 +25,7 @@ class AutoReviewFunction:
         self.labels = labels
         self.kwargs = kwargs
 
-    def apply(self, predictions: List[dict] = []):
+    def apply(self, predictions: List[dict]):
         if predictions and not self.labels:
             self.labels = list(set([pred["label"] for pred in predictions]))
         return self.function(predictions, self.labels, **self.kwargs)

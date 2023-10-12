@@ -81,7 +81,6 @@ def test_submit_auto_review(indico_client, id_pending_scripted, model_name):
 
 
 def accept_if_match(predictions, labels: list = None, match_text: str = ""):
-    """Custom function to pass into ReviewConfiguration"""
     for pred in predictions:
         if REJECTED not in pred:
             if labels != None and pred["label"] not in labels:
