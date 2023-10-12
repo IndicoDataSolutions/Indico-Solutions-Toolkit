@@ -20,3 +20,7 @@ class ToolkitInstantiationError(ToolkitError):
 class ToolkitPopulationError(ToolkitError):
     def __init__(self, msg: str):
         super().__init__(msg)
+
+class ToolkitStaggeredLoopError(ToolkitError):
+    def __init__(self, msg: str):
+        super().__init__(msg)

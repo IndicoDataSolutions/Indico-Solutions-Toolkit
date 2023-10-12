@@ -9,6 +9,7 @@ from indico.queries import (
     CreateExport,
     DownloadExport,
     GetDataset,
+    GetWorkflow,
     GetModelGroup,
 )
 from indico_toolkit.errors import ToolkitPopulationError
@@ -116,7 +117,7 @@ class AutoPopulator:
             raise ToolkitPopulationError(
                 f"You must have documents in at least 2 directories, you only have {len(classes)}"
             )
-        labels = self._get_labels_by_filename(model_group_id, file_to_targets, target_name_map)
+        labels = self.get_labels_by_filename(model_group_id, file_to_targets, target_name_map)
         self.structure.label_teach_task(
             label_set_id=labelset_id, labels=[dataclasses.asdict(label) for label in labels], model_group_id=model_group_id
         )
@@ -194,7 +195,7 @@ class AutoPopulator:
             old_examples = self._get_example_list(old_model_group_id)
             targets_list = loads(row[2])["targets"]
             file_to_targets[old_examples.get_example(old_example_id).data_file_name] = targets_list
-        labels = self._get_labels_by_filename(
+        labels = self.get_labels_by_filename(
             new_model_group_id,
             file_to_targets,
             new_target_name_map,
@@ -211,7 +212,50 @@ class AutoPopulator:
             raise ToolkitPopulationError("Error: Failed to submit labels")
         return workflow
 
-    def _get_labels_by_filename(
+    def inject_labels_into_teach_task(
+        self,
+        workflow_id: int,
+        teach_task_id: int,
+        file_to_targets: dict,
+        rename_labels: Dict[str, str] = None,
+        remove_labels: List[str] = None
+    ):
+        """
+        Add label data into existing teach task
+
+        Args:
+            workflow_id (int): Id of the workflow you wish to add labels to
+            teach_task_id (int): Id of the corresponding teach task to the workflow
+            file_to_targets (dict): mapping of filenames to target label data 
+            rename_labels (dict, optional): Dictionary in format {old_label_name : new_label_name} 
+            remove_labels (list, optional): List of labels to remove from old teach task
+        """
+        workflow = GetWorkflow(workflow_id)
+        (
+            labelset_id,
+            model_group_id,
+            target_name_map,
+        ) = self._get_teach_task_details(
+            teach_task_id
+        )
+        labels = self.get_labels_by_filename(
+            model_group_id,
+            file_to_targets,
+            target_name_map,
+            rename_labels,
+            remove_labels
+        )
+        # Label new teach task
+        result = self.structure.label_teach_task(
+            label_set_id=labelset_id,
+            labels=[dataclasses.asdict(label) for label in labels],
+            model_group_id=model_group_id,
+        )
+        if result["submitLabelsV2"]["success"] == False:
+            raise ToolkitPopulationError("Error: Failed to submit labels")
+        return workflow
+    
+    def get_labels_by_filename(
         self,
         model_group_id: int,
         file_to_targets: dict,
