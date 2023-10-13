@@ -1,2 +1,1 @@
-from .review_config import ReviewConfiguration
-from .auto_reviewer import AutoReviewer
+from .auto_reviewer import AutoReviewer, AutoReviewFunction
