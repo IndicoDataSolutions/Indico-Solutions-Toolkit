@@ -2,7 +2,7 @@ import time
 import dataclasses
 import pandas as pd
 from json import loads
-from typing import List, Tuple, Set, Dict
+from typing import List, Tuple, Dict
 from indico import IndicoClient
 from indico.types import Workflow
 from indico.queries import (

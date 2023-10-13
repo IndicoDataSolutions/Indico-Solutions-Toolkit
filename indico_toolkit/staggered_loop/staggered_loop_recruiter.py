@@ -3,11 +3,14 @@ from typing import List
 import pandas as pd
 
 from indico import IndicoClient
+from indico.queries import AddDatasetFiles
 
 from indico_toolkit.indico_wrapper import Workflow
 from indico_toolkit.types import WorkflowResult
 from indico_toolkit.auto_populate import AutoPopulator
 from indico_toolkit.errors import ToolkitStaggeredLoopError
+
+from .queries import GetDatasetDetails
 
 
 class StaggeredLoopRecruiter:
@@ -23,21 +26,11 @@ class StaggeredLoopRecruiter:
     """
 
     def __init__(
-        self, 
-        dev_client: IndicoClient, 
-        prod_client: IndicoClient,
-        prod_dataset_id: int,
-        prod_workflow_id: int,
-        prod_teach_task_id: int
+        self,
+        client: IndicoClient,
     ):
-        self.dev_client = dev_client
-        self.prod_client = prod_client
-        self.prod_dataset_id = prod_dataset_id
-        self.prod_workflow_id = prod_workflow_id
-        self.prod_teach_task_id = prod_teach_task_id
-
-        self._dev_wflow = Workflow(dev_client)
-        self._prod_wflow = Workflow(prod_client)
+        self.client = client
+        self.wflow = Workflow(client)
 
     def analyze(self, results: List[dict], field: str) -> pd.DataFrame:
         """
@@ -97,32 +90,85 @@ class StaggeredLoopRecruiter:
         return df
 
     def retrain(
-            self, 
-            files: List[str], 
-            results: List[dict], 
-            field: str
-        ):
+        self,
+        destination_client: IndicoClient,
+        dataset_id: int,
+        workflow_id: int,
+        teach_task_id: int,
+        files: List[str],
+        results: List[dict],
+        fields: List[str],
+    ):
         """
-        For a given list of Indico results and desired field, inject those results into prod model and retrain.
+        For a given list of Indico results and desired fields, inject those results into prod model and retrain.
 
         Args:
+            destination_client (IndicoClient): IndicoClient for the target instance to retrain on
+            dataset_id (int): The Id of the dataset to retrain on in the same instance as destination_client
+            workflow_id (int): The Id of the workflow to retrain on in the same instance as destination_client
+            teach_task_id (int): The Id of the teach task to retrain on in the same instance as destination_client
             files (List[str]): List of file paths for corresponding documents you wish to inject labels into
             results (List[dict]): List of results containing label information. files and results must map one-to-one with each other
-            field (str): Name of the particular field to inject labels into
+            field (List[str]): Names of the particular fields to inject labels into
         """
         if len(files) != len(results):
-            raise ToolkitStaggeredLoopError("Length of files is not the same as length of results.")
-        
+            raise ToolkitStaggeredLoopError(
+                "Length of files is not the same as length of results."
+            )
+
+        # Convert Indico result into snapshot format and only include fields in kwarg fields
+        results = self._convert_results_to_snapshot(results, fields)
+        # Map files to targets
         file_to_targets = {}
         for file, result in zip(files, results):
             file_to_targets[file] = result
-        
+
         # Upload documents to dataset if dataset does not already contain them
-        
+        dataset_details = destination_client.call(GetDatasetDetails(dataset_id))
+        filenames = [filename["name"] for filename in dataset_details["files"]]
+        files_to_upload = [file for file in files if file not in filenames]
+        destination_client.call(
+            AddDatasetFiles(dataset_id=dataset_id, files=files_to_upload)
+        )
         # Inject labels
-        populator = AutoPopulator(self.prod_client)
+        populator = AutoPopulator(destination_client)
         populator.inject_labels_into_teach_task(
-            workflow_id=0,
-            teach_task_id=0,
+            workflow_id=workflow_id,
+            teach_task_id=teach_task_id,
             file_to_targets=file_to_targets,
         )
+
+    def _convert_results_to_snapshot(results: List[dict], fields: List[str] = []):
+        """
+        Convert default Indico results into extraction snapshot formats
+
+        Args:
+            results (List[dict]): List of default Indico result JSON objects
+            fields (List[str], optional): Fields to filter for when converting to snapshot. Defaults to all fields.
+        Returns:
+            List of results in snapshot format
+        """
+        new_results = []
+        for result in results:
+            workflow_result = WorkflowResult(result)
+            final_preds = workflow_result.final_predictions
+            snapshot_structure = {
+                "task_type": "annotation",
+                "targets": [],
+            }
+            for final_pred in final_preds:
+                if not fields or final_pred["label"] in fields:
+                    target_structure = {
+                        "label": final_pred["label"],
+                        "spans": [
+                            {
+                                "start": final_pred["start"],
+                                "end": final_pred["end"],
+                                "page_num": final_pred["page_num"],
+                            }
+                        ],
+                        "type": "text",
+                    }
+                snapshot_structure["targets"].append(target_structure)
+            new_results.append(snapshot_structure)
+        return new_results
