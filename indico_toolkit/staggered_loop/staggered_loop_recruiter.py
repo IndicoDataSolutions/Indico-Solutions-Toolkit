@@ -15,14 +15,14 @@ from .queries import GetDatasetDetails
 
 class StaggeredLoopRecruiter:
     """
-    Module to filter out candidates for staggered loop training.
-
-    Precision: TP / (TP + FP)
-    Recall: TP / (TP + FN)
-
-    TP = prediction in pre_review and final
-    FP = prediction in pre_review but not in final
-    FN = prediction in final but not in pre_review
+    Example:
+        wflow = Workflow(client)
+        staggered_loop = StaggeredLoopRecruiter(client)
+        results = wflow.get_submission_results_from_ids([1,2,3])
+        # Get CSV containing performance analysis for field "Test Field"
+        staggered_loop.get_field_performance(results, "Test Field")
+        # Inject submissions from ids [1,2,3] into teach task with dataset, workflow, and teach id of 1.
+        staggered_loop.inject_results(dev_client, 1, 1, 1, ["file_1.pdf", "file_2.pdf", "file_3.pdf"], results)
     """
 
     def __init__(
@@ -32,10 +32,14 @@ class StaggeredLoopRecruiter:
         self.client = client
         self.wflow = Workflow(client)
 
-    def analyze(self, results: List[dict], field: str) -> pd.DataFrame:
+    def get_field_performance(self, results: List[dict], field: str) -> pd.DataFrame:
         """
         For a given list of Indico results and desired field, return a Pandas DataFrame with an analysis of the results on
-        that particular field.
+        that particular field. Analysis includes:
+        - Precision
+        - Recall
+        - Number of rejected Predictions from pre-review to final
+        - Numer of added Predictions from pre-review to final
 
         Args:
             results (List[dict]): List of raw Indico result JSON
@@ -89,18 +93,17 @@ class StaggeredLoopRecruiter:
 
         return df
 
-    def retrain(
+    def inject_results(
         self,
-        destination_client: IndicoClient,
+        dev_client: IndicoClient,
         dataset_id: int,
         workflow_id: int,
         teach_task_id: int,
         files: List[str],
         results: List[dict],
-        fields: List[str],
     ):
         """
-        For a given list of Indico results and desired fields, inject those results into prod model and retrain.
+        For a given list of Indico results and desired fields, inject those results into dev model.
 
         Args:
             destination_client (IndicoClient): IndicoClient for the target instance to retrain on
@@ -108,7 +111,9 @@ class StaggeredLoopRecruiter:
             workflow_id (int): The Id of the workflow to retrain on in the same instance as destination_client
             teach_task_id (int): The Id of the teach task to retrain on in the same instance as destination_client
             files (List[str]): List of file paths for corresponding documents you wish to inject labels into
-            results (List[dict]): List of results containing label information. files and results must map one-to-one with each other
+            results (List[dict]): List of raw Indico model results containing label information. 
+                NOTE: Result files must all come from a single Indico model.
+                NOTE: Files and results must map one-to-one with each other
             field (List[str]): Names of the particular fields to inject labels into
         """
         if len(files) != len(results):
@@ -117,28 +122,28 @@ class StaggeredLoopRecruiter:
             )
 
         # Convert Indico result into snapshot format and only include fields in kwarg fields
-        results = self._convert_results_to_snapshot(results, fields)
+        results = self._convert_results_to_snapshot(results)
         # Map files to targets
         file_to_targets = {}
         for file, result in zip(files, results):
             file_to_targets[file] = result
 
         # Upload documents to dataset if dataset does not already contain them
-        dataset_details = destination_client.call(GetDatasetDetails(dataset_id))
+        dataset_details = dev_client.call(GetDatasetDetails(dataset_id))
         filenames = [filename["name"] for filename in dataset_details["files"]]
         files_to_upload = [file for file in files if file not in filenames]
-        destination_client.call(
+        dev_client.call(
             AddDatasetFiles(dataset_id=dataset_id, files=files_to_upload)
         )
         # Inject labels
-        populator = AutoPopulator(destination_client)
+        populator = AutoPopulator(dev_client)
         populator.inject_labels_into_teach_task(
             workflow_id=workflow_id,
             teach_task_id=teach_task_id,
             file_to_targets=file_to_targets,
         )
 
-    def _convert_results_to_snapshot(results: List[dict], fields: List[str] = []):
+    def _convert_results_to_snapshot(results: List[dict]):
         """
         Convert default Indico results into extraction snapshot formats
 
@@ -157,18 +162,17 @@ class StaggeredLoopRecruiter:
                 "targets": [],
             }
             for final_pred in final_preds:
-                if not fields or final_pred["label"] in fields:
-                    target_structure = {
-                        "label": final_pred["label"],
-                        "spans": [
-                            {
-                                "start": final_pred["start"],
-                                "end": final_pred["end"],
-                                "page_num": final_pred["page_num"],
-                            }
-                        ],
-                        "type": "text",
-                    }
+                target_structure = {
+                    "label": final_pred["label"],
+                    "spans": [
+                        {
+                            "start": final_pred["start"],
+                            "end": final_pred["end"],
+                            "page_num": final_pred["page_num"],
+                        }
+                    ],
+                    "type": "text",
+                }
                 snapshot_structure["targets"].append(target_structure)
             new_results.append(snapshot_structure)
         return new_results

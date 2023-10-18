@@ -253,7 +253,6 @@ class AutoPopulator:
         )
         if result["submitLabelsV2"]["success"] == False:
             raise ToolkitPopulationError("Error: Failed to submit labels")
-        return workflow
     
     def get_labels_by_filename(
         self,
