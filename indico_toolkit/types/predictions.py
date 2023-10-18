@@ -1,4 +1,5 @@
 from collections.abc import Collection
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import TypeAlias
 
@@ -30,7 +31,9 @@ class Prediction:
         if not isinstance(result, dict):
             return {}
 
-        return {key: value for key, value in result.items() if key not in omit}
+        return {
+            key: deepcopy(value) for key, value in result.items() if key not in omit
+        }
 
 
 @dataclass
@@ -55,6 +58,16 @@ class Classification(Prediction):
         Bundled Submission Workflows.
         """
         return cls._from_v1_result(model, classification)
+
+    def _to_changes(self) -> dict[str, object]:
+        """
+        Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
+        """
+        return {
+            **deepcopy(self.extras),
+            "label": self.label,
+            "confidence": self.confidences,
+        }
 
 
 @dataclass
@@ -135,6 +148,37 @@ class Extraction(Prediction):
         """
         return cls._from_v1_result(model, extraction)
 
+    def _to_changes(self) -> dict[str, object]:
+        """
+        Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
+        """
+        changes = {
+            **deepcopy(self.extras),
+            "label": self.label,
+            "text": self.text,
+        }
+
+        if self.confidences:
+            changes.update(
+                {
+                    "confidence": self.confidences,
+                    "start": self.span.start,
+                    "end": self.span.end,
+                    "page_num": self.span.page,
+                }
+            )
+        else:
+            changes["pageNum"] = self.span.page
+
+            if self.span.start:
+                changes.update(
+                    {
+                        "start": self.span.start,
+                        "end": self.span.end,
+                    }
+                )
+
+        return changes
 
     @staticmethod
     def from_result(result: dict[str, object], model: str) -> "Extraction":

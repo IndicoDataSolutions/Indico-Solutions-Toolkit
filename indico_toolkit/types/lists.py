@@ -71,7 +71,13 @@ class PredictionList(list[PredictionType]):
 
 
 class ClassificationList(PredictionList[Classification]):
-    ...
+    def to_changes(self) -> dict[str, object]:
+        """
+        Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
+        """
+        return {
+            model: self.where(model=model)[0]._to_changes() for model in self.models
+        }
 
 
 class ExtractionList(PredictionList[Extraction]):
@@ -91,6 +97,14 @@ class ExtractionList(PredictionList[Extraction]):
 
     def to_changes(self) -> dict[str, object]:
         """
-        Produce a dict structure suitable for `SubmitReview`.
+        Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
-        ...
+        return {
+            model: list(
+                map(
+                    lambda extraction: extraction._to_changes(),
+                    self.where(model=model),
+                )
+            )
+            for model in self.models
+        }

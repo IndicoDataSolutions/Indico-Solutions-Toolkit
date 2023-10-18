@@ -5,6 +5,7 @@ from indico_toolkit.types import (
     ClassificationList,
     Extraction,
     ExtractionList,
+    Span,
 )
 
 
@@ -136,6 +137,23 @@ class TestClassificationList:
 
         assert classifications[0].label == "A l"
 
+    @staticmethod
+    def test_to_changes(classifications: ClassificationList) -> None:
+        assert classifications.to_changes() == {
+            "Model A": {
+                "confidence": {"Label A": 0.25, "Label B": 0.5, "Label C": 0.75},
+                "label": "Label A",
+            },
+            "Model B": {
+                "confidence": {"Label A": 0.25, "Label B": 0.5, "Label C": 0.75},
+                "label": "Label B",
+            },
+            "Model C": {
+                "confidence": {"Label A": 0.25, "Label B": 0.5, "Label C": 0.75},
+                "label": "Label C",
+            },
+        }
+
 
 class TestExtractionList:
     @staticmethod
@@ -153,7 +171,7 @@ class TestExtractionList:
                     },
                     {},
                     "Text A",
-                    [],
+                    [Span(page=0, start=1, end=2)],
                 ),
                 Extraction(
                     "Model B",
@@ -165,7 +183,7 @@ class TestExtractionList:
                     },
                     {},
                     "Text B",
-                    [],
+                    [Span(page=0, start=1, end=2)],
                 ),
                 Extraction(
                     "Model C",
@@ -177,7 +195,7 @@ class TestExtractionList:
                     },
                     {},
                     "Text C",
-                    [],
+                    [Span(page=0, start=1, end=2)],
                 ),
             ]
         )
@@ -285,3 +303,38 @@ class TestExtractionList:
 
         assert not extractions[0].accepted
         assert extractions[0].rejected
+
+    @staticmethod
+    def test_to_changes(extractions: ExtractionList) -> None:
+        assert extractions.to_changes() == {
+            "Model A": [
+                {
+                    "confidence": {"Label A": 0.25, "Label B": 0.5, "Label C": 0.75},
+                    "end": 2,
+                    "label": "Label A",
+                    "page_num": 0,
+                    "start": 1,
+                    "text": "Text A",
+                }
+            ],
+            "Model B": [
+                {
+                    "confidence": {"Label A": 0.25, "Label B": 0.5, "Label C": 0.75},
+                    "end": 2,
+                    "label": "Label B",
+                    "page_num": 0,
+                    "start": 1,
+                    "text": "Text B",
+                }
+            ],
+            "Model C": [
+                {
+                    "confidence": {"Label A": 0.25, "Label B": 0.5, "Label C": 0.75},
+                    "end": 2,
+                    "label": "Label C",
+                    "page_num": 0,
+                    "start": 1,
+                    "text": "Text C",
+                }
+            ],
+        }
