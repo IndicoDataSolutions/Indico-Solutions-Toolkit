@@ -28,7 +28,7 @@ class WorkflowResult:
     def __repr__(self):
         return f"WorkflowResult object, Submission ID: {self.submission_id}"
 
-    @property 
+    @property
     def get_predictions(self) -> Predictions:
         """
         Return predictions without human review
@@ -37,8 +37,8 @@ class WorkflowResult:
         preds = self.document_results[self.model_name]
         if "pre_review" in preds:
             preds = preds["pre_review"]
-        return Predictions.get_obj(preds) 
-    
+        return Predictions.get_obj(preds)
+
     @property
     def pre_review_predictions(self) -> Predictions:
         """
@@ -51,7 +51,7 @@ class WorkflowResult:
             return Predictions.get_obj(preds)
         else:
             return Predictions.get_obj([])
-    
+
     @property
     def post_reviews_predictions(self) -> Predictions:
         """
@@ -60,8 +60,11 @@ class WorkflowResult:
         self._set_model_name()
         preds = self.document_results[self.model_name]
         if "post_reviews" in preds:
-            preds = preds["post_reviews"]
-            return Predictions.get_obj(preds)
+            post_review_preds = []
+            reviews = preds["post_reviews"]
+            for review in reviews:
+                post_review_preds.append(Predictions.get_obj(review))
+            return post_review_preds
         else:
             return Predictions.get_obj([])
 

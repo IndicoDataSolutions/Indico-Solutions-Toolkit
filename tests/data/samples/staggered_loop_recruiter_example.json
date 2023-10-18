@@ -1,0 +1,103 @@
+{
+    "submission_id": "",
+    "etl_output": "",
+    "errors": [],
+    "results": {
+        "document": {
+            "results": {
+                "Toolkit Test Financial Model": {
+                    "pre_review": [
+                        {
+                            "start": 2718,
+                            "end": 2725,
+                            "label": "Asset Value",
+                            "text": "250,000",
+                            "confidence": {
+                                "Asset Value": 0.5961567759513855
+                            }
+                        },
+                        {
+                            "start": 2785,
+                            "end": 2801,
+                            "label": "Asset Value",
+                            "text": "$1,001 - $15,000",
+                            "confidence": {
+                                "Asset Value": 0.9996922612190247
+                            }
+                        },
+                        {
+                            "start": 2879,
+                            "end": 2897,
+                            "label": "Asset Value",
+                            "text": "$50,001 -\n$100,000",
+                            "confidence": {
+                                "Asset Value": 0.9997683763504028
+                            }
+                        }
+                    ],
+                    "post_reviews": [
+                        [
+                            {
+                                "start": 2718,
+                                "end": 2725,
+                                "label": "Asset Value",
+                                "text": "250,000",
+                                "confidence": {
+                                    "Asset Value": 0.5961567759513855
+                                }
+                            },
+                            {
+                                "start": 2785,
+                                "end": 2801,
+                                "label": "Asset Value",
+                                "text": "$1,001 - $15,000",
+                                "confidence": {
+                                    "Asset Value": 0.9996922612190247
+                                }
+                            },
+                            {
+                                "start": 2879,
+                                "end": 2897,
+                                "label": "Asset Value",
+                                "text": "$50,001 -\n$100,000",
+                                "confidence": {
+                                    "Asset Value": 0.9997683763504028
+                                }
+                            }
+                        ]
+                    ],
+                    "final": [
+                        {
+                            "start": 2718,
+                            "end": 2725,
+                            "label": "Asset Value",
+                            "text": "250,000",
+                            "confidence": {
+                                "Asset Value": 0.5961567759513855
+                            }
+                        },
+                        {
+                            "start": 2785,
+                            "end": 2801,
+                            "label": "Asset Value",
+                            "text": "$1,001 - $15,000",
+                            "confidence": {
+                                "Asset Value": 0.9996922612190247
+                            }
+                        },
+                        {
+                            "start": 2879,
+                            "end": 2897,
+                            "label": "Asset Value",
+                            "text": "$50,001 -\n$100,000",
+                            "confidence": {
+                                "Asset Value": 0.9997683763504028
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "file_version": 1
+}

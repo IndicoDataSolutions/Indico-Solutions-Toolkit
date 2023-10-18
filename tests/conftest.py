@@ -199,5 +199,9 @@ def old_snapshot_csv_path(testdir_file_path):
 
 
 @pytest.fixture(scope="session")
+def populator_snapshot_csv_path(testdir_file_path):
+    return os.path.join(testdir_file_path, "data/snapshots/populator_snapshot.csv")
+
+@pytest.fixture(scope="session")
 def pdf_dataset_obj(indico_client):
     return indico_client.call(GetDataset(PDF_DATASET_ID))

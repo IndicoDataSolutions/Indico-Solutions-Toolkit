@@ -17,7 +17,7 @@ class StaggeredLoopRecruiter:
     """
     Example:
         wflow = Workflow(client)
-        staggered_loop = StaggeredLoopRecruiter(client)
+        staggered_loop = StaggeredLoopRecruiter(client, "My Model")
         results = wflow.get_submission_results_from_ids([1,2,3])
         # Get CSV containing performance analysis for field "Test Field"
         staggered_loop.get_field_performance(results, "Test Field")
@@ -28,9 +28,11 @@ class StaggeredLoopRecruiter:
     def __init__(
         self,
         client: IndicoClient,
+        model_name: str,
     ):
         self.client = client
         self.wflow = Workflow(client)
+        self.model_name = model_name
 
     def get_field_performance(self, results: List[dict], field: str) -> pd.DataFrame:
         """
@@ -49,7 +51,7 @@ class StaggeredLoopRecruiter:
         """
         df = pd.DataFrame()
         for result in results:
-            workflow_result = WorkflowResult(result)
+            workflow_result = WorkflowResult(result, self.model_name)
             if workflow_result.post_reviews_predictions:
                 # Get Auto Review predictions
                 pre_review_preds = workflow_result.post_reviews_predictions[0]

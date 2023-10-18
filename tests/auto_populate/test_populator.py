@@ -1,9 +1,22 @@
 import os
 import pytest
 import time
+import json
+import pandas as pd
 from indico.queries import GetWorkflow
 from indico.types import Workflow
+from indico_toolkit.auto_populate.types import LabelInput, LabelInst
 from indico_toolkit.auto_populate import AutoPopulator
+
+
+@pytest.fixture(scope="function")
+def static_file_to_targets(populator_snapshot_csv_path):
+    df = pd.read_csv(populator_snapshot_csv_path)
+    file_to_targets = {}
+    for file, target in zip(df["file_name_1820"].to_list(), df["Toolkit Test Financial Model"].to_list()):
+        if not isinstance(target, float):
+            file_to_targets[file] = json.loads(target)["targets"]
+    return file_to_targets
 
 
 def test_create_classification_workflow(indico_client, testdir_file_path):
@@ -41,3 +54,25 @@ def test_copy_teach_task(indico_client, dataset_obj, workflow_id, teach_task_id)
         data_column="text",
     )
     assert isinstance(new_workflow, Workflow)
+
+
+def test_get_labels_by_filename(
+    indico_client, extraction_model_group_id, teach_task_id, static_file_to_targets
+):
+    populator = AutoPopulator(indico_client)
+    (
+        labelset_id,
+        model_group_id,
+        target_name_map,
+    ) = populator._get_teach_task_details(teach_task_id)
+
+    labels = populator.get_labels_by_filename(
+        extraction_model_group_id,
+        static_file_to_targets,
+        target_name_map
+    )
+    assert(len(labels) != 0)
+    for label in labels:
+        assert isinstance(label, LabelInput)
+        for target in label.targets:
+            assert isinstance(target, LabelInst)
