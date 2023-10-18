@@ -4,6 +4,7 @@ from typing import TypeAlias
 
 from .errors import MultipleValuesError, ResultFileError
 from .lists import ClassificationList, ExtractionList
+from .modelgroups import ModelGroup, ModelType
 from .predictions import Classification, Extraction
 from .reviews import Review, ReviewType
 from .utils import exists, get
@@ -138,6 +139,45 @@ class Document:
                 return post_review_list
         else:
             return []
+
+    @classmethod
+    def _from_v2_result(
+        cls, submission_result: object, model_groups_by_id: dict[int, ModelGroup]
+    ) -> "Document":
+        """
+        Bundled Submission Workflows.
+        """
+        classifications = ClassificationList()
+        extractions = ExtractionList()
+
+        model_results = get(submission_result, "model_results", dict)
+        original = get(model_results, "ORIGINAL", dict)
+
+        for model_id_str, predictions_list in original.items():
+            model_group = model_groups_by_id[int(model_id_str)]
+
+            if model_group.type == ModelType.CLASSIFICATION:
+                classifications.extend(
+                    Classification._from_v2_result(model_group.name, prediction)
+                    for prediction in predictions_list
+                )
+            elif model_group.type == ModelType.EXTRACTION:
+                extractions.extend(
+                    Extraction._from_v2_result(model_group.name, prediction)
+                    for prediction in predictions_list
+                )
+
+        return Document(
+            id=get(submission_result, "submissionfile_id", int),
+            filename=get(submission_result, "input_filename", str),
+            etl_output=get(submission_result, "etl_output", str),
+            classifications=classifications,
+            pre_review=extractions,
+            auto_review=ExtractionList(),  # v2 submissions do not support review yet.
+            hitl_review=ExtractionList(),  # v2 submissions do not support review yet.
+            final=extractions,
+            subdocuments=[],  # v2 submissions do not have unbundled subdocuments.
+        )
 
     @staticmethod
     def from_result(result: dict[str, object]) -> "Document":

@@ -18,12 +18,12 @@ def test_result_file_version() -> None:
         )
 
 
-class TestV1Submission:
-    @staticmethod
-    @pytest.mark.parametrize("file_path", list(data_folder.glob("*.result.json")))
-    def test_from_result(file_path: Path) -> None:
-        Submission.from_result(json.loads(file_path.read_text()))
+@pytest.mark.parametrize("file_path", list(data_folder.glob("*.result.json")))
+def test_from_result(file_path: Path) -> None:
+    Submission.from_result(json.loads(file_path.read_text()))
 
+
+class TestV1Submission:
     @staticmethod
     def test_reviews(mocker: MockerFixture) -> None:
         mocker.patch.object(Document, "_from_v1_result")

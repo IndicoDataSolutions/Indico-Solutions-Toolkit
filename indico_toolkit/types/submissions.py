@@ -3,6 +3,7 @@ from functools import reduce
 
 from .documents import Document
 from .errors import MultipleValuesError, ResultFileError
+from .modelgroups import ModelGroup
 from .reviews import Review
 from .utils import exists, get
 
@@ -102,7 +103,21 @@ class Submission:
         """
         Bundled Submission Workflows.
         """
-        ...
+        modelgroup_metadata = get(result, "modelgroup_metadata", dict)
+        model_groups = map(ModelGroup._from_result, modelgroup_metadata.values())
+        model_groups_by_id = {
+            model_group.id: model_group for model_group in model_groups
+        }
+
+        return Submission(
+            id=get(result, "submission_id", int),
+            version=2,
+            documents=[
+                Document._from_v2_result(submission_result, model_groups_by_id)
+                for submission_result in get(result, "submission_results", list)
+            ],
+            reviews=[],  # Bundled submissions do not support review yet.
+        )
 
     @staticmethod
     def _from_v3_result(result: object) -> "Submission":

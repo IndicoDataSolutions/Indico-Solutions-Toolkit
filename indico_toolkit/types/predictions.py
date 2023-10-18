@@ -49,6 +49,13 @@ class Classification(Prediction):
             ),
         )
 
+    @classmethod
+    def _from_v2_result(cls, model: str, classification: object) -> "Classification":
+        """
+        Bundled Submission Workflows.
+        """
+        return cls._from_v1_result(model, classification)
+
 
 @dataclass
 class Extraction(Prediction):
@@ -120,6 +127,14 @@ class Extraction(Prediction):
                 ),
             ),
         )
+
+    @classmethod
+    def _from_v2_result(cls, model: str, extraction: object) -> "Extraction":
+        """
+        Bundled Submission Workflows.
+        """
+        return cls._from_v1_result(model, extraction)
+
 
     @staticmethod
     def from_result(result: dict[str, object], model: str) -> "Extraction":
