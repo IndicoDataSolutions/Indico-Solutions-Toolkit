@@ -104,7 +104,7 @@ class Submission:
         Bundled Submission Workflows.
         """
         modelgroup_metadata = get(result, "modelgroup_metadata", dict)
-        model_groups = map(ModelGroup._from_result, modelgroup_metadata.values())
+        model_groups = map(ModelGroup._from_v2_result, modelgroup_metadata.values())
         model_groups_by_id = {
             model_group.id: model_group for model_group in model_groups
         }

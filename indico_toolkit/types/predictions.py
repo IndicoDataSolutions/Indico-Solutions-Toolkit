@@ -146,7 +146,24 @@ class Extraction(Prediction):
         """
         Bundled Submission Workflows.
         """
-        return cls._from_v1_result(model, extraction)
+        return Extraction(
+            model=model,
+            label=get(extraction, "label", str),
+            confidences=get(extraction, "confidence", dict),
+            text=get(extraction, "text", str),
+            spans=[Span._from_v2_result(extraction)],
+            extras=cls._extras_from_result(
+                extraction,
+                omit=(
+                    "confidence",
+                    "end",
+                    "label",
+                    "page_num",
+                    "start",
+                    "text",
+                ),
+            ),
+        )
 
     def _to_changes(self) -> dict[str, object]:
         """

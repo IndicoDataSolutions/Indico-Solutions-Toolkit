@@ -35,3 +35,14 @@ class Span:
             end=end,
             page=page,
         )
+
+    @staticmethod
+    def _from_v2_result(span: object) -> "Span":
+        """
+        Bundled Submission Workflows.
+        """
+        return Span(
+            start=get(span, "start", int),
+            end=get(span, "end", int),
+            page=get(span, "page_num", int),
+        )

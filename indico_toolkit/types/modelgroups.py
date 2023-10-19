@@ -16,7 +16,10 @@ class ModelGroup:
     type: ModelType
 
     @staticmethod
-    def _from_result(model_group: object) -> "ModelGroup":
+    def _from_v2_result(model_group: object) -> "ModelGroup":
+        """
+        Bundled Submission Workflows.
+        """
         return ModelGroup(
             id=get(model_group, "id", int),
             name=get(model_group, "name", str),
