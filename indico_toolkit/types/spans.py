@@ -46,3 +46,10 @@ class Span:
             end=get(span, "end", int),
             page=get(span, "page_num", int),
         )
+
+    @classmethod
+    def _from_v3_result(cls, span: object) -> "Span":
+        """
+        Classify+Unbundle Workflows.
+        """
+        return cls._from_v2_result(span)

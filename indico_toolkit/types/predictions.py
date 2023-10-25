@@ -59,6 +59,13 @@ class Classification(Prediction):
         """
         return cls._from_v1_result(model, classification)
 
+    @classmethod
+    def _from_v3_result(cls, model: str, classification: object) -> "Classification":
+        """
+        Classify+Unbundle Workflows.
+        """
+        return cls._from_v1_result(model, classification)
+
     def _to_changes(self) -> dict[str, object]:
         """
         Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
@@ -165,6 +172,28 @@ class Extraction(Prediction):
             ),
         )
 
+    @classmethod
+    def _from_v3_result(cls, model: str, extraction: object) -> "Extraction":
+        """
+        Classify+Unbundle Workflows.
+        """
+        return Extraction(
+            model=model,
+            label=get(extraction, "label", str),
+            confidences=get(extraction, "confidence", dict),
+            text=get(extraction, "text", str),
+            spans=list(map(Span._from_v3_result, get(extraction, "spans", dict))),
+            extras=cls._extras_from_result(
+                extraction,
+                omit=(
+                    "confidence",
+                    "label",
+                    "spans",
+                    "text",
+                ),
+            ),
+        )
+
     def _to_changes(self) -> dict[str, object]:
         """
         Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
@@ -196,33 +225,3 @@ class Extraction(Prediction):
                 )
 
         return changes
-
-    @staticmethod
-    def from_result(result: dict[str, object], model: str) -> "Extraction":
-        """
-        Factory function to produce a `Extraction` from a portion of a result file.
-        """
-        text = result.get("text")
-        label = result["label"]
-        confidence = result.get("confidence", {}).get(label)
-        confidences = result.get("confidence", {})
-
-        if "spans" in result:
-            spans = result["spans"]
-        else:
-            spans = [
-                {
-                    "start": result.get("start"),
-                    "end": result.get("end"),
-                    "page_num": result.get("page_num"),
-                }
-            ]
-
-        return Extraction(
-            model=model,
-            text=text,
-            label=label,
-            spans=spans,
-            confidence=confidence,
-            confidences=confidences,
-        )

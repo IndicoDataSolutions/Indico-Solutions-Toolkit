@@ -124,4 +124,18 @@ class Submission:
         """
         Classify+Unbundle Workflows.
         """
-        ...
+        modelgroup_metadata = get(result, "modelgroup_metadata", dict)
+        model_groups = map(ModelGroup._from_v3_result, modelgroup_metadata.values())
+        model_groups_by_id = {
+            model_group.id: model_group for model_group in model_groups
+        }
+
+        return Submission(
+            id=get(result, "submission_id", int),
+            version=3,
+            documents=[
+                Document._from_v3_result(submission_result, model_groups_by_id)
+                for submission_result in get(result, "submission_results", list)
+            ],
+            reviews=[],  # Unbundled submissions do not support review yet.
+        )

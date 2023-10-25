@@ -7,6 +7,7 @@ from .utils import get
 class ModelType(StrEnum):
     CLASSIFICATION = "classification"
     EXTRACTION = "annotation"
+    UNBUNDLING = "classification_unbundling"
 
 
 @dataclass
@@ -25,3 +26,10 @@ class ModelGroup:
             name=get(model_group, "name", str),
             type=ModelType(get(model_group, "task_type", str)),
         )
+
+    @classmethod
+    def _from_v3_result(cls, model_group: object) -> "ModelGroup":
+        """
+        Classify+Unbundle Workflows.
+        """
+        return cls._from_v2_result(model_group)
