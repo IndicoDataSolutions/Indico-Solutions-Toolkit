@@ -13,21 +13,17 @@ def modelop(indico_client):
 
 @pytest.fixture(scope="module")
 def model_setting(extraction_model_group_id, modelop):
-    model = modelop.get_model_group(extraction_model_group_id)
-    setting = json.loads(model["modelOptions"]["modelTrainingOptions"])
+    model = modelop.get_model_settings(extraction_model_group_id)
+    setting = modelop.model_settings
     if setting is None or "auto_negative_scaling" not in setting:
-        updated_model = modelop.update_model_settings(
-            extraction_model_group_id, model_parms={"auto_negative_scaling": True}
-        )
-        return updated_model["auto_negative_scaling"]
+        return not True
     else:
-        return setting["auto_negative_scaling"]
+        return not setting["auto_negative_scaling"]
 
 
 def test_apply_model_setting(extraction_model_group_id, model_setting, modelop):
-    new_model = modelop.update_model_settings(model_group_id = 
-        extraction_model_group_id,
-        model_parms={"auto_negative_scaling": not model_setting}
+    new_setting = modelop.update_model_settings(
+        model_group_id=extraction_model_group_id,
+        model_parms={"auto_negative_scaling": model_setting},
     )
-
-    assert model_setting != new_model["auto_negative_scaling"]
+    assert model_setting == new_setting["auto_negative_scaling"]
