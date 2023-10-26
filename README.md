@@ -20,6 +20,7 @@ The indico-toolkit provides classes and functions to help achieve the following:
 * Objects to simplify parsing OCR responses.
 * Snapshot merging and manipulation
 * Class to spoof a human reviewer.
+* Gather user metrics and write to disk. 
 
 ### Installation
 
