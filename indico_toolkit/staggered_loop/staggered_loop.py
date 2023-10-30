@@ -1,7 +1,8 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 import json
 import random
-from typing import Dict, List, Union, NewType, Optional
+import warnings
+from typing import Dict, List, Union, NewType
 from pathlib import Path
 
 from indico import IndicoClient
@@ -38,6 +39,7 @@ class StaggeredLoop(Workflow):
             stagger.get_reviewed_prediction_data(312, [7532, 7612], "Model V1")
             stagger.write_csv("./path/to/output.csv")
         """
+        warnings.warn("This implementation is deprecated! Use at your own risk!")
         self.client = client
 
         # Document, text and labels/predictions from review
