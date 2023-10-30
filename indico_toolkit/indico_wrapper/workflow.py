@@ -145,6 +145,7 @@ class Workflow(IndicoWrapper):
             result = self._create_result(submission)
             # Add path to original input file to result
             result["input_file"] = submission.input_file
+            result["filename"] = submission.input_filename
             if return_raw_json:
                 results.append(result)
             else:
