@@ -12,51 +12,65 @@ class ModelOp:
 
     def __init__(self, client: IndicoClient):
         self.client = client
-        # self.task_type = None
-        self.model_settings = None
         self.model_list = None
 
-    def get_model_settings(self, model_group_id: int, model_id: int = None) -> dict:
+    def get_model_options(
+        self, model_group_id: int, model_id: int | None = None
+    ) -> dict[str, object]:
         """
-        Returns options of most recent model within a model group as a dictionary. If a specific model id is passed, that corresponding options dictionary is returned.
-        model_list attribute contains all available models as a list. model_settings contains most recent model's training options
+        Return model options for `model_id` of `model_group_id`
+        or the most recent model if `model_id` is not specified.
         Args:
             model_group_id (int): id of model group
             model_id (int, optional): argument to return a specific model within a model group
+        """
+        all_model_options = list(self.get_all_model_options(model_group_id))
+
+        if model_id is None:
+            return all_model_options[0]
+
+        else:
+            for model_options in all_model_options:
+                if model_options["id"] == model_id:
+                    return model_options
+                else:
+                    raise RuntimeError(
+                        f"Model group {model_group_id} does not have a model with ID {model_id}"
+                    )
+
+    def get_all_model_options(self, model_group_id: int) -> iter([dict[str, object]]):
+        """
+        Return model options for all models of `model_group_id`.
+        Args:
+            model_group_id (int): id of model group
         Returns:
-            dict: dictionary of all model options, including: 
+            dict: dictionary of all model options, including:
             "id", "domain, ""high_quality", "interlabeler_resolution",
             "sampling_strategy", "seed", "test_split", "weight_by_class_frequency",
             "word_predictor_strength", and "model_training_options"
-
         """
 
-        query = """
-  query getMoonbowModelGroupModels($modelGroupId: Int!) {
-    modelGroup(modelGroupId: $modelGroupId) {
-      id
-      models {
-        id
-        modelOptions
-      }
-    }
-  }
+        response = self.client.call(
+            GraphQLRequest(
                 """
-        results = self.client.call(
-            GraphQLRequest(query, {"modelGroupId": model_group_id})
+                query getMoonbowModelGroupModels($modelGroupId: Int!) {
+                    modelGroup(modelGroupId: $modelGroupId) {
+                        id
+                        models {
+                            id
+                            modelOptions
+                        }
+                    }
+                }
+                """,
+                {"modelGroupId": model_group_id},
+            )
         )
-        models = results["modelGroup"]["models"]
-        self.model_list = models
-        self.model_settings = json.loads(models[0]["modelOptions"])[
-            "model_training_options"
-        ]
 
-        if not model_id:
-            return models[0]
-        else:
-            for model in models:
-                if model["id"] == model_id:
-                    return model
+        for model in response["modelGroup"]["models"]:
+            model_options = json.loads(model["modelOptions"])
+            model_options["id"] = model["id"]
+            yield model_options
 
     def retrain_model(self, model_group_id: int) -> dict:
         """
@@ -66,19 +80,23 @@ class ModelOp:
         Returns:
             dict: returns model group id and status of retraining model
         """
-
-        query = """
-  mutation retrainMoonbowModelGroup($modelGroupId: Int!) {
-    retrainModelGroup(modelGroupId: $modelGroupId, forceRetrain: true) {
-      id
-      status
-      __typename
-    }
-  }    
+        return self.client.call(
+            GraphQLRequest(
                 """
-        return self.client.call(GraphQLRequest(query, {"modelGroupId": model_group_id}))
+                mutation retrainMoonbowModelGroup($modelGroupId: Int!) {
+                    retrainModelGroup(modelGroupId: $modelGroupId, forceRetrain: true) {
+                        id
+                        status
+                    }
+                }    
+                """,
+                {"modelGroupId": model_group_id},
+            )
+        )
 
-    def update_model_settings(self, model_group_id: int, model_parms: dict) -> dict:
+    def update_model_settings(
+        self, model_group_id: int, model_params: dict
+    ) -> dict[str, object]:
         """
         Update group model settings based on specified model training options.
 
@@ -98,29 +116,27 @@ class ModelOp:
                     For Text Classification Model:
                         model_type : "standard" (“tfidf_lr”, “tfidf_gbt”, “standard”, “finetune”)
         Returns:
-            dict: Dictionary showing all model training options
+            dict: Dictionary of advanced model training options
         """
 
-        query = """
-  mutation updateModelGroup($modelGroupId: Int!, $modelTrainingOptions: JSONString) {
-    updateModelGroupSettings(
-      modelGroupId: $modelGroupId
-      modelTrainingOptions: $modelTrainingOptions
-    ) {
-      modelOptions {
-        id
-        modelTrainingOptions
-      }
-    }
-  }
-                """
-        # add model type logic
         model = self.client.call(
             GraphQLRequest(
-                query,
+                """
+                mutation updateModelGroup($modelGroupId: Int!, $modelTrainingOptions: JSONString) {
+                    updateModelGroupSettings(
+                      modelGroupId: $modelGroupId
+                      modelTrainingOptions: $modelTrainingOptions
+                  ) {
+                      modelOptions {
+                          id
+                          modelTrainingOptions
+                        }
+                    }
+                }
+                """,
                 {
                     "modelGroupId": model_group_id,
-                    "modelTrainingOptions": json.dumps(model_parms),
+                    "modelTrainingOptions": json.dumps(model_params),
                 },
             )
         )
