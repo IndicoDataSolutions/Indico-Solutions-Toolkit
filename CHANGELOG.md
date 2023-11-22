@@ -134,3 +134,9 @@ This is the first major version release tested to work on Indico 6.X.
 * Simplified a StaggeredLoop implementation to inject labeled samples into a dev workflow (deprecated previous version).
 * Added support for unbundling metrics.
 * Added the `Strucure` class to support building out workflows, datasets, teach tasks. As well as to support copying workflows.
+
+## 6.0.1 11/22/23
+
+### Added
+
+* Small but important fix to add original filename to the workflow result object
