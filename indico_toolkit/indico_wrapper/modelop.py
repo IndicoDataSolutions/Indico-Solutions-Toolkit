@@ -28,14 +28,14 @@ class ModelOp:
         if model_id is None:
             return next(all_model_options)
 
+    
+        for model_options in all_model_options:
+            if model_options["id"] == model_id:
+                return model_options
         else:
-            for model_options in all_model_options:
-                if model_options["id"] == model_id:
-                    return model_options
-            else:
-                raise RuntimeError(
-                    f"Model group {model_group_id} does not have a model with ID {model_id}"
-                )
+            raise RuntimeError(
+                f"Model group {model_group_id} does not have a model with ID {model_id}"
+            )
 
     def get_all_model_options(self, model_group_id: int) -> Iterator[dict[str, object]]:
         """
@@ -142,5 +142,5 @@ class ModelOp:
         options = json.loads(
             model["updateModelGroupSettings"]["modelOptions"]["modelTrainingOptions"]
         )
-options["id"] = model["updateModelGroupSettings"]["modelOptions"]["id"]
+        options["id"] = model["updateModelGroupSettings"]["modelOptions"]["id"]
         return options
