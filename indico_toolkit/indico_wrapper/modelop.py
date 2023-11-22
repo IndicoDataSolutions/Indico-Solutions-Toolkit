@@ -12,7 +12,6 @@ class ModelOp:
 
     def __init__(self, client: IndicoClient):
         self.client = client
-        self.model_list = None
 
     def get_model_options(
         self, model_group_id: int, model_id: int | None = None
@@ -24,21 +23,21 @@ class ModelOp:
             model_group_id (int): id of model group
             model_id (int, optional): argument to return a specific model within a model group
         """
-        all_model_options = list(self.get_all_model_options(model_group_id))
+        all_model_options = self.get_all_model_options(model_group_id)
 
         if model_id is None:
-            return all_model_options[0]
+            return next(all_model_options)
 
         else:
             for model_options in all_model_options:
                 if model_options["id"] == model_id:
                     return model_options
-                else:
-                    raise RuntimeError(
-                        f"Model group {model_group_id} does not have a model with ID {model_id}"
-                    )
+            else:
+                raise RuntimeError(
+                    f"Model group {model_group_id} does not have a model with ID {model_id}"
+                )
 
-    def get_all_model_options(self, model_group_id: int) -> iter([dict[str, object]]):
+    def get_all_model_options(self, model_group_id: int) -> Iterator[dict[str, object]]:
         """
         Return model options for all models of `model_group_id`.
         Args:
@@ -143,5 +142,5 @@ class ModelOp:
         options = json.loads(
             model["updateModelGroupSettings"]["modelOptions"]["modelTrainingOptions"]
         )
-
+options["id"] = model["updateModelGroupSettings"]["modelOptions"]["id"]
         return options
