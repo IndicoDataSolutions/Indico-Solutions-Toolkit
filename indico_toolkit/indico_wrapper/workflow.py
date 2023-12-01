@@ -45,8 +45,9 @@ class Workflow(IndicoWrapper):
     def submit_documents_to_workflow(
         self,
         workflow_id: int,
-        pdf_filepaths: List[str],
-        streams: Dict[str, io.BufferedIOBase] = None,
+        *,
+        files: Union[List[Union[str, PathLike]], None] = None,
+        streams: Union[Dict[str, io.BufferedIOBase], None] = None,
     ) -> List[int]:
         """
         Args:
