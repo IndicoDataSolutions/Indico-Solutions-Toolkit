@@ -84,7 +84,7 @@ class AutoPopulator:
                 [[{"label": parent_directory}] for parent_directory in self._fp.parent_directory_of_filepaths]
             )
         )
-        classes = [value[0]["label"] for value in file_to_targets.values()]
+        classes = list(set(value[0]["label"] for value in file_to_targets.values()))
         # Create empty dataset
         optional_ocr_options = {
             "auto_rotate": False,
