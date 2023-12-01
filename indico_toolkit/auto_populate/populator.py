@@ -84,6 +84,11 @@ class AutoPopulator:
         classes = list(set(file.parent.name for file in files))
         labeled_files = {file.name: [{"label": file.parent.name}] for file in files}
 
+        if len(classes) < 2:
+            raise ToolkitPopulationError(
+                f"You must have documents in at least 2 directories, you only have {len(classes)}"
+            )
+
         # Upload files to a new dataset.
         dataset = self.structure.create_dataset(
             dataset_name=dataset_name,
@@ -109,11 +114,6 @@ class AutoPopulator:
         labelset_id, model_group_id, label_map = self._get_teach_task_details(
             teach_task_id
         )
-
-        if len(classes) < 2:
-            raise ToolkitPopulationError(
-                f"You must have documents in at least 2 directories, you only have {len(classes)}"
-            )
 
         labels = self.get_labels_by_filename(model_group_id, labeled_files, label_map)
         self.structure.label_teach_task(
