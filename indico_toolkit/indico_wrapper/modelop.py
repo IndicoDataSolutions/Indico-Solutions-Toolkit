@@ -2,10 +2,10 @@ from indico import IndicoClient
 from indico.queries import GraphQLRequest
 import json
 import string
+from typing import Iterator
 
 
 class ModelOp:
-
     """
     Class to assit in Model Group Operation calls.
     """
@@ -28,7 +28,6 @@ class ModelOp:
         if model_id is None:
             return next(all_model_options)
 
-    
         for model_options in all_model_options:
             if model_options["id"] == model_id:
                 return model_options
