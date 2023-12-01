@@ -2,8 +2,9 @@ import time
 import dataclasses
 import pandas as pd
 from json import loads
+from os import PathLike
 from pathlib import Path
-from typing import List, Tuple, Dict
+from typing import List, Dict, Tuple, Union
 from indico import IndicoClient
 from indico.types import Workflow
 from indico.queries import (
@@ -33,7 +34,7 @@ class AutoPopulator:
 
     def create_auto_classification_workflow(
         self,
-        directory_path: str,
+        directory_path: Union[str, PathLike[str]],
         dataset_name: str,
         workflow_name: str,
         teach_task_name: str,
