@@ -38,20 +38,20 @@ class AutoPopulator:
         dataset_name: str,
         workflow_name: str,
         teach_task_name: str,
-        accepted_types: Tuple[str] = (
-            "pdf",
-            "tiff",
+        accepted_types: Tuple[str, ...] = (
             "csv",
             "doc",
             "docx",
-            "png",
             "jpeg",
             "jpg",
+            "pdf",
+            "png",
             "pptx",
+            "rtf",
+            "tiff",
             "txt",
             "xls",
             "xlsx",
-            "rtf"
         ),
     ) -> Workflow:
         """
@@ -73,7 +73,6 @@ class AutoPopulator:
         Returns:
             Workflow: a Workflow object representation of the newly created workflow
         """
-        labelset_name = f"{teach_task_name}_labelset"
 
         def valid_file(file: Path) -> bool:
             return (
@@ -81,46 +80,48 @@ class AutoPopulator:
             )
 
         folder = Path(directory_path)
-        file_paths = list(filter(valid_file, folder.glob("*/*")))
-        classes = list(set(file.parent.name for file in file_paths))
-        file_to_targets = {file.name: [{"label": file.parent.name}] for file in file_paths}
+        files = list(filter(valid_file, folder.glob("*/*")))
+        classes = list(set(file.parent.name for file in files))
+        labeled_files = {file.name: [{"label": file.parent.name}] for file in files}
 
-        # Create empty dataset
-        optional_ocr_options = {
-            "auto_rotate": False,
-            "upscale_images": True,
-            "languages": ["ENG"],
-        }
+        # Upload files to a new dataset.
         dataset = self.structure.create_dataset(
             dataset_name=dataset_name,
-            files_to_upload=file_paths,
+            files_to_upload=files,
             read_api=True,
             single_column=False,
-            **optional_ocr_options,
+            auto_rotate=False,
+            upscale_images=True,
+            languages=["ENG"],
         )
-        # Create workflow
+
+        # Create a new workflow with classification model.
         workflow = self.structure.create_workflow(workflow_name, dataset.id)
-        # Add classifier teach task to workflow (should know labels from parent directory)
         workflow = self.structure.add_teach_task(
             task_name=teach_task_name,
-            labelset_name=labelset_name,
+            labelset_name=f"{teach_task_name}_labelset",
             target_names=classes,
             dataset_id=dataset.id,
             workflow_id=workflow.id,
             model_type="classification",
         )
         teach_task_id = workflow.components[-1].model_group.questionnaire_id
-        labelset_id, model_group_id, target_name_map = self._get_teach_task_details(
+        labelset_id, model_group_id, label_map = self._get_teach_task_details(
             teach_task_id
         )
+
         if len(classes) < 2:
             raise ToolkitPopulationError(
                 f"You must have documents in at least 2 directories, you only have {len(classes)}"
             )
-        labels = self.get_labels_by_filename(model_group_id, file_to_targets, target_name_map)
+
+        labels = self.get_labels_by_filename(model_group_id, labeled_files, label_map)
         self.structure.label_teach_task(
-            label_set_id=labelset_id, labels=[dataclasses.asdict(label) for label in labels], model_group_id=model_group_id
+            label_set_id=labelset_id,
+            labels=list(map(dataclasses.asdict, labels)),
+            model_group_id=model_group_id,
         )
+
         return workflow
 
     def copy_teach_task(
