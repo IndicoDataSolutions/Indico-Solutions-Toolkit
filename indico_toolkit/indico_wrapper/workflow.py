@@ -172,7 +172,7 @@ class Workflow(IndicoWrapper):
         submission_id: int,
         updated_predictions: dict,
         wait: bool = True,
-        force_complete: bool = None,
+        force_complete: bool = False,
     ):
         job = self.client.call(
             SubmitReview(
