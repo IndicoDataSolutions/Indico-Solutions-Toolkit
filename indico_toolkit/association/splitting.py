@@ -16,7 +16,6 @@ def split_prediction(
     delimiters = texts_and_delimiters[1::2]
     text_and_delimiter_pairs = zip_longest(texts, delimiters)
     start = prediction["start"]
-    end = 0
 
     for text, delimiter in text_and_delimiter_pairs:
         end = start + len(text)
