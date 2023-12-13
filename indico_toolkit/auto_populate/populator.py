@@ -2,7 +2,9 @@ import time
 import dataclasses
 import pandas as pd
 from json import loads
-from typing import List, Tuple, Dict
+from os import PathLike
+from pathlib import Path
+from typing import List, Dict, Tuple, Union
 from indico import IndicoClient
 from indico.types import Workflow
 from indico.queries import (
@@ -13,7 +15,6 @@ from indico.queries import (
     GetModelGroup,
 )
 from indico_toolkit.errors import ToolkitPopulationError
-from indico_toolkit.pipelines import FileProcessing
 from indico_toolkit.structure.create_structure import Structure
 
 from .types import *
@@ -30,28 +31,31 @@ class AutoPopulator:
         self.client = client
         self.structure = Structure(client)
         self._exceptions = []
-        self._fp = FileProcessing()
 
     def create_auto_classification_workflow(
         self,
-        directory_path: str,
+        directory_path: Union[str, PathLike[str]],
         dataset_name: str,
         workflow_name: str,
         teach_task_name: str,
-        accepted_types: Tuple[str] = (
-            "pdf",
-            "tiff",
+        accepted_types: Tuple[str, ...] = (
             "csv",
             "doc",
             "docx",
-            "png",
+            "eml",
             "jpeg",
             "jpg",
+            "msg",
+            "pdf",
+            "png",
             "pptx",
+            "rtf",
+            "svg",
+            "tif",
+            "tiff",
             "txt",
             "xls",
             "xlsx",
-            "rtf"
         ),
     ) -> Workflow:
         """
@@ -73,54 +77,55 @@ class AutoPopulator:
         Returns:
             Workflow: a Workflow object representation of the newly created workflow
         """
-        self._fp.get_file_paths_from_dir(
-            directory_path, accepted_types=accepted_types, recursive_search=True
-        )
-        file_paths = self._fp.file_paths
-        labelset_name = f"{teach_task_name}_labelset"
-        file_to_targets = dict(
-            zip(
-                [self._fp.file_name_from_path(f) for f in self._fp.file_paths],
-                [[{"label": parent_directory}] for parent_directory in self._fp.parent_directory_of_filepaths]
+
+        def valid_file(file: Path) -> bool:
+            return (
+                file.is_file() and file.suffix.strip(".").casefold() in accepted_types
             )
-        )
-        classes = [value[0]["label"] for value in file_to_targets.values()]
-        # Create empty dataset
-        optional_ocr_options = {
-            "auto_rotate": False,
-            "upscale_images": True,
-            "languages": ["ENG"],
-        }
+
+        folder = Path(directory_path)
+        files = list(filter(valid_file, folder.glob("*/*")))
+        classes = list(set(file.parent.name for file in files))
+        labeled_files = {file.name: [{"label": file.parent.name}] for file in files}
+
+        if len(classes) < 2:
+            raise ToolkitPopulationError(
+                f"You must have documents in at least 2 directories, you only have {len(classes)}"
+            )
+
+        # Upload files to a new dataset.
         dataset = self.structure.create_dataset(
             dataset_name=dataset_name,
-            files_to_upload=file_paths,
+            files_to_upload=files,
             read_api=True,
             single_column=False,
-            **optional_ocr_options,
+            auto_rotate=False,
+            upscale_images=True,
+            languages=["ENG"],
         )
-        # Create workflow
+
+        # Create a new workflow with classification model.
         workflow = self.structure.create_workflow(workflow_name, dataset.id)
-        # Add classifier teach task to workflow (should know labels from parent directory)
         workflow = self.structure.add_teach_task(
             task_name=teach_task_name,
-            labelset_name=labelset_name,
+            labelset_name=f"{teach_task_name}_labelset",
             target_names=classes,
             dataset_id=dataset.id,
             workflow_id=workflow.id,
             model_type="classification",
         )
         teach_task_id = workflow.components[-1].model_group.questionnaire_id
-        labelset_id, model_group_id, target_name_map = self._get_teach_task_details(
+        labelset_id, model_group_id, label_map = self._get_teach_task_details(
             teach_task_id
         )
-        if len(classes) < 2:
-            raise ToolkitPopulationError(
-                f"You must have documents in at least 2 directories, you only have {len(classes)}"
-            )
-        labels = self.get_labels_by_filename(model_group_id, file_to_targets, target_name_map)
+
+        labels = self.get_labels_by_filename(model_group_id, labeled_files, label_map)
         self.structure.label_teach_task(
-            label_set_id=labelset_id, labels=[dataclasses.asdict(label) for label in labels], model_group_id=model_group_id
+            label_set_id=labelset_id,
+            labels=list(map(dataclasses.asdict, labels)),
+            model_group_id=model_group_id,
         )
+
         return workflow
 
     def copy_teach_task(
