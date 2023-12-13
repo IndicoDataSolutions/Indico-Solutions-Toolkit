@@ -24,9 +24,42 @@ def model_setting(extraction_model_group_id, modelop):
 def test_apply_model_setting(extraction_model_group_id, model_setting, modelop):
     new_setting = modelop.update_model_settings(
         model_group_id=extraction_model_group_id,
-        model_params={"auto_negative_scaling": model_setting},
+        model_type="text_extraction",
+        auto_negative_scaling=model_setting,
     )
     assert model_setting == new_setting["auto_negative_scaling"]
+
+
+@pytest.mark.parametrize(
+    "model_type",
+    ["text_extractions", "text_classificatio", None],
+)
+def test_invalid_model_type(
+    extraction_model_group_id, model_setting, modelop, model_type
+):
+    with pytest.raises(ValueError):
+        _ = modelop.update_model_settings(
+            model_group_id=extraction_model_group_id,
+            model_type=model_type,
+            auto_negative_scaling=model_setting,
+        )
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        ({"max_empty_chunk_ratio": -10}),
+        ({"subtoken_prediction": True}),
+        ({"base_models": "roberto"}),
+    ],
+)
+def test_invalid_parameter(extraction_model_group_id, modelop, params):
+    with pytest.raises(ValueError):
+        _ = modelop.update_model_settings(
+            model_group_id=extraction_model_group_id,
+            model_type="text_extraction",
+            **params
+        )
 
 
 def test_no_model_found(modelop, extraction_model_group_id):

@@ -93,21 +93,22 @@ class ModelOp:
         )
 
     def update_model_settings(
-        self, model_group_id: int, model_params: dict
+        self, model_group_id: int, model_type: str, **kwargs
     ) -> dict[str, object]:
         """
         Update group model settings based on specified model training options.
 
         Args:
              model_group_id (int): id of model group
-             model_parms (dict): Dictionary of Advanced Model Training Options
+             model_type (str): type of model ("text_extraction", "text_classification")
+             **kwargs: Advanced Model Training Options
 
             Default values of Advanced Model Training Options and the avaiable parameters:
                     For Text Extraction Model:
-                        max_empty_chunk_ratio : 1.0
+                        max_empty_chunk_ratio : 1.0 (min of 0, no max value: a large number effectivly turns this option off)
                         auto_negative_scaling : True
                         optimize_for : "predict_speed" ( "predict_speed", "accuracy", "speed", "accuracy_fp16" and "predict_speed_fp16")
-                        subtoken_prediction : True
+                        subtoken_predictions : True
                         base_model : "roberta" ("roberta", "small" (distilled version of RoBERTa), "multilingual", "fast", "textcnn", "fasttextcnn")
                         class_weight : "sqrt" ("linear", "sqrt", "log", None)
 
@@ -116,7 +117,6 @@ class ModelOp:
         Returns:
             dict: Dictionary of advanced model training options
         """
-
         model = self.client.call(
             GraphQLRequest(
                 """
@@ -134,7 +134,9 @@ class ModelOp:
                 """,
                 {
                     "modelGroupId": model_group_id,
-                    "modelTrainingOptions": json.dumps(model_params),
+                    "modelTrainingOptions": json.dumps(
+                        self._parameter_check(model_type, **kwargs)
+                    ),
                 },
             )
         )
@@ -143,3 +145,56 @@ class ModelOp:
         )
         options["id"] = model["updateModelGroupSettings"]["modelOptions"]["id"]
         return options
+
+    def _parameter_check(self, model_type, **kwargs):
+        text_extraction_params = {
+            "max_empty_chunk_ratio": lambda value: 0 <= value <= 1.0e5,
+            "auto_negative_scaling": [True, False],
+            "optimize_for": [
+                "predict_speed",
+                "accuracy",
+                "speed",
+                "accuracy_fp16",
+                "predict_speed_fp16",
+            ],
+            "subtoken_predictions": [True, False],
+            "base_model": [
+                "roberta",
+                "small",
+                "multilingual",
+                "fast",
+                "textcnn",
+                "fasttextcnn",
+            ],
+            "class_weight": ["linear", "sqrt", "log", None],
+        }
+
+        text_classification_params = {
+            "model_type": ["tfidf_lr", "tfidf_gbt", "standard", "finetune"]
+        }
+
+        if model_type == "text_extraction":
+            acceptable_params = text_extraction_params
+        elif model_type == "text_classification":
+            acceptable_params = text_classification_params
+        else:
+            raise ValueError(f"Invalid model type: {model_type}")
+
+        model_params = {}
+        for param, value in kwargs.items():
+            if param in acceptable_params:
+                # for parameters that contain functions for continuous values
+                if callable(acceptable_params[param]):
+                    validation_func = acceptable_params[param]
+                    if not validation_func(value):
+                        raise ValueError(f"Invalid value for {param}: {value}")
+                    else:
+                        model_params[param] = value
+                elif value in acceptable_params[param]:
+                    model_params[param] = value
+                else:
+                    raise ValueError(f"Invalid value for {param}: {value}")
+            else:
+                raise ValueError(f"Invalid parameter for {model_type}: {param}")
+
+        return model_params
