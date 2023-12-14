@@ -11,8 +11,9 @@ from indico.types import Dataset, ModelGroup, Workflow
 from indico import IndicoClient
 from indico.errors import IndicoRequestError
 
+from indico_toolkit import ToolkitInputError
+from indico_toolkit.retry import retry
 from indico_toolkit.types import Predictions
-from indico_toolkit import ToolkitStatusError, retry
 
 
 class IndicoWrapper:

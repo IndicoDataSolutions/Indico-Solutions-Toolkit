@@ -3,7 +3,8 @@ from io import StringIO
 import pandas as pd
 from indico.types.export import Export
 from indico import IndicoClient, IndicoRequestError
-from indico_toolkit import retry, ToolkitInputError
+from indico_toolkit import ToolkitInputError
+from indico_toolkit.retry import retry
 from indico.queries import (
     RetrieveStorageObject,
     DownloadExport,

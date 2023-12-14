@@ -1,6 +1,6 @@
 import pytest
 
-from indico_toolkit import retry
+from indico_toolkit.retry import retry, MaxRetriesExceeded
 
 
 @retry(Exception)
@@ -26,7 +26,7 @@ def test_retry_max_exceeded() -> None:
     global calls
     calls = 0
 
-    with pytest.raises(Exception):
+    with pytest.raises(MaxRetriesExceeded):
         raises_exceptions()
 
     assert calls == 6
