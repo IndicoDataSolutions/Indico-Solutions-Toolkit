@@ -68,7 +68,7 @@ class IndicoWrapper:
             )
         )
 
-    @retry((IndicoRequestError, ConnectionError))
+    @retry(IndicoRequestError, ConnectionError)
     def get_storage_object(self, storage_url: str):
         return self.client.call(RetrieveStorageObject(storage_url))
 
@@ -78,7 +78,7 @@ class IndicoWrapper:
     def get_job_status(self, job_id: int, wait: bool = True, timeout: float = None):
         return self.client.call(JobStatus(id=job_id, wait=wait, timeout=timeout))
 
-    @retry((IndicoRequestError, ConnectionError))
+    @retry(IndicoRequestError, ConnectionError)
     def graphQL_request(self, graphql_query: str, variables: dict = None):
         return self.client.call(
             GraphQLRequest(query=graphql_query, variables=variables)

@@ -3,21 +3,30 @@ import pytest
 from indico_toolkit import retry
 
 
-counter = 0
+@retry(Exception)
+def no_exceptions():
+    return True
 
 
-def test_retry_decor():
-    @retry(Exception)
-    def no_exceptions():
-        return True
-    
-    @retry((RuntimeError, ConnectionError), num_retries=7)
-    def raises_exceptions():
-        global counter
-        counter +=1
-        raise RuntimeError("Test runtime fail")
-    
-    assert no_exceptions()
-    with pytest.raises(RuntimeError):
+def test_retry_decorator_returns() -> None:
+    assert no_exceptions() is True
+
+
+calls = 0
+
+
+@retry(RuntimeError, count=5, wait=0)
+def raises_exceptions():
+    global calls
+    calls += 1
+    raise RuntimeError()
+
+
+def test_retry_max_exceeded() -> None:
+    global calls
+    calls = 0
+
+    with pytest.raises(Exception):
         raises_exceptions()
-    assert counter == 8
+
+    assert calls == 6
