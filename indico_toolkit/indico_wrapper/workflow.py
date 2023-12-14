@@ -1,5 +1,6 @@
 import time
 import io
+from os import PathLike
 from typing import List, Union, Dict
 from indico import IndicoClient, IndicoRequestError
 from indico.queries import (
@@ -60,7 +61,7 @@ class Workflow(IndicoWrapper):
         """
         return self.client.call(
             WorkflowSubmission(
-                workflow_id=workflow_id, files=pdf_filepaths, streams=streams
+                workflow_id=workflow_id, files=files, streams=streams
             )
         )
 
