@@ -25,6 +25,18 @@ class PredictionList(list[PredictionType]):
         """
         return set(prediction.model for prediction in self)
 
+    def apply(
+        self,
+        function: Callable[[PredictionType], None],
+    ) -> "Self":
+        """
+        Apply a function to a list of predictions.
+        """
+        for prediction in self:
+            function(prediction)
+
+        return self
+
     def where(
         self,
         *,
@@ -56,18 +68,6 @@ class PredictionList(list[PredictionType]):
             predicates.append(predicate)
 
         return type(self)(nfilter(predicates, self))
-
-    def apply(
-        self,
-        function: Callable[[PredictionType], None],
-    ) -> "Self":
-        """
-        Apply a function to a list of predictions.
-        """
-        for prediction in self:
-            function(prediction)
-
-        return self
 
 
 class ClassificationList(PredictionList[Classification]):
