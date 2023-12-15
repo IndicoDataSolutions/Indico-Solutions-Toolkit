@@ -90,6 +90,17 @@ class TestPredictionList:
         assert groups["Label A"][0].label == "Label A"
 
     @staticmethod
+    def test_orderby(predictions: PredictionList[Prediction]) -> None:
+        ordered = predictions.orderby(attrgetter("confidence"), reverse=True)
+
+        assert ordered[0].confidence == 0.75
+
+    @staticmethod
+    def test_orderby_no_in_place_sort(predictions: PredictionList[Prediction]) -> None:
+        with pytest.raises(RuntimeError):
+            predictions.sort()
+
+    @staticmethod
     def test_where_model(predictions: PredictionList[Prediction]) -> None:
         filtered = predictions.where(model="Model A")
 
@@ -196,6 +207,12 @@ class TestClassificationList:
         assert isinstance(groups["Label A"], ClassificationList)
 
     @staticmethod
+    def test_orderby_return_type(classifications: ClassificationList) -> None:
+        ordered = classifications.orderby(attrgetter("confidence"), reverse=True)
+
+        assert isinstance(ordered, ClassificationList)
+
+    @staticmethod
     def test_to_changes(classifications: ClassificationList) -> None:
         assert classifications.to_changes() == {
             "Model A": {
@@ -284,6 +301,12 @@ class TestExtractionList:
         groups = extractions.groupby(attrgetter("label"))
 
         assert isinstance(groups["Label A"], ExtractionList)
+
+    @staticmethod
+    def test_orderby_return_type(extractions: ExtractionList) -> None:
+        ordered = extractions.orderby(attrgetter("confidence"), reverse=True)
+
+        assert isinstance(ordered, ExtractionList)
 
     @staticmethod
     def test_to_changes(extractions: ExtractionList) -> None:

@@ -54,6 +54,24 @@ class PredictionList(list[PredictionType]):
 
         return grouped
 
+    def orderby(
+        self,
+        key: Callable[[PredictionType], bool],
+        *,
+        reverse: bool = False,
+    ) -> "Self":
+        """
+        Return a new `PredictionList[PredictionType]` with `PredictionTypes`s
+        sorted by `key`. Defaults to confidence ascending.
+        """
+        return type(self)(sorted(self, key=key, reverse=reverse))
+
+    def sort(self, *args: object, **kwargs: object) -> None:
+        raise RuntimeError(
+            "PredictionLists should not be modified in place. "
+            "Use `.orderby()` instead."
+        )
+
     def where(
         self,
         *,
