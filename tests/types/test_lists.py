@@ -1,3 +1,5 @@
+from operator import attrgetter
+
 import pytest
 
 from indico_toolkit.types import (
@@ -78,6 +80,14 @@ class TestPredictionList:
         predictions.apply(reverse).apply(truncate)
 
         assert predictions[0].label == "A l"
+
+    @staticmethod
+    def test_groupby(predictions: PredictionList[Prediction]) -> None:
+        groups = predictions.groupby(attrgetter("label"))
+
+        assert len(tuple(groups.keys())) == 3
+        assert len(groups["Label A"]) == 1
+        assert groups["Label A"][0].label == "Label A"
 
     @staticmethod
     def test_where_model(predictions: PredictionList[Prediction]) -> None:
@@ -180,6 +190,12 @@ class TestClassificationList:
         )
 
     @staticmethod
+    def test_groupby_return_type(classifications: ClassificationList) -> None:
+        groups = classifications.groupby(attrgetter("label"))
+
+        assert isinstance(groups["Label A"], ClassificationList)
+
+    @staticmethod
     def test_to_changes(classifications: ClassificationList) -> None:
         assert classifications.to_changes() == {
             "Model A": {
@@ -262,6 +278,12 @@ class TestExtractionList:
 
         assert not extractions[0].accepted
         assert extractions[0].rejected
+
+    @staticmethod
+    def test_groupby_return_type(extractions: ExtractionList) -> None:
+        groups = extractions.groupby(attrgetter("label"))
+
+        assert isinstance(groups["Label A"], ExtractionList)
 
     @staticmethod
     def test_to_changes(extractions: ExtractionList) -> None:

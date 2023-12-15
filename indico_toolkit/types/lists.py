@@ -1,3 +1,4 @@
+from collections import defaultdict
 from collections.abc import Callable
 from typing import TYPE_CHECKING, TypeVar
 
@@ -8,6 +9,7 @@ from .predictions import Classification, Extraction, Prediction
 from .utils import nfilter
 
 PredictionType = TypeVar("PredictionType", bound=Prediction)
+KeyType = TypeVar("KeyType")
 
 
 class PredictionList(list[PredictionType]):
@@ -36,6 +38,21 @@ class PredictionList(list[PredictionType]):
             function(prediction)
 
         return self
+
+    def groupby(
+        self,
+        key: Callable[[PredictionType], KeyType],
+    ) -> "dict[KeyType, Self]":
+        """
+        Return a dictionary of `PredictionList[PredictionType]` with `PredictionType`s
+        grouped by `KeyType` using `key`.
+        """
+        grouped = defaultdict(type(self))  # type: ignore[var-annotated]
+
+        for prediction in self:
+            grouped[key(prediction)].append(prediction)
+
+        return grouped
 
     def where(
         self,
