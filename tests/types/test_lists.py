@@ -16,7 +16,7 @@ from indico_toolkit.types import (
 class TestPredictionList:
     @staticmethod
     @pytest.fixture
-    def predictions() -> PredictionList[Prediction]:
+    def predictions() -> PredictionList:
         return PredictionList(
             [
                 Prediction(
@@ -53,15 +53,15 @@ class TestPredictionList:
         )
 
     @staticmethod
-    def test_labels(predictions: PredictionList[Prediction]) -> None:
+    def test_labels(predictions: PredictionList) -> None:
         assert predictions.labels == {"Label A", "Label B", "Label C"}
 
     @staticmethod
-    def test_models(predictions: PredictionList[Prediction]) -> None:
+    def test_models(predictions: PredictionList) -> None:
         assert predictions.models == {"Model A", "Model B", "Model C"}
 
     @staticmethod
-    def test_apply(predictions: PredictionList[Prediction]) -> None:
+    def test_apply(predictions: PredictionList) -> None:
         def reverse(prediction: Prediction) -> None:
             prediction.label = "".join(reversed(prediction.label))
 
@@ -70,7 +70,7 @@ class TestPredictionList:
         assert predictions[0].label == "A lebaL"
 
     @staticmethod
-    def test_apply_chain(predictions: PredictionList[Prediction]) -> None:
+    def test_apply_chain(predictions: PredictionList) -> None:
         def reverse(prediction: Prediction) -> None:
             prediction.label = "".join(reversed(prediction.label))
 
@@ -82,7 +82,7 @@ class TestPredictionList:
         assert predictions[0].label == "A l"
 
     @staticmethod
-    def test_groupby(predictions: PredictionList[Prediction]) -> None:
+    def test_groupby(predictions: PredictionList) -> None:
         groups = predictions.groupby(attrgetter("label"))
 
         assert len(tuple(groups.keys())) == 3
@@ -90,18 +90,18 @@ class TestPredictionList:
         assert groups["Label A"][0].label == "Label A"
 
     @staticmethod
-    def test_orderby(predictions: PredictionList[Prediction]) -> None:
+    def test_orderby(predictions: PredictionList) -> None:
         ordered = predictions.orderby(attrgetter("confidence"), reverse=True)
 
         assert ordered[0].confidence == 0.75
 
     @staticmethod
-    def test_orderby_no_in_place_sort(predictions: PredictionList[Prediction]) -> None:
+    def test_orderby_no_in_place_sort(predictions: PredictionList) -> None:
         with pytest.raises(RuntimeError):
             predictions.sort()
 
     @staticmethod
-    def test_where_model(predictions: PredictionList[Prediction]) -> None:
+    def test_where_model(predictions: PredictionList) -> None:
         filtered = predictions.where(model="Model A")
 
         assert isinstance(filtered, PredictionList)
@@ -109,7 +109,7 @@ class TestPredictionList:
         assert filtered[0].model == "Model A"
 
     @staticmethod
-    def test_where_label(predictions: PredictionList[Prediction]) -> None:
+    def test_where_label(predictions: PredictionList) -> None:
         filtered = predictions.where(label="Label A")
 
         assert isinstance(filtered, PredictionList)
@@ -117,7 +117,7 @@ class TestPredictionList:
         assert filtered[0].label == "Label A"
 
     @staticmethod
-    def test_where_min_confidence(predictions: PredictionList[Prediction]) -> None:
+    def test_where_min_confidence(predictions: PredictionList) -> None:
         filtered = predictions.where(min_confidence=0.75)
 
         assert isinstance(filtered, PredictionList)
@@ -125,7 +125,7 @@ class TestPredictionList:
         assert filtered[0].confidence == 0.75
 
     @staticmethod
-    def test_where_max_confidence(predictions: PredictionList[Prediction]) -> None:
+    def test_where_max_confidence(predictions: PredictionList) -> None:
         filtered = predictions.where(max_confidence=0.25)
 
         assert isinstance(filtered, PredictionList)
@@ -133,7 +133,7 @@ class TestPredictionList:
         assert filtered[0].confidence == 0.25
 
     @staticmethod
-    def test_where_predicate(predictions: PredictionList[Prediction]) -> None:
+    def test_where_predicate(predictions: PredictionList) -> None:
         filtered = predictions.where(predicate=lambda pred: 0.4 < pred.confidence < 0.6)
 
         assert isinstance(filtered, PredictionList)
@@ -141,7 +141,7 @@ class TestPredictionList:
         assert filtered[0].confidence == 0.5
 
     @staticmethod
-    def test_where_multi_chain(predictions: PredictionList[Prediction]) -> None:
+    def test_where_multi_chain(predictions: PredictionList) -> None:
         multi_filtered = predictions.where(
             min_confidence=0.4,
             max_confidence=0.6,

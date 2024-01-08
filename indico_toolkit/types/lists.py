@@ -12,7 +12,7 @@ PredictionType = TypeVar("PredictionType", bound=Prediction)
 KeyType = TypeVar("KeyType")
 
 
-class PredictionList(list[PredictionType]):
+class BaseList(list[PredictionType]):
     @property
     def labels(self) -> set[str]:
         """
@@ -105,7 +105,7 @@ class PredictionList(list[PredictionType]):
         return type(self)(nfilter(predicates, self))
 
 
-class ClassificationList(PredictionList[Classification]):
+class ClassificationList(BaseList[Classification]):
     def to_changes(self) -> dict[str, object]:
         """
         Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
@@ -115,7 +115,7 @@ class ClassificationList(PredictionList[Classification]):
         }
 
 
-class ExtractionList(PredictionList[Extraction]):
+class ExtractionList(BaseList[Extraction]):
     def accept(self) -> "ExtractionList":
         """
         Mark predictions as accepted for Autoreview.
@@ -143,3 +143,7 @@ class ExtractionList(PredictionList[Extraction]):
             )
             for model in self.models
         }
+
+
+class PredictionList(BaseList[Prediction]):
+    pass
