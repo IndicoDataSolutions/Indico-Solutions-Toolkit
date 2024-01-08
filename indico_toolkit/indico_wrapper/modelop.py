@@ -4,6 +4,33 @@ import json
 import string
 from typing import Iterator
 
+# valid model option parameters
+TEXT_EXTRACTION_PARAMS = {
+    "max_empty_chunk_ratio": lambda value: 0 <= value <= 1.0e5,
+    "auto_negative_scaling": [True, False],
+    "optimize_for": [
+        "predict_speed",
+        "accuracy",
+        "speed",
+        "accuracy_fp16",
+        "predict_speed_fp16",
+    ],
+    "subtoken_predictions": [True, False],
+    "base_model": [
+        "roberta",
+        "small",
+        "multilingual",
+        "fast",
+        "textcnn",
+        "fasttextcnn",
+    ],
+    "class_weight": ["linear", "sqrt", "log", None],
+}
+
+TEXT_CLASSIFICATION_PARAMS = {
+    "model_type": ["tfidf_lr", "tfidf_gbt", "standard", "finetune"]
+}
+
 
 class ModelOp:
     """
@@ -93,7 +120,7 @@ class ModelOp:
         )
 
     def update_model_settings(
-        self, model_group_id: int, model_type: str, **kwargs
+        self, model_group_id: int, model_type: str, **model_training_options
     ) -> dict[str, object]:
         """
         Update group model settings based on specified model training options.
@@ -135,7 +162,7 @@ class ModelOp:
                 {
                     "modelGroupId": model_group_id,
                     "modelTrainingOptions": json.dumps(
-                        self._parameter_check(model_type, **kwargs)
+                        self._parameter_check(model_type, **model_training_options)
                     ),
                 },
             )
@@ -146,55 +173,20 @@ class ModelOp:
         options["id"] = model["updateModelGroupSettings"]["modelOptions"]["id"]
         return options
 
-    def _parameter_check(self, model_type, **kwargs):
-        text_extraction_params = {
-            "max_empty_chunk_ratio": lambda value: 0 <= value <= 1.0e5,
-            "auto_negative_scaling": [True, False],
-            "optimize_for": [
-                "predict_speed",
-                "accuracy",
-                "speed",
-                "accuracy_fp16",
-                "predict_speed_fp16",
-            ],
-            "subtoken_predictions": [True, False],
-            "base_model": [
-                "roberta",
-                "small",
-                "multilingual",
-                "fast",
-                "textcnn",
-                "fasttextcnn",
-            ],
-            "class_weight": ["linear", "sqrt", "log", None],
-        }
-
-        text_classification_params = {
-            "model_type": ["tfidf_lr", "tfidf_gbt", "standard", "finetune"]
-        }
-
+    def _parameter_check(self, model_type, **model_training_options):
         if model_type == "text_extraction":
-            acceptable_params = text_extraction_params
+            valid_params = TEXT_EXTRACTION_PARAMS
         elif model_type == "text_classification":
-            acceptable_params = text_classification_params
+            valid_params = TEXT_CLASSIFICATION_PARAMS
         else:
             raise ValueError(f"Invalid model type: {model_type}")
 
-        model_params = {}
-        for param, value in kwargs.items():
-            if param in acceptable_params:
-                # for parameters that contain functions for continuous values
-                if callable(acceptable_params[param]):
-                    validation_func = acceptable_params[param]
-                    if not validation_func(value):
-                        raise ValueError(f"Invalid value for {param}: {value}")
-                    else:
-                        model_params[param] = value
-                elif value in acceptable_params[param]:
-                    model_params[param] = value
-                else:
-                    raise ValueError(f"Invalid value for {param}: {value}")
-            else:
+        for param, value in model_training_options.items():
+            if param not in valid_params:
                 raise ValueError(f"Invalid parameter for {model_type}: {param}")
+            if callable(valid_params[param]) and not valid_params[param](value):
+                raise ValueError(f"Invalid value for parameter '{param}': {value}")
+            if value not in valid_params[param]:
+                raise ValueError(f"Invalid value for parameter '{param}': {value}")
 
-        return model_params
+        return model_training_options
