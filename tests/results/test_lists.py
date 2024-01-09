@@ -2,7 +2,7 @@ from operator import attrgetter
 
 import pytest
 
-from indico_toolkit.types import (
+from indico_toolkit.results import (
     Classification,
     ClassificationList,
     Extraction,

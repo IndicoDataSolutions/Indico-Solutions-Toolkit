@@ -1,6 +1,6 @@
 import pytest
 
-from indico_toolkit.types import Classification, Extraction
+from indico_toolkit.results import Classification, Extraction
 
 
 class TestV1Classification:

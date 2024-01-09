@@ -1,4 +1,4 @@
-from indico_toolkit.types import Span
+from indico_toolkit.results import Span
 
 
 class TestV1Span:

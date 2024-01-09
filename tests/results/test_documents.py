@@ -1,6 +1,6 @@
 import pytest
 
-from indico_toolkit.types import (
+from indico_toolkit.results import (
     ClassificationList,
     Document,
     ExtractionList,

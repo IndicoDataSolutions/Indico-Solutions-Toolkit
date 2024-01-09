@@ -4,9 +4,9 @@ from pathlib import Path
 import pytest
 from pytest_mock import MockerFixture
 
-from indico_toolkit.types import Document, ResultFileError, Submission
+from indico_toolkit.results import Document, ResultFileError, Submission
 
-data_folder = Path(__file__).parent.parent / "data" / "types"
+data_folder = Path(__file__).parent.parent / "data" / "results"
 
 
 def test_result_file_version() -> None:

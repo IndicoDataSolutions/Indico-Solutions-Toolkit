@@ -1,4 +1,4 @@
-from indico_toolkit.types import Review, ReviewType
+from indico_toolkit.results import Review, ReviewType
 
 
 class TestV1Review:

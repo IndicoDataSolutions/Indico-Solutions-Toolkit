@@ -1,7 +1,7 @@
 import pytest
 
-from indico_toolkit.types import ResultFileError
-from indico_toolkit.types.utils import exists, get, nfilter
+from indico_toolkit.results import ResultFileError
+from indico_toolkit.results.utils import exists, get, nfilter
 
 
 def test_exists() -> None:
