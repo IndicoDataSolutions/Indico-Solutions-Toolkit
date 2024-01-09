@@ -59,6 +59,20 @@ class TestDocument:
                                     "confidence": {},
                                     "label": "Label E",
                                 },
+                                "post_reviews": [
+                                    {
+                                        "confidence": {},
+                                        "label": "Label E",
+                                    },
+                                    {
+                                        "confidence": {},
+                                        "label": "Label E",
+                                    },
+                                ],
+                                "final": {
+                                    "confidence": {},
+                                    "label": "Label E",
+                                },
                             },
                         },
                     }
@@ -108,6 +122,11 @@ class TestDocument:
                             },
                             "Model B": {
                                 "pre_review": {
+                                    "confidence": {},
+                                    "label": "Label E",
+                                },
+                                "post_reviews": [],
+                                "final": {
                                     "confidence": {},
                                     "label": "Label E",
                                 },
@@ -204,6 +223,20 @@ class TestV1Document:
                                     "confidence": {},
                                     "label": "Email",
                                 },
+                                "post_reviews": [
+                                    {
+                                        "confidence": {},
+                                        "label": "Email",
+                                    },
+                                    {
+                                        "confidence": {},
+                                        "label": "Email",
+                                    },
+                                ],
+                                "final": {
+                                    "confidence": {},
+                                    "label": "Email",
+                                },
                             },
                         },
                     }
@@ -218,18 +251,17 @@ class TestV1Document:
         assert document.id is None
         assert document.filename is None
         assert document.etl_output == "indico-file:///etl_output.json"
-        assert document.classification.label == "Email"
-        assert document.subdocuments == []
-        assert isinstance(document.classifications, ClassificationList)
-        assert len(document.classifications) == 1
-        assert isinstance(document.pre_review, ExtractionList)
-        assert len(document.pre_review) == 4
-        assert isinstance(document.auto_review, ExtractionList)
-        assert len(document.auto_review) == 3
-        assert isinstance(document.hitl_review, ExtractionList)
-        assert len(document.hitl_review) == 2
-        assert isinstance(document.final, ExtractionList)
-        assert len(document.final) == 1
+        assert document.pre_review.classification.label == "Email"
+        assert isinstance(document.pre_review.classifications, ClassificationList)
+        assert len(document.pre_review.classifications) == 1
+        assert isinstance(document.pre_review.extractions, ExtractionList)
+        assert len(document.pre_review.extractions) == 4
+        assert isinstance(document.auto_review.extractions, ExtractionList)
+        assert len(document.auto_review.extractions) == 3
+        assert isinstance(document.hitl_review.extractions, ExtractionList)
+        assert len(document.hitl_review.extractions) == 2
+        assert isinstance(document.final.extractions, ExtractionList)
+        assert len(document.final.extractions) == 1
 
     @staticmethod
     def test_no_classification() -> None:
@@ -246,7 +278,7 @@ class TestV1Document:
         )
 
         with pytest.raises(MultipleValuesError):
-            document.classification
+            document.pre_review.classification
 
     @staticmethod
     def test_multiple_classification() -> None:
@@ -286,7 +318,7 @@ class TestV1Document:
         )
 
         with pytest.raises(MultipleValuesError):
-            document.classification
+            document.pre_review.classification
 
     @staticmethod
     def test_labels() -> None:
@@ -333,6 +365,20 @@ class TestV1Document:
                             },
                             "Classification": {
                                 "pre_review": {
+                                    "confidence": {},
+                                    "label": "Label E",
+                                },
+                                "post_reviews": [
+                                    {
+                                        "confidence": {},
+                                        "label": "Label E",
+                                    },
+                                    {
+                                        "confidence": {},
+                                        "label": "Label E",
+                                    },
+                                ],
+                                "final": {
                                     "confidence": {},
                                     "label": "Label E",
                                 },
@@ -385,6 +431,20 @@ class TestV1Document:
                             },
                             "Model B": {
                                 "pre_review": {
+                                    "confidence": {},
+                                    "label": "Label E",
+                                },
+                                "post_reviews": [
+                                    {
+                                        "confidence": {},
+                                        "label": "Label E",
+                                    },
+                                    {
+                                        "confidence": {},
+                                        "label": "Label E",
+                                    },
+                                ],
+                                "final": {
                                     "confidence": {},
                                     "label": "Label E",
                                 },

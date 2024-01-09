@@ -1,4 +1,4 @@
-from .documents import Document, Subdocument
+from .documents import Document
 from .errors import MultipleValuesError, ResultFileError
 from .lists import ClassificationList, ExtractionList, PredictionList
 from .predictions import Classification, Extraction, Prediction
@@ -19,6 +19,5 @@ __all__ = (
     "Review",
     "ReviewType",
     "Span",
-    "Subdocument",
     "Submission",
 )

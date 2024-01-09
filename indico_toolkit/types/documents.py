@@ -2,12 +2,11 @@ from dataclasses import dataclass
 from functools import partial
 from typing import TypeAlias
 
-from .errors import MultipleValuesError, ResultFileError
-from .lists import ClassificationList, ExtractionList
+from .errors import ResultFileError
+from .lists import PredictionList
 from .modelgroups import ModelGroup, ModelType
 from .predictions import Classification, Extraction
 from .reviews import Review, ReviewType
-from .subdocuments import Subdocument, SubdocumentList
 from .utils import exists, get
 
 Model: TypeAlias = str
@@ -18,22 +17,10 @@ class Document:
     id: int | None
     filename: str | None
     etl_output: str
-    classifications: ClassificationList
-    pre_review: ExtractionList
-    auto_review: ExtractionList
-    hitl_review: ExtractionList
-    final: ExtractionList
-    subdocuments: SubdocumentList
-
-    @property
-    def classification(self) -> Classification:
-        if len(self.classifications) != 1:
-            raise MultipleValuesError(
-                f"Document has {len(self.classifications)} classifications. "
-                "Use `Document.classifications` instead."
-            )
-
-        return self.classifications[0]
+    pre_review: PredictionList
+    auto_review: PredictionList
+    hitl_review: PredictionList
+    final: PredictionList
 
     @property
     def labels(self) -> set[str]:
@@ -41,12 +28,10 @@ class Document:
         Return the all of the labels for this document.
         """
         return (
-            self.classifications.labels
-            | self.pre_review.labels
+            self.pre_review.labels
             | self.auto_review.labels
             | self.hitl_review.labels
             | self.final.labels
-            | self.subdocuments.labels
         )
 
     @property
@@ -55,12 +40,10 @@ class Document:
         Return the all of the models for this document.
         """
         return (
-            self.classifications.models
-            | self.pre_review.models
+            self.pre_review.models
             | self.auto_review.models
             | self.hitl_review.models
             | self.final.models
-            | self.subdocuments.models
         )
 
     @classmethod
@@ -72,19 +55,41 @@ class Document:
         document = get(results, "document", dict)
         results = get(document, "results", dict)
 
-        classifications = ClassificationList()
-        pre_review = ExtractionList()
-        auto_review = ExtractionList()
-        hitl_review = ExtractionList()
-        final = ExtractionList()
+        pre_review = PredictionList()
+        auto_review = PredictionList()
+        hitl_review = PredictionList()
+        final = PredictionList()
 
         for model, predictions_by_review in results.items():
+            # Check for classifications which have dict types.
             if exists(predictions_by_review, "pre_review", dict):
-                classification_dict = get(predictions_by_review, "pre_review", dict)
-                classification = Classification._from_v1_result(
-                    model, classification_dict
+                pre_review_dict = get(predictions_by_review, "pre_review", dict)
+                post_reviews_list = get(predictions_by_review, "post_reviews", list)
+                auto_review_dict = cls._get_post_review_dict(
+                    post_reviews_list, reviews, ReviewType.AUTO
                 )
-                classifications.append(classification)
+                hitl_review_dict = cls._get_post_review_dict(
+                    post_reviews_list, reviews, ReviewType.HITL
+                )
+
+                try:
+                    final_dict = get(predictions_by_review, "final", dict)
+                except ResultFileError:
+                    # Rejected submissions do not have final predictions.
+                    final_dict = None
+
+                classification_for_model = partial(
+                    Classification._from_v1_result, model
+                )
+
+                pre_review.append(classification_for_model(pre_review_dict))
+                if auto_review_dict:
+                    auto_review.append(classification_for_model(auto_review_dict))
+                if hitl_review_dict:
+                    hitl_review.append(classification_for_model(hitl_review_dict))
+                if final_dict:
+                    final.append(classification_for_model(final_dict))
+            # Check for extractions which have list types.
             elif exists(predictions_by_review, "pre_review", list):
                 pre_review_list = get(predictions_by_review, "pre_review", list)
                 post_reviews_list = get(predictions_by_review, "post_reviews", list)
@@ -112,13 +117,27 @@ class Document:
             id=None,  # v1 sumissions do not have file IDs.
             filename=None,  # v1 submissions do not include the original filename.
             etl_output=get(result, "etl_output", str),
-            classifications=classifications,
             pre_review=pre_review,
             auto_review=auto_review,
             hitl_review=hitl_review,
             final=final,
-            subdocuments=SubdocumentList(),  # v1 submissions do not have unbundled subdocuments.
         )
+
+    @staticmethod
+    def _get_post_review_dict(
+        post_reviews_list: list[dict[str, object]],
+        reviews: list[Review],
+        review_type: ReviewType,
+    ) -> dict[str, object] | None:
+        """
+        Return the `post_reviews` dict that matches the first non-rejected review of the
+        specified type, or None if there are no matches.
+        """
+        for post_review_dict, review in zip(post_reviews_list, reviews):
+            if review.type == review_type and not review.rejected:
+                return post_review_dict
+        else:
+            return None
 
     @staticmethod
     def _get_post_review_list(
@@ -143,9 +162,7 @@ class Document:
         """
         Bundled Submission Workflows.
         """
-        classifications = ClassificationList()
-        extractions = ExtractionList()
-
+        predictions = PredictionList()
         model_results = get(submission_result, "model_results", dict)
         original = get(model_results, "ORIGINAL", dict)
 
@@ -153,12 +170,12 @@ class Document:
             model_group = model_groups_by_id[int(model_id_str)]
 
             if model_group.type == ModelType.CLASSIFICATION:
-                classifications.extend(
+                predictions.extend(
                     Classification._from_v2_result(model_group.name, prediction)
                     for prediction in predictions_list
                 )
             elif model_group.type == ModelType.EXTRACTION:
-                extractions.extend(
+                predictions.extend(
                     Extraction._from_v2_result(model_group.name, prediction)
                     for prediction in predictions_list
                 )
@@ -167,12 +184,10 @@ class Document:
             id=get(submission_result, "submissionfile_id", int),
             filename=get(submission_result, "input_filename", str),
             etl_output=get(submission_result, "etl_output", str),
-            classifications=classifications,
-            pre_review=extractions,
-            auto_review=ExtractionList(),  # v2 submissions do not support review yet.
-            hitl_review=ExtractionList(),  # v2 submissions do not support review yet.
-            final=extractions,
-            subdocuments=SubdocumentList(),  # v2 submissions do not have unbundled subdocuments.
+            pre_review=predictions,
+            auto_review=PredictionList(),  # v2 submissions do not support review yet.
+            hitl_review=PredictionList(),  # v2 submissions do not support review yet.
+            final=predictions,
         )
 
     @classmethod
@@ -182,10 +197,7 @@ class Document:
         """
         Bundled Submission Workflows.
         """
-        classifications = ClassificationList()
-        extractions = ExtractionList()
-        subdocuments = SubdocumentList()
-
+        predictions = PredictionList()
         model_results = get(submission_result, "model_results", dict)
         original = get(model_results, "ORIGINAL", dict)
 
@@ -193,37 +205,24 @@ class Document:
             model_group = model_groups_by_id[int(model_id_str)]
 
             if model_group.type == ModelType.CLASSIFICATION:
-                classifications.extend(
+                predictions.extend(
                     Classification._from_v3_result(model_group.name, prediction)
                     for prediction in predictions_list
                 )
             elif model_group.type == ModelType.EXTRACTION:
-                extractions.extend(
+                predictions.extend(
                     Extraction._from_v3_result(model_group.name, prediction)
                     for prediction in predictions_list
                 )
             elif model_group.type == ModelType.UNBUNDLING:
-                subdocuments.extend(
-                    Subdocument._from_v3_result(model_group.name, prediction)
-                    for prediction in predictions_list
-                )
-
-        for subdocument in subdocuments:
-            pages = {span.page for span in subdocument.spans}
-            subdocument.extractions = extractions.where(
-                predicate=lambda extraction: any(
-                    span.page in pages for span in extraction.spans
-                )
-            )
+                raise NotImplementedError()
 
         return Document(
             id=get(submission_result, "submissionfile_id", int),
             filename=get(submission_result, "input_filename", str),
             etl_output=get(submission_result, "etl_output", str),
-            classifications=classifications,
-            pre_review=extractions,
-            auto_review=ExtractionList(),  # v3 submissions do not support review yet.
-            hitl_review=ExtractionList(),  # v3 submissions do not support review yet.
-            final=extractions,
-            subdocuments=subdocuments,
+            pre_review=predictions,
+            auto_review=PredictionList(),  # v3 submissions do not support review yet.
+            hitl_review=PredictionList(),  # v3 submissions do not support review yet.
+            final=predictions,
         )
