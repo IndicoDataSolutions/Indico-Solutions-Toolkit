@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, TypeVar
 if TYPE_CHECKING:
     from typing import Self
 
+from .errors import MultipleValuesError
 from .predictions import Classification, Extraction, Prediction
 from .utils import nfilter
 
@@ -146,4 +147,41 @@ class ExtractionList(BaseList[Extraction]):
 
 
 class PredictionList(BaseList[Prediction]):
-    pass
+    @property
+    def classification(self) -> Classification:
+        """
+        Shortcut to get the single classification in a simple Classify+Extract workflow.
+        """
+        classifications = self.classifications
+
+        if len(classifications) != 1:
+            raise MultipleValuesError(
+                f"Document has {len(classifications)} classifications. "
+                "Use `PredictionList.classifications` instead."
+            )
+
+        return classifications[0]
+
+    @property
+    def classifications(self) -> ClassificationList:
+        """
+        Get classifications as a correctly-typed ClassificationList.
+        """
+        return ClassificationList(
+            filter(
+                lambda prediction: isinstance(prediction, Classification),  # type: ignore[arg-type]
+                self,
+            )
+        )
+
+    @property
+    def extractions(self) -> ExtractionList:
+        """
+        Get extractions as a correctly-typed ExtractionList.
+        """
+        return ExtractionList(
+            filter(
+                lambda prediction: isinstance(prediction, Extraction),  # type: ignore[arg-type]
+                self,
+            )
+        )

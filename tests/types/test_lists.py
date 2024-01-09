@@ -19,7 +19,7 @@ class TestPredictionList:
     def predictions() -> PredictionList:
         return PredictionList(
             [
-                Prediction(
+                Classification(
                     "Model A",
                     "Label A",
                     {
@@ -29,7 +29,7 @@ class TestPredictionList:
                     },
                     {},
                 ),
-                Prediction(
+                Extraction(
                     "Model B",
                     "Label B",
                     {
@@ -38,8 +38,10 @@ class TestPredictionList:
                         "Label C": 0.75,
                     },
                     {},
+                    "Text B",
+                    [Span(page=0, start=1, end=2)],
                 ),
-                Prediction(
+                Extraction(
                     "Model C",
                     "Label C",
                     {
@@ -48,9 +50,29 @@ class TestPredictionList:
                         "Label C": 0.75,
                     },
                     {},
+                    "Text C",
+                    [Span(page=0, start=1, end=2)],
                 ),
             ]
         )
+
+    @staticmethod
+    def test_classification(predictions: PredictionList) -> None:
+        assert isinstance(predictions.classification, Classification)
+
+    @staticmethod
+    def test_classifications(predictions: PredictionList) -> None:
+        classifications = predictions.classifications
+
+        assert isinstance(classifications, ClassificationList)
+        assert len(classifications) == 1
+
+    @staticmethod
+    def test_extractions(predictions: PredictionList) -> None:
+        extractions = predictions.extractions
+
+        assert isinstance(extractions, ExtractionList)
+        assert len(extractions) == 2
 
     @staticmethod
     def test_labels(predictions: PredictionList) -> None:
