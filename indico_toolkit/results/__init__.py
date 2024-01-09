@@ -3,8 +3,8 @@ from os import PathLike
 
 from .documents import Document
 from .errors import MultipleValuesError, ResultFileError
-from .lists import ClassificationList, ExtractionList, PredictionList
-from .predictions import Classification, Extraction, Prediction
+from .lists import ClassificationList, ExtractionList, PredictionList, UnbundlingList
+from .predictions import Classification, Extraction, Prediction, Unbundling
 from .reviews import Review, ReviewType
 from .spans import Span
 from .submissions import Submission
@@ -24,6 +24,8 @@ __all__ = (
     "ReviewType",
     "Span",
     "Submission",
+    "Unbundling",
+    "UnbundlingList",
 )
 
 

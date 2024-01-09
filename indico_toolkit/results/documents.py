@@ -5,7 +5,7 @@ from typing import TypeAlias
 from .errors import ResultFileError
 from .lists import PredictionList
 from .modelgroups import ModelGroup, ModelType
-from .predictions import Classification, Extraction
+from .predictions import Classification, Extraction, Unbundling
 from .reviews import Review, ReviewType
 from .utils import exists, get
 
@@ -215,7 +215,10 @@ class Document:
                     for prediction in predictions_list
                 )
             elif model_group.type == ModelType.UNBUNDLING:
-                raise NotImplementedError()
+                predictions.extend(
+                    Unbundling._from_v3_result(model_group.name, prediction)
+                    for prediction in predictions_list
+                )
 
         return Document(
             id=get(submission_result, "submissionfile_id", int),

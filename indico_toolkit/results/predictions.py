@@ -78,6 +78,37 @@ class Classification(Prediction):
 
 
 @dataclass
+class Unbundling(Prediction):
+    spans: list[Span]
+
+    @property
+    def span(self) -> Span:
+        """
+        Shortcut to get the span of unbundlings that don't have multiple spans.
+        """
+        if len(self.spans) != 1:
+            raise MultipleValuesError(
+                f"Unbundling has {len(self.spans)} spans. "
+                "Use `Unbundling.spans` instead."
+            )
+
+        return self.spans[0]
+
+    @classmethod
+    def _from_v3_result(cls, model: str, unbundling: object) -> "Unbundling":
+        """
+        Classify+Unbundle Workflows.
+        """
+        return Unbundling(
+            model=model,
+            label=get(unbundling, "label", str),
+            confidences=get(unbundling, "confidence", dict),
+            spans=[Span._from_v3_result(unbundling)],
+            extras=cls._extras_from_result(unbundling, omit=("confidence", "label")),
+        )
+
+
+@dataclass
 class Extraction(Prediction):
     text: str
     spans: list[Span]

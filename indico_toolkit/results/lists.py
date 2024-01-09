@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from typing import Self
 
 from .errors import MultipleValuesError
-from .predictions import Classification, Extraction, Prediction
+from .predictions import Classification, Extraction, Prediction, Unbundling
 from .utils import nfilter
 
 PredictionType = TypeVar("PredictionType", bound=Prediction)
@@ -146,6 +146,10 @@ class ExtractionList(BaseList[Extraction]):
         }
 
 
+class UnbundlingList(BaseList[Unbundling]):
+    pass
+
+
 class PredictionList(BaseList[Prediction]):
     @property
     def classification(self) -> Classification:
@@ -182,6 +186,18 @@ class PredictionList(BaseList[Prediction]):
         return ExtractionList(
             filter(
                 lambda prediction: isinstance(prediction, Extraction),  # type: ignore[arg-type]
+                self,
+            )
+        )
+
+    @property
+    def unbundlings(self) -> UnbundlingList:
+        """
+        Get unbundlings as a correctly-typed UnbundlingList.
+        """
+        return UnbundlingList(
+            filter(
+                lambda prediction: isinstance(prediction, Unbundling),  # type: ignore[arg-type]
                 self,
             )
         )
