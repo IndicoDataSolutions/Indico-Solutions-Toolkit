@@ -185,3 +185,9 @@ class PredictionList(BaseList[Prediction]):
                 self,
             )
         )
+
+    def to_changes(self) -> dict[str, object]:
+        """
+        Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
+        """
+        return self.classifications.to_changes() | self.extractions.to_changes()

@@ -24,10 +24,9 @@ class Span:
             end = None
 
         if exists(span, "page_num", int):
-            # Pre-review extractions use the page_num key.
             page = get(span, "page_num", int)
         else:
-            # Post-review extractions use the pageNum key.
+            # A platform bug causes post-review extractions to use a different key.
             page = get(span, "pageNum", int)
 
         return Span(

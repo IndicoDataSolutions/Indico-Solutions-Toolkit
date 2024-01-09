@@ -123,6 +123,35 @@ class TestPredictionList:
             predictions.sort()
 
     @staticmethod
+    def test_to_changes(predictions: PredictionList) -> None:
+        assert predictions.to_changes() == {
+            "Model A": {
+                "confidence": {"Label A": 0.25, "Label B": 0.5, "Label C": 0.75},
+                "label": "Label A",
+            },
+            "Model B": [
+                {
+                    "confidence": {"Label A": 0.25, "Label B": 0.5, "Label C": 0.75},
+                    "end": 2,
+                    "label": "Label B",
+                    "page_num": 0,
+                    "start": 1,
+                    "text": "Text B",
+                }
+            ],
+            "Model C": [
+                {
+                    "confidence": {"Label A": 0.25, "Label B": 0.5, "Label C": 0.75},
+                    "end": 2,
+                    "label": "Label C",
+                    "page_num": 0,
+                    "start": 1,
+                    "text": "Text C",
+                }
+            ],
+        }
+
+    @staticmethod
     def test_where_model(predictions: PredictionList) -> None:
         filtered = predictions.where(model="Model A")
 

@@ -201,27 +201,19 @@ class Extraction(Prediction):
         changes = {
             **deepcopy(self.extras),
             "label": self.label,
+            "page_num": self.span.page,
             "text": self.text,
         }
 
         if self.confidences:
+            changes["confidence"] = self.confidences
+
+        if self.span.start:
             changes.update(
                 {
-                    "confidence": self.confidences,
                     "start": self.span.start,
                     "end": self.span.end,
-                    "page_num": self.span.page,
                 }
             )
-        else:
-            changes["pageNum"] = self.span.page
-
-            if self.span.start:
-                changes.update(
-                    {
-                        "start": self.span.start,
-                        "end": self.span.end,
-                    }
-                )
 
         return changes
