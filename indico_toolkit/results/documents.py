@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from functools import partial
-from typing import TypeAlias
 
 from .errors import ResultFileError
 from .lists import PredictionList
@@ -8,8 +7,6 @@ from .modelgroups import ModelGroup, ModelType
 from .predictions import Classification, Extraction, Unbundling
 from .reviews import Review, ReviewType
 from .utils import exists, get
-
-Model: TypeAlias = str
 
 
 @dataclass
