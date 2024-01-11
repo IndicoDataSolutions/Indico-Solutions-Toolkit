@@ -17,6 +17,7 @@ class Document:
     pre_review: PredictionList
     auto_review: PredictionList
     manual_review: PredictionList
+    admin_review: PredictionList
     final: PredictionList
 
     @property
@@ -28,6 +29,7 @@ class Document:
             self.pre_review.labels
             | self.auto_review.labels
             | self.manual_review.labels
+            | self.admin_review.labels
             | self.final.labels
         )
 
@@ -40,6 +42,7 @@ class Document:
             self.pre_review.models
             | self.auto_review.models
             | self.manual_review.models
+            | self.admin_review.models
             | self.final.models
         )
 
@@ -55,6 +58,7 @@ class Document:
         pre_review = PredictionList()
         auto_review = PredictionList()
         manual_review = PredictionList()
+        admin_review = PredictionList()
         final = PredictionList()
 
         for model, predictions_by_review in results.items():
@@ -67,6 +71,9 @@ class Document:
                 )
                 manual_review_dict = cls._get_post_review_dict(
                     post_reviews_list, reviews, ReviewType.MANUAL
+                )
+                admin_review_dict = cls._get_post_review_dict(
+                    post_reviews_list, reviews, ReviewType.ADMIN
                 )
 
                 try:
@@ -84,6 +91,8 @@ class Document:
                     auto_review.append(classification_for_model(auto_review_dict))
                 if manual_review_dict:
                     manual_review.append(classification_for_model(manual_review_dict))
+                if admin_review_dict:
+                    admin_review.append(classification_for_model(admin_review_dict))
                 if final_dict:
                     final.append(classification_for_model(final_dict))
             # Check for extractions which have list types.
@@ -95,6 +104,9 @@ class Document:
                 )
                 manual_review_list = cls._get_post_review_list(
                     post_reviews_list, reviews, ReviewType.MANUAL
+                )
+                admin_review_list = cls._get_post_review_list(
+                    post_reviews_list, reviews, ReviewType.ADMIN
                 )
 
                 try:
@@ -108,6 +120,7 @@ class Document:
                 pre_review.extend(map(extraction_for_model, pre_review_list))
                 auto_review.extend(map(extraction_for_model, auto_review_list))
                 manual_review.extend(map(extraction_for_model, manual_review_list))
+                admin_review.extend(map(extraction_for_model, admin_review_list))
                 final.extend(map(extraction_for_model, final_list))
 
         return Document(
@@ -117,6 +130,7 @@ class Document:
             pre_review=pre_review,
             auto_review=auto_review,
             manual_review=manual_review,
+            admin_review=admin_review,
             final=final,
         )
 
@@ -184,6 +198,7 @@ class Document:
             pre_review=predictions,
             auto_review=PredictionList(),  # v2 submissions do not support review yet.
             manual_review=PredictionList(),  # v2 submissions do not support review yet.
+            admin_review=PredictionList(),  # v2 submissions do not support review yet.
             final=predictions,
         )
 
@@ -224,5 +239,6 @@ class Document:
             pre_review=predictions,
             auto_review=PredictionList(),  # v3 submissions do not support review yet.
             manual_review=PredictionList(),  # v3 submissions do not support review yet.
+            admin_review=PredictionList(),  # v3 submissions do not support review yet.
             final=predictions,
         )
