@@ -1,3 +1,4 @@
+from copy import deepcopy
 from dataclasses import dataclass
 from functools import reduce
 
@@ -71,15 +72,16 @@ class Submission:
         else:
             raise ResultFileError(f"Unknown file version `{version!r}`.")
 
-    @staticmethod
-    def _from_v1_result(result: object) -> "Submission":
+    @classmethod
+    def _from_v1_result(cls, result: object) -> "Submission":
         """
         Classify, Extract, and Classify+Extract Workflows.
         """
-        if exists(result, "results", dict) and not exists(result, "reviews_meta", list):
+        if cls.is_unreviewed_result(result):
             raise ResultFileError(
                 "Result file has no review information. "
-                "Use `SubmissionResult` to retrieve the result file."
+                "Use `SubmissionResult` to retrieve the result file "
+                "or manually convert with `Submission.convert_to_reviewed_result`."
             )
 
         reviews_meta = get(result, "reviews_meta", list)
@@ -139,3 +141,35 @@ class Submission:
             ],
             reviews=[],  # Unbundled submissions do not support review yet.
         )
+
+    @staticmethod
+    def is_unreviewed_result(result: object) -> bool:
+        return (
+            exists(result, "results", dict)
+            and not exists(result, "reviews_meta", list)
+        )  # fmt: skip
+
+    @classmethod
+    def convert_to_reviewed_result(cls, result: object) -> object:
+        """
+        Convert an unreviewed result file dictionary to a reviewed result file
+        dictionary. Unreviewed result files don't have enough information to determine
+        whether the contained predictions are pre-review, auto-review, manual-review,
+        or admin-review; so only `Document.final` is populated.
+        """
+        result = deepcopy(result)
+
+        results = get(result, "results", dict)
+        document = get(results, "document", dict)
+        results = get(document, "results", dict)
+
+        for model, predictions in results.items():
+            results[model] = {
+                "pre_review": [],
+                "post_reviews": [],
+                "final": predictions,
+            }
+
+        result["reviews_meta"] = []  # type: ignore[index]
+
+        return result

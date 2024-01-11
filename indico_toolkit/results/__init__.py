@@ -29,15 +29,21 @@ __all__ = (
 )
 
 
-def load(result: object) -> Submission:
+def load(result: object, *, convert_unreviewed: bool = False) -> Submission:
     """
     Load a result file as a Submission dataclass. `result` can be a dict from
     `RetrieveStorageObject`, a JSON string, or a path to a JSON file.
+
+    Optionally convert unreviewed submissions, making predictions available via in
+    `submission.document.final`.
     """
     if isinstance(result, str) and result.startswith("{"):
         result = json.loads(result)
     elif isinstance(result, (str, PathLike)):
         with open(result) as file:
             result = json.load(file)
+
+    if convert_unreviewed and Submission.is_unreviewed_result(result):
+        result = Submission.convert_to_reviewed_result(result)
 
     return Submission.from_result(result)
