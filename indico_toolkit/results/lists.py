@@ -17,14 +17,14 @@ class BaseList(list[PredictionType]):
     @property
     def labels(self) -> set[str]:
         """
-        Return the all of the labels for these predictions.
+        Return unique prediction labels.
         """
         return set(prediction.label for prediction in self)
 
     @property
     def models(self) -> set[str]:
         """
-        Return the all of the models for these predictions.
+        Return unique prediction models.
         """
         return set(prediction.model for prediction in self)
 
@@ -33,7 +33,7 @@ class BaseList(list[PredictionType]):
         function: Callable[[PredictionType], None],
     ) -> "Self":
         """
-        Apply a function to a list of predictions.
+        Apply a function to all predictions.
         """
         for prediction in self:
             function(prediction)
@@ -45,8 +45,8 @@ class BaseList(list[PredictionType]):
         key: Callable[[PredictionType], KeyType],
     ) -> "dict[KeyType, Self]":
         """
-        Return a dictionary of `PredictionList[PredictionType]` with `PredictionType`s
-        grouped by `KeyType` using `key`.
+        Group predictions into a dictionary using `key`.
+        E.g. `key=attrgetter("label")` or `key=attrgetter("model")`
         """
         grouped = defaultdict(type(self))  # type: ignore[var-annotated]
 
@@ -62,8 +62,7 @@ class BaseList(list[PredictionType]):
         reverse: bool = False,
     ) -> "Self":
         """
-        Return a new `PredictionList[PredictionType]` with `PredictionTypes`s
-        sorted by `key`. Defaults to confidence ascending.
+        Return a new prediction list with predictions sorted by `key`.
         """
         return type(self)(sorted(self, key=key, reverse=reverse))
 
@@ -83,22 +82,28 @@ class BaseList(list[PredictionType]):
         predicate: Callable[[PredictionType], bool] | None = None,
     ) -> "Self":
         """
-        Return a new `PredictionList[PredictionType]` containing `PredictionType`s
-        that match the specified filters.
+        Return a new prediction list containing predictions that match
+        all of the specified filters.
+
+        model: predictions from this model,
+        label: predictions with this label,
+        min_confidence: predictions with confidence >= this threshold,
+        max_confidence: predictions with confidence <= this threshold,
+        predicate: predictions for which this function returns True.
         """
         predicates = []
 
         if model is not None:
-            predicates.append(lambda p: p.model == model)
+            predicates.append(lambda pred: pred.model == model)
 
         if label is not None:
-            predicates.append(lambda p: p.label == label)
+            predicates.append(lambda pred: pred.label == label)
 
         if min_confidence is not None:
-            predicates.append(lambda p: p.confidence >= min_confidence)
+            predicates.append(lambda pred: pred.confidence >= min_confidence)
 
         if max_confidence is not None:
-            predicates.append(lambda p: p.confidence <= max_confidence)
+            predicates.append(lambda pred: pred.confidence <= max_confidence)
 
         if predicate is not None:
             predicates.append(predicate)
@@ -109,7 +114,7 @@ class BaseList(list[PredictionType]):
 class ClassificationList(BaseList[Classification]):
     def to_changes(self) -> dict[str, object]:
         """
-        Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
+        Return a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
         return {
             model: self.where(model=model)[0]._to_changes() for model in self.models
@@ -119,21 +124,21 @@ class ClassificationList(BaseList[Classification]):
 class ExtractionList(BaseList[Extraction]):
     def accept(self) -> "ExtractionList":
         """
-        Mark predictions as accepted for Autoreview.
+        Mark extractions as accepted for auto-review.
         """
-        self.apply(lambda e: e.accept())
+        self.apply(lambda extraction: extraction.accept())
         return self
 
     def reject(self) -> "ExtractionList":
         """
-        Mark predictions as rejected for Autoreview.
+        Mark extractions as rejected for auto-review.
         """
-        self.apply(lambda e: e.reject())
+        self.apply(lambda extraction: extraction.reject())
         return self
 
     def to_changes(self) -> dict[str, object]:
         """
-        Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
+        Return a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
         return {
             model: list(
@@ -154,13 +159,13 @@ class PredictionList(BaseList[Prediction]):
     @property
     def classification(self) -> Classification:
         """
-        Shortcut to get the single classification in a simple Classify+Extract workflow.
+        Shortcut to get the classification of a single classification model workflow.
         """
         classifications = self.classifications
 
         if len(classifications) != 1:
             raise MultipleValuesError(
-                f"Document has {len(classifications)} classifications. "
+                f"Prediction list has {len(classifications)} classifications. "
                 "Use `PredictionList.classifications` instead."
             )
 
@@ -169,7 +174,7 @@ class PredictionList(BaseList[Prediction]):
     @property
     def classifications(self) -> ClassificationList:
         """
-        Get classifications as a correctly-typed ClassificationList.
+        Get classifications as a ClassificationList.
         """
         return ClassificationList(
             filter(
@@ -181,7 +186,7 @@ class PredictionList(BaseList[Prediction]):
     @property
     def extractions(self) -> ExtractionList:
         """
-        Get extractions as a correctly-typed ExtractionList.
+        Get extractions as a ExtractionList.
         """
         return ExtractionList(
             filter(
@@ -193,7 +198,7 @@ class PredictionList(BaseList[Prediction]):
     @property
     def unbundlings(self) -> UnbundlingList:
         """
-        Get unbundlings as a correctly-typed UnbundlingList.
+        Get unbundlings as a UnbundlingList.
         """
         return UnbundlingList(
             filter(
@@ -204,6 +209,6 @@ class PredictionList(BaseList[Prediction]):
 
     def to_changes(self) -> dict[str, object]:
         """
-        Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
+        Return a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
         return self.classifications.to_changes() | self.extractions.to_changes()

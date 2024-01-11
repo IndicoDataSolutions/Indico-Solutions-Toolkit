@@ -36,6 +36,9 @@ def nfilter(
 ) -> Iterator[Value]:
     """
     Apply multiple filter predicates to a iterable of values.
+
+    `nfilter([first, second, third], values)` is equivalent to
+    `filter(third, filter(second, filter(first, values)))`.
     """
     for predicate in predicates:
         values = filter(predicate, values)

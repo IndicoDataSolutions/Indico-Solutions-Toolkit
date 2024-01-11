@@ -26,7 +26,7 @@ class Span:
         if exists(span, "page_num", int):
             page = get(span, "page_num", int)
         else:
-            # A platform bug causes post-review extractions to use a different key.
+            # A platform bug causes manual-review extractions to use a different key.
             page = get(span, "pageNum", int)
 
         return Span(

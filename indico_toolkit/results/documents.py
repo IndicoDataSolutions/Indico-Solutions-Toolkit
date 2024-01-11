@@ -11,8 +11,8 @@ from .utils import exists, get
 
 @dataclass
 class Document:
-    id: int | None
-    filename: str | None
+    id: int | None  # v1 sumissions do not have file IDs.
+    filename: str | None  # v1 submissions do not include the original filename.
     etl_output: str
     pre_review: PredictionList
     auto_review: PredictionList
@@ -23,7 +23,7 @@ class Document:
     @property
     def labels(self) -> set[str]:
         """
-        Return the all of the labels for this document.
+        Return unique prediction labels for all predictions for this document.
         """
         return (
             self.pre_review.labels
@@ -36,7 +36,7 @@ class Document:
     @property
     def models(self) -> set[str]:
         """
-        Return the all of the models for this document.
+        Return unique prediction models for all predictions for this document.
         """
         return (
             self.pre_review.models
@@ -62,7 +62,7 @@ class Document:
         final = PredictionList()
 
         for model, predictions_by_review in results.items():
-            # Check for classifications which have dict types.
+            # Check for classifications (dict types).
             if exists(predictions_by_review, "pre_review", dict):
                 pre_review_dict = get(predictions_by_review, "pre_review", dict)
                 post_reviews_list = get(predictions_by_review, "post_reviews", list)
@@ -79,7 +79,7 @@ class Document:
                 try:
                     final_dict = get(predictions_by_review, "final", dict)
                 except ResultFileError:
-                    # Rejected submissions do not have final predictions.
+                    # Rejected submissions don't have a `final` section.
                     final_dict = None
 
                 classification_for_model = partial(
@@ -95,7 +95,8 @@ class Document:
                     admin_review.append(classification_for_model(admin_review_dict))
                 if final_dict:
                     final.append(classification_for_model(final_dict))
-            # Check for extractions which have list types.
+
+            # Check for extractions (list types).
             elif exists(predictions_by_review, "pre_review", list):
                 pre_review_list = get(predictions_by_review, "pre_review", list)
                 post_reviews_list = get(predictions_by_review, "post_reviews", list)
@@ -112,7 +113,7 @@ class Document:
                 try:
                     final_list = get(predictions_by_review, "final", list)
                 except ResultFileError:
-                    # Rejected submissions do not have final predictions.
+                    # Rejected submissions don't have a `final` section.
                     final_list = []
 
                 extraction_for_model = partial(Extraction._from_v1_result, model)
@@ -141,8 +142,9 @@ class Document:
         review_type: ReviewType,
     ) -> dict[str, object] | None:
         """
-        Return the `post_reviews` dict that matches the first non-rejected review of the
-        specified type, or None if there are no matches.
+        Return the `post_reviews` dict that matches the first unrejected review of the
+        specified type, or None if there are no matches. (Rejected reviews don't
+        contain predictions.)
         """
         for post_review_dict, review in zip(post_reviews_list, reviews):
             if review.type == review_type and not review.rejected:
@@ -157,8 +159,9 @@ class Document:
         review_type: ReviewType,
     ) -> list[object]:
         """
-        Return the `post_reviews` list that matches the first non-rejected review of the
-        specified type, or an empty list if there are no matches.
+        Return the `post_reviews` list that matches the first unrejected review of the
+        specified type, or an empty list if there are no matches. (Rejected reviews
+        don't contain predictions.)
         """
         for post_review_list, review in zip(post_reviews_list, reviews):
             if review.type == review_type and not review.rejected:

@@ -22,6 +22,9 @@ class Submission:
 
     @property
     def document(self) -> Document:
+        """
+        Shortcut to get the document of non-bundled submissions.
+        """
         if self.bundled:
             raise MultipleValuesError(
                 f"Submission has {len(self.documents)} documents. "
@@ -33,7 +36,7 @@ class Submission:
     @property
     def labels(self) -> set[str]:
         """
-        Return the all of the labels for this submission.
+        Return unique prediction labels for all predictions for this submission.
         """
         return reduce(
             lambda labels, document: labels | document.labels,
@@ -44,7 +47,7 @@ class Submission:
     @property
     def models(self) -> set[str]:
         """
-        Return the all of the models for this submission.
+        Return unique prediction models for all predictions for this submission.
         """
         return reduce(
             lambda models, document: models | document.models,

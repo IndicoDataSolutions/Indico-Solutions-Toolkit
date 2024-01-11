@@ -19,6 +19,9 @@ class Prediction:
 
     @property
     def confidence(self) -> float:
+        """
+        Shortcut to get the confidence of the predicted label.
+        """
         try:
             return self.confidences[self.label]
         except KeyError as key_error:
@@ -68,7 +71,7 @@ class Classification(Prediction):
 
     def _to_changes(self) -> dict[str, object]:
         """
-        Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
+        Return a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
         return {
             **deepcopy(self.extras),
@@ -115,6 +118,9 @@ class Extraction(Prediction):
 
     @property
     def span(self) -> Span:
+        """
+        Shortcut to get the span of extractions that don't have multiple spans.
+        """
         if len(self.spans) != 1:
             raise MultipleValuesError(
                 f"Extraction has {len(self.spans)} spans. "
@@ -125,7 +131,7 @@ class Extraction(Prediction):
 
     def accept(self) -> None:
         """
-        Mark extraction as accepted for Auto Review.
+        Mark extraction as accepted for auto-review.
         """
         if "rejected" in self.extras:
             del self.extras["rejected"]
@@ -138,7 +144,7 @@ class Extraction(Prediction):
 
     def reject(self) -> None:
         """
-        Mark extraction as rejected for Auto Review.
+        Mark extraction as rejected for auto-review.
         """
         if "accepted" in self.extras:
             del self.extras["accepted"]
@@ -172,8 +178,8 @@ class Extraction(Prediction):
                     "end",
                     "label",
                     "page_num",
-                    "pageNum",
-                    "start",
+                    "pageNum",  # A platform bug causes manual-review extractions
+                    "start",  #   to have a different key for page number.
                     "text",
                 ),
             ),
@@ -236,9 +242,11 @@ class Extraction(Prediction):
             "text": self.text,
         }
 
+        # Post-review extractions don't have confidence dicts.
         if self.confidences:
             changes["confidence"] = self.confidences
 
+        # Post-review extractions may not have start and end keys.
         if self.span.start:
             changes.update(
                 {
