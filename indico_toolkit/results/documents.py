@@ -16,7 +16,7 @@ class Document:
     etl_output: str
     pre_review: PredictionList
     auto_review: PredictionList
-    hitl_review: PredictionList
+    manual_review: PredictionList
     final: PredictionList
 
     @property
@@ -27,7 +27,7 @@ class Document:
         return (
             self.pre_review.labels
             | self.auto_review.labels
-            | self.hitl_review.labels
+            | self.manual_review.labels
             | self.final.labels
         )
 
@@ -39,7 +39,7 @@ class Document:
         return (
             self.pre_review.models
             | self.auto_review.models
-            | self.hitl_review.models
+            | self.manual_review.models
             | self.final.models
         )
 
@@ -54,7 +54,7 @@ class Document:
 
         pre_review = PredictionList()
         auto_review = PredictionList()
-        hitl_review = PredictionList()
+        manual_review = PredictionList()
         final = PredictionList()
 
         for model, predictions_by_review in results.items():
@@ -65,8 +65,8 @@ class Document:
                 auto_review_dict = cls._get_post_review_dict(
                     post_reviews_list, reviews, ReviewType.AUTO
                 )
-                hitl_review_dict = cls._get_post_review_dict(
-                    post_reviews_list, reviews, ReviewType.HITL
+                manual_review_dict = cls._get_post_review_dict(
+                    post_reviews_list, reviews, ReviewType.MANUAL
                 )
 
                 try:
@@ -82,8 +82,8 @@ class Document:
                 pre_review.append(classification_for_model(pre_review_dict))
                 if auto_review_dict:
                     auto_review.append(classification_for_model(auto_review_dict))
-                if hitl_review_dict:
-                    hitl_review.append(classification_for_model(hitl_review_dict))
+                if manual_review_dict:
+                    manual_review.append(classification_for_model(manual_review_dict))
                 if final_dict:
                     final.append(classification_for_model(final_dict))
             # Check for extractions which have list types.
@@ -93,8 +93,8 @@ class Document:
                 auto_review_list = cls._get_post_review_list(
                     post_reviews_list, reviews, ReviewType.AUTO
                 )
-                hitl_review_list = cls._get_post_review_list(
-                    post_reviews_list, reviews, ReviewType.HITL
+                manual_review_list = cls._get_post_review_list(
+                    post_reviews_list, reviews, ReviewType.MANUAL
                 )
 
                 try:
@@ -107,7 +107,7 @@ class Document:
 
                 pre_review.extend(map(extraction_for_model, pre_review_list))
                 auto_review.extend(map(extraction_for_model, auto_review_list))
-                hitl_review.extend(map(extraction_for_model, hitl_review_list))
+                manual_review.extend(map(extraction_for_model, manual_review_list))
                 final.extend(map(extraction_for_model, final_list))
 
         return Document(
@@ -116,7 +116,7 @@ class Document:
             etl_output=get(result, "etl_output", str),
             pre_review=pre_review,
             auto_review=auto_review,
-            hitl_review=hitl_review,
+            manual_review=manual_review,
             final=final,
         )
 
@@ -183,7 +183,7 @@ class Document:
             etl_output=get(submission_result, "etl_output", str),
             pre_review=predictions,
             auto_review=PredictionList(),  # v2 submissions do not support review yet.
-            hitl_review=PredictionList(),  # v2 submissions do not support review yet.
+            manual_review=PredictionList(),  # v2 submissions do not support review yet.
             final=predictions,
         )
 
@@ -223,6 +223,6 @@ class Document:
             etl_output=get(submission_result, "etl_output", str),
             pre_review=predictions,
             auto_review=PredictionList(),  # v3 submissions do not support review yet.
-            hitl_review=PredictionList(),  # v3 submissions do not support review yet.
+            manual_review=PredictionList(),  # v3 submissions do not support review yet.
             final=predictions,
         )

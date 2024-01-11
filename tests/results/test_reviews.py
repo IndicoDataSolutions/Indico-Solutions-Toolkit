@@ -21,7 +21,7 @@ class TestV1Review:
         assert review.type == ReviewType.AUTO
 
     @staticmethod
-    def test_hitl_review() -> None:
+    def test_manual_review() -> None:
         review = Review._from_v1_result(
             {
                 "review_id": 1,
@@ -36,7 +36,7 @@ class TestV1Review:
         assert review.reviewer_id == 7
         assert review.notes == "Rejected For Reasons"
         assert review.rejected is True
-        assert review.type == ReviewType.HITL
+        assert review.type == ReviewType.MANUAL
 
     @staticmethod
     def test_admin_review() -> None:

@@ -80,7 +80,7 @@ class TestDocument:
             },
             [
                 Review(0, 0, None, False, ReviewType.AUTO),
-                Review(0, 0, None, False, ReviewType.HITL),
+                Review(0, 0, None, False, ReviewType.MANUAL),
             ],
         )
 
@@ -244,7 +244,7 @@ class TestV1Document:
             },
             [
                 Review(0, 0, None, False, ReviewType.AUTO),
-                Review(0, 0, None, False, ReviewType.HITL),
+                Review(0, 0, None, False, ReviewType.MANUAL),
             ],
         )
 
@@ -258,8 +258,8 @@ class TestV1Document:
         assert len(document.pre_review.extractions) == 4
         assert isinstance(document.auto_review.extractions, ExtractionList)
         assert len(document.auto_review.extractions) == 3
-        assert isinstance(document.hitl_review.extractions, ExtractionList)
-        assert len(document.hitl_review.extractions) == 2
+        assert isinstance(document.manual_review.extractions, ExtractionList)
+        assert len(document.manual_review.extractions) == 2
         assert isinstance(document.final.extractions, ExtractionList)
         assert len(document.final.extractions) == 1
 
@@ -389,7 +389,7 @@ class TestV1Document:
             },
             [
                 Review(0, 0, None, False, ReviewType.AUTO),
-                Review(0, 0, None, False, ReviewType.HITL),
+                Review(0, 0, None, False, ReviewType.MANUAL),
             ],
         )
 

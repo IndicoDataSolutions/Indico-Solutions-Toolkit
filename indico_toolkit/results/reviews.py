@@ -8,7 +8,7 @@ from .utils import get
 class ReviewType(StrEnum):
     ADMIN = "admin"
     AUTO = "auto"
-    HITL = "manual"
+    MANUAL = "manual"
 
 
 @dataclass
