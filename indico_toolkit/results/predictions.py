@@ -106,8 +106,10 @@ class Unbundling(Prediction):
             model=model,
             label=get(unbundling, "label", str),
             confidences=get(unbundling, "confidence", dict),
-            spans=[Span._from_v3_result(unbundling)],
-            extras=cls._extras_from_result(unbundling, omit=("confidence", "label")),
+            spans=list(map(Span._from_v3_result, get(unbundling, "spans", list))),
+            extras=cls._extras_from_result(
+                unbundling, omit=("confidence", "label", "spans")
+            ),
         )
 
 
@@ -219,7 +221,7 @@ class Extraction(Prediction):
             label=get(extraction, "label", str),
             confidences=get(extraction, "confidence", dict),
             text=get(extraction, "text", str),
-            spans=list(map(Span._from_v3_result, get(extraction, "spans", dict))),
+            spans=list(map(Span._from_v3_result, get(extraction, "spans", list))),
             extras=cls._extras_from_result(
                 extraction,
                 omit=(
