@@ -168,7 +168,7 @@ class Submission:
 
         for model, predictions in results.items():
             results[model] = {
-                "pre_review": [],
+                "pre_review": type(predictions)(),
                 "post_reviews": [],
                 "final": predictions,
             }

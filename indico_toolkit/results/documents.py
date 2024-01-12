@@ -63,7 +63,12 @@ class Document:
 
         for model, predictions_by_review in results.items():
             # Check for classifications (dict types).
-            if exists(predictions_by_review, "pre_review", dict):
+            # Pre-review won't be set for converted submissions.
+            # Final won't be set for rejected submissions.
+            if (
+                exists(predictions_by_review, "pre_review", dict)
+                or exists(predictions_by_review, "final", dict)
+            ):  # fmt: skip
                 pre_review_dict = get(predictions_by_review, "pre_review", dict)
                 post_reviews_list = get(predictions_by_review, "post_reviews", list)
                 auto_review_dict = cls._get_post_review_dict(
@@ -86,7 +91,8 @@ class Document:
                     Classification._from_v1_result, model
                 )
 
-                pre_review.append(classification_for_model(pre_review_dict))
+                if pre_review_dict:
+                    pre_review.append(classification_for_model(pre_review_dict))
                 if auto_review_dict:
                     auto_review.append(classification_for_model(auto_review_dict))
                 if manual_review_dict:
