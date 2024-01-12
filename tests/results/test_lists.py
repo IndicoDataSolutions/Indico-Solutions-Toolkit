@@ -7,6 +7,7 @@ from indico_toolkit.results import (
     ClassificationList,
     Extraction,
     ExtractionList,
+    MultipleValuesError,
     Prediction,
     PredictionList,
     Span,
@@ -59,6 +60,11 @@ class TestPredictionList:
     @staticmethod
     def test_classification(predictions: PredictionList) -> None:
         assert isinstance(predictions.classification, Classification)
+
+    @staticmethod
+    def test_no_classification(predictions: PredictionList) -> None:
+        with pytest.raises(MultipleValuesError):
+            PredictionList().classification
 
     @staticmethod
     def test_classifications(predictions: PredictionList) -> None:

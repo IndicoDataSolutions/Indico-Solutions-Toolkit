@@ -22,8 +22,8 @@ def test_exists() -> None:
 
 
 def test_get() -> None:
-    list_ = []
-    dict_ = {}
+    list_: list[None] = []
+    dict_: dict[None, None] = {}
 
     result = {
         "int": 0,

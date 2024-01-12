@@ -1,459 +1,156 @@
-import pytest
+from pathlib import Path
 
+from indico_toolkit import results
 from indico_toolkit.results import (
     ClassificationList,
-    Document,
     ExtractionList,
-    MultipleValuesError,
-    Review,
-    ReviewType,
+    PredictionList,
+    UnbundlingList,
 )
 
-
-class TestDocument:
-    @staticmethod
-    def test_labels() -> None:
-        document = Document._from_v1_result(
-            {
-                "file_version": 1,
-                "submission_id": 11,
-                "etl_output": "indico-file:///etl_output.json",
-                "results": {
-                    "document": {
-                        "results": {
-                            "Email": {
-                                "pre_review": [
-                                    {
-                                        "label": "Label A",
-                                        "confidence": {},
-                                        "page_num": 0,
-                                        "text": "MICHAEL WELBORN SERVICES, INC",
-                                    },
-                                ],
-                                "post_reviews": [
-                                    [
-                                        {
-                                            "text": "47576",
-                                            "label": "Label B",
-                                            "pageNum": 1,
-                                        },
-                                    ],
-                                    [
-                                        {
-                                            "text": "47576",
-                                            "label": "Label C",
-                                            "pageNum": 1,
-                                        },
-                                    ],
-                                ],
-                                "final": [
-                                    {
-                                        "text": "47576",
-                                        "label": "Label D",
-                                        "pageNum": 1,
-                                    },
-                                ],
-                            },
-                            "Classification": {
-                                "pre_review": {
-                                    "confidence": {},
-                                    "label": "Label E",
-                                },
-                                "post_reviews": [
-                                    {
-                                        "confidence": {},
-                                        "label": "Label E",
-                                    },
-                                    {
-                                        "confidence": {},
-                                        "label": "Label E",
-                                    },
-                                ],
-                                "final": {
-                                    "confidence": {},
-                                    "label": "Label E",
-                                },
-                            },
-                        },
-                    }
-                },
-            },
-            [
-                Review(0, 0, None, False, ReviewType.AUTO),
-                Review(0, 0, None, False, ReviewType.MANUAL),
-            ],
-        )
-
-        assert document.labels == {
-            "Label A",
-            "Label B",
-            "Label C",
-            "Label D",
-            "Label E",
-        }
-
-    @staticmethod
-    def test_models() -> None:
-        document = Document._from_v1_result(
-            {
-                "file_version": 1,
-                "submission_id": 11,
-                "etl_output": "indico-file:///etl_output.json",
-                "results": {
-                    "document": {
-                        "results": {
-                            "Model A": {
-                                "pre_review": [
-                                    {
-                                        "label": "Label A",
-                                        "confidence": {},
-                                        "page_num": 0,
-                                        "text": "MICHAEL WELBORN SERVICES, INC",
-                                    },
-                                ],
-                                "post_reviews": [],
-                                "final": [
-                                    {
-                                        "text": "47576",
-                                        "label": "Label D",
-                                        "pageNum": 1,
-                                    },
-                                ],
-                            },
-                            "Model B": {
-                                "pre_review": {
-                                    "confidence": {},
-                                    "label": "Label E",
-                                },
-                                "post_reviews": [],
-                                "final": {
-                                    "confidence": {},
-                                    "label": "Label E",
-                                },
-                            },
-                        },
-                    }
-                },
-            },
-            [],
-        )
-
-        assert document.models == {"Model A", "Model B"}
+data_folder = Path(__file__).parent.parent / "data" / "results"
 
 
-class TestV1Document:
-    @staticmethod
-    def test_from_result() -> None:
-        document = Document._from_v1_result(
-            {
-                "file_version": 1,
-                "submission_id": 11,
-                "etl_output": "indico-file:///etl_output.json",
-                "results": {
-                    "document": {
-                        "results": {
-                            "Email": {
-                                "pre_review": [
-                                    {
-                                        "label": "Insured Name",
-                                        "confidence": {},
-                                        "page_num": 0,
-                                        "text": "MICHAEL WELBORN SERVICES, INC",
-                                    },
-                                    {
-                                        "label": "Broker Contact Name",
-                                        "confidence": {},
-                                        "page_num": 0,
-                                        "text": "John",
-                                    },
-                                    {
-                                        "label": "Insured Name",
-                                        "confidence": {},
-                                        "page_num": 0,
-                                        "text": "MICHAEL WELBORN SERVICES, INC",
-                                    },
-                                    {
-                                        "label": "Insured Name",
-                                        "confidence": {},
-                                        "page_num": 0,
-                                        "text": "MICHAEL WELBORN SERVICES, INC",
-                                    },
-                                ],
-                                "post_reviews": [
-                                    [
-                                        {
-                                            "text": "47576",
-                                            "label": "Broker Zip or Postal Code",
-                                            "pageNum": 1,
-                                        },
-                                        {
-                                            "text": "123 Totally Real St",
-                                            "label": "Broker Street Address",
-                                            "pageNum": 1,
-                                        },
-                                        {
-                                            "text": "CA",
-                                            "label": "Broker State",
-                                            "pageNum": 1,
-                                        },
-                                    ],
-                                    [
-                                        {
-                                            "text": "47576",
-                                            "label": "Broker Zip or Postal Code",
-                                            "pageNum": 1,
-                                        },
-                                        {
-                                            "text": "123 Totally Real St",
-                                            "label": "Broker Street Address",
-                                            "pageNum": 1,
-                                        },
-                                    ],
-                                ],
-                                "final": [
-                                    {
-                                        "text": "47576",
-                                        "label": "Broker Zip or Postal Code",
-                                        "pageNum": 1,
-                                    },
-                                ],
-                            },
-                            "Classification": {
-                                "pre_review": {
-                                    "confidence": {},
-                                    "label": "Email",
-                                },
-                                "post_reviews": [
-                                    {
-                                        "confidence": {},
-                                        "label": "Email",
-                                    },
-                                    {
-                                        "confidence": {},
-                                        "label": "Email",
-                                    },
-                                ],
-                                "final": {
-                                    "confidence": {},
-                                    "label": "Email",
-                                },
-                            },
-                        },
-                    }
-                },
-            },
-            [
-                Review(0, 0, None, False, ReviewType.AUTO),
-                Review(0, 0, None, False, ReviewType.MANUAL),
-            ],
-        )
+def test_v1_document() -> None:
+    submission = results.load(
+        data_folder / "v1_reviewed_accepted_submission.result_file.json"
+    )
+    document = submission.document
 
-        assert document.id is None
-        assert document.filename is None
-        assert document.etl_output == "indico-file:///etl_output.json"
-        assert document.pre_review.classification.label == "Email"
-        assert isinstance(document.pre_review.classifications, ClassificationList)
-        assert len(document.pre_review.classifications) == 1
-        assert isinstance(document.pre_review.extractions, ExtractionList)
-        assert len(document.pre_review.extractions) == 4
-        assert isinstance(document.auto_review.extractions, ExtractionList)
-        assert len(document.auto_review.extractions) == 3
-        assert isinstance(document.manual_review.extractions, ExtractionList)
-        assert len(document.manual_review.extractions) == 2
-        assert isinstance(document.final.extractions, ExtractionList)
-        assert len(document.final.extractions) == 1
+    assert document.id is None
+    assert document.filename is None
+    assert (
+        document.etl_output
+        == "indico-file:///storage/submission/4/11/12/etl_output.json"
+    )
 
-    @staticmethod
-    def test_no_classification() -> None:
-        document = Document._from_v1_result(
-            {
-                "etl_output": "indico-file:///etl_output.json",
-                "results": {
-                    "document": {
-                        "results": {},
-                    },
-                },
-            },
-            [],
-        )
+    assert document.labels == {
+        "Broker City",
+        "Broker Contact Email",
+        "Broker Contact Name",
+        "Broker Name",
+        "Broker Phone",
+        "Broker State",
+        "Broker Street Address",
+        "Broker Zip or Postal Code",
+        "Description of Operations",
+        "Email",
+        "Inception Date",
+        "Insured City",
+        "Insured Name",
+        "Insured State",
+        "Insured Street Address",
+        "Insured Web Address",
+        "Insured Zip or Postal Code",
+    }
+    assert document.models == {"Classification", "Email"}
 
-        with pytest.raises(MultipleValuesError):
-            document.pre_review.classification
+    assert isinstance(document.pre_review.classifications, ClassificationList)
+    assert len(document.pre_review.classifications) == 1
 
-    @staticmethod
-    def test_multiple_classification() -> None:
-        document = Document._from_v1_result(
-            {
-                "etl_output": "indico-file:///etl_output.json",
-                "results": {
-                    "document": {
-                        "results": {
-                            "Classification A": {
-                                "pre_review": {
-                                    "confidence": {},
-                                    "label": "Email",
-                                },
-                                "post_reviews": [],
-                                "final": {
-                                    "confidence": {},
-                                    "label": "Email",
-                                },
-                            },
-                            "Classification B": {
-                                "pre_review": {
-                                    "confidence": {},
-                                    "label": "Email",
-                                },
-                                "post_reviews": [],
-                                "final": {
-                                    "confidence": {},
-                                    "label": "Email",
-                                },
-                            },
-                        },
-                    }
-                },
-            },
-            [],
-        )
+    assert isinstance(document.pre_review.extractions, ExtractionList)
+    assert len(document.pre_review.extractions) == 23
 
-        with pytest.raises(MultipleValuesError):
-            document.pre_review.classification
+    assert isinstance(document.auto_review, PredictionList)
+    assert len(document.auto_review) == 0
 
-    @staticmethod
-    def test_labels() -> None:
-        document = Document._from_v1_result(
-            {
-                "file_version": 1,
-                "submission_id": 11,
-                "etl_output": "indico-file:///etl_output.json",
-                "results": {
-                    "document": {
-                        "results": {
-                            "Email": {
-                                "pre_review": [
-                                    {
-                                        "label": "Label A",
-                                        "confidence": {},
-                                        "page_num": 0,
-                                        "text": "MICHAEL WELBORN SERVICES, INC",
-                                    },
-                                ],
-                                "post_reviews": [
-                                    [
-                                        {
-                                            "text": "47576",
-                                            "label": "Label B",
-                                            "pageNum": 1,
-                                        },
-                                    ],
-                                    [
-                                        {
-                                            "text": "47576",
-                                            "label": "Label C",
-                                            "pageNum": 1,
-                                        },
-                                    ],
-                                ],
-                                "final": [
-                                    {
-                                        "text": "47576",
-                                        "label": "Label D",
-                                        "pageNum": 1,
-                                    },
-                                ],
-                            },
-                            "Classification": {
-                                "pre_review": {
-                                    "confidence": {},
-                                    "label": "Label E",
-                                },
-                                "post_reviews": [
-                                    {
-                                        "confidence": {},
-                                        "label": "Label E",
-                                    },
-                                    {
-                                        "confidence": {},
-                                        "label": "Label E",
-                                    },
-                                ],
-                                "final": {
-                                    "confidence": {},
-                                    "label": "Label E",
-                                },
-                            },
-                        },
-                    }
-                },
-            },
-            [
-                Review(0, 0, None, False, ReviewType.AUTO),
-                Review(0, 0, None, False, ReviewType.MANUAL),
-            ],
-        )
+    assert isinstance(document.manual_review, PredictionList)
+    assert len(document.manual_review) == 15
 
-        assert document.labels == {
-            "Label A",
-            "Label B",
-            "Label C",
-            "Label D",
-            "Label E",
-        }
+    assert isinstance(document.final, PredictionList)
+    assert len(document.final) == 15
 
-    @staticmethod
-    def test_models() -> None:
-        document = Document._from_v1_result(
-            {
-                "file_version": 1,
-                "submission_id": 11,
-                "etl_output": "indico-file:///etl_output.json",
-                "results": {
-                    "document": {
-                        "results": {
-                            "Model A": {
-                                "pre_review": [
-                                    {
-                                        "label": "Label A",
-                                        "confidence": {},
-                                        "page_num": 0,
-                                        "text": "MICHAEL WELBORN SERVICES, INC",
-                                    },
-                                ],
-                                "post_reviews": [],
-                                "final": [
-                                    {
-                                        "text": "47576",
-                                        "label": "Label D",
-                                        "pageNum": 1,
-                                    },
-                                ],
-                            },
-                            "Model B": {
-                                "pre_review": {
-                                    "confidence": {},
-                                    "label": "Label E",
-                                },
-                                "post_reviews": [
-                                    {
-                                        "confidence": {},
-                                        "label": "Label E",
-                                    },
-                                    {
-                                        "confidence": {},
-                                        "label": "Label E",
-                                    },
-                                ],
-                                "final": {
-                                    "confidence": {},
-                                    "label": "Label E",
-                                },
-                            },
-                        },
-                    }
-                },
-            },
-            [],
-        )
 
-        assert document.models == {"Model A", "Model B"}
+def test_v2_document() -> None:
+    submission = results.load(
+        data_folder / "v2_unreviewed_completed_submission.result_file.json"
+    )
+    document = submission.documents[0]
+
+    assert document.id == 184
+    assert document.filename == "bundle=True.eml"
+    assert (
+        document.etl_output
+        == "indico-file:///storage/submission/4/183/184/etl_output.json"
+    )
+
+    assert document.labels == {
+        "Broker Contact Email",
+        "Broker Contact Name",
+        "Broker Name",
+        "Description of Operations",
+        "Email",
+        "Inception Date",
+        "Insured City",
+        "Insured Name",
+        "Insured State",
+        "Insured Street Address",
+        "Insured Web Address",
+        "Insured Zip or Postal Code",
+    }
+    assert document.models == {"Classification", "Email"}
+
+    assert isinstance(document.pre_review.classifications, ClassificationList)
+    assert len(document.pre_review.classifications) == 1
+
+    assert isinstance(document.pre_review.extractions, ExtractionList)
+    assert len(document.pre_review.extractions) == 23
+
+    assert isinstance(document.auto_review, PredictionList)
+    assert len(document.auto_review) == 0
+
+    assert isinstance(document.manual_review, PredictionList)
+    assert len(document.manual_review) == 0
+
+    assert isinstance(document.final, PredictionList)
+    assert len(document.final) == 24
+
+
+def test_v3_document() -> None:
+    submission = results.load(
+        data_folder / "v3_unreviewed_completed_submission.result_file.json"
+    )
+    document = submission.document
+
+    assert document.id == 79684
+    assert document.filename == "bundled_document.pdf"
+    assert (
+        document.etl_output
+        == "indico-file:///storage/submission/3109/91825/79684/etl_output.json"
+    )
+
+    assert document.labels == {
+        "BCC",
+        "CC",
+        "City",
+        "Email",
+        "Has Vaccine",
+        "Name",
+        "PFA Indicator",
+        "Provider Location",
+        "State",
+        "Street",
+        "Subject",
+        "To",
+        "Zip",
+    }
+    assert document.models == {
+        "Classify + Unbundle Model",
+        "Email Model",
+        "Provider Location Model",
+    }
+
+    assert isinstance(document.pre_review.unbundlings, UnbundlingList)
+    assert len(document.pre_review.unbundlings) == 7
+
+    assert isinstance(document.pre_review.extractions, ExtractionList)
+    assert len(document.pre_review.extractions) == 33
+
+    assert isinstance(document.auto_review, PredictionList)
+    assert len(document.auto_review) == 0
+
+    assert isinstance(document.manual_review, PredictionList)
+    assert len(document.manual_review) == 0
+
+    assert isinstance(document.final, PredictionList)
+    assert len(document.final) == 40
