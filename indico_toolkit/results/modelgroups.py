@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from enum import StrEnum
+from enum import Enum
 
 from .utils import get
 
 
-class ModelType(StrEnum):
+class ModelType(Enum):
     CLASSIFICATION = "classification"
     EXTRACTION = "annotation"
     UNBUNDLING = "classification_unbundling"

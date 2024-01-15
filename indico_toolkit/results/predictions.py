@@ -1,20 +1,17 @@
 from collections.abc import Collection
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import TypeAlias
 
 from .errors import MultipleValuesError, ResultFileError
 from .spans import Span
 from .utils import get
-
-Label: TypeAlias = str
 
 
 @dataclass
 class Prediction:
     model: str
     label: str
-    confidences: dict[Label, float]
+    confidences: dict[str, float]
     extras: dict[str, object]
 
     @property

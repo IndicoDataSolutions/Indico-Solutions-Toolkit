@@ -1,6 +1,6 @@
 from collections import defaultdict
 from collections.abc import Callable
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, List, TypeVar
 
 if TYPE_CHECKING:
     from typing import Self
@@ -13,7 +13,7 @@ PredictionType = TypeVar("PredictionType", bound=Prediction)
 KeyType = TypeVar("KeyType")
 
 
-class BaseList(list[PredictionType]):
+class BaseList(List[PredictionType]):
     @property
     def labels(self) -> set[str]:
         """
@@ -211,4 +211,7 @@ class PredictionList(BaseList[Prediction]):
         """
         Return a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
-        return self.classifications.to_changes() | self.extractions.to_changes()
+        return {
+            **self.classifications.to_changes(),
+            **self.extractions.to_changes(),
+        }

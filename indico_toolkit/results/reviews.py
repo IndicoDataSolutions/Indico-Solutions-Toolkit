@@ -1,11 +1,11 @@
 from dataclasses import dataclass
-from enum import StrEnum
+from enum import Enum
 
 from .errors import ResultFileError
 from .utils import get
 
 
-class ReviewType(StrEnum):
+class ReviewType(Enum):
     ADMIN = "admin"
     AUTO = "auto"
     MANUAL = "manual"
