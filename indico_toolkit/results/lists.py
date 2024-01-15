@@ -1,13 +1,13 @@
 from collections import defaultdict
-from collections.abc import Callable
 from typing import TYPE_CHECKING, List, TypeVar
-
-if TYPE_CHECKING:
-    from typing import Self
 
 from .errors import MultipleValuesError
 from .predictions import Classification, Extraction, Prediction, Unbundling
 from .utils import nfilter
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+    from typing import Self
 
 PredictionType = TypeVar("PredictionType", bound=Prediction)
 KeyType = TypeVar("KeyType")

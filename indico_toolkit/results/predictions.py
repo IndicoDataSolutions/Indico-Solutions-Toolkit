@@ -1,10 +1,13 @@
-from collections.abc import Collection
 from copy import deepcopy
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from .errors import MultipleValuesError, ResultFileError
 from .spans import Span
 from .utils import get
+
+if TYPE_CHECKING:
+    from collections.abc import Collection
 
 
 @dataclass

@@ -1,12 +1,17 @@
 from dataclasses import dataclass
 from functools import partial
+from typing import TYPE_CHECKING
 
 from .errors import ResultFileError
 from .lists import PredictionList
-from .modelgroups import ModelGroup, ModelType
+from .modelgroups import ModelType
 from .predictions import Classification, Extraction, Unbundling
-from .reviews import Review, ReviewType
+from .reviews import ReviewType
 from .utils import exists, get
+
+if TYPE_CHECKING:
+    from .modelgroups import ModelGroup
+    from .reviews import Review
 
 
 @dataclass
