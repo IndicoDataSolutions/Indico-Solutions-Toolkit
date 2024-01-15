@@ -13,8 +13,8 @@ from .utils import exists, get
 class Submission:
     id: int
     version: int
-    documents: list[Document]
-    reviews: list[Review]
+    documents: "list[Document]"
+    reviews: "list[Review]"
 
     @property
     def bundled(self) -> bool:
@@ -34,7 +34,7 @@ class Submission:
         return self.documents[0]
 
     @property
-    def labels(self) -> set[str]:
+    def labels(self) -> "set[str]":
         """
         Return unique prediction labels for all predictions for this submission.
         """
@@ -45,7 +45,7 @@ class Submission:
         )
 
     @property
-    def models(self) -> set[str]:
+    def models(self) -> "set[str]":
         """
         Return unique prediction models for all predictions for this submission.
         """

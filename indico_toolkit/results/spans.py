@@ -6,8 +6,8 @@ from .utils import exists, get
 
 @dataclass
 class Span:
-    start: int | None
-    end: int | None
+    start: "int | None"
+    end: "int | None"
     page: int
 
     @staticmethod

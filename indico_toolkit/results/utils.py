@@ -6,7 +6,7 @@ from .errors import ResultFileError
 Value = TypeVar("Value")
 
 
-def exists(result: object, key: str, value_type: type[Value]) -> bool:
+def exists(result: object, key: str, value_type: "type[Value]") -> bool:
     """
     Check if `key` exists in `result` having type `value_type`.
     """
@@ -17,7 +17,7 @@ def exists(result: object, key: str, value_type: type[Value]) -> bool:
     )
 
 
-def get(result: object, key: str, value_type: type[Value]) -> Value:
+def get(result: object, key: str, value_type: "type[Value]") -> Value:
     """
     Return the value of `key` from `result` if `result` is a dict and the value has type
     `value_type`. Raise a `ResultFileError` otherwise.
@@ -32,8 +32,8 @@ def get(result: object, key: str, value_type: type[Value]) -> Value:
 
 
 def nfilter(
-    predicates: Iterable[Callable[[Value], bool]], values: Iterable[Value]
-) -> Iterator[Value]:
+    predicates: "Iterable[Callable[[Value], bool]]", values: "Iterable[Value]"
+) -> "Iterator[Value]":
     """
     Apply multiple filter predicates to a iterable of values.
 

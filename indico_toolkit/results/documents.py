@@ -11,8 +11,8 @@ from .utils import exists, get
 
 @dataclass
 class Document:
-    id: int | None  # v1 sumissions do not have file IDs.
-    filename: str | None  # v1 submissions do not include the original filename.
+    id: "int | None"  # v1 sumissions do not have file IDs.
+    filename: "str | None"  # v1 submissions do not include the original filename.
     etl_output: str
     pre_review: PredictionList
     auto_review: PredictionList
@@ -21,7 +21,7 @@ class Document:
     final: PredictionList
 
     @property
-    def labels(self) -> set[str]:
+    def labels(self) -> "set[str]":
         """
         Return unique prediction labels for all predictions for this document.
         """
@@ -34,7 +34,7 @@ class Document:
         )
 
     @property
-    def models(self) -> set[str]:
+    def models(self) -> "set[str]":
         """
         Return unique prediction models for all predictions for this document.
         """
@@ -47,7 +47,7 @@ class Document:
         )
 
     @classmethod
-    def _from_v1_result(cls, result: object, reviews: list[Review]) -> "Document":
+    def _from_v1_result(cls, result: object, reviews: "list[Review]") -> "Document":
         """
         Classify, Extract, and Classify+Extract Workflows.
         """
@@ -143,10 +143,10 @@ class Document:
 
     @staticmethod
     def _get_post_review_dict(
-        post_reviews_list: list[dict[str, object]],
-        reviews: list[Review],
+        post_reviews_list: "list[dict[str, object]]",
+        reviews: "list[Review]",
         review_type: ReviewType,
-    ) -> dict[str, object] | None:
+    ) -> "dict[str, object] | None":
         """
         Return the `post_reviews` dict that matches the first unrejected review of the
         specified type, or None if there are no matches. (Rejected reviews don't
@@ -160,10 +160,10 @@ class Document:
 
     @staticmethod
     def _get_post_review_list(
-        post_reviews_list: list[list[object]],
-        reviews: list[Review],
+        post_reviews_list: "list[list[object]]",
+        reviews: "list[Review]",
         review_type: ReviewType,
-    ) -> list[object]:
+    ) -> "list[object]":
         """
         Return the `post_reviews` list that matches the first unrejected review of the
         specified type, or an empty list if there are no matches. (Rejected reviews
@@ -177,7 +177,7 @@ class Document:
 
     @classmethod
     def _from_v2_result(
-        cls, submission_result: object, model_groups_by_id: dict[int, ModelGroup]
+        cls, submission_result: object, model_groups_by_id: "dict[int, ModelGroup]"
     ) -> "Document":
         """
         Bundled Submission Workflows.
@@ -213,7 +213,7 @@ class Document:
 
     @classmethod
     def _from_v3_result(
-        cls, submission_result: object, model_groups_by_id: dict[int, ModelGroup]
+        cls, submission_result: object, model_groups_by_id: "dict[int, ModelGroup]"
     ) -> "Document":
         """
         Bundled Submission Workflows.

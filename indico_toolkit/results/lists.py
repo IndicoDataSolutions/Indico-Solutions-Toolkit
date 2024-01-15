@@ -15,14 +15,14 @@ KeyType = TypeVar("KeyType")
 
 class BaseList(List[PredictionType]):
     @property
-    def labels(self) -> set[str]:
+    def labels(self) -> "set[str]":
         """
         Return unique prediction labels.
         """
         return set(prediction.label for prediction in self)
 
     @property
-    def models(self) -> set[str]:
+    def models(self) -> "set[str]":
         """
         Return unique prediction models.
         """
@@ -30,7 +30,7 @@ class BaseList(List[PredictionType]):
 
     def apply(
         self,
-        function: Callable[[PredictionType], None],
+        function: "Callable[[PredictionType], None]",
     ) -> "Self":
         """
         Apply a function to all predictions.
@@ -42,7 +42,7 @@ class BaseList(List[PredictionType]):
 
     def groupby(
         self,
-        key: Callable[[PredictionType], KeyType],
+        key: "Callable[[PredictionType], KeyType]",
     ) -> "dict[KeyType, Self]":
         """
         Group predictions into a dictionary using `key`.
@@ -57,7 +57,7 @@ class BaseList(List[PredictionType]):
 
     def orderby(
         self,
-        key: Callable[[PredictionType], bool],
+        key: "Callable[[PredictionType], bool]",
         *,
         reverse: bool = False,
     ) -> "Self":
@@ -75,11 +75,11 @@ class BaseList(List[PredictionType]):
     def where(
         self,
         *,
-        model: str | None = None,
-        label: str | None = None,
-        min_confidence: float | None = None,
-        max_confidence: float | None = None,
-        predicate: Callable[[PredictionType], bool] | None = None,
+        model: "str | None" = None,
+        label: "str | None" = None,
+        min_confidence: "float | None" = None,
+        max_confidence: "float | None" = None,
+        predicate: "Callable[[PredictionType], bool] | None" = None,
     ) -> "Self":
         """
         Return a new prediction list containing predictions that match
@@ -112,7 +112,7 @@ class BaseList(List[PredictionType]):
 
 
 class ClassificationList(BaseList[Classification]):
-    def to_changes(self) -> dict[str, object]:
+    def to_changes(self) -> "dict[str, object]":
         """
         Return a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
@@ -136,7 +136,7 @@ class ExtractionList(BaseList[Extraction]):
         self.apply(lambda extraction: extraction.reject())
         return self
 
-    def to_changes(self) -> dict[str, object]:
+    def to_changes(self) -> "dict[str, object]":
         """
         Return a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
@@ -207,7 +207,7 @@ class PredictionList(BaseList[Prediction]):
             )
         )
 
-    def to_changes(self) -> dict[str, object]:
+    def to_changes(self) -> "dict[str, object]":
         """
         Return a dict structure suitable for the `changes` argument of `SubmitReview`.
         """

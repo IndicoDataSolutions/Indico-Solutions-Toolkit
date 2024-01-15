@@ -11,8 +11,8 @@ from .utils import get
 class Prediction:
     model: str
     label: str
-    confidences: dict[str, float]
-    extras: dict[str, object]
+    confidences: "dict[str, float]"
+    extras: "dict[str, object]"
 
     @property
     def confidence(self) -> float:
@@ -27,7 +27,9 @@ class Prediction:
             ) from key_error
 
     @staticmethod
-    def _extras_from_result(result: object, omit: Collection[str]) -> dict[str, object]:
+    def _extras_from_result(
+        result: object, omit: "Collection[str]"
+    ) -> "dict[str, object]":
         if not isinstance(result, dict):
             return {}
 
@@ -66,7 +68,7 @@ class Classification(Prediction):
         """
         return cls._from_v1_result(model, classification)
 
-    def _to_changes(self) -> dict[str, object]:
+    def _to_changes(self) -> "dict[str, object]":
         """
         Return a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
@@ -79,7 +81,7 @@ class Classification(Prediction):
 
 @dataclass
 class Unbundling(Prediction):
-    spans: list[Span]
+    spans: "list[Span]"
 
     @property
     def span(self) -> Span:
@@ -113,7 +115,7 @@ class Unbundling(Prediction):
 @dataclass
 class Extraction(Prediction):
     text: str
-    spans: list[Span]
+    spans: "list[Span]"
 
     @property
     def span(self) -> Span:
@@ -230,7 +232,7 @@ class Extraction(Prediction):
             ),
         )
 
-    def _to_changes(self) -> dict[str, object]:
+    def _to_changes(self) -> "dict[str, object]":
         """
         Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
