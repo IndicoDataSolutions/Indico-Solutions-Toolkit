@@ -348,10 +348,20 @@ class TestExtractionList:
         assert extractions[0].accepted
         assert not extractions[0].rejected
 
+        extractions.accept().unaccept()
+
+        assert not extractions[0].accepted
+        assert not extractions[0].rejected
+
         extractions.reject()
 
         assert not extractions[0].accepted
         assert extractions[0].rejected
+
+        extractions.reject().unreject()
+
+        assert not extractions[0].accepted
+        assert not extractions[0].rejected
 
     @staticmethod
     def test_groupby_return_type(extractions: ExtractionList) -> None:

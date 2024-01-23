@@ -121,10 +121,27 @@ class TestExtraction:
         assert extraction.accepted
         assert not extraction.rejected
 
+        extraction.unaccept()
+
+        assert not extraction.accepted
+        assert not extraction.rejected
+
+        extraction.accept()
         extraction.reject()
 
         assert not extraction.accepted
         assert extraction.rejected
+
+        extraction.unreject()
+
+        assert not extraction.accepted
+        assert not extraction.rejected
+
+        extraction.reject()
+        extraction.accept()
+
+        assert extraction.accepted
+        assert not extraction.rejected
 
 
 class TestUnbundling:

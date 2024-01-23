@@ -121,6 +121,14 @@ class Extraction(Prediction):
     spans: "list[Span]"
 
     @property
+    def accepted(self) -> bool:
+        return "accepted" in self.extras and bool(self.extras["accepted"])
+
+    @property
+    def rejected(self) -> bool:
+        return "rejected" in self.extras and bool(self.extras["rejected"])
+
+    @property
     def span(self) -> Span:
         """
         Shortcut to get the span of extractions that don't have multiple spans.
@@ -137,27 +145,29 @@ class Extraction(Prediction):
         """
         Mark extraction as accepted for auto-review.
         """
-        if "rejected" in self.extras:
-            del self.extras["rejected"]
-
+        self.unreject()
         self.extras["accepted"] = True
 
-    @property
-    def accepted(self) -> bool:
-        return "accepted" in self.extras and bool(self.extras["accepted"])
+    def unaccept(self) -> None:
+        """
+        Mark extraction as not accepted for auto-review.
+        """
+        if "accepted" in self.extras:
+            del self.extras["accepted"]
 
     def reject(self) -> None:
         """
         Mark extraction as rejected for auto-review.
         """
-        if "accepted" in self.extras:
-            del self.extras["accepted"]
-
+        self.unaccept()
         self.extras["rejected"] = True
 
-    @property
-    def rejected(self) -> bool:
-        return "rejected" in self.extras and bool(self.extras["rejected"])
+    def unreject(self) -> None:
+        """
+        Mark extraction as not rejected for auto-review.
+        """
+        if "rejected" in self.extras:
+            del self.extras["rejected"]
 
     @classmethod
     def _from_v1_result(cls, model: str, extraction: object) -> "Extraction":

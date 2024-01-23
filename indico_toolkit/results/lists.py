@@ -129,11 +129,25 @@ class ExtractionList(BaseList[Extraction]):
         self.apply(lambda extraction: extraction.accept())
         return self
 
+    def unaccept(self) -> "ExtractionList":
+        """
+        Mark extractions as not accepted for auto-review.
+        """
+        self.apply(lambda extraction: extraction.unaccept())
+        return self
+
     def reject(self) -> "ExtractionList":
         """
         Mark extractions as rejected for auto-review.
         """
         self.apply(lambda extraction: extraction.reject())
+        return self
+
+    def unreject(self) -> "ExtractionList":
+        """
+        Mark extractions as not rejected for auto-review.
+        """
+        self.apply(lambda extraction: extraction.unreject())
         return self
 
     def to_changes(self) -> "dict[str, object]":
