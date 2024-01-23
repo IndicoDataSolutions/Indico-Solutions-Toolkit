@@ -1,12 +1,12 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from indico_toolkit.results import Document, ResultKeyError, Submission
+from indico_toolkit.results import Document, Result, ResultKeyError
 
 
 def test_result_file_version() -> None:
     with pytest.raises(ResultKeyError):
-        Submission.from_result(
+        Result.from_result(
             {
                 "file_version": 0,
             },
@@ -16,7 +16,7 @@ def test_result_file_version() -> None:
 def test_reviews(mocker: MockerFixture) -> None:
     mocker.patch.object(Document, "_from_v1_result")
 
-    submission = Submission.from_result(
+    result = Result.from_result(
         {
             "file_version": 1,
             "submission_id": 11,
@@ -34,18 +34,18 @@ def test_reviews(mocker: MockerFixture) -> None:
         },
     )
 
-    assert submission.submission_id == 11
-    assert submission.file_version == 1
-    assert submission.document == Document._from_v1_result.return_value
-    assert len(submission.reviews) == 1
-    assert submission.reviews[0].id == 2
-    assert submission.rejected is False
+    assert result.submission_id == 11
+    assert result.file_version == 1
+    assert result.document == Document._from_v1_result.return_value
+    assert len(result.reviews) == 1
+    assert result.reviews[0].id == 2
+    assert result.rejected is False
 
 
 def test_null_review(mocker: MockerFixture) -> None:
     mocker.patch.object(Document, "_from_v1_result")
 
-    submission = Submission.from_result(
+    result = Result.from_result(
         {
             "file_version": 1,
             "submission_id": 10,
@@ -54,12 +54,12 @@ def test_null_review(mocker: MockerFixture) -> None:
         },
     )
 
-    assert not submission.reviews
+    assert not result.reviews
 
 
 def test_missing_reviews() -> None:
     with pytest.raises(ResultKeyError):
-        Submission.from_result(
+        Result.from_result(
             {
                 "file_version": 1,
                 "results": {},

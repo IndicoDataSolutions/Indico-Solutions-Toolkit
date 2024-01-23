@@ -10,7 +10,7 @@ from .utils import exists, get
 
 
 @dataclass
-class Submission:
+class Result:
     submission_id: int
     file_version: int
     documents: "list[Document]"
@@ -23,12 +23,12 @@ class Submission:
     @property
     def document(self) -> Document:
         """
-        Shortcut to get the document of non-bundled submissions.
+        Shortcut to get the only document in non-bundled submissions.
         """
         if self.bundled:
             raise MultipleValuesError(
-                f"Submission has {len(self.documents)} documents. "
-                "Use `Submission.documents` instead."
+                f"Result has {len(self.documents)} documents. "
+                "Use `Result.documents` instead."
             )
 
         return self.documents[0]
@@ -36,7 +36,7 @@ class Submission:
     @property
     def labels(self) -> "set[str]":
         """
-        Return unique prediction labels for all predictions for this submission.
+        Return unique prediction labels for all predictions in this result.
         """
         return reduce(
             lambda labels, document: labels | document.labels,
@@ -47,7 +47,7 @@ class Submission:
     @property
     def models(self) -> "set[str]":
         """
-        Return unique prediction models for all predictions for this submission.
+        Return unique prediction models for all predictions in this result.
         """
         return reduce(
             lambda models, document: models | document.models,
@@ -60,9 +60,9 @@ class Submission:
         return any(map(lambda review: review.rejected, self.reviews))
 
     @classmethod
-    def from_result(cls, result: object) -> "Submission":
+    def from_result(cls, result: object) -> "Result":
         """
-        Factory function to produce a `Submission` from a result file dictionary.
+        Factory function to produce a `Result` from a result file dictionary.
         """
         file_version = get(result, "file_version", int)
 
@@ -76,7 +76,7 @@ class Submission:
             raise ResultKeyError(f"Unknown file version `{file_version!r}`.")
 
     @classmethod
-    def _from_v1_result(cls, result: object) -> "Submission":
+    def _from_v1_result(cls, result: object) -> "Result":
         """
         Classify, Extract, and Classify+Extract Workflows.
         """
@@ -84,7 +84,7 @@ class Submission:
             raise ResultKeyError(
                 "Result file has no review information. "
                 "Use `SubmissionResult` to retrieve the result file "
-                "or manually convert with `Submission.convert_to_reviewed_result`."
+                "or manually convert with `Result.convert_to_reviewed_result`."
             )
 
         reviews_meta = get(result, "reviews_meta", list)
@@ -96,7 +96,7 @@ class Submission:
         else:
             reviews = []
 
-        return Submission(
+        return Result(
             submission_id=get(result, "submission_id", int),
             file_version=1,
             documents=[Document._from_v1_result(result, reviews)],
@@ -104,7 +104,7 @@ class Submission:
         )
 
     @staticmethod
-    def _from_v2_result(result: object) -> "Submission":
+    def _from_v2_result(result: object) -> "Result":
         """
         Bundled Submission Workflows.
         """
@@ -114,7 +114,7 @@ class Submission:
             model_group.id: model_group for model_group in model_groups
         }
 
-        return Submission(
+        return Result(
             submission_id=get(result, "submission_id", int),
             file_version=2,
             documents=[
@@ -125,7 +125,7 @@ class Submission:
         )
 
     @staticmethod
-    def _from_v3_result(result: object) -> "Submission":
+    def _from_v3_result(result: object) -> "Result":
         """
         Classify+Unbundle Workflows.
         """
@@ -135,7 +135,7 @@ class Submission:
             model_group.id: model_group for model_group in model_groups
         }
 
-        return Submission(
+        return Result(
             submission_id=get(result, "submission_id", int),
             file_version=3,
             documents=[

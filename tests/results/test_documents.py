@@ -12,10 +12,10 @@ data_folder = Path(__file__).parent.parent / "data" / "results"
 
 
 def test_v1_document() -> None:
-    submission = results.load(
+    result = results.load(
         data_folder / "v1_reviewed_accepted_submission.result_file.json"
     )
-    document = submission.document
+    document = result.document
 
     assert document.file_id is None
     assert document.filename is None
@@ -62,10 +62,10 @@ def test_v1_document() -> None:
 
 
 def test_v2_document() -> None:
-    submission = results.load(
+    result = results.load(
         data_folder / "v2_unreviewed_completed_submission.result_file.json"
     )
-    document = submission.documents[0]
+    document = result.documents[0]
 
     assert document.file_id == 184
     assert document.filename == "bundle=True.eml"
@@ -107,10 +107,10 @@ def test_v2_document() -> None:
 
 
 def test_v3_document() -> None:
-    submission = results.load(
+    result = results.load(
         data_folder / "v3_unreviewed_completed_submission.result_file.json"
     )
-    document = submission.document
+    document = result.document
 
     assert document.file_id == 79684
     assert document.filename == "bundled_document.pdf"

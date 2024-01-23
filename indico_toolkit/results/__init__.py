@@ -5,9 +5,9 @@ from .documents import Document
 from .errors import MultipleValuesError, ResultKeyError
 from .lists import ClassificationList, ExtractionList, PredictionList, UnbundlingList
 from .predictions import Classification, Extraction, Prediction, Unbundling
+from .results import Result
 from .reviews import Review, ReviewType
 from .spans import Span
-from .submissions import Submission
 
 __all__ = (
     "Classification",
@@ -23,19 +23,19 @@ __all__ = (
     "Review",
     "ReviewType",
     "Span",
-    "Submission",
+    "Result",
     "Unbundling",
     "UnbundlingList",
 )
 
 
-def load(result: object, *, convert_unreviewed: bool = False) -> Submission:
+def load(result: object, *, convert_unreviewed: bool = False) -> Result:
     """
-    Load a result file as a Submission dataclass. `result` can be a dict from
+    Load a result file as a Result dataclass. `result` can be a dict from
     `RetrieveStorageObject`, a JSON string, or a path to a JSON file.
 
-    Optionally convert unreviewed submissions, making predictions available via in
-    `submission.document.final`.
+    Optionally convert unreviewed results, making predictions available via in
+    `result.document.final`.
     """
     if isinstance(result, str) and result.startswith("{"):
         result = json.loads(result)
@@ -43,7 +43,7 @@ def load(result: object, *, convert_unreviewed: bool = False) -> Submission:
         with open(result) as file:
             result = json.load(file)
 
-    if convert_unreviewed and Submission.is_unreviewed_result(result):
-        result = Submission.convert_to_reviewed_result(result)
+    if convert_unreviewed and Result.is_unreviewed_result(result):
+        result = Result.convert_to_reviewed_result(result)
 
-    return Submission.from_result(result)
+    return Result.from_result(result)
