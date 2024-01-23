@@ -60,10 +60,18 @@ class Result:
         return any(map(lambda review: review.rejected, self.reviews))
 
     @classmethod
-    def from_result(cls, result: object) -> "Result":
+    def from_result(
+        cls, result: object, *, convert_unreviewed: bool = False
+    ) -> "Result":
         """
         Factory function to produce a `Result` from a result file dictionary.
+
+        Optionally convert unreviewed results, making predictions available via in
+        `result.document.final`.
         """
+        if cls.is_unreviewed_result(result) and convert_unreviewed:
+            result = cls.convert_to_reviewed_result(result)
+
         file_version = get(result, "file_version", int)
 
         if file_version == 1:
@@ -83,7 +91,8 @@ class Result:
         if cls.is_unreviewed_result(result):
             raise ResultKeyError(
                 "Result file has no review information. "
-                "Use `SubmissionResult` to retrieve the result file "
+                "Use `SubmissionResult` to retrieve the result file, "
+                "load it with `results.load(..., convert_unreviewed=True)`, "
                 "or manually convert with `Result.convert_to_reviewed_result`."
             )
 

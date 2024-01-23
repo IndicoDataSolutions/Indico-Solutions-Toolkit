@@ -43,7 +43,4 @@ def load(result: object, *, convert_unreviewed: bool = False) -> Result:
         with open(result) as file:
             result = json.load(file)
 
-    if convert_unreviewed and Result.is_unreviewed_result(result):
-        result = Result.convert_to_reviewed_result(result)
-
-    return Result.from_result(result)
+    return Result.from_result(result, convert_unreviewed=convert_unreviewed)
