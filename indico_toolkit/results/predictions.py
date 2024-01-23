@@ -2,7 +2,7 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from .errors import MultipleValuesError, ResultFileError
+from .errors import MultipleValuesError, ResultKeyError
 from .spans import Span
 from .utils import get
 
@@ -166,7 +166,7 @@ class Extraction(Prediction):
         """
         try:
             confidences = get(extraction, "confidence", dict)
-        except ResultFileError:
+        except ResultKeyError:
             confidences = {}  # Post-review extractions don't have confidence dicts.
 
         return Extraction(

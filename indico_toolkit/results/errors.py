@@ -5,8 +5,8 @@ class MultipleValuesError(Exception):
     """
 
 
-class ResultFileError(Exception):
+class ResultKeyError(Exception):
     """
-    Raised when a result file dictionary is missing structures or
-    values required to load it.
+    Raised when a result file dictionary is missing keys and values
+    required to load it.
     """

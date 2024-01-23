@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from functools import partial
 from typing import TYPE_CHECKING
 
-from .errors import ResultFileError
+from .errors import ResultKeyError
 from .lists import PredictionList
 from .modelgroups import TaskType
 from .predictions import Classification, Extraction, Unbundling
@@ -88,7 +88,7 @@ class Document:
 
                 try:
                     final_dict = get(predictions_by_review, "final", dict)
-                except ResultFileError:
+                except ResultKeyError:
                     # Rejected submissions don't have a `final` section.
                     final_dict = None
 
@@ -123,7 +123,7 @@ class Document:
 
                 try:
                     final_list = get(predictions_by_review, "final", list)
-                except ResultFileError:
+                except ResultKeyError:
                     # Rejected submissions don't have a `final` section.
                     final_list = []
 

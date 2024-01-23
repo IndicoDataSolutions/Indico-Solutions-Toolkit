@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from functools import reduce
 
 from .documents import Document
-from .errors import MultipleValuesError, ResultFileError
+from .errors import MultipleValuesError, ResultKeyError
 from .modelgroups import ModelGroup
 from .reviews import Review
 from .utils import exists, get
@@ -73,7 +73,7 @@ class Submission:
         elif file_version == 3:
             return cls._from_v3_result(result)
         else:
-            raise ResultFileError(f"Unknown file version `{file_version!r}`.")
+            raise ResultKeyError(f"Unknown file version `{file_version!r}`.")
 
     @classmethod
     def _from_v1_result(cls, result: object) -> "Submission":
@@ -81,7 +81,7 @@ class Submission:
         Classify, Extract, and Classify+Extract Workflows.
         """
         if cls.is_unreviewed_result(result):
-            raise ResultFileError(
+            raise ResultKeyError(
                 "Result file has no review information. "
                 "Use `SubmissionResult` to retrieve the result file "
                 "or manually convert with `Submission.convert_to_reviewed_result`."

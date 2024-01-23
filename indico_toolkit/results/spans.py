@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .errors import ResultFileError
+from .errors import ResultKeyError
 from .utils import exists, get
 
 
@@ -18,7 +18,7 @@ class Span:
         try:
             start = get(span, "start", int)
             end = get(span, "end", int)
-        except ResultFileError:
+        except ResultKeyError:
             # Post-review extractions may not have start and end keys.
             start = None
             end = None

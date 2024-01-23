@@ -2,7 +2,7 @@ import json
 from os import PathLike
 
 from .documents import Document
-from .errors import MultipleValuesError, ResultFileError
+from .errors import MultipleValuesError, ResultKeyError
 from .lists import ClassificationList, ExtractionList, PredictionList, UnbundlingList
 from .predictions import Classification, Extraction, Prediction, Unbundling
 from .reviews import Review, ReviewType
@@ -19,7 +19,7 @@ __all__ = (
     "MultipleValuesError",
     "Prediction",
     "PredictionList",
-    "ResultFileError",
+    "ResultKeyError",
     "Review",
     "ReviewType",
     "Span",

@@ -20,7 +20,7 @@ def test_v1_reviewed_results(result_file: Path) -> None:
 
 @pytest.mark.parametrize("result_file", list(data_folder.glob("v1_unreviewed*.json")))
 def test_v1_unreviewed_results(result_file: Path) -> None:
-    with pytest.raises(results.ResultFileError):
+    with pytest.raises(results.ResultKeyError):
         results.load(result_file)
 
 

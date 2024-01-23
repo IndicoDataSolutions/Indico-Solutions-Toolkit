@@ -1,7 +1,7 @@
 from collections.abc import Iterable, Iterator
 from typing import Callable, TypeVar
 
-from .errors import ResultFileError
+from .errors import ResultKeyError
 
 Value = TypeVar("Value")
 
@@ -20,12 +20,12 @@ def exists(result: object, key: str, value_type: "type[Value]") -> bool:
 def get(result: object, key: str, value_type: "type[Value]") -> Value:
     """
     Return the value of `key` from `result` if `result` is a dict and the value has type
-    `value_type`. Raise a `ResultFileError` otherwise.
+    `value_type`. Raise a `ResultKeyError` otherwise.
     """
     if exists(result, key, value_type):
         return result[key]  # type: ignore[index, no-any-return]
     else:
-        raise ResultFileError(
+        raise ResultKeyError(
             f"Result object `{type(result)!r}` does not have a value for "
             f"key `{key!r}` with type `{value_type}`."
         )

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from .errors import ResultFileError
+from .errors import ResultKeyError
 from .utils import get
 
 
@@ -26,7 +26,7 @@ class Review:
         """
         try:
             notes = get(review, "review_notes", str)
-        except ResultFileError:
+        except ResultKeyError:
             notes = ""  # Notes are null if the user doesn't enter anything.
 
         return Review(

@@ -1,6 +1,6 @@
 import pytest
 
-from indico_toolkit.results import ResultFileError
+from indico_toolkit.results import ResultKeyError
 from indico_toolkit.results.utils import exists, get, nfilter
 
 
@@ -35,10 +35,10 @@ def test_get() -> None:
     assert get(result, "list", list) is list_
     assert get(result, "dict", dict) is dict_
 
-    with pytest.raises(ResultFileError):
+    with pytest.raises(ResultKeyError):
         assert get(result, "int", list)
 
-    with pytest.raises(ResultFileError):
+    with pytest.raises(ResultKeyError):
         assert get(result, "none", list)
 
 

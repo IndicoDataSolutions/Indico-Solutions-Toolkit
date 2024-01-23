@@ -1,11 +1,11 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from indico_toolkit.results import Document, ResultFileError, Submission
+from indico_toolkit.results import Document, ResultKeyError, Submission
 
 
 def test_result_file_version() -> None:
-    with pytest.raises(ResultFileError):
+    with pytest.raises(ResultKeyError):
         Submission.from_result(
             {
                 "file_version": 0,
@@ -58,7 +58,7 @@ def test_null_review(mocker: MockerFixture) -> None:
 
 
 def test_missing_reviews() -> None:
-    with pytest.raises(ResultFileError):
+    with pytest.raises(ResultKeyError):
         Submission.from_result(
             {
                 "file_version": 1,
