@@ -17,7 +17,7 @@ def test_v1_document() -> None:
     )
     document = submission.document
 
-    assert document.id is None
+    assert document.file_id is None
     assert document.filename is None
     assert (
         document.etl_output
@@ -67,7 +67,7 @@ def test_v2_document() -> None:
     )
     document = submission.documents[0]
 
-    assert document.id == 184
+    assert document.file_id == 184
     assert document.filename == "bundle=True.eml"
     assert (
         document.etl_output
@@ -112,7 +112,7 @@ def test_v3_document() -> None:
     )
     document = submission.document
 
-    assert document.id == 79684
+    assert document.file_id == 79684
     assert document.filename == "bundled_document.pdf"
     assert (
         document.etl_output

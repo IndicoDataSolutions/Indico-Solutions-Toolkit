@@ -11,8 +11,8 @@ from .utils import exists, get
 
 @dataclass
 class Submission:
-    id: int
-    version: int
+    submission_id: int
+    file_version: int
     documents: "list[Document]"
     reviews: "list[Review]"
 
@@ -64,16 +64,16 @@ class Submission:
         """
         Factory function to produce a `Submission` from a result file dictionary.
         """
-        version = get(result, "file_version", int)
+        file_version = get(result, "file_version", int)
 
-        if version == 1:
+        if file_version == 1:
             return cls._from_v1_result(result)
-        elif version == 2:
+        elif file_version == 2:
             return cls._from_v2_result(result)
-        elif version == 3:
+        elif file_version == 3:
             return cls._from_v3_result(result)
         else:
-            raise ResultFileError(f"Unknown file version `{version!r}`.")
+            raise ResultFileError(f"Unknown file version `{file_version!r}`.")
 
     @classmethod
     def _from_v1_result(cls, result: object) -> "Submission":
@@ -97,8 +97,8 @@ class Submission:
             reviews = []
 
         return Submission(
-            id=get(result, "submission_id", int),
-            version=1,
+            submission_id=get(result, "submission_id", int),
+            file_version=1,
             documents=[Document._from_v1_result(result, reviews)],
             reviews=reviews,
         )
@@ -115,8 +115,8 @@ class Submission:
         }
 
         return Submission(
-            id=get(result, "submission_id", int),
-            version=2,
+            submission_id=get(result, "submission_id", int),
+            file_version=2,
             documents=[
                 Document._from_v2_result(submission_result, model_groups_by_id)
                 for submission_result in get(result, "submission_results", list)
@@ -136,8 +136,8 @@ class Submission:
         }
 
         return Submission(
-            id=get(result, "submission_id", int),
-            version=3,
+            submission_id=get(result, "submission_id", int),
+            file_version=3,
             documents=[
                 Document._from_v3_result(submission_result, model_groups_by_id)
                 for submission_result in get(result, "submission_results", list)

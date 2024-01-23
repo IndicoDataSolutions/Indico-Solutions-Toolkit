@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from .errors import ResultFileError
 from .lists import PredictionList
-from .modelgroups import ModelType
+from .modelgroups import TaskType
 from .predictions import Classification, Extraction, Unbundling
 from .reviews import ReviewType
 from .utils import exists, get
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class Document:
-    id: "int | None"  # v1 sumissions do not have file IDs.
+    file_id: "int | None"  # v1 sumissions do not have file IDs.
     filename: "str | None"  # v1 submissions do not include the original filename.
     etl_output: str
     pre_review: PredictionList
@@ -136,7 +136,7 @@ class Document:
                 final.extend(map(extraction_for_model, final_list))
 
         return Document(
-            id=None,  # v1 sumissions do not have file IDs.
+            file_id=None,  # v1 sumissions do not have file IDs.
             filename=None,  # v1 submissions do not include the original filename.
             etl_output=get(result, "etl_output", str),
             pre_review=pre_review,
@@ -194,19 +194,19 @@ class Document:
         for model_id_str, predictions_list in original.items():
             model_group = model_groups_by_id[int(model_id_str)]
 
-            if model_group.type == ModelType.CLASSIFICATION:
+            if model_group.task_type == TaskType.CLASSIFICATION:
                 predictions.extend(
                     Classification._from_v2_result(model_group.name, prediction)
                     for prediction in predictions_list
                 )
-            elif model_group.type == ModelType.EXTRACTION:
+            elif model_group.task_type == TaskType.EXTRACTION:
                 predictions.extend(
                     Extraction._from_v2_result(model_group.name, prediction)
                     for prediction in predictions_list
                 )
 
         return Document(
-            id=get(submission_result, "submissionfile_id", int),
+            file_id=get(submission_result, "submissionfile_id", int),
             filename=get(submission_result, "input_filename", str),
             etl_output=get(submission_result, "etl_output", str),
             pre_review=predictions,
@@ -230,24 +230,24 @@ class Document:
         for model_id_str, predictions_list in original.items():
             model_group = model_groups_by_id[int(model_id_str)]
 
-            if model_group.type == ModelType.CLASSIFICATION:
+            if model_group.task_type == TaskType.CLASSIFICATION:
                 predictions.extend(
                     Classification._from_v3_result(model_group.name, prediction)
                     for prediction in predictions_list
                 )
-            elif model_group.type == ModelType.EXTRACTION:
+            elif model_group.task_type == TaskType.EXTRACTION:
                 predictions.extend(
                     Extraction._from_v3_result(model_group.name, prediction)
                     for prediction in predictions_list
                 )
-            elif model_group.type == ModelType.UNBUNDLING:
+            elif model_group.task_type == TaskType.UNBUNDLING:
                 predictions.extend(
                     Unbundling._from_v3_result(model_group.name, prediction)
                     for prediction in predictions_list
                 )
 
         return Document(
-            id=get(submission_result, "submissionfile_id", int),
+            file_id=get(submission_result, "submissionfile_id", int),
             filename=get(submission_result, "input_filename", str),
             etl_output=get(submission_result, "etl_output", str),
             pre_review=predictions,

@@ -4,7 +4,7 @@ from enum import Enum
 from .utils import get
 
 
-class ModelType(Enum):
+class TaskType(Enum):
     CLASSIFICATION = "classification"
     EXTRACTION = "annotation"
     UNBUNDLING = "classification_unbundling"
@@ -14,7 +14,7 @@ class ModelType(Enum):
 class ModelGroup:
     id: int
     name: str
-    type: ModelType
+    task_type: TaskType
 
     @staticmethod
     def _from_v2_result(model_group: object) -> "ModelGroup":
@@ -24,7 +24,7 @@ class ModelGroup:
         return ModelGroup(
             id=get(model_group, "id", int),
             name=get(model_group, "name", str),
-            type=ModelType(get(model_group, "task_type", str)),
+            task_type=TaskType(get(model_group, "task_type", str)),
         )
 
     @classmethod

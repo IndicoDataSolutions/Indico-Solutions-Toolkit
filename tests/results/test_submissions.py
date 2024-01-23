@@ -34,8 +34,8 @@ def test_reviews(mocker: MockerFixture) -> None:
         },
     )
 
-    assert submission.id == 11
-    assert submission.version == 1
+    assert submission.submission_id == 11
+    assert submission.file_version == 1
     assert submission.document == Document._from_v1_result.return_value
     assert len(submission.reviews) == 1
     assert submission.reviews[0].id == 2
