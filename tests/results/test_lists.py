@@ -348,7 +348,7 @@ class TestExtractionList:
         assert extractions[0].accepted
         assert not extractions[0].rejected
 
-        extractions.accept().unaccept()
+        extractions.unaccept()
 
         assert not extractions[0].accepted
         assert not extractions[0].rejected
@@ -358,10 +358,17 @@ class TestExtractionList:
         assert not extractions[0].accepted
         assert extractions[0].rejected
 
-        extractions.reject().unreject()
+        extractions.unreject()
 
         assert not extractions[0].accepted
         assert not extractions[0].rejected
+
+    @staticmethod
+    def test_accept_reject_chain(extractions: ExtractionList) -> None:
+        extractions.accept().accept()
+        extractions.unaccept().unaccept()
+        extractions.reject().reject()
+        extractions.unreject().unreject()
 
     @staticmethod
     def test_groupby_return_type(extractions: ExtractionList) -> None:
