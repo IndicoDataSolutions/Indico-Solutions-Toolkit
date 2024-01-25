@@ -1,25 +1,35 @@
-from collections import defaultdict
-from typing import List
+from typing import Dict, List, Callable
 
-from .review_config import ReviewConfiguration
-from .auto_review_functions import (
-    accept_by_confidence,
-    reject_by_confidence,
-    reject_by_min_character_length,
-    reject_by_max_character_length,
-    accept_by_all_match_and_confidence,
-    remove_by_confidence,
-)
+class AutoReviewFunction:
+    """
+    Class for hosting functions to manipulate predictions before sending to 
+    auto review
 
+    Args:
+        function (Callable): method to be invoked when applying reviews. 
+        The Callable must have the following arguments in the following order:
+            predictions (List[dict]),
+            labels (List[str]),
+            **kwargs,
 
-REVIEWERS = {
-    "accept_by_confidence": accept_by_confidence,
-    "reject_by_confidence": reject_by_confidence,
-    "reject_by_min_character_length": reject_by_min_character_length,
-    "reject_by_max_character_length": reject_by_max_character_length,
-    "accept_by_all_match_and_confidence": accept_by_all_match_and_confidence,
-    "remove_by_confidence": remove_by_confidence,
-}
+        labels (List[str]): list of labels to invoke method on. Defaults to all labels
+        kwargs (Dict[str, str]): dictionary containing additional arguments needed in calling function
+    """
+    def __init__(
+        self,
+        function: Callable,
+        labels: List[str] = [],
+        kwargs: Dict[str, str] = {},
+    ):
+        self.function = function
+        self.labels = labels
+        self.kwargs = kwargs
+
+    def apply(self, predictions: List[dict]):
+        if predictions and not self.labels:
+            self.labels = list(set([pred["label"] for pred in predictions]))
+        return self.function(predictions, self.labels, **self.kwargs)
+
 
 
 class AutoReviewer:
@@ -29,42 +39,25 @@ class AutoReviewer:
     Example Usage:
 
     reviewer = AutoReviewer(
-        predictions, review_config
+        predictions, functions
     )
-    reviewer.apply_review()
 
     # Get your updated predictions
-    updated_predictions: List[dict] = reviewer.updated_predictions
+    updated_predictions: List[dict] = reviewer.apply_reviews()
     """
 
     def __init__(
         self,
         predictions: List[dict],
-        review_config: ReviewConfiguration,
+        functions: List[AutoReviewFunction] = []
     ):
-        self.field_config = review_config.field_config
-        self.reviewers = self.add_reviewers(review_config.custom_functions)
         self.predictions = predictions
         self.updated_predictions = predictions
+        self.functions = functions
 
-    @staticmethod
-    def add_reviewers(custom_functions):
-        """
-        Add custom functions into reviewers
-        Overwrites any default reviewers if function names match
-        """
-        for func_name, func in custom_functions.items():
-            REVIEWERS[func_name] = func
-        return REVIEWERS
+    def apply_reviews(self) -> list:
+        for function in self.functions:
+            self.updated_predictions = function.apply(self.updated_predictions)
+        return self.updated_predictions
+    
 
-    def apply_reviews(self):
-        for fn_config in self.field_config:
-            fn_name = fn_config["function"]
-            try:
-                review_fn = REVIEWERS[fn_name]
-            except KeyError:
-                raise KeyError(
-                    f"{fn_name} function was not found, did you specify it in FieldConfiguration?"
-                )
-            kwargs = fn_config["kwargs"] if fn_config.get("kwargs") else {}
-            self.updated_predictions = review_fn(self.updated_predictions, **kwargs)

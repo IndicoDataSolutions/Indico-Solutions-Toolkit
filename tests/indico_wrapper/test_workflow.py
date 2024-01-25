@@ -22,6 +22,7 @@ def test_get_ondoc_ocr_from_etl_url(indico_client, wflow_submission_result):
     assert isinstance(on_doc, OnDoc)
     assert on_doc.total_pages == 2
 
+
 def test_mark_submission_as_retreived(indico_client, function_submission_ids):
     wflow = Workflow(indico_client)
     wflow.mark_submission_as_retreived(submission_id=function_submission_ids[0])

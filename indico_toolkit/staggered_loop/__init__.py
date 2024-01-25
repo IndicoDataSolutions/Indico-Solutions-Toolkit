@@ -1,1 +1,2 @@
 from .staggered_loop import StaggeredLoop
+from .staggered_loop_recruiter import StaggeredLoopRecruiter

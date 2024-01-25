@@ -29,7 +29,7 @@ class WorkflowResult:
         return f"WorkflowResult object, Submission ID: {self.submission_id}"
 
     @property
-    def predictions(self) -> Predictions:
+    def get_predictions(self) -> Predictions:
         """
         Return predictions without human review
         """
@@ -40,14 +40,43 @@ class WorkflowResult:
         return Predictions.get_obj(preds)
 
     @property
-    def post_review_predictions(self) -> Union[Extractions, Classification, ClassificationMGP]:
+    def pre_review_predictions(self) -> Predictions:
+        """
+        Return predictions before human review
+        """
         self._set_model_name()
-        try:
-            return Predictions.get_obj(self.document_results[self.model_name]["final"])
-        except (KeyError, TypeError):
-            raise ToolkitStatusError(
-                f"Submission {self.submission_id} has no 'final' predictions. Has it completed human review?"
-            )
+        preds = self.document_results[self.model_name]
+        if "pre_review" in preds:
+            preds = preds["pre_review"]
+            return Predictions.get_obj(preds)
+        else:
+            return Predictions.get_obj([])
+
+    @property
+    def post_reviews_predictions(self) -> Predictions:
+        """
+        Return predictions after human review
+        """
+        self._set_model_name()
+        preds = self.document_results[self.model_name]
+        if "post_reviews" in preds:
+            post_review_preds = []
+            reviews = preds["post_reviews"]
+            for review in reviews:
+                post_review_preds.append(Predictions.get_obj(review))
+            return post_review_preds
+        else:
+            return Predictions.get_obj([])
+
+    @property
+    def final_predictions(self) -> Predictions:
+        self._set_model_name()
+        preds = self.document_results[self.model_name]
+        if "final" in preds:
+            preds = preds["final"]
+            return Predictions.get_obj(preds)
+        else:
+            return Predictions.get_obj([])
 
     def _set_model_name(self):
         """

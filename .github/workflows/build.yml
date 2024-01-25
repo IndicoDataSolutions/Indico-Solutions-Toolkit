@@ -15,6 +15,7 @@ jobs:
       WORKFLOW_ID: ${{ secrets.WORKFLOW_ID }}
       MODEL_ID: ${{ secrets.MODEL_ID }} 
       MODEL_GROUP_ID: ${{ secrets.MODEL_GROUP_ID }}
+      TEACH_TASK_ID: ${{ secrets.TEACH_TASK_ID }}
       HOST_URL: try.indico.io
     
     steps:
@@ -31,11 +32,33 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
           python -m pip install -e .[full]
+          python -m pip install flake8 pytest pytest-cov
       
       - name: Run formatter
         run: |
           black indico_toolkit
 
-      - name: Run tests
+      - name: Run tests and build coverage file
         run: |
-          pytest
+          pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=indico_toolkit tests/ | tee pytest-coverage.txt
+
+      - name: Pytest coverage comment
+        id: coverageComment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: ./pytest-coverage.txt
+          junitxml-path: ./pytest.xml
+          title: Indico Toolkit Coverage Report
+          badge-title: Test Coverage
+          default-branch: main
+
+      - name: Check the output coverage
+        run: |
+          echo "Coverage Percantage - ${{ steps.coverageComment.outputs.coverage }}"
+          echo "Coverage Warnings - ${{ steps.coverageComment.outputs.warnings }}"
+          echo "Coverage Errors - ${{ steps.coverageComment.outputs.errors }}"
+          echo "Coverage Failures - ${{ steps.coverageComment.outputs.failures }}"
+          echo "Coverage Skipped - ${{ steps.coverageComment.outputs.skipped }}"
+          echo "Coverage Tests - ${{ steps.coverageComment.outputs.tests }}"
+          echo "Coverage Time - ${{ steps.coverageComment.outputs.time }}"
+          echo "Not Success Test Info - ${{ steps.coverageComment.outputs.notSuccessTestInfo }}"

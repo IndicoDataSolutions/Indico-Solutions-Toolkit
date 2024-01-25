@@ -1,5 +1,7 @@
 import time
-from typing import List, Union
+import io
+from os import PathLike
+from typing import List, Union, Dict
 from indico import IndicoClient, IndicoRequestError
 from indico.queries import (
     Submission,
@@ -34,29 +36,33 @@ class Workflow(IndicoWrapper):
     def __init__(self, client: IndicoClient):
         self.client = client
 
-    def get_workflow(
-        self, workflow_id: int
-    ) -> Workflow:
+    def get_workflow(self, workflow_id: int) -> Workflow:
         """
         Args:
             workflow_id (int): Workflow id to query for
         """
-        return self.client.call(
-            GetWorkflow(workflow_id)
-        )
+        return self.client.call(GetWorkflow(workflow_id))
 
     def submit_documents_to_workflow(
-        self, workflow_id: int, pdf_filepaths: List[str]
+        self,
+        workflow_id: int,
+        *,
+        files: Union[List[Union[str, PathLike]], None] = None,
+        streams: Union[Dict[str, io.BufferedIOBase], None] = None,
     ) -> List[int]:
         """
         Args:
             workflow_id (int): Workflow to submit to
             pdf_filepaths (List[str]): Path to local documents you would like to submit
+            streams (Dict[str, io.BufferedIOBase]): List of filename keys mapped to streams
+            for upload.
         Returns:
             List[int]: List of unique and persistent identifier for each submission.
         """
         return self.client.call(
-            WorkflowSubmission(workflow_id=workflow_id, files=pdf_filepaths)
+            WorkflowSubmission(
+                workflow_id=workflow_id, files=files, streams=streams
+            )
         )
 
     def get_ondoc_ocr_from_etl_url(self, etl_url: str) -> OnDoc:
@@ -149,6 +155,7 @@ class Workflow(IndicoWrapper):
             result = self._create_result(submission)
             # Add path to original input file to result
             result["input_file"] = submission.input_file
+            result["filename"] = submission.input_filename
             if return_raw_json:
                 results.append(result)
             else:
@@ -163,9 +170,19 @@ class Workflow(IndicoWrapper):
         return self.get_storage_object(job.result)
 
     def submit_submission_review(
-        self, submission_id: int, updated_predictions: dict, wait: bool = True
+        self,
+        submission_id: int,
+        updated_predictions: dict,
+        wait: bool = True,
+        force_complete: bool = False,
     ):
-        job = self.client.call(SubmitReview(submission_id, changes=updated_predictions))
+        job = self.client.call(
+            SubmitReview(
+                submission_id,
+                changes=updated_predictions,
+                force_complete=force_complete,
+            )
+        )
         if wait:
             job = self.client.call(JobStatus(job.id, wait=True))
         return job

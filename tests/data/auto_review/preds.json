@@ -122,13 +122,13 @@
         "label": "reject_by_max_character_length",
         "text": "should be rejected",
         "confidence": {
-            "reject_by_min_character_length": 0.83
+            "reject_by_max_character_length": 0.83
         }
     },
     {
         "start": 30,
         "end": 40,
-        "label": "reject_by_max_character_length",
+        "label": "reject_by_min_character_length",
         "text": "short",
         "confidence": {
             "reject_by_min_character_length": 0.74
