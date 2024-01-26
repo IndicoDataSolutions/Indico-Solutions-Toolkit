@@ -92,7 +92,7 @@ document = (
 )  # Shorthand for `result.documents[0]` for single-document submissions.
 document.file_id
 document.filename
-document.etl_output
+document.etl_output_url
 document.pre_review  # List of raw model predictions.
 document.auto_review  # List of predictions for this review.
 document.manual_review  # List of predictions for this review.

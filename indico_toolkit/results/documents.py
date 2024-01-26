@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class Document:
     file_id: "int | None"  # v1 sumissions do not have file IDs.
     filename: "str | None"  # v1 submissions do not include the original filename.
-    etl_output: str
+    etl_output_url: str
     pre_review: PredictionList
     auto_review: PredictionList
     manual_review: PredictionList
@@ -138,7 +138,7 @@ class Document:
         return Document(
             file_id=None,  # v1 sumissions do not have file IDs.
             filename=None,  # v1 submissions do not include the original filename.
-            etl_output=get(result, "etl_output", str),
+            etl_output_url=get(result, "etl_output", str),
             pre_review=pre_review,
             auto_review=auto_review,
             manual_review=manual_review,
@@ -208,7 +208,7 @@ class Document:
         return Document(
             file_id=get(submission_result, "submissionfile_id", int),
             filename=get(submission_result, "input_filename", str),
-            etl_output=get(submission_result, "etl_output", str),
+            etl_output_url=get(submission_result, "etl_output", str),
             pre_review=predictions,
             auto_review=PredictionList(),  # v2 submissions do not support review yet.
             manual_review=PredictionList(),  # v2 submissions do not support review yet.
@@ -249,7 +249,7 @@ class Document:
         return Document(
             file_id=get(submission_result, "submissionfile_id", int),
             filename=get(submission_result, "input_filename", str),
-            etl_output=get(submission_result, "etl_output", str),
+            etl_output_url=get(submission_result, "etl_output", str),
             pre_review=predictions,
             auto_review=PredictionList(),  # v3 submissions do not support review yet.
             manual_review=PredictionList(),  # v3 submissions do not support review yet.

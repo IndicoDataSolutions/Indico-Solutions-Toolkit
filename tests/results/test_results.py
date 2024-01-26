@@ -20,8 +20,6 @@ def test_reviews(mocker: MockerFixture) -> None:
         {
             "file_version": 1,
             "submission_id": 11,
-            "etl_output": "indico-file:///etl_output.json",
-            "results": {},
             "reviews_meta": [
                 {
                     "review_id": 2,
@@ -49,8 +47,9 @@ def test_null_review(mocker: MockerFixture) -> None:
         {
             "file_version": 1,
             "submission_id": 10,
-            "etl_output": "indico-file:///etl_output.json",
-            "reviews_meta": [{"review_id": None}],
+            "reviews_meta": [
+                {"review_id": None},
+            ],
         },
     )
 

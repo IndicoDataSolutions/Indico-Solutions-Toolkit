@@ -20,7 +20,7 @@ def test_v1_document() -> None:
     assert document.file_id is None
     assert document.filename is None
     assert (
-        document.etl_output
+        document.etl_output_url
         == "indico-file:///storage/submission/4/11/12/etl_output.json"
     )
 
@@ -70,7 +70,7 @@ def test_v2_document() -> None:
     assert document.file_id == 184
     assert document.filename == "bundle=True.eml"
     assert (
-        document.etl_output
+        document.etl_output_url
         == "indico-file:///storage/submission/4/183/184/etl_output.json"
     )
 
@@ -115,7 +115,7 @@ def test_v3_document() -> None:
     assert document.file_id == 79684
     assert document.filename == "bundled_document.pdf"
     assert (
-        document.etl_output
+        document.etl_output_url
         == "indico-file:///storage/submission/3109/91825/79684/etl_output.json"
     )
 
