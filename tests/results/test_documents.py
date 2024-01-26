@@ -23,6 +23,10 @@ def test_v1_document() -> None:
         document.etl_output_url
         == "indico-file:///storage/submission/4/11/12/etl_output.json"
     )
+    assert (
+        document.full_text_url
+        == "indico-file:///storage/submission/4/11/12/full_text.txt"
+    )
 
     assert document.labels == {
         "Broker City",
@@ -73,6 +77,10 @@ def test_v2_document() -> None:
         document.etl_output_url
         == "indico-file:///storage/submission/4/183/184/etl_output.json"
     )
+    assert (
+        document.full_text_url
+        == "indico-file:///storage/submission/4/183/184/full_text.txt"
+    )
 
     assert document.labels == {
         "Broker Contact Email",
@@ -117,6 +125,10 @@ def test_v3_document() -> None:
     assert (
         document.etl_output_url
         == "indico-file:///storage/submission/3109/91825/79684/etl_output.json"
+    )
+    assert (
+        document.full_text_url
+        == "indico-file:///storage/submission/3109/91825/79684/full_text.txt"
     )
 
     assert document.labels == {

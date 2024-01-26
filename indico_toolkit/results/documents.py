@@ -26,6 +26,13 @@ class Document:
     final: PredictionList
 
     @property
+    def full_text_url(self) -> str:
+        """
+        Return the URL to the full OCR of this document based on `etl_output_url`.
+        """
+        return self.etl_output_url.replace("etl_output.json", "full_text.txt")
+
+    @property
     def labels(self) -> "set[str]":
         """
         Return unique prediction labels for all predictions for this document.
