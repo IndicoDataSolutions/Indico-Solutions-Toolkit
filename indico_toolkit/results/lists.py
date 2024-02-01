@@ -74,24 +74,27 @@ class BaseList(List[PredictionType]):
 
     def where(
         self,
+        predicate: "Callable[[PredictionType], bool] | None" = None,
         *,
         model: "str | None" = None,
         label: "str | None" = None,
         min_confidence: "float | None" = None,
         max_confidence: "float | None" = None,
-        predicate: "Callable[[PredictionType], bool] | None" = None,
     ) -> "Self":
         """
         Return a new prediction list containing predictions that match
         all of the specified filters.
 
+        predicate: predictions for which this function returns True.
         model: predictions from this model,
         label: predictions with this label,
         min_confidence: predictions with confidence >= this threshold,
         max_confidence: predictions with confidence <= this threshold,
-        predicate: predictions for which this function returns True.
         """
         predicates = []
+
+        if predicate is not None:
+            predicates.append(predicate)
 
         if model is not None:
             predicates.append(lambda pred: pred.model == model)
@@ -104,9 +107,6 @@ class BaseList(List[PredictionType]):
 
         if max_confidence is not None:
             predicates.append(lambda pred: pred.confidence <= max_confidence)
-
-        if predicate is not None:
-            predicates.append(predicate)
 
         return type(self)(nfilter(predicates, self))
 
