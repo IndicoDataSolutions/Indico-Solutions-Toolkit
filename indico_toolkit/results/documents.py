@@ -228,7 +228,7 @@ class Document:
         cls, submission_result: object, model_groups_by_id: "dict[int, ModelGroup]"
     ) -> "Document":
         """
-        Bundled Submission Workflows.
+        Classify+Unbundle Workflows.
         """
         predictions = PredictionList()
         model_results = get(submission_result, "model_results", dict)
