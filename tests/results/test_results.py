@@ -14,7 +14,7 @@ def test_result_file_version() -> None:
 
 
 def test_reviews(mocker: MockerFixture) -> None:
-    mocker.patch.object(Document, "_from_v1_result")
+    mock_from_v1_result = mocker.patch.object(Document, "_from_v1_result")
 
     result = Result.from_result(
         {
@@ -34,7 +34,7 @@ def test_reviews(mocker: MockerFixture) -> None:
 
     assert result.submission_id == 11
     assert result.file_version == 1
-    assert result.document == Document._from_v1_result.return_value
+    assert result.document == mock_from_v1_result.return_value
     assert len(result.reviews) == 1
     assert result.reviews[0].id == 2
     assert result.rejected is False
