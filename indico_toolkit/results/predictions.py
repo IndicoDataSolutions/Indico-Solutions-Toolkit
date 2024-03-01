@@ -270,4 +270,15 @@ class Extraction(Prediction):
                 }
             )
 
+        # In IPA 6.6+, review shows `prediction["normalized"]["formatted"]`.
+        # If `text` has changed, update Typed Entity values to match.
+        # Otherwise, don't overwrite any potential Typed Entity normalization.
+        if (
+            "normalized" in changes
+            and "text" in changes["normalized"]
+            and changes["normalized"]["text"] != self.text
+        ):
+            changes["normalized"]["text"] = self.text
+            changes["normalized"]["formatted"] = self.text
+
         return changes

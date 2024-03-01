@@ -143,6 +143,72 @@ class TestExtraction:
         assert extraction.accepted
         assert not extraction.rejected
 
+    @staticmethod
+    def test_no_typed_entities() -> None:
+        original_value = "2024-02-29"
+        updated_value = "2024-03-01"
+
+        extraction = Extraction._from_v1_result(
+            "Test Model",
+            {
+                "start": 33,
+                "end": 43,
+                "label": "Date",
+                "confidence": {
+                    "Date": 0.5,
+                },
+                "page_num": 1,
+                "text": original_value,
+            },
+        )
+
+        assert extraction.text == original_value
+
+        extraction.text = updated_value
+
+        assert extraction._to_changes()["text"] == updated_value
+
+    @staticmethod
+    def test_typed_entities() -> None:
+        original_value = "2024-02-29"
+        updated_value = "2024-03-01"
+        formatted_value = "03/01/2024"
+
+        extraction = Extraction._from_v1_result(
+            "Test Model",
+            {
+                "start": 33,
+                "end": 43,
+                "label": "Date",
+                "confidence": {
+                    "Date": 0.5,
+                },
+                "page_num": 1,
+                "text": original_value,
+                "normalized": {
+                    "text": original_value,
+                    "formatted": formatted_value,
+                },
+            },
+        )
+
+        assert extraction.text == original_value
+        assert extraction.extras["normalized"]["text"] == original_value
+        assert extraction.extras["normalized"]["formatted"] == formatted_value
+
+        changes = extraction._to_changes()
+
+        assert changes["text"] == original_value
+        assert changes["normalized"]["text"] == original_value
+        assert changes["normalized"]["formatted"] == formatted_value
+
+        extraction.text = updated_value
+        changes = extraction._to_changes()
+
+        assert changes["text"] == updated_value
+        assert changes["normalized"]["text"] == updated_value
+        assert changes["normalized"]["formatted"] == updated_value
+
 
 class TestUnbundling:
     @staticmethod
