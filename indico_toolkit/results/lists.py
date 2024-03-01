@@ -7,7 +7,7 @@ from .utils import nfilter
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-    from typing import Self
+    from typing import Any, Self
 
 PredictionType = TypeVar("PredictionType", bound=Prediction)
 KeyType = TypeVar("KeyType")
@@ -112,7 +112,7 @@ class BaseList(List[PredictionType]):
 
 
 class ClassificationList(BaseList[Classification]):
-    def to_changes(self) -> "dict[str, object]":
+    def to_changes(self) -> "dict[str, Any]":
         """
         Return a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
@@ -150,7 +150,7 @@ class ExtractionList(BaseList[Extraction]):
         self.apply(lambda extraction: extraction.unreject())
         return self
 
-    def to_changes(self) -> "dict[str, object]":
+    def to_changes(self) -> "dict[str, Any]":
         """
         Return a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
@@ -221,7 +221,7 @@ class PredictionList(BaseList[Prediction]):
             )
         )
 
-    def to_changes(self) -> "dict[str, object]":
+    def to_changes(self) -> "dict[str, Any]":
         """
         Return a dict structure suitable for the `changes` argument of `SubmitReview`.
         """

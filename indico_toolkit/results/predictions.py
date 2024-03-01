@@ -8,6 +8,7 @@ from .utils import get
 
 if TYPE_CHECKING:
     from collections.abc import Collection
+    from typing import Any
 
 
 @dataclass
@@ -15,7 +16,7 @@ class Prediction:
     model: str
     label: str
     confidences: "dict[str, float]"
-    extras: "dict[str, object]"
+    extras: "dict[str, Any]"
 
     @property
     def confidence(self) -> float:
@@ -71,7 +72,7 @@ class Classification(Prediction):
         """
         return cls._from_v1_result(model, classification)
 
-    def _to_changes(self) -> "dict[str, object]":
+    def _to_changes(self) -> "dict[str, Any]":
         """
         Return a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
@@ -245,7 +246,7 @@ class Extraction(Prediction):
             ),
         )
 
-    def _to_changes(self) -> "dict[str, object]":
+    def _to_changes(self) -> "dict[str, Any]":
         """
         Produce a dict structure suitable for the `changes` argument of `SubmitReview`.
         """
