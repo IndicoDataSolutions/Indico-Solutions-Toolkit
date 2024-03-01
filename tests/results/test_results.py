@@ -54,6 +54,7 @@ def test_null_review(mocker: MockerFixture) -> None:
     )
 
     assert not result.reviews
+    assert not result.rejected
 
 
 def test_missing_reviews() -> None:
@@ -64,3 +65,104 @@ def test_missing_reviews() -> None:
                 "results": {},
             },
         )
+
+
+def test_rejected_reviews(mocker: MockerFixture) -> None:
+    mocker.patch.object(Document, "_from_v1_result")
+
+    result = Result.from_result(
+        {
+            "file_version": 1,
+            "submission_id": 11,
+            "reviews_meta": [
+                {
+                    "review_id": 66812,
+                    "reviewer_id": 422,
+                    "review_notes": None,
+                    "review_rejected": True,
+                    "review_type": "manual",
+                },
+                {
+                    "review_id": 66811,
+                    "reviewer_id": 422,
+                    "review_notes": None,
+                    "review_rejected": False,
+                    "review_type": "auto",
+                },
+            ],
+        },
+    )
+
+    assert result.rejected is True
+
+
+def test_accepted_admin_reviews(mocker: MockerFixture) -> None:
+    mocker.patch.object(Document, "_from_v1_result")
+
+    result = Result.from_result(
+        {
+            "file_version": 1,
+            "submission_id": 11,
+            "reviews_meta": [
+                {
+                    "review_id": 66813,
+                    "reviewer_id": 422,
+                    "review_notes": None,
+                    "review_rejected": False,
+                    "review_type": "admin",
+                },
+                {
+                    "review_id": 66812,
+                    "reviewer_id": 422,
+                    "review_notes": None,
+                    "review_rejected": True,
+                    "review_type": "manual",
+                },
+                {
+                    "review_id": 66811,
+                    "reviewer_id": 422,
+                    "review_notes": None,
+                    "review_rejected": False,
+                    "review_type": "auto",
+                },
+            ],
+        },
+    )
+
+    assert result.rejected is False
+
+
+def test_rejected_admin_reviews(mocker: MockerFixture) -> None:
+    mocker.patch.object(Document, "_from_v1_result")
+
+    result = Result.from_result(
+        {
+            "file_version": 1,
+            "submission_id": 11,
+            "reviews_meta": [
+                {
+                    "review_id": 66813,
+                    "reviewer_id": 422,
+                    "review_notes": None,
+                    "review_rejected": True,
+                    "review_type": "admin",
+                },
+                {
+                    "review_id": 66812,
+                    "reviewer_id": 422,
+                    "review_notes": None,
+                    "review_rejected": True,
+                    "review_type": "manual",
+                },
+                {
+                    "review_id": 66811,
+                    "reviewer_id": 422,
+                    "review_notes": None,
+                    "review_rejected": False,
+                    "review_type": "auto",
+                },
+            ],
+        },
+    )
+
+    assert result.rejected is True

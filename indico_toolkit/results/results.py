@@ -1,6 +1,7 @@
 from copy import deepcopy
 from dataclasses import dataclass
 from functools import reduce
+from operator import attrgetter
 
 from .documents import Document
 from .errors import MultipleValuesError, ResultKeyError
@@ -57,7 +58,14 @@ class Result:
 
     @property
     def rejected(self) -> bool:
-        return any(map(lambda review: review.rejected, self.reviews))
+        """
+        Return whether the result is rejected.
+        A result is rejected if the most recent review is rejected.
+        """
+        return (
+            len(self.reviews) > 0
+            and sorted(self.reviews, key=attrgetter("id"))[-1].rejected
+        )
 
     @classmethod
     def from_result(
