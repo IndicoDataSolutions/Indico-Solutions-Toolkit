@@ -7,7 +7,6 @@ from .spans import Span
 from .utils import get
 
 if TYPE_CHECKING:
-    from collections.abc import Collection
     from typing import Any
 
 
@@ -31,9 +30,7 @@ class Prediction:
             ) from key_error
 
     @staticmethod
-    def _extras_from_result(
-        result: object, omit: "Collection[str]"
-    ) -> "dict[str, object]":
+    def _extras_from_result(result: object, omit: "set[str]") -> "dict[str, object]":
         if not isinstance(result, dict):
             return {}
 
@@ -54,7 +51,7 @@ class Classification(Prediction):
             label=get(classification, "label", str),
             confidences=get(classification, "confidence", dict),
             extras=cls._extras_from_result(
-                classification, omit=("confidence", "label")
+                classification, omit={"confidence", "label"}
             ),
         )
 
@@ -111,7 +108,7 @@ class Unbundling(Prediction):
             confidences=get(unbundling, "confidence", dict),
             spans=list(map(Span._from_v3_result, get(unbundling, "spans", list))),
             extras=cls._extras_from_result(
-                unbundling, omit=("confidence", "label", "spans")
+                unbundling, omit={"confidence", "label", "spans"}
             ),
         )
 
@@ -188,7 +185,7 @@ class Extraction(Prediction):
             spans=[Span._from_v1_result(extraction)],
             extras=cls._extras_from_result(
                 extraction,
-                omit=(
+                omit={
                     "confidence",
                     "end",
                     "label",
@@ -196,7 +193,7 @@ class Extraction(Prediction):
                     "pageNum",  # A platform bug causes manual-review extractions
                     "start",  #   to have a different key for page number.
                     "text",
-                ),
+                },
             ),
         )
 
@@ -213,14 +210,14 @@ class Extraction(Prediction):
             spans=[Span._from_v2_result(extraction)],
             extras=cls._extras_from_result(
                 extraction,
-                omit=(
+                omit={
                     "confidence",
                     "end",
                     "label",
                     "page_num",
                     "start",
                     "text",
-                ),
+                },
             ),
         )
 
@@ -237,12 +234,12 @@ class Extraction(Prediction):
             spans=list(map(Span._from_v3_result, get(extraction, "spans", list))),
             extras=cls._extras_from_result(
                 extraction,
-                omit=(
+                omit={
                     "confidence",
                     "label",
                     "spans",
                     "text",
-                ),
+                },
             ),
         )
 
