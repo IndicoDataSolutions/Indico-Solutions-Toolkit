@@ -8,3 +8,4 @@ black==22.3
 plotly==5.2.1
 tqdm==4.50.0
 faker==13.3.3
+aiohttp>=3.9.2 # not directly required, pinned by Snyk to avoid a vulnerability
