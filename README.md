@@ -28,7 +28,6 @@ pip install indico_toolkit
 
 * Note: if you are on Indico 6.X, install an indico_toolkit 6.X version. If you're on 5.X install a 2.X version.
 * Note: If you are on a version of the Indico IPA platform pre-5.1, then install indico-toolkit==1.2.3.
-* If you want to use PdfHighlighter, install with `pip install 'indico_toolkit[full]'` as PyMuPDF is an optional dependency.
 
 ### Example Useage
 
