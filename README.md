@@ -12,8 +12,6 @@ The indico-toolkit provides classes and functions to help achieve the following:
 * Tools to assist with creating and copying workflow structures.
 * Get metrics for all model IDs in a model group to see how well fields are performing after more labeling.
 * Compare two models via bar plot and data tables.
-* Highlighting extraction predictions on source PDFs.
-* A simple Staggered loop implementation to identify high error documents and inject reviewed results into dev tasks.
 * Train a document classification model without labeling.
 * An AutoReview class to assist with automated acceptance/rejection of model predictions.
 * Common manipulation of prediction/workflow results.
@@ -39,9 +37,6 @@ To run the test suite you will need to set the following environment variables: 
 You can also set WORKFLOW_ID (workflow w/ single extraction model), MODEL_NAME (extraction model name)
 and DATASET_ID (uploaded dataset). If you don't set these 3 env variables, test configuration will
 upload a dataset and create a workflow.
-
-Note: spacy isn't a requirement to install the package, but is a requirement to run the full test suite
-as it is part of "staggered loop".
 
 ```
 pytest
