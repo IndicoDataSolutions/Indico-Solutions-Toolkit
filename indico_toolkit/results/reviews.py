@@ -1,17 +1,16 @@
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
-from .errors import ResultKeyError
 from .utils import get
 
 
-class ReviewType(Enum):
+class ReviewType(StrEnum):
     ADMIN = "admin"
     AUTO = "auto"
     MANUAL = "manual"
 
 
-@dataclass
+@dataclass(frozen=True, order=True)
 class Review:
     id: int
     reviewer_id: int
@@ -20,19 +19,14 @@ class Review:
     type: ReviewType
 
     @staticmethod
-    def _from_v1_result(review: object) -> "Review":
+    def from_dict(review: object) -> "Review":
         """
-        Classify, Extract, and Classify+Extract Workflows.
+        Create a `Review` from a result file review dictionary.
         """
-        try:
-            notes = get(review, "review_notes", str)
-        except ResultKeyError:
-            notes = ""  # Notes are null if the user doesn't enter anything.
-
         return Review(
-            id=get(review, "review_id", int),
-            reviewer_id=get(review, "reviewer_id", int),
-            notes=notes,
-            rejected=get(review, "review_rejected", bool),
-            type=ReviewType(get(review, "review_type", str)),
+            id=get(review, int, "review_id"),
+            reviewer_id=get(review, int, "reviewer_id"),
+            notes=get(review, str, "review_notes"),
+            rejected=get(review, bool, "review_rejected"),
+            type=ReviewType(get(review, str, "review_type")),
         )

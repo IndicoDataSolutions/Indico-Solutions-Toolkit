@@ -11,31 +11,30 @@ from indico_toolkit import results
 
 
 def final_predictions(result: results.Result) -> Iterator[dict[str, object]]:
-    for document in result.documents:
-        for classification in document.final.classifications:
+    for prediction in result.final:
+        if isinstance(prediction, results.Classification):
             yield {
-                "submission_id": result.submission_id,
-                "document_id": document.file_id,
-                "model": classification.model,
+                "submission_id": result.id,
+                "document_id": prediction.document.id,
+                "model": prediction.model.name,
                 "field": "Classification",
-                "value": classification.label,
-                "confidence": classification.confidence,
+                "value": prediction.label,
+                "confidence": prediction.confidence,
             }
-
-        for extraction in document.final.extractions:
+        else:
             yield {
-                "submission_id": result.submission_id,
-                "document_id": document.file_id,
-                "model": extraction.model,
-                "field": extraction.label,
-                "value": extraction.text,
-                "confidence": extraction.confidence,
+                "submission_id": result.id,
+                "document_id": prediction.document.id,
+                "model": prediction.model.name,
+                "field": prediction.label,
+                "value": prediction.text,
+                "confidence": prediction.confidence,
             }
 
 
 def predictions_from_files(result_files: Iterable[Path]) -> Iterator[dict[str, object]]:
     for result_file in result_files:
-        result = results.load(result_file, convert_unreviewed=True)
+        result = results.load(result_file)
         yield from final_predictions(result)
 
 

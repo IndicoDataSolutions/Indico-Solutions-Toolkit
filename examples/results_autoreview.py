@@ -2,6 +2,7 @@
 Minimal auto review example for single-document submissions.
 """
 from operator import attrgetter
+from typing import Any
 
 from indico import IndicoClient
 from indico.filters import SubmissionFilter
@@ -10,12 +11,12 @@ from indico.queries import ListSubmissions, RetrieveStorageObject, SubmitReview
 from indico_toolkit import results
 
 
-def autoreview(result: results.Result) -> dict[str, object]:
+def autoreview(result: results.Result) -> Any:
     """
     Apply simple auto review rules to a submission.
     Assumes single-document submissions.
     """
-    pre_review = result.document.pre_review
+    pre_review = result.pre_review
     extractions = pre_review.extractions
 
     # Downselect all labels from all models based on highest confidence.
@@ -43,7 +44,7 @@ def autoreview(result: results.Result) -> dict[str, object]:
     # Apply name normalization to all predictions with the "Name" label.
     extractions.where(label="Name").apply(normalize_name)
 
-    return pre_review.to_changes()
+    return pre_review.to_changes(result)
 
 
 def normalize_name(extraction: results.Extraction) -> None:
@@ -67,6 +68,6 @@ if __name__ == "__main__":
         )
     ):
         result_dict = client.call(RetrieveStorageObject(submission.result_file))
-        result = results.load(result_dict, convert_unreviewed=True)
+        result = results.load(result_dict)
         changes = autoreview(result)
         client.call(SubmitReview(submission.id, changes))

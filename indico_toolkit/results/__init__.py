@@ -2,45 +2,57 @@ import json
 from os import PathLike
 
 from .documents import Document
-from .errors import MultipleValuesError, ResultKeyError
-from .lists import ClassificationList, ExtractionList, PredictionList, UnbundlingList
-from .predictions import Classification, Extraction, Prediction, Unbundling
+from .errors import ResultError
+from .lists import PredictionList
+from .models import ModelGroup, TaskType
+from .predictions import (
+    AutoReviewable,
+    Classification,
+    Extraction,
+    FormExtraction,
+    FormExtractionType,
+    Prediction,
+    Unbundling,
+)
 from .results import Result
 from .reviews import Review, ReviewType
-from .spans import Span
+from .utils import get
 
 __all__ = (
+    "AutoReviewable",
     "Classification",
-    "ClassificationList",
     "Document",
     "Extraction",
-    "ExtractionList",
-    "load",
-    "MultipleValuesError",
+    "FormExtraction",
+    "FormExtractionType",
+    "ModelGroup",
     "Prediction",
     "PredictionList",
-    "ResultKeyError",
+    "Result",
+    "ResultError",
     "Review",
     "ReviewType",
-    "Span",
-    "Result",
+    "TaskType",
     "Unbundling",
-    "UnbundlingList",
 )
 
 
-def load(result: object, *, convert_unreviewed: bool = False) -> Result:
+def load(result: object) -> Result:
     """
-    Load a result file as a Result dataclass. `result` can be a dict from
+    Load `result` as a Result dataclass. `result` can be a dict from
     `RetrieveStorageObject`, a JSON string, or a path to a JSON file.
-
-    Optionally convert unreviewed results, making predictions available via in
-    `result.document.final`.
     """
-    if isinstance(result, str) and result.startswith("{"):
+    if isinstance(result, str) and result.strip().startswith("{"):
         result = json.loads(result)
     elif isinstance(result, (str, PathLike)):
         with open(result) as file:
             result = json.load(file)
 
-    return Result.from_result(result, convert_unreviewed=convert_unreviewed)
+    file_version = get(result, int, "file_version")
+
+    if file_version == 1:
+        return Result.from_v1_dict(result)
+    elif file_version == 3:
+        return Result.from_v3_dict(result)
+    else:
+        raise ResultError(f"unsupported file version `{file_version!r}`")

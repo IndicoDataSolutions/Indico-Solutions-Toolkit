@@ -1,195 +1,151 @@
-from copy import deepcopy
 from dataclasses import dataclass
-from functools import reduce
-from operator import attrgetter
+from functools import partial
+from typing import TYPE_CHECKING
 
 from .documents import Document
-from .errors import MultipleValuesError, ResultKeyError
-from .modelgroups import ModelGroup
-from .reviews import Review
-from .utils import exists, get
+from .lists import PredictionList
+from .models import ModelGroup
+from .normalization import normalize_v1_result, normalize_v3_result
+from .predictions import (
+    Prediction,
+    from_v1_dict as prediction_from_v1_dict,
+    from_v3_dict as prediction_from_v3_dict,
+)
+from .reviews import Review, ReviewType
+from .utils import get
+
+if TYPE_CHECKING:
+    from typing import Any
 
 
-@dataclass
+@dataclass(frozen=True, order=True)
 class Result:
-    submission_id: int
-    file_version: int
+    id: int
+    version: int
     documents: "list[Document]"
+    models: "list[ModelGroup]"
+    predictions: "PredictionList[Prediction]"
     reviews: "list[Review]"
 
     @property
-    def bundled(self) -> bool:
-        return len(self.documents) > 1
-
-    @property
-    def document(self) -> Document:
-        """
-        Shortcut to get the only document in non-bundled submissions.
-        """
-        if self.bundled:
-            raise MultipleValuesError(
-                f"Result has {len(self.documents)} documents. "
-                "Use `Result.documents` instead."
-            )
-
-        return self.documents[0]
-
-    @property
-    def labels(self) -> "set[str]":
-        """
-        Return unique prediction labels for all predictions in this result.
-        """
-        return reduce(
-            lambda labels, document: labels | document.labels,
-            self.documents,
-            set(),
-        )
-
-    @property
-    def models(self) -> "set[str]":
-        """
-        Return unique prediction models for all predictions in this result.
-        """
-        return reduce(
-            lambda models, document: models | document.models,
-            self.documents,
-            set(),
-        )
-
-    @property
     def rejected(self) -> bool:
+        return len(self.reviews) > 0 and self.reviews[-1].rejected
+
+    @property
+    def pre_review(self) -> "PredictionList[Prediction]":
+        return self.predictions.where(review=None)
+
+    @property
+    def auto_review(self) -> "PredictionList[Prediction]":
+        return self.predictions.where(review=ReviewType.AUTO)
+
+    @property
+    def manual_review(self) -> "PredictionList[Prediction]":
+        return self.predictions.where(review=ReviewType.MANUAL)
+
+    @property
+    def admin_review(self) -> "PredictionList[Prediction]":
+        return self.predictions.where(review=ReviewType.ADMIN)
+
+    @property
+    def final(self) -> "PredictionList[Prediction]":
+        return self.predictions.where(review=self.reviews[-1] if self.reviews else None)
+
+    @staticmethod
+    def from_v1_dict(result: object) -> "Result":
         """
-        Return whether the result is rejected.
-        A result is rejected if the most recent review is rejected.
+        Create a `Result` from a v1 result file dictionary.
         """
-        return (
-            len(self.reviews) > 0
-            and sorted(self.reviews, key=attrgetter("id"))[-1].rejected
-        )
+        normalize_v1_result(result)
 
-    @classmethod
-    def from_result(
-        cls, result: object, *, convert_unreviewed: bool = False
-    ) -> "Result":
-        """
-        Factory function to produce a `Result` from a result file dictionary.
+        id = get(result, int, "submission_id")
+        version = get(result, int, "file_version")
+        submission_results = get(result, dict, "results", "document", "results")
+        review_metadata = get(result, list, "reviews_meta")
 
-        Optionally convert unreviewed results, making predictions available via in
-        `result.document.final`.
-        """
-        if cls.is_unreviewed_result(result) and convert_unreviewed:
-            result = cls.convert_to_reviewed_result(result)
+        document = Document.from_v1_dict(result)
+        models = sorted(map(ModelGroup.from_v1_section, submission_results.items()))
+        predictions: "PredictionList[Prediction]" = PredictionList()
+        # Reviews must be sorted after parsing predictions, as they match positionally
+        # with predictino lists in `post_reviews`.
+        reviews = list(map(Review.from_dict, review_metadata))
 
-        file_version = get(result, "file_version", int)
+        for model_name, model_predictions in submission_results.items():
+            model = next(filter(lambda model: model.name == model_name, models))
+            reviewed_model_predictions: "list[tuple[Review | None, Any]]" = [
+                (None, get(model_predictions, list, "pre_review")),
+                *filter(
+                    lambda review_predictions: not review_predictions[0].rejected,
+                    zip(reviews, get(model_predictions, list, "post_reviews")),
+                ),
+            ]
 
-        if file_version == 1:
-            return cls._from_v1_result(result)
-        elif file_version == 2:
-            return cls._from_v2_result(result)
-        elif file_version == 3:
-            return cls._from_v3_result(result)
-        else:
-            raise ResultKeyError(f"Unknown file version `{file_version!r}`.")
-
-    @classmethod
-    def _from_v1_result(cls, result: object) -> "Result":
-        """
-        Classify, Extract, and Classify+Extract Workflows.
-        """
-        if cls.is_unreviewed_result(result):
-            raise ResultKeyError(
-                "Result file has no review information. "
-                "Use `SubmissionResult` to retrieve the result file, "
-                "load it with `results.load(..., convert_unreviewed=True)`, "
-                "or manually convert with `Result.convert_to_reviewed_result`."
-            )
-
-        reviews_meta = get(result, "reviews_meta", list)
-
-        # Unreviewed results retrieved through `SubmissionResult` have
-        # { "reviews_meta": [{ "review_id": null }] }
-        if reviews_meta and exists(reviews_meta[0], "review_id", int):
-            reviews = list(map(Review._from_v1_result, reviews_meta))
-        else:
-            reviews = []
+            for review, model_predictions in reviewed_model_predictions:
+                predictions.extend(
+                    map(
+                        partial(prediction_from_v1_dict, document, model, review),
+                        model_predictions,
+                    )
+                )
 
         return Result(
-            submission_id=get(result, "submission_id", int),
-            file_version=1,
-            documents=[Document._from_v1_result(result, reviews)],
+            id=id,
+            version=version,
+            documents=[document],
+            models=models,
+            predictions=predictions,
+            reviews=sorted(reviews),
+        )
+
+    @staticmethod
+    def from_v3_dict(result: object) -> "Result":
+        """
+        Create a `Result` from a v3 result file dictionary.
+        """
+        normalize_v3_result(result)
+
+        id = get(result, int, "submission_id")
+        version = get(result, int, "file_version")
+        submission_results = get(result, list, "submission_results")
+        modelgroup_metadata = get(result, dict, "modelgroup_metadata")
+        review_metadata = get(result, dict, "reviews")
+
+        documents = sorted(map(Document.from_v3_dict, submission_results))
+        models = sorted(map(ModelGroup.from_v3_dict, modelgroup_metadata.values()))
+        predictions: "PredictionList[Prediction]" = PredictionList()
+        reviews = sorted(map(Review.from_dict, review_metadata.values()))
+
+        for document_dict in submission_results:
+            document_id = get(document_dict, int, "submissionfile_id")
+            document = next(
+                filter(lambda document: document.id == document_id, documents)
+            )
+            reviewed_model_predictions: "list[tuple[Review | None, Any]]" = [
+                (None, get(document_dict, dict, "model_results", "ORIGINAL"))
+            ]
+
+            if reviews:
+                reviewed_model_predictions.append(
+                    (reviews[-1], get(document_dict, dict, "model_results", "FINAL"))
+                )
+
+            for review, model_section in reviewed_model_predictions:
+                for model_id, model_predictions in model_section.items():
+                    model = next(
+                        filter(lambda model: model.id == int(model_id), models)
+                    )
+                    predictions.extend(
+                        map(
+                            partial(prediction_from_v3_dict, document, model, review),
+                            model_predictions,
+                        )
+                    )
+
+        return Result(
+            id=id,
+            documents=documents,
+            version=version,
+            models=models,
+            predictions=predictions,
             reviews=reviews,
         )
-
-    @staticmethod
-    def _from_v2_result(result: object) -> "Result":
-        """
-        Bundled Submission Workflows.
-        """
-        modelgroup_metadata = get(result, "modelgroup_metadata", dict)
-        model_groups = map(ModelGroup._from_v2_result, modelgroup_metadata.values())
-        model_groups_by_id = {
-            model_group.id: model_group for model_group in model_groups
-        }
-
-        return Result(
-            submission_id=get(result, "submission_id", int),
-            file_version=2,
-            documents=[
-                Document._from_v2_result(submission_result, model_groups_by_id)
-                for submission_result in get(result, "submission_results", list)
-            ],
-            reviews=[],  # Bundled submissions do not support review yet.
-        )
-
-    @staticmethod
-    def _from_v3_result(result: object) -> "Result":
-        """
-        Classify+Unbundle Workflows.
-        """
-        modelgroup_metadata = get(result, "modelgroup_metadata", dict)
-        model_groups = map(ModelGroup._from_v3_result, modelgroup_metadata.values())
-        model_groups_by_id = {
-            model_group.id: model_group for model_group in model_groups
-        }
-
-        return Result(
-            submission_id=get(result, "submission_id", int),
-            file_version=3,
-            documents=[
-                Document._from_v3_result(submission_result, model_groups_by_id)
-                for submission_result in get(result, "submission_results", list)
-            ],
-            reviews=[],  # Unbundled submissions do not support review yet.
-        )
-
-    @staticmethod
-    def is_unreviewed_result(result: object) -> bool:
-        return (
-            exists(result, "results", dict)
-            and not exists(result, "reviews_meta", list)
-        )  # fmt: skip
-
-    @classmethod
-    def convert_to_reviewed_result(cls, result: object) -> object:
-        """
-        Convert an unreviewed result file dictionary to a reviewed result file
-        dictionary. Unreviewed result files don't have enough information to determine
-        whether the contained predictions are pre-review, auto-review, manual-review,
-        or admin-review; so only `Document.final` is populated.
-        """
-        result = deepcopy(result)
-
-        results = get(result, "results", dict)
-        document = get(results, "document", dict)
-        results = get(document, "results", dict)
-
-        for model, predictions in results.items():
-            results[model] = {
-                "pre_review": type(predictions)(),
-                "post_reviews": [],
-                "final": predictions,
-            }
-
-        result["reviews_meta"] = []  # type: ignore[index]
-
-        return result
