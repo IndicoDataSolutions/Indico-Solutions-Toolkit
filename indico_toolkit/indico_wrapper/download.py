@@ -9,6 +9,7 @@ from indico.queries import (
     DownloadExport,
     CreateExport,
     GraphQLRequest,
+    GetSubmission
 )
 import tqdm
 
@@ -85,6 +86,21 @@ class Download:
             dataset_id, labelset_id, file_info=file_info, **kwargs
         )
         return self._download_export(export.id)
+
+    def get_submission_pdf(
+        self,submission_id:int, output_dir:str
+    ):
+        """
+        Downloads source pdf from a submission id and writes to disk.
+        
+        Args:
+            submission_id (int): submission id to retrieve pdf from.
+            output_path (str): directory to save pdf to disk.
+        """
+        submission = self.client.call(GetSubmission(submission_id))
+        sub_binary = self.client.call(RetrieveStorageObject(submission.input_file))
+        with open(f"{output_dir}{submission.input_filename}", "wb") as f:
+            f.write(sub_binary)
 
     def _download_pdfs_from_export(
         self,
