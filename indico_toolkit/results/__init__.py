@@ -11,6 +11,7 @@ from .predictions import (
     Extraction,
     FormExtraction,
     FormExtractionType,
+    Group,
     Prediction,
     Unbundling,
 )
@@ -25,6 +26,7 @@ __all__ = (
     "Extraction",
     "FormExtraction",
     "FormExtractionType",
+    "Group",
     "ModelGroup",
     "Prediction",
     "PredictionList",
