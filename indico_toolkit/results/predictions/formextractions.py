@@ -28,9 +28,9 @@ class FormExtraction(AutoReviewable):
 
     page: int
     top: int
-    bottom: int
     left: int
     right: int
+    bottom: int
 
     @staticmethod
     def _from_dict(
@@ -48,6 +48,12 @@ class FormExtraction(AutoReviewable):
             review=review,
             label=get(prediction, str, "label"),
             confidences=get(prediction, dict, "confidence"),
+            accepted=(
+                has(prediction, bool, "accepted") and get(prediction, bool, "accepted")
+            ),
+            rejected=(
+                has(prediction, bool, "rejected") and get(prediction, bool, "rejected")
+            ),
             type=FormExtractionType(get(prediction, str, "type")),
             checked=(
                 has(prediction, bool, "normalized", "structured", "checked")
@@ -60,15 +66,9 @@ class FormExtraction(AutoReviewable):
             text=get(prediction, str, "normalized", "formatted"),
             page=get(prediction, int, "page_num"),
             top=get(prediction, int, "top"),
-            bottom=get(prediction, int, "bottom"),
             left=get(prediction, int, "left"),
             right=get(prediction, int, "right"),
-            accepted=(
-                has(prediction, bool, "accepted") and get(prediction, bool, "accepted")
-            ),
-            rejected=(
-                has(prediction, bool, "rejected") and get(prediction, bool, "rejected")
-            ),
+            bottom=get(prediction, int, "bottom"),
             extras=omit(
                 prediction,
                 "label",
@@ -100,9 +100,9 @@ class FormExtraction(AutoReviewable):
             "type": self.type,
             "page_num": self.page,
             "top": self.top,
-            "bottom": self.bottom,
             "left": self.left,
             "right": self.right,
+            "bottom": self.bottom,
         }
 
         if self.type == FormExtractionType.CHECKBOX:
@@ -116,7 +116,6 @@ class FormExtraction(AutoReviewable):
                 "Signed" if self.signed else "Unsigned"
             )
         elif self.type == FormExtractionType.TEXT:
-            prediction["text"] = self.text
             prediction["normalized"]["formatted"] = self.text
 
         if self.accepted:

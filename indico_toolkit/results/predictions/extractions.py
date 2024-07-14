@@ -16,9 +16,9 @@ if TYPE_CHECKING:
 @dataclass
 class Extraction(AutoReviewable):
     text: str
+    page: int
     start: int
     end: int
-    page: int
     groups: "set[Group]"
 
     @staticmethod
@@ -37,17 +37,17 @@ class Extraction(AutoReviewable):
             review=review,
             label=get(prediction, str, "label"),
             confidences=get(prediction, dict, "confidence"),
-            text=get(prediction, str, "normalized", "formatted"),
-            start=get(prediction, int, "start"),
-            end=get(prediction, int, "end"),
-            page=get(prediction, int, "page_num"),
-            groups=set(map(Group.from_dict, get(prediction, list, "groupings"))),
             accepted=(
                 has(prediction, bool, "accepted") and get(prediction, bool, "accepted")
             ),
             rejected=(
                 has(prediction, bool, "rejected") and get(prediction, bool, "rejected")
             ),
+            text=get(prediction, str, "normalized", "formatted"),
+            page=get(prediction, int, "page_num"),
+            start=get(prediction, int, "start"),
+            end=get(prediction, int, "end"),
+            groups=set(map(Group.from_dict, get(prediction, list, "groupings"))),
             extras=omit(
                 prediction,
                 "label",
@@ -77,17 +77,17 @@ class Extraction(AutoReviewable):
             review=review,
             label=get(prediction, str, "label"),
             confidences=get(prediction, dict, "confidence"),
-            text=get(prediction, str, "normalized", "formatted"),
-            start=get(prediction, int, "spans", 0, "start"),
-            end=get(prediction, int, "spans", 0, "end"),
-            page=get(prediction, int, "spans", 0, "page_num"),
-            groups=set(map(Group.from_dict, get(prediction, list, "groupings"))),
             accepted=(
                 has(prediction, bool, "accepted") and get(prediction, bool, "accepted")
             ),
             rejected=(
                 has(prediction, bool, "rejected") and get(prediction, bool, "rejected")
             ),
+            text=get(prediction, str, "normalized", "formatted"),
+            page=get(prediction, int, "spans", 0, "page_num"),
+            start=get(prediction, int, "spans", 0, "start"),
+            end=get(prediction, int, "spans", 0, "end"),
+            groups=set(map(Group.from_dict, get(prediction, list, "groupings"))),
             extras=omit(
                 prediction,
                 "label",
@@ -107,10 +107,10 @@ class Extraction(AutoReviewable):
             **self.extras,
             "label": self.label,
             "confidence": self.confidences,
-            "groupings": [group.to_dict() for group in self.groups],
+            "page_num": self.page,
             "start": self.start,
             "end": self.end,
-            "page_num": self.page,
+            "groupings": [group.to_dict() for group in self.groups],
         }
 
         prediction["normalized"]["formatted"] = self.text
@@ -134,11 +134,9 @@ class Extraction(AutoReviewable):
         }
 
         prediction["normalized"]["formatted"] = self.text
-        prediction["spans"] = {
-            "start": self.start,
-            "end": self.end,
-            "page_num": self.page,
-        }
+        prediction["spans"][0]["page_num"] = self.page
+        prediction["spans"][0]["start"] = self.start
+        prediction["spans"][0]["end"] = self.end
 
         if self.accepted:
             prediction["accepted"] = True
