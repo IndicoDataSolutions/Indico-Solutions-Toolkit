@@ -223,11 +223,11 @@
                                 "page_num": 0,
                                 "groupings": [],
                                 "confidence": {
-                                    "last_name": 4.0229687670034764e-07,
-                                    "first_name": 0.9999988079071045,
-                                    "dependent_last_name": 2.646714563070418e-07,
-                                    "dependent_first_name": 4.654210101762146e-07,
-                                    "dependent_relationship": 5.558660731708187e-08
+                                    "Last Name": 4.0229687670034764e-07,
+                                    "First Name": 0.9999988079071045,
+                                    "Dependent: Last Name": 2.646714563070418e-07,
+                                    "Dependent: First Name": 4.654210101762146e-07,
+                                    "Dependent: Relationship": 5.558660731708187e-08
                                 },
                                 "normalized": {
                                     "end": 356,
@@ -254,11 +254,11 @@
                                 "page_num": 0,
                                 "groupings": [],
                                 "confidence": {
-                                    "last_name": 0.9999991655349731,
-                                    "first_name": 3.913502268915181e-07,
-                                    "dependent_last_name": 1.5924327101402014e-07,
-                                    "dependent_first_name": 9.331763806130766e-08,
-                                    "dependent_relationship": 1.5769572314638935e-07
+                                    "Last Name": 0.9999991655349731,
+                                    "First Name": 3.913502268915181e-07,
+                                    "Dependent: Last Name": 1.5924327101402014e-07,
+                                    "Dependent: First Name": 9.331763806130766e-08,
+                                    "Dependent: Relationship": 1.5769572314638935e-07
                                 },
                                 "normalized": {
                                     "end": 360,
@@ -291,11 +291,11 @@
                                     }
                                 ],
                                 "confidence": {
-                                    "last_name": 1.4796071923228737e-07,
-                                    "first_name": 9.299924386141356e-08,
-                                    "dependent_last_name": 3.055288857467531e-07,
-                                    "dependent_first_name": 0.9999992847442627,
-                                    "dependent_relationship": 1.606294404155051e-07
+                                    "Last Name": 1.4796071923228737e-07,
+                                    "First Name": 9.299924386141356e-08,
+                                    "Dependent: Last Name": 3.055288857467531e-07,
+                                    "Dependent: First Name": 0.9999992847442627,
+                                    "Dependent: Relationship": 1.606294404155051e-07
                                 },
                                 "normalized": {
                                     "end": 2015,
@@ -328,11 +328,11 @@
                                     }
                                 ],
                                 "confidence": {
-                                    "last_name": 1.2290360018596402e-07,
-                                    "first_name": 6.380826533813888e-08,
-                                    "dependent_last_name": 0.9999996423721313,
-                                    "dependent_first_name": 8.4079402995485e-08,
-                                    "dependent_relationship": 4.189759295059048e-08
+                                    "Last Name": 1.2290360018596402e-07,
+                                    "First Name": 6.380826533813888e-08,
+                                    "Dependent: Last Name": 0.9999996423721313,
+                                    "Dependent: First Name": 8.4079402995485e-08,
+                                    "Dependent: Relationship": 4.189759295059048e-08
                                 },
                                 "normalized": {
                                     "end": 2019,
@@ -365,11 +365,11 @@
                                     }
                                 ],
                                 "confidence": {
-                                    "last_name": 7.563556891909684e-08,
-                                    "first_name": 5.3535529787041014e-08,
-                                    "dependent_last_name": 6.139377717317984e-08,
-                                    "dependent_first_name": 9.17252407361957e-08,
-                                    "dependent_relationship": 0.9999996423721313
+                                    "Last Name": 7.563556891909684e-08,
+                                    "First Name": 5.3535529787041014e-08,
+                                    "Dependent: Last Name": 6.139377717317984e-08,
+                                    "Dependent: First Name": 9.17252407361957e-08,
+                                    "Dependent: Relationship": 0.9999996423721313
                                 },
                                 "normalized": {
                                     "end": 2028,
@@ -606,11 +606,11 @@
                             "page_num": 0,
                             "groupings": [],
                             "confidence": {
-                                "last_name": 4.0229687670034764e-07,
-                                "first_name": 0.9999988079071045,
-                                "dependent_last_name": 2.646714563070418e-07,
-                                "dependent_first_name": 4.654210101762146e-07,
-                                "dependent_relationship": 5.558660731708187e-08
+                                "Last Name": 4.0229687670034764e-07,
+                                "First Name": 0.9999988079071045,
+                                "Dependent: Last Name": 2.646714563070418e-07,
+                                "Dependent: First Name": 4.654210101762146e-07,
+                                "Dependent: Relationship": 5.558660731708187e-08
                             },
                             "normalized": {
                                 "end": 356,
@@ -637,11 +637,11 @@
                             "page_num": 0,
                             "groupings": [],
                             "confidence": {
-                                "last_name": 0.9999991655349731,
-                                "first_name": 3.913502268915181e-07,
-                                "dependent_last_name": 1.5924327101402014e-07,
-                                "dependent_first_name": 9.331763806130766e-08,
-                                "dependent_relationship": 1.5769572314638935e-07
+                                "Last Name": 0.9999991655349731,
+                                "First Name": 3.913502268915181e-07,
+                                "Dependent: Last Name": 1.5924327101402014e-07,
+                                "Dependent: First Name": 9.331763806130766e-08,
+                                "Dependent: Relationship": 1.5769572314638935e-07
                             },
                             "normalized": {
                                 "end": 360,
@@ -674,11 +674,11 @@
                                 }
                             ],
                             "confidence": {
-                                "last_name": 1.4796071923228737e-07,
-                                "first_name": 9.299924386141356e-08,
-                                "dependent_last_name": 3.055288857467531e-07,
-                                "dependent_first_name": 0.9999992847442627,
-                                "dependent_relationship": 1.606294404155051e-07
+                                "Last Name": 1.4796071923228737e-07,
+                                "First Name": 9.299924386141356e-08,
+                                "Dependent: Last Name": 3.055288857467531e-07,
+                                "Dependent: First Name": 0.9999992847442627,
+                                "Dependent: Relationship": 1.606294404155051e-07
                             },
                             "normalized": {
                                 "end": 2015,
@@ -711,11 +711,11 @@
                                 }
                             ],
                             "confidence": {
-                                "last_name": 1.2290360018596402e-07,
-                                "first_name": 6.380826533813888e-08,
-                                "dependent_last_name": 0.9999996423721313,
-                                "dependent_first_name": 8.4079402995485e-08,
-                                "dependent_relationship": 4.189759295059048e-08
+                                "Last Name": 1.2290360018596402e-07,
+                                "First Name": 6.380826533813888e-08,
+                                "Dependent: Last Name": 0.9999996423721313,
+                                "Dependent: First Name": 8.4079402995485e-08,
+                                "Dependent: Relationship": 4.189759295059048e-08
                             },
                             "normalized": {
                                 "end": 2019,
@@ -748,11 +748,11 @@
                                 }
                             ],
                             "confidence": {
-                                "last_name": 7.563556891909684e-08,
-                                "first_name": 5.3535529787041014e-08,
-                                "dependent_last_name": 6.139377717317984e-08,
-                                "dependent_first_name": 9.17252407361957e-08,
-                                "dependent_relationship": 0.9999996423721313
+                                "Last Name": 7.563556891909684e-08,
+                                "First Name": 5.3535529787041014e-08,
+                                "Dependent: Last Name": 6.139377717317984e-08,
+                                "Dependent: First Name": 9.17252407361957e-08,
+                                "Dependent: Relationship": 0.9999996423721313
                             },
                             "normalized": {
                                 "end": 2028,
@@ -925,7 +925,7 @@
                                 "field_id": 694,
                                 "page_num": 1,
                                 "confidence": {
-                                    "date": 1.0
+                                    "Date": 1.0
                                 },
                                 "normalized": {
                                     "text": "2024-04-15",
@@ -958,7 +958,7 @@
                                 "field_id": 693,
                                 "page_num": 1,
                                 "confidence": {
-                                    "signature": 0.620139473705776
+                                    "Signature": 0.620139473705776
                                 },
                                 "normalized": {
                                     "text": "John Doe",
@@ -987,7 +987,7 @@
                                 "field_id": 692,
                                 "page_num": 0,
                                 "confidence": {
-                                    "filing_status_married": 0.9999999991662036
+                                    "Filing Status: Married": 0.9999999991662036
                                 },
                                 "normalized": {
                                     "text": "",
@@ -1016,7 +1016,7 @@
                                 "field_id": 691,
                                 "page_num": 0,
                                 "confidence": {
-                                    "filing_status_single": 0.9999926306382703
+                                    "Filing Status: Single": 0.9999926306382703
                                 },
                                 "normalized": {
                                     "text": "",
@@ -1184,7 +1184,7 @@
                             "field_id": 694,
                             "page_num": 1,
                             "confidence": {
-                                "date": 1.0
+                                "Date": 1.0
                             },
                             "normalized": {
                                 "text": "2024-04-15",
@@ -1217,7 +1217,7 @@
                             "field_id": 693,
                             "page_num": 1,
                             "confidence": {
-                                "signature": 0.620139473705776
+                                "Signature": 0.620139473705776
                             },
                             "normalized": {
                                 "text": "John Doe",
@@ -1246,7 +1246,7 @@
                             "field_id": 692,
                             "page_num": 0,
                             "confidence": {
-                                "filing_status_married": 0.9999999991662036
+                                "Filing Status: Married": 0.9999999991662036
                             },
                             "normalized": {
                                 "text": "",
@@ -1275,7 +1275,7 @@
                             "field_id": 691,
                             "page_num": 0,
                             "confidence": {
-                                "filing_status_single": 0.9999926306382703
+                                "Filing Status: Single": 0.9999926306382703
                             },
                             "normalized": {
                                 "text": "",
