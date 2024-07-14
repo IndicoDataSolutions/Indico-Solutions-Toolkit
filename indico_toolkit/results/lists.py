@@ -11,6 +11,7 @@ from .predictions import (
     Prediction,
     Unbundling,
 )
+from .reviews import Review, ReviewType
 from .utils import nfilter
 
 if TYPE_CHECKING:
@@ -20,18 +21,15 @@ if TYPE_CHECKING:
     from .documents import Document
     from .models import ModelGroup
     from .results import Result
-    from .reviews import Review, ReviewType
 
 PredictionType = TypeVar("PredictionType", bound=Prediction)
 OfType = TypeVar("OfType", bound=Prediction)
 KeyType = TypeVar("KeyType")
 
-
-class _UnspecifiedType:
-    pass
-
-
-Unspecified = _UnspecifiedType()
+# Non-None sentinel value to support `PredictionList.where(review=None)`.
+ReviewUnspecified = Review(
+    id=None, reviewer_id=None, notes=None, rejected=None, type=None  # type: ignore[arg-type]
+)
 
 
 class PredictionList(List[PredictionType]):
@@ -105,19 +103,19 @@ class PredictionList(List[PredictionType]):
 
     def where(
         self,
-        predicate: "Callable[[PredictionType], bool] | _UnspecifiedType" = Unspecified,
+        predicate: "Callable[[PredictionType], bool] | None" = None,
         *,
-        document: "Document | _UnspecifiedType" = Unspecified,
-        model: "ModelGroup | TaskType | str | _UnspecifiedType" = Unspecified,
-        review: "Review | ReviewType | None | _UnspecifiedType" = Unspecified,
-        label: "str | _UnspecifiedType" = Unspecified,
-        label_in: "Container[str] | _UnspecifiedType" = Unspecified,
-        min_confidence: "float | _UnspecifiedType" = Unspecified,
-        max_confidence: "float | _UnspecifiedType" = Unspecified,
-        accepted: "bool | _UnspecifiedType" = Unspecified,
-        rejected: "bool | _UnspecifiedType" = Unspecified,
-        checked: "bool | _UnspecifiedType" = Unspecified,
-        signed: "bool | _UnspecifiedType" = Unspecified,
+        document: "Document | None" = None,
+        model: "ModelGroup | TaskType | str | None" = None,
+        review: "Review | ReviewType | None" = ReviewUnspecified,
+        label: "str | None" = None,
+        label_in: "Container[str] | None" = None,
+        min_confidence: "float | None" = None,
+        max_confidence: "float | None" = None,
+        accepted: "bool | None" = None,
+        rejected: "bool | None" = None,
+        checked: "bool | None" = None,
+        signed: "bool | None" = None,
     ) -> "Self":
         """
         Return a new prediction list containing predictions that match
@@ -138,13 +136,13 @@ class PredictionList(List[PredictionType]):
         """
         predicates = []
 
-        if predicate is not Unspecified:
+        if predicate is not None:
             predicates.append(predicate)
 
-        if document is not Unspecified:
+        if document is not None:
             predicates.append(lambda prediction: prediction.document == document)
 
-        if model is not Unspecified:
+        if model is not None:
             predicates.append(
                 lambda prediction: (
                     prediction.model == model
@@ -153,7 +151,7 @@ class PredictionList(List[PredictionType]):
                 )
             )
 
-        if review is not Unspecified:
+        if review is not ReviewUnspecified:
             predicates.append(
                 lambda prediction: (
                     prediction.review == review
@@ -164,47 +162,47 @@ class PredictionList(List[PredictionType]):
                 )
             )
 
-        if label is not Unspecified:
+        if label is not None:
             predicates.append(lambda prediction: prediction.label == label)
 
-        if label_in is not Unspecified:
-            predicates.append(lambda prediction: prediction.label in label_in)  # type: ignore[operator]
+        if label_in is not None:
+            predicates.append(lambda prediction: prediction.label in label_in)
 
-        if min_confidence is not Unspecified:
+        if min_confidence is not None:
             predicates.append(
-                lambda prediction: prediction.confidence >= min_confidence  # type: ignore[operator]
+                lambda prediction: prediction.confidence >= min_confidence
             )
 
-        if max_confidence is not Unspecified:
+        if max_confidence is not None:
             predicates.append(
-                lambda prediction: prediction.confidence <= max_confidence  # type: ignore[operator]
+                lambda prediction: prediction.confidence <= max_confidence
             )
 
-        if accepted is not Unspecified:
+        if accepted is not None:
             predicates.append(
                 lambda prediction: isinstance(prediction, AutoReviewable)
                 and prediction.accepted == accepted
             )
 
-        if rejected is not Unspecified:
+        if rejected is not None:
             predicates.append(
                 lambda prediction: isinstance(prediction, AutoReviewable)
                 and prediction.rejected == rejected
             )
 
-        if checked is not Unspecified:
+        if checked is not None:
             predicates.append(
                 lambda prediction: isinstance(prediction, FormExtraction)
                 and prediction.checked == checked
             )
 
-        if signed is not Unspecified:
+        if signed is not None:
             predicates.append(
                 lambda prediction: isinstance(prediction, FormExtraction)
                 and prediction.signed == signed
             )
 
-        return type(self)(nfilter(predicates, self))  # type: ignore[arg-type]
+        return type(self)(nfilter(predicates, self))
 
     def accept(self) -> "Self":
         """
