@@ -67,7 +67,7 @@ class Result:
         models = sorted(map(ModelGroup.from_v1_section, submission_results.items()))
         predictions: "PredictionList[Prediction]" = PredictionList()
         # Reviews must be sorted after parsing predictions, as they match positionally
-        # with predictino lists in `post_reviews`.
+        # with prediction lists in `post_reviews`.
         reviews = list(map(Review.from_dict, review_metadata))
 
         for model_name, model_predictions in submission_results.items():
