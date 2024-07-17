@@ -92,7 +92,6 @@ class Extraction(AutoReviewable):
                 prediction,
                 "label",
                 "confidence",
-                "spans",
                 "groupings",
                 "accepted",
                 "rejected",
