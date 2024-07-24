@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from enum import StrEnum
+from enum import Enum
 
 from .utils import get, has
 
 
-class TaskType(StrEnum):
+class TaskType(Enum):
     CLASSIFICATION = "classification"
     EXTRACTION = "annotation"
     FORM_EXTRACTION = "form_extraction"

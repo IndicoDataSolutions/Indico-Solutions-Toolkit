@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from enum import StrEnum
+from enum import Enum
 from typing import TYPE_CHECKING
 
 from ..reviews import Review
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from ..models import ModelGroup
 
 
-class FormExtractionType(StrEnum):
+class FormExtractionType(Enum):
     CHECKBOX = "checkbox"
     SIGNATURE = "signature"
     TEXT = "text"
@@ -97,7 +97,7 @@ class FormExtraction(AutoReviewable):
             **self.extras,
             "label": self.label,
             "confidence": self.confidences,
-            "type": self.type,
+            "type": self.type.value,
             "page_num": self.page,
             "top": self.top,
             "left": self.left,
