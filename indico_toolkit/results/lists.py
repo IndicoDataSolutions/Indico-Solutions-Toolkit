@@ -16,7 +16,9 @@ from .utils import nfilter
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Container, Iterable
-    from typing import Any, Self, SupportsIndex
+    from typing import Any, SupportsIndex
+
+    from typing_extensions import Self
 
     from .documents import Document
     from .models import ModelGroup
