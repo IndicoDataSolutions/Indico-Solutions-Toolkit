@@ -17,8 +17,8 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, order=True)
 class Result:
-    id: int
     version: int
+    submission_id: int
     documents: "list[Document]"
     models: "list[ModelGroup]"
     predictions: "PredictionList[Prediction]"
@@ -55,8 +55,8 @@ class Result:
         """
         normalize_v1_result(result)
 
-        id = get(result, int, "submission_id")
         version = get(result, int, "file_version")
+        submission_id = get(result, int, "submission_id")
         submission_results = get(result, dict, "results", "document", "results")
         review_metadata = get(result, list, "reviews_meta")
 
@@ -86,8 +86,8 @@ class Result:
                 )
 
         return Result(
-            id=id,
             version=version,
+            submission_id=submission_id,
             documents=[document],
             models=models,
             predictions=predictions,
@@ -101,8 +101,8 @@ class Result:
         """
         normalize_v3_result(result)
 
-        id = get(result, int, "submission_id")
         version = get(result, int, "file_version")
+        submission_id = get(result, int, "submission_id")
         submission_results = get(result, list, "submission_results")
         modelgroup_metadata = get(result, dict, "modelgroup_metadata")
         review_metadata = get(result, dict, "reviews")
@@ -139,9 +139,9 @@ class Result:
                     )
 
         return Result(
-            id=id,
-            documents=documents,
             version=version,
+            submission_id=submission_id,
+            documents=documents,
             models=models,
             predictions=predictions,
             reviews=reviews,
