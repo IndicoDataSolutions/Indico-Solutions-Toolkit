@@ -2,15 +2,12 @@ from dataclasses import dataclass
 from functools import partial
 from typing import TYPE_CHECKING
 
+from . import predictions as prediction
 from .documents import Document
 from .lists import PredictionList
 from .models import ModelGroup
 from .normalization import normalize_v1_result, normalize_v3_result
-from .predictions import (
-    Prediction,
-    from_v1_dict as prediction_from_v1_dict,
-    from_v3_dict as prediction_from_v3_dict,
-)
+from .predictions import Prediction
 from .reviews import Review, ReviewType
 from .utils import get
 
@@ -83,7 +80,7 @@ class Result:
             for review, model_predictions in reviewed_model_predictions:
                 predictions.extend(
                     map(
-                        partial(prediction_from_v1_dict, document, model, review),
+                        partial(prediction.from_v1_dict, document, model, review),
                         model_predictions,
                     )
                 )
@@ -136,7 +133,7 @@ class Result:
                     )
                     predictions.extend(
                         map(
-                            partial(prediction_from_v3_dict, document, model, review),
+                            partial(prediction.from_v3_dict, document, model, review),
                             model_predictions,
                         )
                     )
