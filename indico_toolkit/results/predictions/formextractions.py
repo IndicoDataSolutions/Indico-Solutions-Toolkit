@@ -117,6 +117,7 @@ class FormExtraction(AutoReviewable):
             )
         elif self.type == FormExtractionType.TEXT:
             prediction["normalized"]["formatted"] = self.text
+            prediction["text"] = self.text  # 6.10 sometimes reverts to text in review.
 
         if self.accepted:
             prediction["accepted"] = True

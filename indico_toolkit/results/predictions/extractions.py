@@ -113,6 +113,7 @@ class Extraction(AutoReviewable):
         }
 
         prediction["normalized"]["formatted"] = self.text
+        prediction["text"] = self.text  # 6.10 sometimes reverts to raw text in review.
 
         if self.accepted:
             prediction["accepted"] = True
@@ -133,6 +134,8 @@ class Extraction(AutoReviewable):
         }
 
         prediction["normalized"]["formatted"] = self.text
+        prediction["text"] = self.text  # 6.10 sometimes reverts to raw text in review.
+
         prediction["spans"][0]["page_num"] = self.page
         prediction["spans"][0]["start"] = self.start
         prediction["spans"][0]["end"] = self.end
