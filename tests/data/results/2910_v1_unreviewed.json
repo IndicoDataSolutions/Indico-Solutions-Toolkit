@@ -165,7 +165,6 @@
                         "field_id": 686,
                         "page_num": 0,
                         "text": "John",
-                        "groupings": [],
                         "normalized": {
                             "text": "John",
                             "start": 352,
@@ -196,7 +195,6 @@
                         "field_id": 687,
                         "page_num": 0,
                         "text": "Doe",
-                        "groupings": [],
                         "normalized": {
                             "text": "Doe",
                             "start": 357,
@@ -338,7 +336,6 @@
                         "field_id": 687,
                         "page_num": 1,
                         "text": "Doe",
-                        "groupings": [],
                         "normalized": {
                             "text": "Doe",
                             "start": 6438,

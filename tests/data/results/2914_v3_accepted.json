@@ -217,7 +217,6 @@
                             },
                             "field_id": 686,
                             "text": "John",
-                            "groupings": [],
                             "normalized": {
                                 "text": "John",
                                 "start": 352,
@@ -253,7 +252,6 @@
                             },
                             "field_id": 687,
                             "text": "Doe",
-                            "groupings": [],
                             "normalized": {
                                 "text": "Doe",
                                 "start": 357,
@@ -415,7 +413,6 @@
                             },
                             "field_id": 687,
                             "text": "Doe",
-                            "groupings": [],
                             "normalized": {
                                 "text": "Doe",
                                 "start": 6438,
@@ -643,7 +640,6 @@
                             "span_id": "2923:c:228:idx:0",
                             "field_id": 686,
                             "page_num": 0,
-                            "groupings": [],
                             "confidence": {
                                 "Last Name": 4.0229687670034764e-07,
                                 "First Name": 0.9999988079071045,
@@ -680,7 +676,6 @@
                             "span_id": "2923:c:228:idx:1",
                             "field_id": 687,
                             "page_num": 0,
-                            "groupings": [],
                             "confidence": {
                                 "Last Name": 0.9999991655349731,
                                 "First Name": 3.913502268915181e-07,

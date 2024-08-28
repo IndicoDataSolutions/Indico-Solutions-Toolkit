@@ -250,7 +250,6 @@
                             },
                             "field_id": 686,
                             "text": "John",
-                            "groupings": [],
                             "normalized": {
                                 "text": "John",
                                 "start": 352,
@@ -286,7 +285,6 @@
                             },
                             "field_id": 687,
                             "text": "Doe",
-                            "groupings": [],
                             "normalized": {
                                 "text": "Doe",
                                 "start": 357,
@@ -448,7 +446,6 @@
                             },
                             "field_id": 687,
                             "text": "Doe",
-                            "groupings": [],
                             "normalized": {
                                 "text": "Doe",
                                 "start": 6438,
