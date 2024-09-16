@@ -288,7 +288,7 @@ class PredictionList(List[PredictionType]):
             )
 
             for model, predictions in predictions_by_model.items():
-                model_results[model.name] = [
+                model_results[str(model.id)] = [
                     prediction.to_v3_dict() for prediction in predictions
                 ]
 
