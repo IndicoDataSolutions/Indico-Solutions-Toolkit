@@ -1,0 +1,506 @@
+{
+    "file_version": 3,
+    "submission_id": 2915,
+    "modelgroup_metadata": {
+        "122": {
+            "id": 122,
+            "task_type": "annotation",
+            "name": "1040 Document Extraction",
+            "selected_model": {
+                "id": 214,
+                "model_type": "finetune"
+            }
+        },
+        "123": {
+            "id": 123,
+            "task_type": "form_extraction",
+            "name": "1040 Form Extraction",
+            "selected_model": {
+                "id": 212,
+                "model_type": "form_extraction"
+            }
+        },
+        "121": {
+            "id": 121,
+            "task_type": "classification",
+            "name": "Tax Classification",
+            "selected_model": {
+                "id": 221,
+                "model_type": "tfidf_gbt"
+            }
+        },
+        "124": {
+            "id": 124,
+            "task_type": "classification_unbundling",
+            "name": "Tax Unbundling",
+            "selected_model": {
+                "id": 225,
+                "model_type": "unbundle"
+            }
+        }
+    },
+    "submission_results": [
+        {
+            "submissionfile_id": 2924,
+            "etl_output": "indico-file:///storage/submission/113/2915/2924/etl_output.json",
+            "input_filename": "1040_filled.tiff",
+            "input_filepath": "indico-file:///storage/submission/113/2915/2924.tiff",
+            "input_filesize": 1045469,
+            "model_results": {
+                "ORIGINAL": {
+                    "121": [
+                        {
+                            "field_id": 685,
+                            "confidence": {
+                                "1040": 0.9999999934617568,
+                                "1099": 6.538243146895298e-09
+                            },
+                            "label": "1040"
+                        }
+                    ],
+                    "124": [
+                        {
+                            "label": "1040",
+                            "spans": [
+                                {
+                                    "start": 0,
+                                    "end": 4072,
+                                    "page_num": 0
+                                },
+                                {
+                                    "start": 4073,
+                                    "end": 6929,
+                                    "page_num": 1
+                                }
+                            ],
+                            "span_id": "2926:c:235:idx:0",
+                            "confidence": {
+                                "1040": 0.9745795726776123,
+                                "1099": 0.02542044408619404
+                            },
+                            "field_id": 695
+                        }
+                    ],
+                    "123": [
+                        {
+                            "label": "Filing Status: Single",
+                            "spans": [],
+                            "span_id": "2924:c:230:idx:0",
+                            "confidence": {
+                                "Filing Status: Single": 0.9999926306382703
+                            },
+                            "field_id": 691,
+                            "top": 782,
+                            "bottom": 813,
+                            "left": 400,
+                            "right": 434,
+                            "page_num": 0,
+                            "checked": true,
+                            "type": "checkbox",
+                            "normalized": {
+                                "text": "",
+                                "start": null,
+                                "end": null,
+                                "structured": {
+                                    "checked": true
+                                },
+                                "formatted": "Checked",
+                                "status": "SUCCESS",
+                                "validation": [
+                                    {
+                                        "validation_type": "TYPE_CONVERSION",
+                                        "error_message": null,
+                                        "validation_status": "SUCCESS"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "label": "Filing Status: Married",
+                            "spans": [],
+                            "span_id": "2924:c:230:idx:1",
+                            "confidence": {
+                                "Filing Status: Married": 0.9999999991662036
+                            },
+                            "field_id": 692,
+                            "top": 828,
+                            "bottom": 862,
+                            "left": 400,
+                            "right": 434,
+                            "page_num": 0,
+                            "checked": false,
+                            "type": "checkbox",
+                            "normalized": {
+                                "text": "",
+                                "start": null,
+                                "end": null,
+                                "structured": {
+                                    "checked": false
+                                },
+                                "formatted": "Unchecked",
+                                "status": "SUCCESS",
+                                "validation": [
+                                    {
+                                        "validation_type": "TYPE_CONVERSION",
+                                        "error_message": null,
+                                        "validation_status": "SUCCESS"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "label": "Signature",
+                            "spans": [
+                                {
+                                    "start": 6433,
+                                    "end": 6441,
+                                    "page_num": 1
+                                }
+                            ],
+                            "span_id": "2924:c:230:idx:2",
+                            "confidence": {
+                                "Signature": 0.620139473705776
+                            },
+                            "field_id": 693,
+                            "top": 1805,
+                            "bottom": 1925,
+                            "left": 357,
+                            "right": 1071,
+                            "page_num": 1,
+                            "type": "signature",
+                            "text": "John Doe",
+                            "signed": true,
+                            "normalized": {
+                                "text": "John Doe",
+                                "start": 6433,
+                                "end": 6441,
+                                "structured": {
+                                    "signed": true
+                                },
+                                "formatted": "Signed",
+                                "status": "SUCCESS",
+                                "validation": [
+                                    {
+                                        "validation_type": "TYPE_CONVERSION",
+                                        "error_message": null,
+                                        "validation_status": "SUCCESS"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "label": "Date",
+                            "spans": [
+                                {
+                                    "start": 6442,
+                                    "end": 6452,
+                                    "page_num": 1
+                                }
+                            ],
+                            "span_id": "2924:c:230:idx:3",
+                            "confidence": {
+                                "Date": 1.0
+                            },
+                            "field_id": 694,
+                            "top": 1805,
+                            "bottom": 1924,
+                            "left": 1072,
+                            "right": 1269,
+                            "page_num": 1,
+                            "type": "text",
+                            "text": "2024-04-15",
+                            "normalized": {
+                                "text": "2024-04-15",
+                                "start": 6442,
+                                "end": 6452,
+                                "structured": {
+                                    "day": 15,
+                                    "month": 4,
+                                    "year": 2024
+                                },
+                                "formatted": "April 15, 2024",
+                                "status": "SUCCESS",
+                                "validation": [
+                                    {
+                                        "validation_type": "TYPE_CONVERSION",
+                                        "error_message": null,
+                                        "validation_status": "SUCCESS"
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "122": [
+                        {
+                            "label": "First Name",
+                            "spans": [
+                                {
+                                    "start": 352,
+                                    "end": 356,
+                                    "page_num": 0
+                                }
+                            ],
+                            "span_id": "2924:c:228:idx:0",
+                            "confidence": {
+                                "Dependent: First Name": 4.654210101762146e-07,
+                                "Dependent: Last Name": 2.646714563070418e-07,
+                                "Dependent: Relationship": 5.558660731708187e-08,
+                                "First Name": 0.9999988079071045,
+                                "Last Name": 4.0229687670034764e-07
+                            },
+                            "field_id": 686,
+                            "text": "John",
+                            "normalized": {
+                                "text": "John",
+                                "start": 352,
+                                "end": 356,
+                                "structured": null,
+                                "formatted": "John",
+                                "status": "SUCCESS",
+                                "validation": [
+                                    {
+                                        "validation_type": "TYPE_CONVERSION",
+                                        "error_message": null,
+                                        "validation_status": "SUCCESS"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "label": "Last Name",
+                            "spans": [
+                                {
+                                    "start": 357,
+                                    "end": 360,
+                                    "page_num": 0
+                                }
+                            ],
+                            "span_id": "2924:c:228:idx:1",
+                            "confidence": {
+                                "Dependent: First Name": 9.331763806130766e-08,
+                                "Dependent: Last Name": 1.5924327101402014e-07,
+                                "Dependent: Relationship": 1.5769572314638935e-07,
+                                "First Name": 3.913502268915181e-07,
+                                "Last Name": 0.9999991655349731
+                            },
+                            "field_id": 687,
+                            "text": "Doe",
+                            "normalized": {
+                                "text": "Doe",
+                                "start": 357,
+                                "end": 360,
+                                "structured": null,
+                                "formatted": "Doe",
+                                "status": "SUCCESS",
+                                "validation": [
+                                    {
+                                        "validation_type": "TYPE_CONVERSION",
+                                        "error_message": null,
+                                        "validation_status": "SUCCESS"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "label": "Dependent: First Name",
+                            "spans": [
+                                {
+                                    "start": 2011,
+                                    "end": 2015,
+                                    "page_num": 0
+                                }
+                            ],
+                            "span_id": "2924:c:228:idx:2",
+                            "confidence": {
+                                "Dependent: First Name": 0.9999992847442627,
+                                "Dependent: Last Name": 3.055288857467531e-07,
+                                "Dependent: Relationship": 1.606294404155051e-07,
+                                "First Name": 9.299924386141356e-08,
+                                "Last Name": 1.4796071923228737e-07
+                            },
+                            "field_id": 688,
+                            "text": "Jane",
+                            "groupings": [
+                                {
+                                    "group_name": "Dependent",
+                                    "group_index": 2,
+                                    "group_id": "122:Dependent"
+                                }
+                            ],
+                            "normalized": {
+                                "text": "Jane",
+                                "start": 2011,
+                                "end": 2015,
+                                "structured": null,
+                                "formatted": "Jane",
+                                "status": "SUCCESS",
+                                "validation": [
+                                    {
+                                        "validation_type": "TYPE_CONVERSION",
+                                        "error_message": null,
+                                        "validation_status": "SUCCESS"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "label": "Dependent: Last Name",
+                            "spans": [
+                                {
+                                    "start": 2016,
+                                    "end": 2019,
+                                    "page_num": 0
+                                }
+                            ],
+                            "span_id": "2924:c:228:idx:3",
+                            "confidence": {
+                                "Dependent: First Name": 8.4079402995485e-08,
+                                "Dependent: Last Name": 0.9999996423721313,
+                                "Dependent: Relationship": 4.189759295059048e-08,
+                                "First Name": 6.380826533813888e-08,
+                                "Last Name": 1.2290360018596402e-07
+                            },
+                            "field_id": 689,
+                            "text": "Doe",
+                            "groupings": [
+                                {
+                                    "group_name": "Dependent",
+                                    "group_index": 2,
+                                    "group_id": "122:Dependent"
+                                }
+                            ],
+                            "normalized": {
+                                "text": "Doe",
+                                "start": 2016,
+                                "end": 2019,
+                                "structured": null,
+                                "formatted": "Doe",
+                                "status": "SUCCESS",
+                                "validation": [
+                                    {
+                                        "validation_type": "TYPE_CONVERSION",
+                                        "error_message": null,
+                                        "validation_status": "SUCCESS"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "label": "Dependent: Relationship",
+                            "spans": [
+                                {
+                                    "start": 2020,
+                                    "end": 2028,
+                                    "page_num": 0
+                                }
+                            ],
+                            "span_id": "2924:c:228:idx:4",
+                            "confidence": {
+                                "Dependent: First Name": 9.17252407361957e-08,
+                                "Dependent: Last Name": 6.139377717317984e-08,
+                                "Dependent: Relationship": 0.9999996423721313,
+                                "First Name": 5.3535529787041014e-08,
+                                "Last Name": 7.563556891909684e-08
+                            },
+                            "field_id": 690,
+                            "text": "Daughter",
+                            "groupings": [
+                                {
+                                    "group_name": "Dependent",
+                                    "group_index": 2,
+                                    "group_id": "122:Dependent"
+                                }
+                            ],
+                            "normalized": {
+                                "text": "Daughter",
+                                "start": 2020,
+                                "end": 2028,
+                                "structured": null,
+                                "formatted": "Daughter",
+                                "status": "SUCCESS",
+                                "validation": [
+                                    {
+                                        "validation_type": "TYPE_CONVERSION",
+                                        "error_message": null,
+                                        "validation_status": "SUCCESS"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "label": "Last Name",
+                            "spans": [
+                                {
+                                    "start": 6438,
+                                    "end": 6441,
+                                    "page_num": 1
+                                }
+                            ],
+                            "span_id": "2924:c:228:idx:5",
+                            "confidence": {
+                                "Dependent: First Name": 0.00020139692060183734,
+                                "Dependent: Last Name": 0.10477288067340851,
+                                "Dependent: Relationship": 8.520398841938004e-05,
+                                "First Name": 8.379091741517186e-05,
+                                "Last Name": 0.44778338074684143
+                            },
+                            "field_id": 687,
+                            "text": "Doe",
+                            "normalized": {
+                                "text": "Doe",
+                                "start": 6438,
+                                "end": 6441,
+                                "structured": null,
+                                "formatted": "Doe",
+                                "status": "SUCCESS",
+                                "validation": [
+                                    {
+                                        "validation_type": "TYPE_CONVERSION",
+                                        "error_message": null,
+                                        "validation_status": "SUCCESS"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "FINAL": {}
+            },
+            "component_results": {
+                "ORIGINAL": {},
+                "FINAL": {}
+            },
+            "rejected": {
+                "models": {
+                    "121": [],
+                    "123": [],
+                    "122": []
+                },
+                "components": {}
+            }
+        }
+    ],
+    "reviews": {
+        "1310": {
+            "review_id": 1310,
+            "reviewer_id": 5,
+            "review_notes": "Reason for admin rejection",
+            "review_rejected": true,
+            "review_type": "admin"
+        },
+        "1309": {
+            "review_id": 1309,
+            "reviewer_id": 5,
+            "review_notes": "Reason for rejection",
+            "review_rejected": true,
+            "review_type": "manual"
+        },
+        "1307": {
+            "review_id": 1307,
+            "reviewer_id": 5,
+            "review_notes": null,
+            "review_rejected": false,
+            "review_type": "auto"
+        }
+    }
+}
