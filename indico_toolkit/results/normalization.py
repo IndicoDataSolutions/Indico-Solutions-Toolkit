@@ -38,6 +38,26 @@ def normalize_v1_result(result: "Any") -> None:
             if prediction is not None
         )
         for prediction in predictions:
+            # Predictions added in review lack a `confidence` section.
+            if "confidence" not in prediction:
+                prediction["confidence"] = {prediction["label"]: 0}
+
+            # Document Extractions added in review may lack spans.
+            if (
+                "text" in prediction
+                and "type" not in prediction
+                and "start" not in prediction
+            ):
+                prediction["start"] = 0
+                prediction["end"] = 0
+
+            # Form Extractions added in review may lack bounding boxes.
+            if "type" in prediction and "top" not in prediction:
+                prediction["top"] = 0
+                prediction["left"] = 0
+                prediction["right"] = 0
+                prediction["bottom"] = 0
+
             # Prior to 6.11, some extractions lack a `normalized` section after review.
             if "text" in prediction and "normalized" not in prediction:
                 prediction["normalized"] = {"formatted": prediction["text"]}
@@ -78,6 +98,31 @@ def normalize_v3_result(result: "Any") -> None:
                 for prediction in model_results
             )
             for prediction in predictions:
+                # Predictions added in review lack a `confidence` section.
+                if "confidence" not in prediction:
+                    prediction["confidence"] = {prediction["label"]: 0}
+
+                # Document Extractions added in review may lack spans.
+                if (
+                    "text" in prediction
+                    and "type" not in prediction
+                    and "spans" not in prediction
+                ):
+                    prediction["spans"] = [
+                        {
+                            "page_num": prediction["page_num"],
+                            "start": 0,
+                            "end": 0,
+                        }
+                    ]
+
+                # Form Extractions added in review may lack bounding boxes.
+                if "type" in prediction and "top" not in prediction:
+                    prediction["top"] = 0
+                    prediction["left"] = 0
+                    prediction["right"] = 0
+                    prediction["bottom"] = 0
+
                 # Prior to 6.11, some extractions lack a `normalized` section after
                 # review.
                 if "text" in prediction and "normalized" not in prediction:
