@@ -135,7 +135,7 @@ class PredictionList(List[PredictionType]):
         label_in: predictions with one of these labels,
         min_confidence: predictions with confidence >= this threshold,
         max_confidence: predictions with confidence <= this threshold,
-        accepted: extractions that have accepted,
+        accepted: extractions that have been accepted,
         rejected: extractions that have been rejected,
         checked: form extractions that are checked,
         signed: form extractions that are signed,
@@ -212,28 +212,28 @@ class PredictionList(List[PredictionType]):
 
     def accept(self) -> "Self":
         """
-        Mark predictions as accepted for auto-review.
+        Mark extractions as accepted for auto review.
         """
         self.oftype(Extraction).apply(Extraction.accept)
         return self
 
     def unaccept(self) -> "Self":
         """
-        Mark predictions as not accepted for auto-review.
+        Mark extractions as not accepted for auto review.
         """
         self.oftype(Extraction).apply(Extraction.unaccept)
         return self
 
     def reject(self) -> "Self":
         """
-        Mark predictions as rejected for auto-review.
+        Mark extractions as rejected for auto review.
         """
         self.oftype(Extraction).apply(Extraction.reject)
         return self
 
     def unreject(self) -> "Self":
         """
-        Mark predictions as not rejected for auto-review.
+        Mark extractions as not rejected for auto review.
         """
         self.oftype(Extraction).apply(Extraction.unreject)
         return self

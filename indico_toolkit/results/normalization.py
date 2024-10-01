@@ -58,11 +58,11 @@ def normalize_v1_result(result: "Any") -> None:
                 prediction["right"] = 0
                 prediction["bottom"] = 0
 
-            # Prior to 6.11, some extractions lack a `normalized` section after review.
+            # Prior to 6.11, some Extractions lack a `normalized` section after review.
             if "text" in prediction and "normalized" not in prediction:
                 prediction["normalized"] = {"formatted": prediction["text"]}
 
-            # Document extractions that didn't go through a linked labels transformer
+            # Document Extractions that didn't go through a linked labels transformer
             # lack a `groupings` section.
             if (
                 "text" in prediction
@@ -123,12 +123,12 @@ def normalize_v3_result(result: "Any") -> None:
                     prediction["right"] = 0
                     prediction["bottom"] = 0
 
-                # Prior to 6.11, some extractions lack a `normalized` section after
+                # Prior to 6.11, some Extractions lack a `normalized` section after
                 # review.
                 if "text" in prediction and "normalized" not in prediction:
                     prediction["normalized"] = {"formatted": prediction["text"]}
 
-                # Document extractions that didn't go through a linked labels
+                # Document Extractions that didn't go through a linked labels
                 # transformer lack a `groupings` section.
                 if (
                     "text" in prediction
