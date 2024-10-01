@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from ..reviews import Review
 from ..utils import get, has, omit
-from .autoreviewable import AutoReviewable
+from .extractions import Extraction
 from .groups import Group
 
 if TYPE_CHECKING:
@@ -14,8 +14,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class Extraction(AutoReviewable):
-    text: str
+class DocumentExtraction(Extraction):
     page: int
     start: int
     end: int
@@ -27,11 +26,11 @@ class Extraction(AutoReviewable):
         model: "ModelGroup",
         review: "Review | None",
         prediction: object,
-    ) -> "Extraction":
+    ) -> "DocumentExtraction":
         """
-        Create an `Extraction` from a v1 prediction dictionary.
+        Create an `DocumentExtraction` from a v1 prediction dictionary.
         """
-        return Extraction(
+        return DocumentExtraction(
             document=document,
             model=model,
             review=review,
@@ -67,11 +66,11 @@ class Extraction(AutoReviewable):
         model: "ModelGroup",
         review: "Review | None",
         prediction: object,
-    ) -> "Extraction":
+    ) -> "DocumentExtraction":
         """
-        Create an `Extraction` from a v3 prediction dictionary.
+        Create an `DocumentExtraction` from a v3 prediction dictionary.
         """
-        return Extraction(
+        return DocumentExtraction(
             document=document,
             model=model,
             review=review,
