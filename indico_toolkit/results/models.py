@@ -6,7 +6,7 @@ from .utils import get, has
 
 class TaskType(Enum):
     CLASSIFICATION = "classification"
-    EXTRACTION = "annotation"
+    DOCUMENT_EXTRACTION = "annotation"
     FORM_EXTRACTION = "form_extraction"
     UNBUNDLING = "classification_unbundling"
 
@@ -31,12 +31,12 @@ class ModelGroup:
             if has(prediction, str, "type"):
                 task_type = TaskType.FORM_EXTRACTION
             elif has(prediction, str, "text"):
-                task_type = TaskType.EXTRACTION
+                task_type = TaskType.DOCUMENT_EXTRACTION
             else:
                 task_type = TaskType.CLASSIFICATION
         else:
             # Likely an extraction model that produced no predictions.
-            task_type = TaskType.EXTRACTION
+            task_type = TaskType.DOCUMENT_EXTRACTION
 
         return ModelGroup(
             # v1 result files don't include model IDs.

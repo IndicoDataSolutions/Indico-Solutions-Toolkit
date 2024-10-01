@@ -4,9 +4,10 @@ from .predictions import Prediction
 
 
 @dataclass
-class AutoReviewable(Prediction):
+class Extraction(Prediction):
     accepted: bool
     rejected: bool
+    text: str
 
     def accept(self) -> None:
         self.accepted = True

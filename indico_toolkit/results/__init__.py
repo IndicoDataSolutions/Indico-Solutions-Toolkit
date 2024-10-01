@@ -6,8 +6,8 @@ from .errors import ResultError
 from .lists import PredictionList
 from .models import ModelGroup, TaskType
 from .predictions import (
-    AutoReviewable,
     Classification,
+    DocumentExtraction,
     Extraction,
     FormExtraction,
     FormExtractionType,
@@ -20,9 +20,9 @@ from .reviews import Review, ReviewType
 from .utils import get
 
 __all__ = (
-    "AutoReviewable",
     "Classification",
     "Document",
+    "DocumentExtraction",
     "Extraction",
     "FormExtraction",
     "FormExtractionType",

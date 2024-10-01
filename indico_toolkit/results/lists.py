@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, List, TypeVar, overload
 
 from .models import TaskType
 from .predictions import (
-    AutoReviewable,
     Classification,
+    DocumentExtraction,
     Extraction,
     FormExtraction,
     Prediction,
@@ -38,6 +38,10 @@ class PredictionList(List[PredictionType]):
     @property
     def classifications(self) -> "PredictionList[Classification]":
         return self.oftype(Classification)
+
+    @property
+    def document_extractions(self) -> "PredictionList[DocumentExtraction]":
+        return self.oftype(DocumentExtraction)
 
     @property
     def extractions(self) -> "PredictionList[Extraction]":
@@ -182,13 +186,13 @@ class PredictionList(List[PredictionType]):
 
         if accepted is not None:
             predicates.append(
-                lambda prediction: isinstance(prediction, AutoReviewable)
+                lambda prediction: isinstance(prediction, Extraction)
                 and prediction.accepted == accepted
             )
 
         if rejected is not None:
             predicates.append(
-                lambda prediction: isinstance(prediction, AutoReviewable)
+                lambda prediction: isinstance(prediction, Extraction)
                 and prediction.rejected == rejected
             )
 
@@ -210,28 +214,28 @@ class PredictionList(List[PredictionType]):
         """
         Mark predictions as accepted for auto-review.
         """
-        self.oftype(AutoReviewable).apply(AutoReviewable.accept)
+        self.oftype(Extraction).apply(Extraction.accept)
         return self
 
     def unaccept(self) -> "Self":
         """
         Mark predictions as not accepted for auto-review.
         """
-        self.oftype(AutoReviewable).apply(AutoReviewable.unaccept)
+        self.oftype(Extraction).apply(Extraction.unaccept)
         return self
 
     def reject(self) -> "Self":
         """
         Mark predictions as rejected for auto-review.
         """
-        self.oftype(AutoReviewable).apply(AutoReviewable.reject)
+        self.oftype(Extraction).apply(Extraction.reject)
         return self
 
     def unreject(self) -> "Self":
         """
         Mark predictions as not rejected for auto-review.
         """
-        self.oftype(AutoReviewable).apply(AutoReviewable.unreject)
+        self.oftype(Extraction).apply(Extraction.unreject)
         return self
 
     def to_changes(self, result: "Result") -> "Any":

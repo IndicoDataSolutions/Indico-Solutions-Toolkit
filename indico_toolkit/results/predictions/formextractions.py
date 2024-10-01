@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from ..reviews import Review
 from ..utils import get, has, omit
-from .autoreviewable import AutoReviewable
+from .extractions import Extraction
 
 if TYPE_CHECKING:
     from typing import Any
@@ -20,11 +20,10 @@ class FormExtractionType(Enum):
 
 
 @dataclass
-class FormExtraction(AutoReviewable):
+class FormExtraction(Extraction):
     type: FormExtractionType
     checked: bool
     signed: bool
-    text: str
 
     page: int
     top: int

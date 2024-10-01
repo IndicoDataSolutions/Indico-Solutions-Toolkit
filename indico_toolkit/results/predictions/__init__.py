@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 
 from ..models import TaskType
-from .autoreviewable import AutoReviewable
 from .classifications import Classification
+from .documentextractions import DocumentExtraction
 from .extractions import Extraction
 from .formextractions import FormExtraction, FormExtractionType
 from .groups import Group
@@ -16,8 +16,8 @@ if TYPE_CHECKING:
     from ..reviews import Review
 
 __all__ = (
-    "AutoReviewable",
     "Classification",
+    "DocumentExtraction",
     "Extraction",
     "FormExtraction",
     "FormExtractionType",
@@ -38,8 +38,8 @@ def from_v1_dict(
     """
     if model.task_type == TaskType.CLASSIFICATION:
         return Classification.from_v1_dict(document, model, review, prediction)
-    elif model.task_type == TaskType.EXTRACTION:
-        return Extraction.from_v1_dict(document, model, review, prediction)
+    elif model.task_type == TaskType.DOCUMENT_EXTRACTION:
+        return DocumentExtraction.from_v1_dict(document, model, review, prediction)
     elif model.task_type == TaskType.FORM_EXTRACTION:
         return FormExtraction.from_v1_dict(document, model, review, prediction)
     else:
@@ -57,8 +57,8 @@ def from_v3_dict(
     """
     if model.task_type == TaskType.CLASSIFICATION:
         return Classification.from_v3_dict(document, model, review, prediction)
-    elif model.task_type == TaskType.EXTRACTION:
-        return Extraction.from_v3_dict(document, model, review, prediction)
+    elif model.task_type == TaskType.DOCUMENT_EXTRACTION:
+        return DocumentExtraction.from_v3_dict(document, model, review, prediction)
     elif model.task_type == TaskType.FORM_EXTRACTION:
         return FormExtraction.from_v3_dict(document, model, review, prediction)
     elif model.task_type == TaskType.UNBUNDLING:

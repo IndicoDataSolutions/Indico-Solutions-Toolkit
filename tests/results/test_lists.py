@@ -3,15 +3,15 @@ from operator import attrgetter
 import pytest
 
 from indico_toolkit.results import (
+    Classification,
+    Document,
+    DocumentExtraction,
+    ModelGroup,
+    Prediction,
     PredictionList,
     Review,
     ReviewType,
-    ModelGroup,
     TaskType,
-    Document,
-    Extraction,
-    Prediction,
-    Classification,
 )
 
 
@@ -36,7 +36,7 @@ def classification_model() -> ModelGroup:
 @pytest.fixture
 def extraction_model() -> ModelGroup:
     return ModelGroup(
-        id=122, name="1040 Document Extraction", task_type=TaskType.EXTRACTION
+        id=122, name="1040 Document Extraction", task_type=TaskType.DOCUMENT_EXTRACTION
     )
 
 
@@ -72,7 +72,7 @@ def predictions(
                 confidences={"1040": 0.7},
                 extras={},
             ),
-            Extraction(
+            DocumentExtraction(
                 document=document,
                 model=extraction_model,
                 review=auto_review,
@@ -87,7 +87,7 @@ def predictions(
                 page=0,
                 groups=set(),
             ),
-            Extraction(
+            DocumentExtraction(
                 document=document,
                 model=extraction_model,
                 review=manual_review,
@@ -112,9 +112,9 @@ def test_classifications(predictions: "PredictionList[Prediction]") -> None:
 
 
 def test_extractions(predictions: "PredictionList[Prediction]") -> None:
-    (first_extraction, second_extraction) = predictions.extractions
-    assert isinstance(first_extraction, Extraction)
-    assert isinstance(second_extraction, Extraction)
+    (first_extraction, second_extraction) = predictions.document_extractions
+    assert isinstance(first_extraction, DocumentExtraction)
+    assert isinstance(second_extraction, DocumentExtraction)
 
 
 def test_slice_is_prediction_list(predictions: "PredictionList[Prediction]") -> None:
@@ -153,7 +153,6 @@ def test_where_model(
     assert classification in filtered
     assert first_name not in filtered
     assert last_name not in filtered
-
 
 
 def test_where_label(predictions: "PredictionList[Prediction]") -> None:
