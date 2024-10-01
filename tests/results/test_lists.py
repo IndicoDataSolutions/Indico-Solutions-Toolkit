@@ -99,7 +99,7 @@ def predictions(
                 text="Doe",
                 start=357,
                 end=360,
-                page=0,
+                page=1,
                 groups=set(),
             ),
         ]
@@ -186,6 +186,20 @@ def test_where_confidence(predictions: "PredictionList[Prediction]") -> None:
     assert conf_70 in filtered
     assert conf_80 not in filtered
     assert conf_90 not in filtered
+
+
+def test_where_page(predictions: "PredictionList[Prediction]") -> None:
+    classification, first_name, last_name = predictions
+
+    filtered = predictions.where(page=0)
+    assert classification not in filtered
+    assert first_name in filtered
+    assert last_name not in filtered
+
+    filtered = predictions.where(page_in=(0, 1))
+    assert classification not in filtered
+    assert first_name in filtered
+    assert last_name in filtered
 
 
 def test_where_accepted(predictions: "PredictionList[Prediction]") -> None:

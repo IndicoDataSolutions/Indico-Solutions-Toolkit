@@ -15,7 +15,7 @@ from .reviews import Review, ReviewType
 from .utils import nfilter
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Container, Iterable
+    from collections.abc import Callable, Collection, Container, Iterable
     from typing import Any, SupportsIndex
 
     from typing_extensions import Self
@@ -118,6 +118,8 @@ class PredictionList(List[PredictionType]):
         label_in: "Container[str] | None" = None,
         min_confidence: "float | None" = None,
         max_confidence: "float | None" = None,
+        page: "int | None" = None,
+        page_in: "Collection[int] | None" = None,
         accepted: "bool | None" = None,
         rejected: "bool | None" = None,
         checked: "bool | None" = None,
@@ -135,6 +137,8 @@ class PredictionList(List[PredictionType]):
         label_in: predictions with one of these labels,
         min_confidence: predictions with confidence >= this threshold,
         max_confidence: predictions with confidence <= this threshold,
+        page: extractions/unbundlings on this page,
+        page_in: extractions/unbundlings on one of these pages,
         accepted: extractions that have been accepted,
         rejected: extractions that have been rejected,
         checked: form extractions that are checked,
@@ -182,6 +186,26 @@ class PredictionList(List[PredictionType]):
         if max_confidence is not None:
             predicates.append(
                 lambda prediction: prediction.confidence <= max_confidence
+            )
+
+        if page is not None:
+            predicates.append(
+                lambda prediction: (
+                    (isinstance(prediction, Extraction) and prediction.page == page)
+                    or (isinstance(prediction, Unbundling) and page in prediction.pages)
+                )
+            )
+
+        if page_in is not None:
+            page_in = set(page_in)
+            predicates.append(
+                lambda prediction: (
+                    (isinstance(prediction, Extraction) and prediction.page in page_in)
+                    or (
+                        isinstance(prediction, Unbundling)
+                        and bool(page_in & set(prediction.pages))
+                    )
+                )
             )
 
         if accepted is not None:
