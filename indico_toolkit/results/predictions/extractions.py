@@ -8,6 +8,7 @@ class Extraction(Prediction):
     accepted: bool
     rejected: bool
     text: str
+    page: int
 
     def accept(self) -> None:
         self.accepted = True

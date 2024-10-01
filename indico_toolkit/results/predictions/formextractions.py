@@ -25,7 +25,6 @@ class FormExtraction(Extraction):
     checked: bool
     signed: bool
 
-    page: int
     top: int
     left: int
     right: int

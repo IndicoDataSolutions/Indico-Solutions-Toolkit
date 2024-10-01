@@ -15,7 +15,6 @@ if TYPE_CHECKING:
 
 @dataclass
 class DocumentExtraction(Extraction):
-    page: int
     start: int
     end: int
     groups: "set[Group]"

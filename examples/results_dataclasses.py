@@ -117,6 +117,7 @@ prediction.extras  # Other attributes from the result file prediction dict that 
 # Extraction Dataclass (Subclass of Prediction)
 extraction = predictions.extractions[0]
 extraction.text
+extraction.page
 extraction.accepted
 extraction.rejected
 
