@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, List, TypeVar, overload
 
 from .models import TaskType
 from .predictions import (
-    AutoReviewable,
     Classification,
+    DocumentExtraction,
     Extraction,
     FormExtraction,
     Prediction,
@@ -15,7 +15,7 @@ from .reviews import Review, ReviewType
 from .utils import nfilter
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Container, Iterable
+    from collections.abc import Callable, Collection, Container, Iterable
     from typing import Any, SupportsIndex
 
     from typing_extensions import Self
@@ -38,6 +38,10 @@ class PredictionList(List[PredictionType]):
     @property
     def classifications(self) -> "PredictionList[Classification]":
         return self.oftype(Classification)
+
+    @property
+    def document_extractions(self) -> "PredictionList[DocumentExtraction]":
+        return self.oftype(DocumentExtraction)
 
     @property
     def extractions(self) -> "PredictionList[Extraction]":
@@ -114,6 +118,8 @@ class PredictionList(List[PredictionType]):
         label_in: "Container[str] | None" = None,
         min_confidence: "float | None" = None,
         max_confidence: "float | None" = None,
+        page: "int | None" = None,
+        page_in: "Collection[int] | None" = None,
         accepted: "bool | None" = None,
         rejected: "bool | None" = None,
         checked: "bool | None" = None,
@@ -131,7 +137,9 @@ class PredictionList(List[PredictionType]):
         label_in: predictions with one of these labels,
         min_confidence: predictions with confidence >= this threshold,
         max_confidence: predictions with confidence <= this threshold,
-        accepted: extractions that have accepted,
+        page: extractions/unbundlings on this page,
+        page_in: extractions/unbundlings on one of these pages,
+        accepted: extractions that have been accepted,
         rejected: extractions that have been rejected,
         checked: form extractions that are checked,
         signed: form extractions that are signed,
@@ -180,15 +188,35 @@ class PredictionList(List[PredictionType]):
                 lambda prediction: prediction.confidence <= max_confidence
             )
 
+        if page is not None:
+            predicates.append(
+                lambda prediction: (
+                    (isinstance(prediction, Extraction) and prediction.page == page)
+                    or (isinstance(prediction, Unbundling) and page in prediction.pages)
+                )
+            )
+
+        if page_in is not None:
+            page_in = set(page_in)
+            predicates.append(
+                lambda prediction: (
+                    (isinstance(prediction, Extraction) and prediction.page in page_in)
+                    or (
+                        isinstance(prediction, Unbundling)
+                        and bool(page_in & set(prediction.pages))
+                    )
+                )
+            )
+
         if accepted is not None:
             predicates.append(
-                lambda prediction: isinstance(prediction, AutoReviewable)
+                lambda prediction: isinstance(prediction, Extraction)
                 and prediction.accepted == accepted
             )
 
         if rejected is not None:
             predicates.append(
-                lambda prediction: isinstance(prediction, AutoReviewable)
+                lambda prediction: isinstance(prediction, Extraction)
                 and prediction.rejected == rejected
             )
 
@@ -208,30 +236,30 @@ class PredictionList(List[PredictionType]):
 
     def accept(self) -> "Self":
         """
-        Mark predictions as accepted for auto-review.
+        Mark extractions as accepted for auto review.
         """
-        self.oftype(AutoReviewable).apply(AutoReviewable.accept)
+        self.oftype(Extraction).apply(Extraction.accept)
         return self
 
     def unaccept(self) -> "Self":
         """
-        Mark predictions as not accepted for auto-review.
+        Mark extractions as not accepted for auto review.
         """
-        self.oftype(AutoReviewable).apply(AutoReviewable.unaccept)
+        self.oftype(Extraction).apply(Extraction.unaccept)
         return self
 
     def reject(self) -> "Self":
         """
-        Mark predictions as rejected for auto-review.
+        Mark extractions as rejected for auto review.
         """
-        self.oftype(AutoReviewable).apply(AutoReviewable.reject)
+        self.oftype(Extraction).apply(Extraction.reject)
         return self
 
     def unreject(self) -> "Self":
         """
-        Mark predictions as not rejected for auto-review.
+        Mark extractions as not rejected for auto review.
         """
-        self.oftype(AutoReviewable).apply(AutoReviewable.unreject)
+        self.oftype(Extraction).apply(Extraction.unreject)
         return self
 
     def to_changes(self, result: "Result") -> "Any":

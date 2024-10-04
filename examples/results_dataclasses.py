@@ -1,6 +1,7 @@
 """
 Overview of dataclasses and functionality available in the results module.
 """
+
 from operator import attrgetter
 from pathlib import Path
 
@@ -116,10 +117,7 @@ prediction.extras  # Other attributes from the result file prediction dict that 
 # Extraction Dataclass (Subclass of Prediction)
 extraction = predictions.extractions[0]
 extraction.text
-extraction.start
-extraction.end
 extraction.page
-extraction.groups  # Any linked label groups this prediction is a part of
 extraction.accepted
 extraction.rejected
 
@@ -127,3 +125,36 @@ extraction.accept()  # Mark this extraction as accepted for auto review
 extraction.reject()  # Mark this extraction as rejected for auto review
 extraction.unaccept()  # Mark this extraction as not accepted for auto review
 extraction.unreject()  # Mark this extraction as not rejected for auto review
+
+
+# DocumentExtraction Dataclass (Subclass of Extraction)
+document_extraction = predictions.document_extractions[0]
+document_extraction.text
+document_extraction.page
+document_extraction.start
+document_extraction.end
+document_extraction.groups  # Any linked label groups this prediction is a part of
+document_extraction.accepted
+document_extraction.rejected
+
+document_extraction.accept()  # Mark this extraction as accepted for auto review
+document_extraction.reject()  # Mark this extraction as rejected for auto review
+document_extraction.unaccept()  # Mark this extraction as not accepted for auto review
+document_extraction.unreject()  # Mark this extraction as not rejected for auto review
+
+
+# FormExtraction Dataclass (Subclass of Extraction)
+form_extraction = predictions.form_extractions[0]
+form_extraction.text
+form_extraction.page
+form_extraction.top
+form_extraction.left
+form_extraction.right
+form_extraction.bottom
+form_extraction.accepted
+form_extraction.rejected
+
+form_extraction.accept()  # Mark this extraction as accepted for auto review
+form_extraction.reject()  # Mark this extraction as rejected for auto review
+form_extraction.unaccept()  # Mark this extraction as not accepted for auto review
+form_extraction.unreject()  # Mark this extraction as not rejected for auto review

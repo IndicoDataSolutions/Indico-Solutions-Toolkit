@@ -1,4 +1,4 @@
-from indico_toolkit.results import AutoReviewable, Prediction
+from indico_toolkit.results import Extraction, Prediction
 
 
 def test_confidence() -> None:
@@ -16,13 +16,15 @@ def test_confidence() -> None:
     assert prediction.confidence == 1.0
 
 
-def test_autoreviewable() -> None:
-    prediction = AutoReviewable(
+def test_extractions() -> None:
+    prediction = Extraction(
         document=None,  # type: ignore[arg-type]
         model=None,  # type: ignore[arg-type]
         review=None,
         label="Label",
         confidences={"Label": 0.5},
+        text="Value",
+        page=0,
         extras=None,  # type: ignore[arg-type]
         accepted=False,
         rejected=False,

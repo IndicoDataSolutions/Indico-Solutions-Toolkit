@@ -1,6 +1,7 @@
 """
 Dump classifications and extractions from result files to a CSV file.
 """
+
 import csv
 from collections.abc import Iterable, Iterator
 from pathlib import Path
@@ -14,16 +15,16 @@ def final_predictions(result: results.Result) -> Iterator[dict[str, object]]:
     for prediction in result.final:
         if isinstance(prediction, results.Classification):
             yield {
-                "submission_id": result.id,
+                "submission_id": result.submission_id,
                 "document_id": prediction.document.id,
                 "model": prediction.model.name,
                 "field": "Classification",
                 "value": prediction.label,
                 "confidence": prediction.confidence,
             }
-        else:
+        elif isinstance(prediction, results.Extraction):
             yield {
-                "submission_id": result.id,
+                "submission_id": result.submission_id,
                 "document_id": prediction.document.id,
                 "model": prediction.model.name,
                 "field": prediction.label,
@@ -57,7 +58,9 @@ def convert_to_csv(
                 "value",
                 "confidence",
             ],
-        ).writerows(predictions_from_files(result_files))
+        ).writerows(
+            predictions_from_files(result_files),
+        )
 
 
 if __name__ == "__main__":

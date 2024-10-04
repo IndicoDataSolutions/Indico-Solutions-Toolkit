@@ -3,15 +3,15 @@ from operator import attrgetter
 import pytest
 
 from indico_toolkit.results import (
+    Classification,
+    Document,
+    DocumentExtraction,
+    ModelGroup,
+    Prediction,
     PredictionList,
     Review,
     ReviewType,
-    ModelGroup,
     TaskType,
-    Document,
-    Extraction,
-    Prediction,
-    Classification,
 )
 
 
@@ -36,7 +36,7 @@ def classification_model() -> ModelGroup:
 @pytest.fixture
 def extraction_model() -> ModelGroup:
     return ModelGroup(
-        id=122, name="1040 Document Extraction", task_type=TaskType.EXTRACTION
+        id=122, name="1040 Document Extraction", task_type=TaskType.DOCUMENT_EXTRACTION
     )
 
 
@@ -72,7 +72,7 @@ def predictions(
                 confidences={"1040": 0.7},
                 extras={},
             ),
-            Extraction(
+            DocumentExtraction(
                 document=document,
                 model=extraction_model,
                 review=auto_review,
@@ -87,7 +87,7 @@ def predictions(
                 page=0,
                 groups=set(),
             ),
-            Extraction(
+            DocumentExtraction(
                 document=document,
                 model=extraction_model,
                 review=manual_review,
@@ -99,7 +99,7 @@ def predictions(
                 text="Doe",
                 start=357,
                 end=360,
-                page=0,
+                page=1,
                 groups=set(),
             ),
         ]
@@ -112,9 +112,9 @@ def test_classifications(predictions: "PredictionList[Prediction]") -> None:
 
 
 def test_extractions(predictions: "PredictionList[Prediction]") -> None:
-    (first_extraction, second_extraction) = predictions.extractions
-    assert isinstance(first_extraction, Extraction)
-    assert isinstance(second_extraction, Extraction)
+    (first_extraction, second_extraction) = predictions.document_extractions
+    assert isinstance(first_extraction, DocumentExtraction)
+    assert isinstance(second_extraction, DocumentExtraction)
 
 
 def test_slice_is_prediction_list(predictions: "PredictionList[Prediction]") -> None:
@@ -155,7 +155,6 @@ def test_where_model(
     assert last_name not in filtered
 
 
-
 def test_where_label(predictions: "PredictionList[Prediction]") -> None:
     classification, first_name, last_name = predictions
 
@@ -187,6 +186,20 @@ def test_where_confidence(predictions: "PredictionList[Prediction]") -> None:
     assert conf_70 in filtered
     assert conf_80 not in filtered
     assert conf_90 not in filtered
+
+
+def test_where_page(predictions: "PredictionList[Prediction]") -> None:
+    classification, first_name, last_name = predictions
+
+    filtered = predictions.where(page=0)
+    assert classification not in filtered
+    assert first_name in filtered
+    assert last_name not in filtered
+
+    filtered = predictions.where(page_in=(0, 1))
+    assert classification not in filtered
+    assert first_name in filtered
+    assert last_name in filtered
 
 
 def test_where_accepted(predictions: "PredictionList[Prediction]") -> None:
