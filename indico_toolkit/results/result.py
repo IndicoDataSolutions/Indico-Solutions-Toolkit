@@ -3,13 +3,13 @@ from functools import partial
 from typing import TYPE_CHECKING
 
 from . import predictions as prediction
-from .documents import Document
-from .lists import PredictionList
-from .models import ModelGroup
+from .document import Document
+from .model import ModelGroup
 from .normalization import normalize_v1_result, normalize_v3_result
+from .predictionlist import PredictionList
 from .predictions import Prediction
-from .reviews import Review, ReviewType
-from .utils import get
+from .review import Review, ReviewType
+from .utilities import get
 
 if TYPE_CHECKING:
     from typing import Any

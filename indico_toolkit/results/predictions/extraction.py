@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .predictions import Prediction
+from .prediction import Prediction
 
 
 @dataclass

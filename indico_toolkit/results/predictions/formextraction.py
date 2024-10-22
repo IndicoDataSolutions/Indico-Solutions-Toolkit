@@ -2,15 +2,15 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING
 
-from ..reviews import Review
-from ..utils import get, has, omit
-from .extractions import Extraction
+from ..review import Review
+from ..utilities import get, has, omit
+from .extraction import Extraction
 
 if TYPE_CHECKING:
     from typing import Any
 
-    from ..documents import Document
-    from ..models import ModelGroup
+    from ..document import Document
+    from ..model import ModelGroup
 
 
 class FormExtractionType(Enum):

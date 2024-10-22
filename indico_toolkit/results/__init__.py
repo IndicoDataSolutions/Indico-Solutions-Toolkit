@@ -1,10 +1,10 @@
 import json
 from os import PathLike
 
-from .documents import Document
+from .document import Document
 from .errors import ResultError
-from .lists import PredictionList
-from .models import ModelGroup, TaskType
+from .model import ModelGroup, TaskType
+from .predictionlist import PredictionList
 from .predictions import (
     Classification,
     DocumentExtraction,
@@ -15,9 +15,9 @@ from .predictions import (
     Prediction,
     Unbundling,
 )
-from .results import Result
-from .reviews import Review, ReviewType
-from .utils import get
+from .result import Result
+from .review import Review, ReviewType
+from .utilities import get
 
 __all__ = (
     "Classification",

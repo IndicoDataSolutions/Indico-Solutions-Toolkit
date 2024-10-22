@@ -1,19 +1,19 @@
 from typing import TYPE_CHECKING
 
-from ..models import TaskType
-from .classifications import Classification
-from .documentextractions import DocumentExtraction
-from .extractions import Extraction
-from .formextractions import FormExtraction, FormExtractionType
-from .groups import Group
-from .predictions import Prediction
-from .unbundlings import Unbundling
+from ..model import TaskType
+from .classification import Classification
+from .documentextraction import DocumentExtraction
+from .extraction import Extraction
+from .formextraction import FormExtraction, FormExtractionType
+from .group import Group
+from .prediction import Prediction
+from .unbundling import Unbundling
 
 if TYPE_CHECKING:
-    from ..documents import Document
+    from ..document import Document
     from ..errors import ResultError
-    from ..models import ModelGroup
-    from ..reviews import Review
+    from ..model import ModelGroup
+    from ..review import Review
 
 __all__ = (
     "Classification",

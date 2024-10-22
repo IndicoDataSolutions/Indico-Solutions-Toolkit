@@ -2,7 +2,7 @@ from collections import defaultdict
 from operator import attrgetter
 from typing import TYPE_CHECKING, List, TypeVar, overload
 
-from .models import TaskType
+from .model import TaskType
 from .predictions import (
     Classification,
     DocumentExtraction,
@@ -11,8 +11,8 @@ from .predictions import (
     Prediction,
     Unbundling,
 )
-from .reviews import Review, ReviewType
-from .utils import nfilter
+from .review import Review, ReviewType
+from .utilities import nfilter
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Collection, Container, Iterable
@@ -20,9 +20,9 @@ if TYPE_CHECKING:
 
     from typing_extensions import Self
 
-    from .documents import Document
-    from .models import ModelGroup
-    from .results import Result
+    from .document import Document
+    from .model import ModelGroup
+    from .result import Result
 
 PredictionType = TypeVar("PredictionType", bound=Prediction)
 OfType = TypeVar("OfType", bound=Prediction)

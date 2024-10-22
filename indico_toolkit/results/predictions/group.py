@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from ..utils import get
+from ..utilities import get
 
 if TYPE_CHECKING:
     from typing import Any

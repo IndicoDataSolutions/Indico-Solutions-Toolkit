@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from .utils import get, has
+from .utilities import get, has
 
 if TYPE_CHECKING:
     from typing import Any

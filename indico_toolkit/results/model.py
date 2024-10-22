@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from .utils import get, has
+from .utilities import get, has
 
 
 class TaskType(Enum):

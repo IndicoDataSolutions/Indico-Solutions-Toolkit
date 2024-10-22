@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from ..reviews import Review
+from ..review import Review
 
 if TYPE_CHECKING:
     from typing import Any
 
-    from ..documents import Document
-    from ..models import ModelGroup
+    from ..document import Document
+    from ..model import ModelGroup
 
 
 @dataclass
