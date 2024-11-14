@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from .utils import get
+from .utilities import get
 
 
 class ReviewType(Enum):

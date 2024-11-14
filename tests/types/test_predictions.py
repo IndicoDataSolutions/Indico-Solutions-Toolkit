@@ -8,7 +8,7 @@ from indico_toolkit.types import (
     Classification,
     ClassificationMGP,
 )
-from indico_toolkit.errors import ToolkitInputError
+from indico_toolkit.errorss import ToolkitInputError
 
 
 def test_bad_type():

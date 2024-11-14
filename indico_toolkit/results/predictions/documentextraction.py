@@ -1,16 +1,16 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from ..reviews import Review
-from ..utils import get, has, omit
-from .extractions import Extraction
-from .groups import Group
+from ..review import Review
+from ..utilities import get, has, omit
+from .extraction import Extraction
+from .group import Group
 
 if TYPE_CHECKING:
     from typing import Any
 
-    from ..documents import Document
-    from ..models import ModelGroup
+    from ..document import Document
+    from ..model import ModelGroup
 
 
 @dataclass

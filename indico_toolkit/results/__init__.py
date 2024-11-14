@@ -1,10 +1,10 @@
 import json
-from os import PathLike
+from typing import TYPE_CHECKING
 
-from .documents import Document
+from .document import Document
 from .errors import ResultError
-from .lists import PredictionList
-from .models import ModelGroup, TaskType
+from .model import ModelGroup, TaskType
+from .predictionlist import PredictionList
 from .predictions import (
     Classification,
     DocumentExtraction,
@@ -15,9 +15,13 @@ from .predictions import (
     Prediction,
     Unbundling,
 )
-from .results import Result
-from .reviews import Review, ReviewType
-from .utils import get
+from .result import Result
+from .review import Review, ReviewType
+from .utilities import get
+
+if TYPE_CHECKING:
+    from collections.abc import Awaitable, Callable
+
 
 __all__ = (
     "Classification",
@@ -27,6 +31,8 @@ __all__ = (
     "FormExtraction",
     "FormExtractionType",
     "Group",
+    "load",
+    "load_async",
     "ModelGroup",
     "Prediction",
     "PredictionList",
@@ -39,16 +45,42 @@ __all__ = (
 )
 
 
-def load(result: object) -> Result:
+def load(result: object, *, reader: "Callable[..., object] | None" = None) -> Result:
     """
-    Load `result` as a Result dataclass. `result` can be a dict from
-    `RetrieveStorageObject`, a JSON string, or a path to a JSON file.
+    Load `result` as a Result dataclass.
+
+    `result` can be a dict, a JSON string, or something that can be read with `reader`
+    to produce either.
+
+    ```
+    for result_file in result_folder.glob("*.json"):
+        result = results.load(result_file, reader=Path.read_text)
+    ```
     """
+    if reader:
+        result = reader(result)
+
+    return _load(result)
+
+
+async def load_async(
+    result: object, *, reader: "Callable[..., Awaitable[object]] | None" = None
+) -> Result:
+    """
+    Load `result` as a Result dataclass.
+
+    `result` can be a dict, a JSON string, or something that can be read with `reader`
+    to produce either.
+    """
+    if reader:
+        result = await reader(result)
+
+    return _load(result)
+
+
+def _load(result: object) -> Result:
     if isinstance(result, str) and result.strip().startswith("{"):
         result = json.loads(result)
-    elif isinstance(result, (str, PathLike)):
-        with open(result) as file:
-            result = json.load(file)
 
     file_version = get(result, int, "file_version")
 

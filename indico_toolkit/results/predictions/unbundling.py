@@ -1,15 +1,15 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from ..reviews import Review
-from ..utils import get, omit
-from .predictions import Prediction
+from ..review import Review
+from ..utilities import get, omit
+from .prediction import Prediction
 
 if TYPE_CHECKING:
     from typing import Any
 
-    from ..documents import Document
-    from ..models import ModelGroup
+    from ..document import Document
+    from ..model import ModelGroup
 
 
 @dataclass
