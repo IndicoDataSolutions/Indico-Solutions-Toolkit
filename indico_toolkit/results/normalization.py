@@ -37,6 +37,7 @@ def normalize_v1_result(result: "Any") -> None:
             for prediction in review
             if prediction is not None
         )
+
         for prediction in predictions:
             # Predictions added in review lack a `confidence` section.
             if "confidence" not in prediction:
@@ -90,52 +91,53 @@ def normalize_v3_result(result: "Any") -> None:
     """
     Fix inconsistencies observed in v3 result files.
     """
-    for document in get(result, list, "submission_results"):
-        for review_results in get(document, dict, "model_results").values():
-            predictions: "Any" = (
-                prediction
-                for model_results in review_results.values()
-                for prediction in model_results
-            )
-            for prediction in predictions:
-                # Predictions added in review lack a `confidence` section.
-                if "confidence" not in prediction:
-                    prediction["confidence"] = {prediction["label"]: 0}
+    predictions: "Any" = (
+        prediction
+        for submission_result in get(result, list, "submission_results")
+        for model_result in get(submission_result, dict, "model_results").values()
+        for review_result in model_result.values()
+        for prediction in review_result
+    )
 
-                # Document Extractions added in review may lack spans.
-                if (
-                    "text" in prediction
-                    and "type" not in prediction
-                    and "spans" not in prediction
-                ):
-                    prediction["spans"] = [
-                        {
-                            "page_num": prediction["page_num"],
-                            "start": 0,
-                            "end": 0,
-                        }
-                    ]
+    for prediction in predictions:
+        # Predictions added in review lack a `confidence` section.
+        if "confidence" not in prediction:
+            prediction["confidence"] = {prediction["label"]: 0}
 
-                # Form Extractions added in review may lack bounding boxes.
-                if "type" in prediction and "top" not in prediction:
-                    prediction["top"] = 0
-                    prediction["left"] = 0
-                    prediction["right"] = 0
-                    prediction["bottom"] = 0
+        # Document Extractions added in review may lack spans.
+        if (
+            "text" in prediction
+            and "type" not in prediction
+            and "spans" not in prediction
+        ):
+            prediction["spans"] = [
+                {
+                    "page_num": prediction["page_num"],
+                    "start": 0,
+                    "end": 0,
+                }
+            ]
 
-                # Prior to 6.11, some Extractions lack a `normalized` section after
-                # review.
-                if "text" in prediction and "normalized" not in prediction:
-                    prediction["normalized"] = {"formatted": prediction["text"]}
+        # Form Extractions added in review may lack bounding boxes.
+        if "type" in prediction and "top" not in prediction:
+            prediction["top"] = 0
+            prediction["left"] = 0
+            prediction["right"] = 0
+            prediction["bottom"] = 0
 
-                # Document Extractions that didn't go through a linked labels
-                # transformer lack a `groupings` section.
-                if (
-                    "text" in prediction
-                    and "type" not in prediction
-                    and "groupings" not in prediction
-                ):
-                    prediction["groupings"] = []
+        # Prior to 6.11, some Extractions lack a `normalized` section after
+        # review.
+        if "text" in prediction and "normalized" not in prediction:
+            prediction["normalized"] = {"formatted": prediction["text"]}
+
+        # Document Extractions that didn't go through a linked labels
+        # transformer lack a `groupings` section.
+        if (
+            "text" in prediction
+            and "type" not in prediction
+            and "groupings" not in prediction
+        ):
+            prediction["groupings"] = []
 
     # Prior to 6.8, v3 result files don't include a `reviews` section.
     if not has(result, dict, "reviews"):
