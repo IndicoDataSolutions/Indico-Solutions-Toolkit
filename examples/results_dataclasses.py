@@ -24,7 +24,7 @@ result = results.load(result_dict)
 result = results.load("""{"file_version": 1, ... }""")
 
 for result_file in Path("results_folder").glob("*.json"):
-    result = results.load(result_file)
+    result = results.load(result_file, reader=Path.read_text)
 
 
 """

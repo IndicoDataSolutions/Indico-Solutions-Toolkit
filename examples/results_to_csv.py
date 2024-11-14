@@ -35,7 +35,7 @@ def final_predictions(result: results.Result) -> Iterator[dict[str, object]]:
 
 def predictions_from_files(result_files: Iterable[Path]) -> Iterator[dict[str, object]]:
     for result_file in result_files:
-        result = results.load(result_file)
+        result = results.load(result_file, reader=Path.read_text)
         yield from final_predictions(result)
 
 
