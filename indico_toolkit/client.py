@@ -4,7 +4,7 @@ from indico_toolkit.errors import ToolkitAuthError
 from indico_toolkit.retry import retry
 
 
-@retry((IndicoRequestError, ConnectionError))
+@retry(IndicoRequestError, ConnectionError)
 def create_client(
     host: str,
     api_token_path: str = None,
