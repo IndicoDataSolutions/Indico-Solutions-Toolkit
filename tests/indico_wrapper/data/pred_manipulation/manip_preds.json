@@ -1,0 +1,56 @@
+[
+    {
+        "start": 26,
+        "end": 32,
+        "label": "Charity Number",
+        "confidence": {
+            "Charity Number": 0.991480827331543,
+            "Name": 4.498019188758917e-05
+        },
+        "field_id": 52262,
+        "page_num": 0,
+        "text": "20179",
+        "normalized": {
+            "text": "201794",
+            "start": 26,
+            "end": 3,
+            "structured": null,
+            "formatted": "201794",
+            "status": "SUCCESS",
+            "validation": [
+                {
+                    "validation_type": "TYPE_CONVERSION",
+                    "error_message": null,
+                    "validation_status": "SUCCESS"
+                }
+            ]
+        }
+    },
+    {
+        "start": 75,
+        "end": 95,
+        "label": "Name",
+        "confidence": {
+            "Charity Number": 4.890366653853562e-06,
+            "Name": 0.9999933242797852
+        },
+        "field_id": 52263,
+        "page_num": 0,
+        "text": "UGLAS ARTER FOUNDATI",
+        "normalized": {
+            "text": "DOUGLAS ARTER FOUNDATION",
+            "start": 73,
+            "end": 97,
+            "structured": null,
+            "formatted": "DOUGLAS ARTER FOUNDATION",
+            "status": "SUCCESS",
+            "validation": [
+                {
+                    "validation_type": "TYPE_CONVERSION",
+                    "error_message": null,
+                    "validation_status": "SUCCESS"
+                }
+            ]
+        }
+    }
+]
