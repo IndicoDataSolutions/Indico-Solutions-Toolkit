@@ -21,7 +21,6 @@ def document() -> Document:
         id=2922,
         name="1040_filled.tiff",
         etl_output_url="indico-file:///storage/submission/2922/etl_output.json",
-        full_text_url="indico-file:///storage/submission/2922/full_text.txt",
         _model_sections=frozenset({"124", "123", "122", "121"}),
     )
 
