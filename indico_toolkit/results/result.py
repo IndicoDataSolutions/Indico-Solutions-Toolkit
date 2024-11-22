@@ -19,10 +19,10 @@ if TYPE_CHECKING:
 class Result:
     version: int
     submission_id: int
-    documents: "list[Document]"
-    models: "list[ModelGroup]"
+    documents: "tuple[Document, ...]"
+    models: "tuple[ModelGroup, ...]"
     predictions: "PredictionList[Prediction]"
-    reviews: "list[Review]"
+    reviews: "tuple[Review, ...]"
 
     @property
     def rejected(self) -> bool:
@@ -88,10 +88,10 @@ class Result:
         return Result(
             version=version,
             submission_id=submission_id,
-            documents=[document],
-            models=models,
+            documents=(document,),
+            models=tuple(models),
             predictions=predictions,
-            reviews=sorted(reviews),
+            reviews=tuple(sorted(reviews)),
         )
 
     @staticmethod
@@ -141,8 +141,8 @@ class Result:
         return Result(
             version=version,
             submission_id=submission_id,
-            documents=documents,
-            models=models,
+            documents=tuple(documents),
+            models=tuple(models),
             predictions=predictions,
-            reviews=reviews,
+            reviews=tuple(reviews),
         )
