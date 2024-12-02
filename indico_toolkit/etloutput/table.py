@@ -19,8 +19,8 @@ class Table:
     def __lt__(self, other: "Table") -> bool:
         """
         By default, tables are sorted in bounding box order with vertical hysteresis.
-        Those on the same line are sorted left-to-right, even when later tables are a
-        few pixels higher than earlier ones.
+        Those on the same line are sorted left-to-right, even when later tables are
+        slightly higher than earlier ones.
         """
         return (
             self.page < other.page

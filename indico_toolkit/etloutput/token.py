@@ -19,9 +19,8 @@ class Token:
     def __lt__(self, other: "Token") -> bool:
         """
         By default, tokens are sorted in bounding box order with vertical hysteresis.
-
-        I.e. those on the same line are sorted left-to-right, even when later tokens
-        are slightly higher than earlier ones.
+        Those on the same line are sorted left-to-right, even when later tokens are
+        slightly higher than earlier ones.
 
         Tokens can also be sorted in span order: `tokens.sort(key=attrgetter("start"))`.
         """

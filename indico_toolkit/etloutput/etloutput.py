@@ -20,11 +20,9 @@ class EtlOutput:
     text: str
     text_on_page: "tuple[str, ...]"
 
-    # Tokens are ordered by span for `token_for` lookup.
     tokens: "tuple[Token, ...]"
     tokens_on_page: "tuple[tuple[Token, ...], ...]"
 
-    # Tables and Cells are ordered by bounding box for `table_cell_for` lookup.
     tables: "tuple[Table, ...]"
     tables_on_page: "tuple[tuple[Table, ...], ...]"
 
@@ -35,10 +33,10 @@ class EtlOutput:
         table_dicts_by_page: "Iterable[Iterable[object]]",
     ) -> "EtlOutput":
         """
-        Create an `EtlOutput` from lists of v1 or v3 ETL Ouput dictionaries.
+        Create an `EtlOutput` from v1 or v3 ETL Ouput pages.
         """
         text_by_page = tuple(text_by_page)
-        token_by_page = tuple(
+        tokens_by_page = tuple(
             tuple(map(Token.from_dict, token_dict_page))
             for token_dict_page in token_dicts_by_page
         )
@@ -50,15 +48,15 @@ class EtlOutput:
         return EtlOutput(
             text="\n".join(text_by_page),
             text_on_page=text_by_page,
-            tokens=tuple(itertools.chain.from_iterable(token_by_page)),
-            tokens_on_page=token_by_page,
+            tokens=tuple(itertools.chain.from_iterable(tokens_by_page)),
+            tokens_on_page=tokens_by_page,
             tables=tuple(itertools.chain.from_iterable(tables_by_page)),
             tables_on_page=tables_by_page,
         )
 
     def token_for(self, extraction: "DocumentExtraction") -> Token:
         """
-        Return a `Token` that covers every character from `extraction`.
+        Return a `Token` that contains every character from `extraction`.
         Raise `TokenNotFoundError` if one can't be produced.
         """
         try:
@@ -82,8 +80,8 @@ class EtlOutput:
 
     def table_cell_for(self, token: Token) -> "tuple[Table, Cell]":
         """
-        Return the `Table` and `Cell` that contains the midpoint of `token`.
-        Raise `NotInTableError` if it's not inside a table.
+        Return the `Table` and `Cell` that contain the midpoint of `token`.
+        Raise `TableCellNotFoundError` if it's not inside a table cell.
         """
         token_vmid = (token.top + token.bottom) // 2
         token_hmid = (token.left + token.right) // 2
