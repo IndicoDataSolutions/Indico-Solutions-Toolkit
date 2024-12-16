@@ -6,7 +6,7 @@ from .utilities import get, has
 
 class CellType(Enum):
     HEADER = "header"
-    DATA = "content"
+    CONTENT = "content"
 
 
 @dataclass(frozen=True)
