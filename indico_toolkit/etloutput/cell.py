@@ -50,12 +50,12 @@ class Cell:
             # Empty cells have no start and end; so use [0:0] for a valid slice.
             start=(
                 get(cell, int, "doc_offsets", 0, "start")
-                if has(cell, dict, "doc_offsets", 0, "start")
+                if has(cell, int, "doc_offsets", 0, "start")
                 else 0
             ),
             end=(
                 get(cell, int, "doc_offsets", 0, "end")
-                if has(cell, dict, "doc_offsets", 0, "end")
+                if has(cell, int, "doc_offsets", 0, "end")
                 else 0
             ),
             page=page,
