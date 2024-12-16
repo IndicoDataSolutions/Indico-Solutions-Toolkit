@@ -30,13 +30,6 @@ class Cell:
     columnspan: int
     columns: "tuple[int, ...]"
 
-    def __bool__(self) -> bool:
-        """
-        A cell is considered empty if its text is empty.
-        Supports `if not cell: ...`.
-        """
-        return bool(self.text)
-
     def __lt__(self, other: "Cell") -> bool:
         """
         By default, cells are sorted in table order (by row, then column).
