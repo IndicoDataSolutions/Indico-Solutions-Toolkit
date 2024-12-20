@@ -1,0 +1,47 @@
+Indico Metrics Integration Data Model
+This document covers the intermediate data model used to pull Data Intake metrics
+from Indico to be aggregated and displayed within Metrics.
+This document assumes that a single integration process is run on a schedule and
+uses 4 discrete GraphQL queries to download low-level metrics using the Indico
+GraphQL API. Scheduling recommendations are provided below.
+These metrics are lightly processed and denormalized to match the intermediate
+data model defined below. The integration will produce data in a consumable
+format, such as SQL UPSERT queries, an importable CSV file, or an importable
+JSON file.
+Contents
+1 Entities
+1.1 Workflow
+1.2 Model
+1.3 Submission
+1.4 Submission File
+1.5 Reviewer
+1.6 Prediction
+Once imported, Metrics can filter and aggregate the intermediate data as described below to display higher-
+level data points to fulfill the reporting requirements defined elsewhere.
+1
+Entities
+1.1
+Workflow
+Column
+Type
+GraphQL Source
+id
+int
+workflow.id
+name
+str
+workflow.name
+Example GraphQL Query
+query Workflows {
+workflows {
+workflows {
+id
+name
+}
+}
+}
+Scheduled Process Logic
+This is a lightweight query. All workflows will be pulled every time the integration is run.
+Data Reconciliation
+The output will include the primary key id needed to update existing rows and insert new rows into the
+Metrics database.

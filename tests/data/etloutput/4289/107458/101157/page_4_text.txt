@@ -1,0 +1,22 @@
+1.5 Reviewer
+Column	Type	GraphQL Source
+id	int	userSnapshot.id
+name	str	userSnapshot . name
+email	str	userSnapshot. email
+enabled	bool	userSnapshot . enabled
+Example GraphQL Query
+query Users {
+userSnapshot(orderBy: ID, desc: false, limit: 1000) {
+results {
+id
+name
+email
+enabled
+}
+}
+}
+Scheduled Process Logic
+This is a lightweight query. All reviewers will be pulled every time the integration is run.
+Data Reconciliation
+The output will include the primary key id needed to update existing rows and insert new rows into the
+Metrics database.

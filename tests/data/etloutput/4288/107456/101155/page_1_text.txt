@@ -1,0 +1,29 @@
+1.2
+Model
+Column
+Type
+GraphQL Source
+id
+int
+modelGroup.id
+name
+str
+modelGroup.name
+workflow_id
+int
+modelGroup.workflowId
+Example GraphQL Query
+query Models {
+modelGroups(limit: 1000) {
+modelGroups {
+id
+name
+workflowId
+}
+}
+}
+Scheduled Process Logic
+This is a lightweight query. All models will be pulled every time the integration is run.
+Data Reconciliation
+The output will include the primary key id needed to update existing rows and insert new rows into the
+Metrics database.
