@@ -1,0 +1,133 @@
+{
+    "pages": [
+        {
+            "image": "indico-file:///storage/submission/4289/107458/101157/original_page_0.png",
+            "thumbnail": "indico-file:///storage/submission/4289/107458/101157/original_thumbnail_0.png",
+            "size": {
+                "width": 2550,
+                "height": 3300
+            },
+            "dpi": {
+                "dpix": 300,
+                "dpiy": 300
+            },
+            "doc_offset": {
+                "start": 0,
+                "end": 1360
+            },
+            "page_num": 0,
+            "text": "indico-file:///storage/submission/4289/107458/101157/page_0_text.txt",
+            "characters": "indico-file:///storage/submission/4289/107458/101157/page_0_chars.json",
+            "tokens": "indico-file:///storage/submission/4289/107458/101157/page_0_tokens.json",
+            "blocks": "indico-file:///storage/submission/4289/107458/101157/page_0_blocks.json"
+        },
+        {
+            "image": "indico-file:///storage/submission/4289/107458/101157/original_page_1.png",
+            "thumbnail": "indico-file:///storage/submission/4289/107458/101157/original_thumbnail_1.png",
+            "size": {
+                "width": 2550,
+                "height": 3300
+            },
+            "dpi": {
+                "dpix": 300,
+                "dpiy": 300
+            },
+            "doc_offset": {
+                "start": 1361,
+                "end": 1845
+            },
+            "page_num": 1,
+            "text": "indico-file:///storage/submission/4289/107458/101157/page_1_text.txt",
+            "characters": "indico-file:///storage/submission/4289/107458/101157/page_1_chars.json",
+            "tokens": "indico-file:///storage/submission/4289/107458/101157/page_1_tokens.json",
+            "blocks": "indico-file:///storage/submission/4289/107458/101157/page_1_blocks.json"
+        },
+        {
+            "image": "indico-file:///storage/submission/4289/107458/101157/original_page_2.png",
+            "thumbnail": "indico-file:///storage/submission/4289/107458/101157/original_thumbnail_2.png",
+            "size": {
+                "width": 2550,
+                "height": 3300
+            },
+            "dpi": {
+                "dpix": 300,
+                "dpiy": 300
+            },
+            "doc_offset": {
+                "start": 1846,
+                "end": 3141
+            },
+            "page_num": 2,
+            "text": "indico-file:///storage/submission/4289/107458/101157/page_2_text.txt",
+            "characters": "indico-file:///storage/submission/4289/107458/101157/page_2_chars.json",
+            "tokens": "indico-file:///storage/submission/4289/107458/101157/page_2_tokens.json",
+            "blocks": "indico-file:///storage/submission/4289/107458/101157/page_2_blocks.json"
+        },
+        {
+            "image": "indico-file:///storage/submission/4289/107458/101157/original_page_3.png",
+            "thumbnail": "indico-file:///storage/submission/4289/107458/101157/original_thumbnail_3.png",
+            "size": {
+                "width": 2550,
+                "height": 3300
+            },
+            "dpi": {
+                "dpix": 300,
+                "dpiy": 300
+            },
+            "doc_offset": {
+                "start": 3142,
+                "end": 4185
+            },
+            "page_num": 3,
+            "text": "indico-file:///storage/submission/4289/107458/101157/page_3_text.txt",
+            "characters": "indico-file:///storage/submission/4289/107458/101157/page_3_chars.json",
+            "tokens": "indico-file:///storage/submission/4289/107458/101157/page_3_tokens.json",
+            "blocks": "indico-file:///storage/submission/4289/107458/101157/page_3_blocks.json"
+        },
+        {
+            "image": "indico-file:///storage/submission/4289/107458/101157/original_page_4.png",
+            "thumbnail": "indico-file:///storage/submission/4289/107458/101157/original_thumbnail_4.png",
+            "size": {
+                "width": 2550,
+                "height": 3300
+            },
+            "dpi": {
+                "dpix": 300,
+                "dpiy": 300
+            },
+            "doc_offset": {
+                "start": 4186,
+                "end": 4729
+            },
+            "page_num": 4,
+            "text": "indico-file:///storage/submission/4289/107458/101157/page_4_text.txt",
+            "characters": "indico-file:///storage/submission/4289/107458/101157/page_4_chars.json",
+            "tokens": "indico-file:///storage/submission/4289/107458/101157/page_4_tokens.json",
+            "blocks": "indico-file:///storage/submission/4289/107458/101157/page_4_blocks.json"
+        },
+        {
+            "image": "indico-file:///storage/submission/4289/107458/101157/original_page_5.png",
+            "thumbnail": "indico-file:///storage/submission/4289/107458/101157/original_thumbnail_5.png",
+            "size": {
+                "width": 2550,
+                "height": 3300
+            },
+            "dpi": {
+                "dpix": 300,
+                "dpiy": 300
+            },
+            "doc_offset": {
+                "start": 4730,
+                "end": 6494
+            },
+            "page_num": 5,
+            "text": "indico-file:///storage/submission/4289/107458/101157/page_5_text.txt",
+            "characters": "indico-file:///storage/submission/4289/107458/101157/page_5_chars.json",
+            "tokens": "indico-file:///storage/submission/4289/107458/101157/page_5_tokens.json",
+            "blocks": "indico-file:///storage/submission/4289/107458/101157/page_5_blocks.json"
+        }
+    ],
+    "num_pages": 6,
+    "full_text": "indico-file:///storage/submission/4289/107458/101157/full_text.txt",
+    "email_metadata": {}
+}

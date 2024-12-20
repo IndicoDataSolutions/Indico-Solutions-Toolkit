@@ -1,0 +1,40 @@
+Example GraphQL Query
+query Submissions {
+submissions(orderBy: UPDATED_BY, desc: true, limit: 1000) {
+submissions {
+id
+createdAt
+inputFiles {
+id
+filename
+}
+reviews {
+createdBy
+startedAt
+completedAt
+rejected
+notes
+reviewType
+}
+retrieved
+updatedAt
+workflowId
+}
+}
+}
+Scheduled Process Logic
+This is a heavyweight query. Submissions are ordered by updatedAt descending, and results should be
+paginated such that processing can stop once all submissions have been processed whose updatedAt
+date is greater than the timestamp of the previous run of the integration.
+Data Reconciliation
+The output will include the primary key id needed to update existing rows and insert new rows into the
+Metrics database.
+1.4 Submission File
+Column	Type	GraphQL Source
+id	int	submission. inputFile.id
+name	str	submission. inputFile.filename
+submission_id	int	submission.id
+See the Submission section's example GraphQL query.
+Data Reconciliation
+The output will include the primary key id needed to update existing rows and insert new rows into the
+Metrics database.

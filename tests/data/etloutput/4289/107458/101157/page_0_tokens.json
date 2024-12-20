@@ -1,0 +1,2970 @@
+[
+    {
+        "doc_offset": {
+            "start": 0,
+            "end": 6
+        },
+        "page_num": 0,
+        "text": "Indico",
+        "position": {
+            "top": 164,
+            "bottom": 239,
+            "left": 406,
+            "right": 684
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 7,
+            "end": 14
+        },
+        "page_num": 0,
+        "text": "Metrics",
+        "position": {
+            "top": 164,
+            "bottom": 247,
+            "left": 717,
+            "right": 1051
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 15,
+            "end": 26
+        },
+        "page_num": 0,
+        "text": "Integration",
+        "position": {
+            "top": 164,
+            "bottom": 252,
+            "left": 1084,
+            "right": 1587
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 27,
+            "end": 31
+        },
+        "page_num": 0,
+        "text": "Data",
+        "position": {
+            "top": 164,
+            "bottom": 249,
+            "left": 1637,
+            "right": 1839
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 32,
+            "end": 37
+        },
+        "page_num": 0,
+        "text": "Model",
+        "position": {
+            "top": 164,
+            "bottom": 242,
+            "left": 1872,
+            "right": 2146
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 38,
+            "end": 42
+        },
+        "page_num": 0,
+        "text": "This",
+        "position": {
+            "top": 385,
+            "bottom": 429,
+            "left": 213,
+            "right": 293
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 43,
+            "end": 51
+        },
+        "page_num": 0,
+        "text": "document",
+        "position": {
+            "top": 385,
+            "bottom": 429,
+            "left": 303,
+            "right": 502
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 52,
+            "end": 58
+        },
+        "page_num": 0,
+        "text": "covers",
+        "position": {
+            "top": 383,
+            "bottom": 431,
+            "left": 512,
+            "right": 646
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 59,
+            "end": 62
+        },
+        "page_num": 0,
+        "text": "the",
+        "position": {
+            "top": 383,
+            "bottom": 432,
+            "left": 657,
+            "right": 722
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 63,
+            "end": 75
+        },
+        "page_num": 0,
+        "text": "intermediate",
+        "position": {
+            "top": 383,
+            "bottom": 432,
+            "left": 732,
+            "right": 977
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 76,
+            "end": 80
+        },
+        "page_num": 0,
+        "text": "data",
+        "position": {
+            "top": 383,
+            "bottom": 432,
+            "left": 991,
+            "right": 1077
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 81,
+            "end": 86
+        },
+        "page_num": 0,
+        "text": "model",
+        "position": {
+            "top": 383,
+            "bottom": 432,
+            "left": 1087,
+            "right": 1214
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 87,
+            "end": 91
+        },
+        "page_num": 0,
+        "text": "used",
+        "position": {
+            "top": 383,
+            "bottom": 432,
+            "left": 1224,
+            "right": 1320
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 92,
+            "end": 94
+        },
+        "page_num": 0,
+        "text": "to",
+        "position": {
+            "top": 383,
+            "bottom": 432,
+            "left": 1333,
+            "right": 1373
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 95,
+            "end": 99
+        },
+        "page_num": 0,
+        "text": "pull",
+        "position": {
+            "top": 383,
+            "bottom": 432,
+            "left": 1386,
+            "right": 1461
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 100,
+            "end": 104
+        },
+        "page_num": 0,
+        "text": "Data",
+        "position": {
+            "top": 383,
+            "bottom": 432,
+            "left": 1471,
+            "right": 1564
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 105,
+            "end": 111
+        },
+        "page_num": 0,
+        "text": "Intake",
+        "position": {
+            "top": 385,
+            "bottom": 431,
+            "left": 1574,
+            "right": 1694
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 112,
+            "end": 119
+        },
+        "page_num": 0,
+        "text": "metrics",
+        "position": {
+            "top": 385,
+            "bottom": 429,
+            "left": 1706,
+            "right": 1855
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 120,
+            "end": 124
+        },
+        "page_num": 0,
+        "text": "from",
+        "position": {
+            "top": 446,
+            "bottom": 492,
+            "left": 212,
+            "right": 282
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 125,
+            "end": 131
+        },
+        "page_num": 0,
+        "text": "Indico",
+        "position": {
+            "top": 446,
+            "bottom": 494,
+            "left": 308,
+            "right": 429
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 132,
+            "end": 134
+        },
+        "page_num": 0,
+        "text": "to",
+        "position": {
+            "top": 446,
+            "bottom": 495,
+            "left": 441,
+            "right": 481
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 135,
+            "end": 137
+        },
+        "page_num": 0,
+        "text": "be",
+        "position": {
+            "top": 446,
+            "bottom": 495,
+            "left": 491,
+            "right": 544
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 138,
+            "end": 148
+        },
+        "page_num": 0,
+        "text": "aggregated",
+        "position": {
+            "top": 446,
+            "bottom": 495,
+            "left": 557,
+            "right": 777
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 149,
+            "end": 152
+        },
+        "page_num": 0,
+        "text": "and",
+        "position": {
+            "top": 446,
+            "bottom": 495,
+            "left": 793,
+            "right": 865
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 153,
+            "end": 162
+        },
+        "page_num": 0,
+        "text": "displayed",
+        "position": {
+            "top": 446,
+            "bottom": 495,
+            "left": 879,
+            "right": 1064
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 163,
+            "end": 169
+        },
+        "page_num": 0,
+        "text": "within",
+        "position": {
+            "top": 445,
+            "bottom": 494,
+            "left": 1077,
+            "right": 1190
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 170,
+            "end": 178
+        },
+        "page_num": 0,
+        "text": "Metrics.",
+        "position": {
+            "top": 445,
+            "bottom": 491,
+            "left": 1203,
+            "right": 1365
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 179,
+            "end": 187
+        },
+        "page_num": 0,
+        "text": "Contents",
+        "position": {
+            "top": 429,
+            "bottom": 476,
+            "left": 2065,
+            "right": 2256
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 188,
+            "end": 192
+        },
+        "page_num": 0,
+        "text": "This",
+        "position": {
+            "top": 552,
+            "bottom": 594,
+            "left": 212,
+            "right": 290
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 193,
+            "end": 201
+        },
+        "page_num": 0,
+        "text": "document",
+        "position": {
+            "top": 552,
+            "bottom": 595,
+            "left": 305,
+            "right": 510
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 202,
+            "end": 209
+        },
+        "page_num": 0,
+        "text": "assumes",
+        "position": {
+            "top": 551,
+            "bottom": 598,
+            "left": 520,
+            "right": 694
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 210,
+            "end": 214
+        },
+        "page_num": 0,
+        "text": "that",
+        "position": {
+            "top": 551,
+            "bottom": 600,
+            "left": 704,
+            "right": 789
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 215,
+            "end": 216
+        },
+        "page_num": 0,
+        "text": "a",
+        "position": {
+            "top": 551,
+            "bottom": 600,
+            "left": 799,
+            "right": 823
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 217,
+            "end": 223
+        },
+        "page_num": 0,
+        "text": "single",
+        "position": {
+            "top": 551,
+            "bottom": 600,
+            "left": 836,
+            "right": 949
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 224,
+            "end": 235
+        },
+        "page_num": 0,
+        "text": "integration",
+        "position": {
+            "top": 551,
+            "bottom": 600,
+            "left": 962,
+            "right": 1171
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 236,
+            "end": 243
+        },
+        "page_num": 0,
+        "text": "process",
+        "position": {
+            "top": 551,
+            "bottom": 600,
+            "left": 1187,
+            "right": 1346
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 244,
+            "end": 246
+        },
+        "page_num": 0,
+        "text": "is",
+        "position": {
+            "top": 551,
+            "bottom": 600,
+            "left": 1356,
+            "right": 1392
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 247,
+            "end": 250
+        },
+        "page_num": 0,
+        "text": "run",
+        "position": {
+            "top": 551,
+            "bottom": 598,
+            "left": 1402,
+            "right": 1466
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 251,
+            "end": 253
+        },
+        "page_num": 0,
+        "text": "on",
+        "position": {
+            "top": 551,
+            "bottom": 598,
+            "left": 1482,
+            "right": 1531
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 254,
+            "end": 255
+        },
+        "page_num": 0,
+        "text": "a",
+        "position": {
+            "top": 551,
+            "bottom": 598,
+            "left": 1547,
+            "right": 1571
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 256,
+            "end": 264
+        },
+        "page_num": 0,
+        "text": "schedule",
+        "position": {
+            "top": 551,
+            "bottom": 597,
+            "left": 1587,
+            "right": 1762
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 265,
+            "end": 268
+        },
+        "page_num": 0,
+        "text": "and",
+        "position": {
+            "top": 551,
+            "bottom": 595,
+            "left": 1777,
+            "right": 1848
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 269,
+            "end": 273
+        },
+        "page_num": 0,
+        "text": "uses",
+        "position": {
+            "top": 615,
+            "bottom": 658,
+            "left": 210,
+            "right": 303
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 274,
+            "end": 275
+        },
+        "page_num": 0,
+        "text": "4",
+        "position": {
+            "top": 614,
+            "bottom": 660,
+            "left": 320,
+            "right": 345
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 276,
+            "end": 284
+        },
+        "page_num": 0,
+        "text": "discrete",
+        "position": {
+            "top": 614,
+            "bottom": 660,
+            "left": 365,
+            "right": 520
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 285,
+            "end": 292
+        },
+        "page_num": 0,
+        "text": "GraphQL",
+        "position": {
+            "top": 613,
+            "bottom": 660,
+            "left": 538,
+            "right": 719
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 293,
+            "end": 300
+        },
+        "page_num": 0,
+        "text": "queries",
+        "position": {
+            "top": 611,
+            "bottom": 661,
+            "left": 739,
+            "right": 883
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 301,
+            "end": 303
+        },
+        "page_num": 0,
+        "text": "to",
+        "position": {
+            "top": 611,
+            "bottom": 661,
+            "left": 899,
+            "right": 939
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 304,
+            "end": 312
+        },
+        "page_num": 0,
+        "text": "download",
+        "position": {
+            "top": 611,
+            "bottom": 661,
+            "left": 959,
+            "right": 1151
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 313,
+            "end": 322
+        },
+        "page_num": 0,
+        "text": "low-level",
+        "position": {
+            "top": 611,
+            "bottom": 661,
+            "left": 1168,
+            "right": 1350
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 323,
+            "end": 330
+        },
+        "page_num": 0,
+        "text": "metrics",
+        "position": {
+            "top": 611,
+            "bottom": 661,
+            "left": 1362,
+            "right": 1509
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 331,
+            "end": 336
+        },
+        "page_num": 0,
+        "text": "using",
+        "position": {
+            "top": 613,
+            "bottom": 660,
+            "left": 1527,
+            "right": 1633
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 337,
+            "end": 340
+        },
+        "page_num": 0,
+        "text": "the",
+        "position": {
+            "top": 613,
+            "bottom": 660,
+            "left": 1650,
+            "right": 1714
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 341,
+            "end": 347
+        },
+        "page_num": 0,
+        "text": "Indico",
+        "position": {
+            "top": 613,
+            "bottom": 660,
+            "left": 1731,
+            "right": 1850
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 348,
+            "end": 355
+        },
+        "page_num": 0,
+        "text": "GraphQL",
+        "position": {
+            "top": 673,
+            "bottom": 720,
+            "left": 212,
+            "right": 386
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 356,
+            "end": 360
+        },
+        "page_num": 0,
+        "text": "API.",
+        "position": {
+            "top": 673,
+            "bottom": 721,
+            "left": 399,
+            "right": 487
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 361,
+            "end": 371
+        },
+        "page_num": 0,
+        "text": "Scheduling",
+        "position": {
+            "top": 673,
+            "bottom": 723,
+            "left": 495,
+            "right": 710
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 372,
+            "end": 387
+        },
+        "page_num": 0,
+        "text": "recommendations",
+        "position": {
+            "top": 673,
+            "bottom": 723,
+            "left": 720,
+            "right": 1078
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 388,
+            "end": 391
+        },
+        "page_num": 0,
+        "text": "are",
+        "position": {
+            "top": 674,
+            "bottom": 723,
+            "left": 1090,
+            "right": 1150
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 392,
+            "end": 400
+        },
+        "page_num": 0,
+        "text": "provided",
+        "position": {
+            "top": 674,
+            "bottom": 723,
+            "left": 1160,
+            "right": 1332
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 401,
+            "end": 407
+        },
+        "page_num": 0,
+        "text": "below.",
+        "position": {
+            "top": 674,
+            "bottom": 721,
+            "left": 1342,
+            "right": 1474
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 408,
+            "end": 413
+        },
+        "page_num": 0,
+        "text": "These",
+        "position": {
+            "top": 779,
+            "bottom": 825,
+            "left": 214,
+            "right": 329
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 414,
+            "end": 421
+        },
+        "page_num": 0,
+        "text": "metrics",
+        "position": {
+            "top": 779,
+            "bottom": 825,
+            "left": 345,
+            "right": 494
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 422,
+            "end": 425
+        },
+        "page_num": 0,
+        "text": "are",
+        "position": {
+            "top": 779,
+            "bottom": 826,
+            "left": 512,
+            "right": 571
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 426,
+            "end": 433
+        },
+        "page_num": 0,
+        "text": "lightly",
+        "position": {
+            "top": 779,
+            "bottom": 827,
+            "left": 587,
+            "right": 709
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 434,
+            "end": 443
+        },
+        "page_num": 0,
+        "text": "processed",
+        "position": {
+            "top": 779,
+            "bottom": 827,
+            "left": 724,
+            "right": 929
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 444,
+            "end": 447
+        },
+        "page_num": 0,
+        "text": "and",
+        "position": {
+            "top": 779,
+            "bottom": 827,
+            "left": 951,
+            "right": 1022
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 448,
+            "end": 460
+        },
+        "page_num": 0,
+        "text": "denormalized",
+        "position": {
+            "top": 777,
+            "bottom": 827,
+            "left": 1041,
+            "right": 1306
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 461,
+            "end": 463
+        },
+        "page_num": 0,
+        "text": "to",
+        "position": {
+            "top": 777,
+            "bottom": 826,
+            "left": 1325,
+            "right": 1365
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 464,
+            "end": 469
+        },
+        "page_num": 0,
+        "text": "match",
+        "position": {
+            "top": 777,
+            "bottom": 826,
+            "left": 1383,
+            "right": 1505
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 470,
+            "end": 473
+        },
+        "page_num": 0,
+        "text": "the",
+        "position": {
+            "top": 779,
+            "bottom": 825,
+            "left": 1527,
+            "right": 1590
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 474,
+            "end": 486
+        },
+        "page_num": 0,
+        "text": "intermediate",
+        "position": {
+            "top": 779,
+            "bottom": 823,
+            "left": 1604,
+            "right": 1853
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 487,
+            "end": 491
+        },
+        "page_num": 0,
+        "text": "data",
+        "position": {
+            "top": 840,
+            "bottom": 885,
+            "left": 209,
+            "right": 296
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 492,
+            "end": 497
+        },
+        "page_num": 0,
+        "text": "model",
+        "position": {
+            "top": 840,
+            "bottom": 886,
+            "left": 319,
+            "right": 455
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 498,
+            "end": 505
+        },
+        "page_num": 0,
+        "text": "defined",
+        "position": {
+            "top": 839,
+            "bottom": 888,
+            "left": 465,
+            "right": 611
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 506,
+            "end": 512
+        },
+        "page_num": 0,
+        "text": "below.",
+        "position": {
+            "top": 839,
+            "bottom": 888,
+            "left": 637,
+            "right": 776
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 513,
+            "end": 516
+        },
+        "page_num": 0,
+        "text": "The",
+        "position": {
+            "top": 839,
+            "bottom": 889,
+            "left": 793,
+            "right": 865
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 517,
+            "end": 528
+        },
+        "page_num": 0,
+        "text": "integration",
+        "position": {
+            "top": 839,
+            "bottom": 889,
+            "left": 885,
+            "right": 1094
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 529,
+            "end": 533
+        },
+        "page_num": 0,
+        "text": "will",
+        "position": {
+            "top": 839,
+            "bottom": 889,
+            "left": 1120,
+            "right": 1196
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 534,
+            "end": 541
+        },
+        "page_num": 0,
+        "text": "produce",
+        "position": {
+            "top": 839,
+            "bottom": 889,
+            "left": 1206,
+            "right": 1370
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 542,
+            "end": 546
+        },
+        "page_num": 0,
+        "text": "data",
+        "position": {
+            "top": 839,
+            "bottom": 889,
+            "left": 1393,
+            "right": 1485
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 547,
+            "end": 549
+        },
+        "page_num": 0,
+        "text": "in",
+        "position": {
+            "top": 839,
+            "bottom": 888,
+            "left": 1502,
+            "right": 1540
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 550,
+            "end": 551
+        },
+        "page_num": 0,
+        "text": "a",
+        "position": {
+            "top": 839,
+            "bottom": 888,
+            "left": 1565,
+            "right": 1590
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 552,
+            "end": 562
+        },
+        "page_num": 0,
+        "text": "consumable",
+        "position": {
+            "top": 840,
+            "bottom": 886,
+            "left": 1614,
+            "right": 1855
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 563,
+            "end": 570
+        },
+        "page_num": 0,
+        "text": "format,",
+        "position": {
+            "top": 902,
+            "bottom": 948,
+            "left": 210,
+            "right": 356
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 571,
+            "end": 575
+        },
+        "page_num": 0,
+        "text": "such",
+        "position": {
+            "top": 902,
+            "bottom": 948,
+            "left": 369,
+            "right": 458
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 576,
+            "end": 578
+        },
+        "page_num": 0,
+        "text": "as",
+        "position": {
+            "top": 902,
+            "bottom": 948,
+            "left": 485,
+            "right": 530
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 579,
+            "end": 582
+        },
+        "page_num": 0,
+        "text": "SQL",
+        "position": {
+            "top": 902,
+            "bottom": 948,
+            "left": 551,
+            "right": 634
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 583,
+            "end": 589
+        },
+        "page_num": 0,
+        "text": "UPSERT",
+        "position": {
+            "top": 903,
+            "bottom": 946,
+            "left": 670,
+            "right": 809
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 590,
+            "end": 598
+        },
+        "page_num": 0,
+        "text": "queries,",
+        "position": {
+            "top": 902,
+            "bottom": 952,
+            "left": 840,
+            "right": 1007
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 599,
+            "end": 601
+        },
+        "page_num": 0,
+        "text": "an",
+        "position": {
+            "top": 900,
+            "bottom": 952,
+            "left": 1018,
+            "right": 1062
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 602,
+            "end": 612
+        },
+        "page_num": 0,
+        "text": "importable",
+        "position": {
+            "top": 900,
+            "bottom": 952,
+            "left": 1080,
+            "right": 1297
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 613,
+            "end": 616
+        },
+        "page_num": 0,
+        "text": "CSV",
+        "position": {
+            "top": 900,
+            "bottom": 951,
+            "left": 1317,
+            "right": 1402
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 617,
+            "end": 622
+        },
+        "page_num": 0,
+        "text": "file,",
+        "position": {
+            "top": 900,
+            "bottom": 951,
+            "left": 1422,
+            "right": 1501
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 623,
+            "end": 625
+        },
+        "page_num": 0,
+        "text": "or",
+        "position": {
+            "top": 900,
+            "bottom": 951,
+            "left": 1511,
+            "right": 1561
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 626,
+            "end": 628
+        },
+        "page_num": 0,
+        "text": "an",
+        "position": {
+            "top": 900,
+            "bottom": 951,
+            "left": 1574,
+            "right": 1620
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 629,
+            "end": 639
+        },
+        "page_num": 0,
+        "text": "importable",
+        "position": {
+            "top": 902,
+            "bottom": 949,
+            "left": 1640,
+            "right": 1853
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 640,
+            "end": 644
+        },
+        "page_num": 0,
+        "text": "JSON",
+        "position": {
+            "top": 962,
+            "bottom": 1006,
+            "left": 212,
+            "right": 316
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 645,
+            "end": 650
+        },
+        "page_num": 0,
+        "text": "file.",
+        "position": {
+            "top": 965,
+            "bottom": 1006,
+            "left": 339,
+            "right": 408
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 651,
+            "end": 652
+        },
+        "page_num": 0,
+        "text": "1",
+        "position": {
+            "top": 564,
+            "bottom": 600,
+            "left": 1979,
+            "right": 1998
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 653,
+            "end": 661
+        },
+        "page_num": 0,
+        "text": "Entities",
+        "position": {
+            "top": 562,
+            "bottom": 600,
+            "left": 2018,
+            "right": 2168
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 662,
+            "end": 665
+        },
+        "page_num": 0,
+        "text": "1.1",
+        "position": {
+            "top": 615,
+            "bottom": 648,
+            "left": 2007,
+            "right": 2050
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 666,
+            "end": 674
+        },
+        "page_num": 0,
+        "text": "Workflow",
+        "position": {
+            "top": 614,
+            "bottom": 648,
+            "left": 2067,
+            "right": 2220
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 675,
+            "end": 678
+        },
+        "page_num": 0,
+        "text": "1.2",
+        "position": {
+            "top": 664,
+            "bottom": 697,
+            "left": 2007,
+            "right": 2052
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 679,
+            "end": 684
+        },
+        "page_num": 0,
+        "text": "Model",
+        "position": {
+            "top": 664,
+            "bottom": 696,
+            "left": 2070,
+            "right": 2177
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 685,
+            "end": 688
+        },
+        "page_num": 0,
+        "text": "1.3",
+        "position": {
+            "top": 711,
+            "bottom": 749,
+            "left": 2007,
+            "right": 2052
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 689,
+            "end": 699
+        },
+        "page_num": 0,
+        "text": "Submission",
+        "position": {
+            "top": 711,
+            "bottom": 747,
+            "left": 2072,
+            "right": 2259
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 700,
+            "end": 703
+        },
+        "page_num": 0,
+        "text": "1.4",
+        "position": {
+            "top": 759,
+            "bottom": 797,
+            "left": 2005,
+            "right": 2051
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 704,
+            "end": 714
+        },
+        "page_num": 0,
+        "text": "Submission",
+        "position": {
+            "top": 759,
+            "bottom": 797,
+            "left": 2071,
+            "right": 2260
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 715,
+            "end": 719
+        },
+        "page_num": 0,
+        "text": "File",
+        "position": {
+            "top": 757,
+            "bottom": 797,
+            "left": 2274,
+            "right": 2335
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 720,
+            "end": 723
+        },
+        "page_num": 0,
+        "text": "1.5",
+        "position": {
+            "top": 810,
+            "bottom": 846,
+            "left": 2005,
+            "right": 2048
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 724,
+            "end": 732
+        },
+        "page_num": 0,
+        "text": "Reviewer",
+        "position": {
+            "top": 809,
+            "bottom": 846,
+            "left": 2070,
+            "right": 2226
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 733,
+            "end": 736
+        },
+        "page_num": 0,
+        "text": "1.6",
+        "position": {
+            "top": 857,
+            "bottom": 896,
+            "left": 2007,
+            "right": 2050
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 737,
+            "end": 747
+        },
+        "page_num": 0,
+        "text": "Prediction",
+        "position": {
+            "top": 856,
+            "bottom": 895,
+            "left": 2071,
+            "right": 2239
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 748,
+            "end": 752
+        },
+        "page_num": 0,
+        "text": "Once",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 210,
+            "right": 310
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 753,
+            "end": 762
+        },
+        "page_num": 0,
+        "text": "imported,",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 320,
+            "right": 515
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 763,
+            "end": 770
+        },
+        "page_num": 0,
+        "text": "Metrics",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 525,
+            "right": 676
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 771,
+            "end": 774
+        },
+        "page_num": 0,
+        "text": "can",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 687,
+            "right": 756
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 775,
+            "end": 781
+        },
+        "page_num": 0,
+        "text": "filter",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 769,
+            "right": 858
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 782,
+            "end": 785
+        },
+        "page_num": 0,
+        "text": "and",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 868,
+            "right": 941
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 786,
+            "end": 795
+        },
+        "page_num": 0,
+        "text": "aggregate",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 958,
+            "right": 1151
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 796,
+            "end": 799
+        },
+        "page_num": 0,
+        "text": "the",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 1161,
+            "right": 1227
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 800,
+            "end": 812
+        },
+        "page_num": 0,
+        "text": "intermediate",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 1237,
+            "right": 1484
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 813,
+            "end": 817
+        },
+        "page_num": 0,
+        "text": "data",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 1498,
+            "right": 1587
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 818,
+            "end": 820
+        },
+        "page_num": 0,
+        "text": "as",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 1597,
+            "right": 1646
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 821,
+            "end": 830
+        },
+        "page_num": 0,
+        "text": "described",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 1657,
+            "right": 1850
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 831,
+            "end": 836
+        },
+        "page_num": 0,
+        "text": "below",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 1860,
+            "right": 1972
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 837,
+            "end": 839
+        },
+        "page_num": 0,
+        "text": "to",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 1992,
+            "right": 2035
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 840,
+            "end": 847
+        },
+        "page_num": 0,
+        "text": "display",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 2045,
+            "right": 2183
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 848,
+            "end": 855
+        },
+        "page_num": 0,
+        "text": "higher-",
+        "position": {
+            "top": 1067,
+            "bottom": 1117,
+            "left": 2194,
+            "right": 2333
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 856,
+            "end": 861
+        },
+        "page_num": 0,
+        "text": "level",
+        "position": {
+            "top": 1130,
+            "bottom": 1177,
+            "left": 206,
+            "right": 300
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 862,
+            "end": 866
+        },
+        "page_num": 0,
+        "text": "data",
+        "position": {
+            "top": 1130,
+            "bottom": 1178,
+            "left": 310,
+            "right": 398
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 867,
+            "end": 873
+        },
+        "page_num": 0,
+        "text": "points",
+        "position": {
+            "top": 1130,
+            "bottom": 1178,
+            "left": 406,
+            "right": 530
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 874,
+            "end": 876
+        },
+        "page_num": 0,
+        "text": "to",
+        "position": {
+            "top": 1128,
+            "bottom": 1178,
+            "left": 540,
+            "right": 581
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 877,
+            "end": 884
+        },
+        "page_num": 0,
+        "text": "fulfill",
+        "position": {
+            "top": 1128,
+            "bottom": 1180,
+            "left": 591,
+            "right": 681
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 885,
+            "end": 888
+        },
+        "page_num": 0,
+        "text": "the",
+        "position": {
+            "top": 1128,
+            "bottom": 1180,
+            "left": 691,
+            "right": 756
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 889,
+            "end": 898
+        },
+        "page_num": 0,
+        "text": "reporting",
+        "position": {
+            "top": 1128,
+            "bottom": 1180,
+            "left": 766,
+            "right": 944
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 899,
+            "end": 911
+        },
+        "page_num": 0,
+        "text": "requirements",
+        "position": {
+            "top": 1128,
+            "bottom": 1178,
+            "left": 954,
+            "right": 1213
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 912,
+            "end": 919
+        },
+        "page_num": 0,
+        "text": "defined",
+        "position": {
+            "top": 1128,
+            "bottom": 1177,
+            "left": 1221,
+            "right": 1368
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 920,
+            "end": 930
+        },
+        "page_num": 0,
+        "text": "elsewhere.",
+        "position": {
+            "top": 1128,
+            "bottom": 1175,
+            "left": 1381,
+            "right": 1591
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 931,
+            "end": 932
+        },
+        "page_num": 0,
+        "text": "1",
+        "position": {
+            "top": 1317,
+            "bottom": 1379,
+            "left": 220,
+            "right": 252
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 933,
+            "end": 941
+        },
+        "page_num": 0,
+        "text": "Entities",
+        "position": {
+            "top": 1317,
+            "bottom": 1376,
+            "left": 310,
+            "right": 571
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 942,
+            "end": 945
+        },
+        "page_num": 0,
+        "text": "1.1",
+        "position": {
+            "top": 1526,
+            "bottom": 1584,
+            "left": 220,
+            "right": 308
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 946,
+            "end": 954
+        },
+        "page_num": 0,
+        "text": "Workflow",
+        "position": {
+            "top": 1528,
+            "bottom": 1584,
+            "left": 363,
+            "right": 643
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 955,
+            "end": 961
+        },
+        "page_num": 0,
+        "text": "Column",
+        "position": {
+            "top": 1691,
+            "bottom": 1731,
+            "left": 262,
+            "right": 416
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 962,
+            "end": 966
+        },
+        "page_num": 0,
+        "text": "Type",
+        "position": {
+            "top": 1690,
+            "bottom": 1735,
+            "left": 875,
+            "right": 966
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 967,
+            "end": 974
+        },
+        "page_num": 0,
+        "text": "GraphQL",
+        "position": {
+            "top": 1688,
+            "bottom": 1734,
+            "left": 1328,
+            "right": 1509
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 975,
+            "end": 981
+        },
+        "page_num": 0,
+        "text": "Source",
+        "position": {
+            "top": 1688,
+            "bottom": 1734,
+            "left": 1525,
+            "right": 1670
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 982,
+            "end": 984
+        },
+        "page_num": 0,
+        "text": "id",
+        "position": {
+            "top": 1788,
+            "bottom": 1824,
+            "left": 257,
+            "right": 287
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 985,
+            "end": 988
+        },
+        "page_num": 0,
+        "text": "int",
+        "position": {
+            "top": 1786,
+            "bottom": 1833,
+            "left": 868,
+            "right": 925
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 989,
+            "end": 1000
+        },
+        "page_num": 0,
+        "text": "workflow.id",
+        "position": {
+            "top": 1790,
+            "bottom": 1829,
+            "left": 1339,
+            "right": 1584
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1001,
+            "end": 1005
+        },
+        "page_num": 0,
+        "text": "name",
+        "position": {
+            "top": 1877,
+            "bottom": 1927,
+            "left": 256,
+            "right": 366
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1006,
+            "end": 1009
+        },
+        "page_num": 0,
+        "text": "str",
+        "position": {
+            "top": 1876,
+            "bottom": 1927,
+            "left": 871,
+            "right": 922
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1010,
+            "end": 1019
+        },
+        "page_num": 0,
+        "text": "workflow.",
+        "position": {
+            "top": 1884,
+            "bottom": 1920,
+            "left": 1339,
+            "right": 1531
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1020,
+            "end": 1024
+        },
+        "page_num": 0,
+        "text": "name",
+        "position": {
+            "top": 1884,
+            "bottom": 1920,
+            "left": 1538,
+            "right": 1628
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1025,
+            "end": 1032
+        },
+        "page_num": 0,
+        "text": "Example",
+        "position": {
+            "top": 2010,
+            "bottom": 2059,
+            "left": 210,
+            "right": 389
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1033,
+            "end": 1040
+        },
+        "page_num": 0,
+        "text": "GraphQL",
+        "position": {
+            "top": 2009,
+            "bottom": 2059,
+            "left": 403,
+            "right": 590
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1041,
+            "end": 1046
+        },
+        "page_num": 0,
+        "text": "Query",
+        "position": {
+            "top": 2008,
+            "bottom": 2062,
+            "left": 604,
+            "right": 730
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1047,
+            "end": 1052
+        },
+        "page_num": 0,
+        "text": "query",
+        "position": {
+            "top": 2128,
+            "bottom": 2177,
+            "left": 240,
+            "right": 373
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1053,
+            "end": 1062
+        },
+        "page_num": 0,
+        "text": "Workflows",
+        "position": {
+            "top": 2125,
+            "bottom": 2177,
+            "left": 395,
+            "right": 643
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1063,
+            "end": 1064
+        },
+        "page_num": 0,
+        "text": "{",
+        "position": {
+            "top": 2124,
+            "bottom": 2179,
+            "left": 674,
+            "right": 701
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1065,
+            "end": 1074
+        },
+        "page_num": 0,
+        "text": "workflows",
+        "position": {
+            "top": 2189,
+            "bottom": 2234,
+            "left": 325,
+            "right": 570
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1075,
+            "end": 1076
+        },
+        "page_num": 0,
+        "text": "{",
+        "position": {
+            "top": 2187,
+            "bottom": 2235,
+            "left": 603,
+            "right": 624
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1077,
+            "end": 1086
+        },
+        "page_num": 0,
+        "text": "workflows",
+        "position": {
+            "top": 2251,
+            "bottom": 2300,
+            "left": 435,
+            "right": 680
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1087,
+            "end": 1088
+        },
+        "page_num": 0,
+        "text": "{",
+        "position": {
+            "top": 2250,
+            "bottom": 2300,
+            "left": 707,
+            "right": 734
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1089,
+            "end": 1091
+        },
+        "page_num": 0,
+        "text": "id",
+        "position": {
+            "top": 2311,
+            "bottom": 2354,
+            "left": 547,
+            "right": 593
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1092,
+            "end": 1096
+        },
+        "page_num": 0,
+        "text": "name",
+        "position": {
+            "top": 2383,
+            "bottom": 2419,
+            "left": 542,
+            "right": 644
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1097,
+            "end": 1098
+        },
+        "page_num": 0,
+        "text": "}",
+        "position": {
+            "top": 2437,
+            "bottom": 2485,
+            "left": 438,
+            "right": 455
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1099,
+            "end": 1100
+        },
+        "page_num": 0,
+        "text": "}",
+        "position": {
+            "top": 2500,
+            "bottom": 2548,
+            "left": 328,
+            "right": 346
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1101,
+            "end": 1102
+        },
+        "page_num": 0,
+        "text": "}",
+        "position": {
+            "top": 2563,
+            "bottom": 2609,
+            "left": 222,
+            "right": 246
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1103,
+            "end": 1112
+        },
+        "page_num": 0,
+        "text": "Scheduled",
+        "position": {
+            "top": 2684,
+            "bottom": 2725,
+            "left": 212,
+            "right": 426
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1113,
+            "end": 1120
+        },
+        "page_num": 0,
+        "text": "Process",
+        "position": {
+            "top": 2682,
+            "bottom": 2728,
+            "left": 442,
+            "right": 614
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1121,
+            "end": 1126
+        },
+        "page_num": 0,
+        "text": "Logic",
+        "position": {
+            "top": 2681,
+            "bottom": 2731,
+            "left": 624,
+            "right": 739
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1127,
+            "end": 1131
+        },
+        "page_num": 0,
+        "text": "This",
+        "position": {
+            "top": 2785,
+            "bottom": 2833,
+            "left": 213,
+            "right": 287
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1132,
+            "end": 1134
+        },
+        "page_num": 0,
+        "text": "is",
+        "position": {
+            "top": 2784,
+            "bottom": 2834,
+            "left": 297,
+            "right": 338
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1135,
+            "end": 1136
+        },
+        "page_num": 0,
+        "text": "a",
+        "position": {
+            "top": 2784,
+            "bottom": 2834,
+            "left": 348,
+            "right": 366
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1137,
+            "end": 1148
+        },
+        "page_num": 0,
+        "text": "lightweight",
+        "position": {
+            "top": 2784,
+            "bottom": 2834,
+            "left": 378,
+            "right": 594
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1149,
+            "end": 1155
+        },
+        "page_num": 0,
+        "text": "query.",
+        "position": {
+            "top": 2784,
+            "bottom": 2834,
+            "left": 605,
+            "right": 727
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1156,
+            "end": 1159
+        },
+        "page_num": 0,
+        "text": "All",
+        "position": {
+            "top": 2784,
+            "bottom": 2834,
+            "left": 737,
+            "right": 786
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1160,
+            "end": 1169
+        },
+        "page_num": 0,
+        "text": "workflows",
+        "position": {
+            "top": 2784,
+            "bottom": 2835,
+            "left": 796,
+            "right": 998
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1170,
+            "end": 1174
+        },
+        "page_num": 0,
+        "text": "will",
+        "position": {
+            "top": 2784,
+            "bottom": 2835,
+            "left": 1008,
+            "right": 1070
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1175,
+            "end": 1177
+        },
+        "page_num": 0,
+        "text": "be",
+        "position": {
+            "top": 2784,
+            "bottom": 2835,
+            "left": 1081,
+            "right": 1133
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1178,
+            "end": 1184
+        },
+        "page_num": 0,
+        "text": "pulled",
+        "position": {
+            "top": 2784,
+            "bottom": 2835,
+            "left": 1143,
+            "right": 1264
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1185,
+            "end": 1190
+        },
+        "page_num": 0,
+        "text": "every",
+        "position": {
+            "top": 2784,
+            "bottom": 2835,
+            "left": 1276,
+            "right": 1381
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1191,
+            "end": 1195
+        },
+        "page_num": 0,
+        "text": "time",
+        "position": {
+            "top": 2784,
+            "bottom": 2835,
+            "left": 1391,
+            "right": 1476
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1196,
+            "end": 1199
+        },
+        "page_num": 0,
+        "text": "the",
+        "position": {
+            "top": 2784,
+            "bottom": 2835,
+            "left": 1487,
+            "right": 1550
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1200,
+            "end": 1211
+        },
+        "page_num": 0,
+        "text": "integration",
+        "position": {
+            "top": 2784,
+            "bottom": 2834,
+            "left": 1560,
+            "right": 1770
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1212,
+            "end": 1214
+        },
+        "page_num": 0,
+        "text": "is",
+        "position": {
+            "top": 2784,
+            "bottom": 2834,
+            "left": 1780,
+            "right": 1813
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1215,
+            "end": 1219
+        },
+        "page_num": 0,
+        "text": "run.",
+        "position": {
+            "top": 2785,
+            "bottom": 2834,
+            "left": 1823,
+            "right": 1903
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1220,
+            "end": 1224
+        },
+        "page_num": 0,
+        "text": "Data",
+        "position": {
+            "top": 2891,
+            "bottom": 2937,
+            "left": 210,
+            "right": 308
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1225,
+            "end": 1239
+        },
+        "page_num": 0,
+        "text": "Reconciliation",
+        "position": {
+            "top": 2891,
+            "bottom": 2937,
+            "left": 320,
+            "right": 616
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1240,
+            "end": 1243
+        },
+        "page_num": 0,
+        "text": "The",
+        "position": {
+            "top": 2994,
+            "bottom": 3043,
+            "left": 212,
+            "right": 283
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1244,
+            "end": 1250
+        },
+        "page_num": 0,
+        "text": "output",
+        "position": {
+            "top": 2994,
+            "bottom": 3043,
+            "left": 296,
+            "right": 431
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1251,
+            "end": 1255
+        },
+        "page_num": 0,
+        "text": "will",
+        "position": {
+            "top": 2994,
+            "bottom": 3045,
+            "left": 441,
+            "right": 510
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1256,
+            "end": 1263
+        },
+        "page_num": 0,
+        "text": "include",
+        "position": {
+            "top": 2994,
+            "bottom": 3045,
+            "left": 520,
+            "right": 667
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1264,
+            "end": 1267
+        },
+        "page_num": 0,
+        "text": "the",
+        "position": {
+            "top": 2994,
+            "bottom": 3045,
+            "left": 677,
+            "right": 743
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1268,
+            "end": 1275
+        },
+        "page_num": 0,
+        "text": "primary",
+        "position": {
+            "top": 2994,
+            "bottom": 3045,
+            "left": 757,
+            "right": 911
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1276,
+            "end": 1279
+        },
+        "page_num": 0,
+        "text": "key",
+        "position": {
+            "top": 2994,
+            "bottom": 3046,
+            "left": 921,
+            "right": 997
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1280,
+            "end": 1282
+        },
+        "page_num": 0,
+        "text": "id",
+        "position": {
+            "top": 2994,
+            "bottom": 3046,
+            "left": 1027,
+            "right": 1073
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1283,
+            "end": 1289
+        },
+        "page_num": 0,
+        "text": "needed",
+        "position": {
+            "top": 2994,
+            "bottom": 3046,
+            "left": 1098,
+            "right": 1250
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1290,
+            "end": 1292
+        },
+        "page_num": 0,
+        "text": "to",
+        "position": {
+            "top": 2994,
+            "bottom": 3046,
+            "left": 1263,
+            "right": 1306
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1293,
+            "end": 1299
+        },
+        "page_num": 0,
+        "text": "update",
+        "position": {
+            "top": 2994,
+            "bottom": 3046,
+            "left": 1322,
+            "right": 1464
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1300,
+            "end": 1308
+        },
+        "page_num": 0,
+        "text": "existing",
+        "position": {
+            "top": 2994,
+            "bottom": 3046,
+            "left": 1476,
+            "right": 1631
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1309,
+            "end": 1313
+        },
+        "page_num": 0,
+        "text": "rows",
+        "position": {
+            "top": 2994,
+            "bottom": 3046,
+            "left": 1644,
+            "right": 1746
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1314,
+            "end": 1317
+        },
+        "page_num": 0,
+        "text": "and",
+        "position": {
+            "top": 2994,
+            "bottom": 3045,
+            "left": 1760,
+            "right": 1830
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1318,
+            "end": 1324
+        },
+        "page_num": 0,
+        "text": "insert",
+        "position": {
+            "top": 2994,
+            "bottom": 3045,
+            "left": 1845,
+            "right": 1962
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1325,
+            "end": 1328
+        },
+        "page_num": 0,
+        "text": "new",
+        "position": {
+            "top": 2994,
+            "bottom": 3045,
+            "left": 1974,
+            "right": 2048
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1329,
+            "end": 1333
+        },
+        "page_num": 0,
+        "text": "rows",
+        "position": {
+            "top": 2994,
+            "bottom": 3045,
+            "left": 2070,
+            "right": 2170
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1334,
+            "end": 1338
+        },
+        "page_num": 0,
+        "text": "into",
+        "position": {
+            "top": 2994,
+            "bottom": 3043,
+            "left": 2181,
+            "right": 2259
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1339,
+            "end": 1342
+        },
+        "page_num": 0,
+        "text": "the",
+        "position": {
+            "top": 2994,
+            "bottom": 3043,
+            "left": 2273,
+            "right": 2337
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1343,
+            "end": 1350
+        },
+        "page_num": 0,
+        "text": "Metrics",
+        "position": {
+            "top": 3057,
+            "bottom": 3102,
+            "left": 214,
+            "right": 356
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1351,
+            "end": 1360
+        },
+        "page_num": 0,
+        "text": "database.",
+        "position": {
+            "top": 3057,
+            "bottom": 3102,
+            "left": 368,
+            "right": 563
+        }
+    }
+]

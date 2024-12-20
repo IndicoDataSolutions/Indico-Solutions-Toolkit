@@ -1,0 +1,25 @@
+1.3 Submission
+Column	Type	GraphQL Source
+id	int	submission.id
+created_at	datetime	submission. createdAt
+processed_at	datetime	submission.review. completedAt
+reviewer_id	int	submission. review. createdBy 2
+review_started_at	datetime	submission.review. startedAt 2
+review_completed_at	datetime	submission.review. completedAt 2
+rejected	bool	submission. review. rejected 2
+rejection_reason	str	submission.review. notes 2
+completed_at	datetime	submission. completedAt
+retrieved_at	datetime	submission. updatedAt 3
+failed	bool	submission.status 4
+status	enum	submission.status
+workflow_id	int	submission.workflowId
+1 The timestamp for submission processing being completed is not directly available on the
+Instead it's approximated by the completion time of Auto Review in the reviews list
+(where reviewType == "AUTO").
+submission object.
+2 The HITL review data points must come from the Manual Review in the reviews list
+(where reviewType == "MANUAL").
+3 The time of retrieval is not directly available on the submission object. Instead it's approximated by the last
+update time of the submission once the retrieved flag is set.
+4 The failure status is not directly available on the submission object as a boolean. Instead it's derived using the
+status of the submission (where status == "FAILED").
