@@ -101,6 +101,24 @@ class PredictionList(List[PredictionType]):
 
         return grouped
 
+    def groupbyiter(
+        self, keys: "Callable[[PredictionType], Iterable[KeyType]]"
+    ) -> "dict[KeyType, Self]":
+        """
+        Group predictions into a dictionary using `key` to derive an iterable of keys.
+        E.g. `key=attrgetter("groups")` or `key=attrgetter("pages")`.
+
+        Each prediction is associated with every key in the iterable individually.
+        If the iterable is empty, the prediction is not included in any group.
+        """
+        grouped = defaultdict(type(self))  # type: ignore[var-annotated]
+
+        for prediction in self:
+            for derived_key in keys(prediction):
+                grouped[derived_key].append(prediction)
+
+        return grouped
+
     def oftype(self, type: "type[OfType]") -> "PredictionList[OfType]":
         """
         Return a new prediction list containing predictions of type `type`.
