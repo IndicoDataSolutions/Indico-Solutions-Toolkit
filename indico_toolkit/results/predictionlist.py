@@ -141,8 +141,11 @@ class PredictionList(List[PredictionType]):
         predicate: "Callable[[PredictionType], bool] | None" = None,
         *,
         document: "Document | None" = None,
+        document_in: "Container[Document] | None" = None,
         model: "ModelGroup | TaskType | str | None" = None,
+        model_in: "Container[ModelGroup | TaskType | str] | None" = None,
         review: "Review | ReviewType | None" = ReviewUnspecified,
+        review_in: "Container[Review | ReviewType | None]" = {ReviewUnspecified},
         label: "str | None" = None,
         label_in: "Container[str] | None" = None,
         min_confidence: "float | None" = None,
@@ -160,8 +163,11 @@ class PredictionList(List[PredictionType]):
 
         predicate: predictions for which this function returns True.
         document: predictions from this document,
+        document_in: predictions from these documents,
         model: predictions from this model, task type, or name,
+        model_in: predictions from these models, task types, or names,
         review: predictions from this review or review type,
+        review_in: predictions from these reviews or review types,
         label: predictions with this label,
         label_in: predictions with one of these labels,
         min_confidence: predictions with confidence >= this threshold,
@@ -181,12 +187,24 @@ class PredictionList(List[PredictionType]):
         if document is not None:
             predicates.append(lambda prediction: prediction.document == document)
 
+        if document_in is not None:
+            predicates.append(lambda prediction: prediction.document in document_in)
+
         if model is not None:
             predicates.append(
                 lambda prediction: (
                     prediction.model == model
                     or prediction.model.task_type == model
                     or prediction.model.name == model
+                )
+            )
+
+        if model_in is not None:
+            predicates.append(
+                lambda prediction: (
+                    prediction.model in model_in
+                    or prediction.model.task_type in model_in
+                    or prediction.model.name in model_in
                 )
             )
 
@@ -197,6 +215,17 @@ class PredictionList(List[PredictionType]):
                     or (
                         prediction.review is not None
                         and prediction.review.type == review
+                    )
+                )
+            )
+
+        if review_in != {ReviewUnspecified}:
+            predicates.append(
+                lambda prediction: (
+                    prediction.review in review_in
+                    or (
+                        prediction.review is not None
+                        and prediction.review.type in review_in
                     )
                 )
             )
