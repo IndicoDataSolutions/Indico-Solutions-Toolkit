@@ -148,10 +148,10 @@ class PredictionList(List[PredictionType]):
         review_in: "Container[Review | ReviewType | None]" = {ReviewUnspecified},
         label: "str | None" = None,
         label_in: "Container[str] | None" = None,
-        min_confidence: "float | None" = None,
-        max_confidence: "float | None" = None,
         page: "int | None" = None,
         page_in: "Collection[int] | None" = None,
+        min_confidence: "float | None" = None,
+        max_confidence: "float | None" = None,
         accepted: "bool | None" = None,
         rejected: "bool | None" = None,
         checked: "bool | None" = None,
@@ -161,7 +161,7 @@ class PredictionList(List[PredictionType]):
         Return a new prediction list containing predictions that match
         all of the specified filters.
 
-        predicate: predictions for which this function returns True.
+        predicate: predictions for which this function returns True,
         document: predictions from this document,
         document_in: predictions from these documents,
         model: predictions from this model, task type, or name,
@@ -169,15 +169,15 @@ class PredictionList(List[PredictionType]):
         review: predictions from this review or review type,
         review_in: predictions from these reviews or review types,
         label: predictions with this label,
-        label_in: predictions with one of these labels,
+        label_in: predictions with these labels,
+        page: extractions/unbundlings on this page,
+        page_in: extractions/unbundlings on these pages,
         min_confidence: predictions with confidence >= this threshold,
         max_confidence: predictions with confidence <= this threshold,
-        page: extractions/unbundlings on this page,
-        page_in: extractions/unbundlings on one of these pages,
-        accepted: extractions that have been accepted,
-        rejected: extractions that have been rejected,
-        checked: form extractions that are checked,
-        signed: form extractions that are signed,
+        accepted: extractions that have or haven't been accepted,
+        rejected: extractions that have or haven't been rejected,
+        checked: form extractions that are or aren't checked,
+        signed: form extractions that are or aren't signed.
         """
         predicates = []
 
