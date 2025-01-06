@@ -80,13 +80,24 @@ class PredictionList(List[PredictionType]):
         self, key: "Callable[[PredictionType], KeyType]"
     ) -> "dict[KeyType, Self]":
         """
-        Group predictions into a dictionary using `key`.
-        E.g. `key=attrgetter("label")` or `key=attrgetter("model")`
+        Group predictions into a dictionary using `key` to derive each prediction's key.
+        E.g. `key=attrgetter("label")` or `key=attrgetter("model")`.
+
+        If a derived key is an unhashable mutable collection (like set),
+        it's automatically converted to its hashable immutable variant (like frozenset).
+        This makes it easy to group by linked labels or unbundling pages.
         """
         grouped = defaultdict(type(self))  # type: ignore[var-annotated]
 
         for prediction in self:
-            grouped[key(prediction)].append(prediction)
+            derived_key = key(prediction)
+
+            if isinstance(derived_key, list):
+                derived_key = tuple(derived_key)  # type: ignore[assignment]
+            elif isinstance(derived_key, set):
+                derived_key = frozenset(derived_key)  # type: ignore[assignment]
+
+            grouped[derived_key].append(prediction)
 
         return grouped
 
