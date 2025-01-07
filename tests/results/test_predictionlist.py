@@ -140,9 +140,10 @@ def test_groupby(
 ) -> None:
     first_name, last_name = predictions.extractions
     predictions_by_groups = predictions.extractions.groupby(attrgetter("groups"))
-    assert len(predictions_by_groups) == 2
-    assert predictions_by_groups[frozenset({group_alpha})] == [first_name]
-    assert predictions_by_groups[frozenset({group_alpha, group_bravo})] == [last_name]
+    assert predictions_by_groups == {
+        frozenset({group_alpha}): [first_name],
+        frozenset({group_alpha, group_bravo}): [last_name],
+    }
 
 
 def test_groupbyiter(
@@ -150,9 +151,10 @@ def test_groupbyiter(
 ) -> None:
     first_name, last_name = predictions.extractions
     predictions_by_group = predictions.extractions.groupbyiter(attrgetter("groups"))
-    assert len(predictions_by_group) == 2
-    assert predictions_by_group[group_alpha] == [first_name, last_name]
-    assert predictions_by_group[group_bravo] == [last_name]
+    assert predictions_by_group == {
+        group_alpha: [first_name, last_name],
+        group_bravo: [last_name],
+    }
 
 
 def test_orderby(predictions: "PredictionList[Prediction]") -> None:
