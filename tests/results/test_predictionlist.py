@@ -6,6 +6,7 @@ from indico_toolkit.results import (
     Classification,
     Document,
     DocumentExtraction,
+    Group,
     ModelGroup,
     Prediction,
     PredictionList,
@@ -54,12 +55,24 @@ def manual_review() -> Review:
 
 
 @pytest.fixture
+def group_alpha() -> Group:
+    return Group(id=12345, name="Alpha", index=0)
+
+
+@pytest.fixture
+def group_bravo() -> Group:
+    return Group(id=12345, name="Bravo", index=0)
+
+
+@pytest.fixture
 def predictions(
     document: Document,
     classification_model: ModelGroup,
     extraction_model: ModelGroup,
     auto_review: Review,
     manual_review: Review,
+    group_alpha: Group,
+    group_bravo: Group,
 ) -> "PredictionList[Prediction]":
     return PredictionList(
         [
@@ -84,7 +97,7 @@ def predictions(
                 start=352,
                 end=356,
                 page=0,
-                groups=set(),
+                groups={group_alpha},
             ),
             DocumentExtraction(
                 document=document,
@@ -99,7 +112,7 @@ def predictions(
                 start=357,
                 end=360,
                 page=1,
-                groups=set(),
+                groups={group_alpha, group_bravo},
             ),
         ]
     )
@@ -111,7 +124,7 @@ def test_classifications(predictions: "PredictionList[Prediction]") -> None:
 
 
 def test_extractions(predictions: "PredictionList[Prediction]") -> None:
-    (first_extraction, second_extraction) = predictions.document_extractions
+    first_extraction, second_extraction = predictions.extractions
     assert isinstance(first_extraction, DocumentExtraction)
     assert isinstance(second_extraction, DocumentExtraction)
 
@@ -122,9 +135,32 @@ def test_slice_is_prediction_list(predictions: "PredictionList[Prediction]") -> 
     assert isinstance(predictions, PredictionList)
 
 
+def test_groupby(
+    predictions: "PredictionList[Prediction]", group_alpha: Group, group_bravo: Group
+) -> None:
+    first_name, last_name = predictions.extractions
+    predictions_by_groups = predictions.extractions.groupby(attrgetter("groups"))
+    assert predictions_by_groups == {
+        frozenset({group_alpha}): [first_name],
+        frozenset({group_alpha, group_bravo}): [last_name],
+    }
+
+
+def test_groupbyiter(
+    predictions: "PredictionList[Prediction]", group_alpha: Group, group_bravo: Group
+) -> None:
+    first_name, last_name = predictions.extractions
+    predictions_by_group = predictions.extractions.groupbyiter(attrgetter("groups"))
+    assert predictions_by_group == {
+        group_alpha: [first_name, last_name],
+        group_bravo: [last_name],
+    }
+
+
 def test_orderby(predictions: "PredictionList[Prediction]") -> None:
+    classification, first_name, last_name = predictions
     predictions = predictions.orderby(attrgetter("confidence"), reverse=True)
-    assert predictions[0].confidence == 0.9
+    assert predictions == [last_name, first_name, classification]
 
 
 def test_where_document(
@@ -133,115 +169,109 @@ def test_where_document(
     assert predictions.where(document=document) == predictions
 
 
+def test_where_document_in(
+    predictions: "PredictionList[Prediction]", document: Document
+) -> None:
+    assert predictions.where(document_in={document}) == predictions
+    assert predictions.where(document_in={}) == []
+
+
 def test_where_model(
     predictions: "PredictionList[Prediction]", classification_model: ModelGroup
 ) -> None:
+    (classification,) = predictions.classifications
+    assert predictions.where(model=classification_model) == [classification]
+    assert predictions.where(model=TaskType.CLASSIFICATION) == [classification]
+    assert predictions.where(model="Tax Classification") == [classification]
+
+
+def test_where_model_in(
+    predictions: "PredictionList[Prediction]", classification_model: ModelGroup
+) -> None:
     classification, first_name, last_name = predictions
+    assert predictions.where(model_in={classification_model}) == [classification]
+    assert predictions.where(model_in={TaskType.CLASSIFICATION}) == [classification]
+    assert predictions.where(
+        model_in={TaskType.CLASSIFICATION, TaskType.DOCUMENT_EXTRACTION}
+    ) == [classification, first_name, last_name]
+    assert predictions.where(model_in={"Tax Classification"}) == [classification]
+    assert predictions.where(
+        model_in={"Tax Classification", "1040 Document Extraction"}
+    ) == [classification, first_name, last_name]
+    assert predictions.where(model_in={}) == []
 
-    filtered = predictions.where(model=classification_model)
-    assert classification in filtered
-    assert first_name not in filtered
-    assert last_name not in filtered
 
-    filtered = predictions.where(model=TaskType.CLASSIFICATION)
-    assert classification in filtered
-    assert first_name not in filtered
-    assert last_name not in filtered
+def test_where_review(
+    predictions: "PredictionList[Prediction]", auto_review: Review
+) -> None:
+    classification, first_name, last_name = predictions
+    assert predictions.where(review=None) == [classification]
+    assert predictions.where(review=auto_review) == [first_name]
+    assert predictions.where(review=ReviewType.MANUAL) == [last_name]
 
-    filtered = predictions.where(model="Tax Classification")
-    assert classification in filtered
-    assert first_name not in filtered
-    assert last_name not in filtered
+def test_where_review_in(
+    predictions: "PredictionList[Prediction]", auto_review: Review
+) -> None:
+    classification, first_name, last_name = predictions
+    assert predictions.where(review_in={None}) == [classification]
+    assert predictions.where(
+        review_in={None, auto_review}
+    ) == [classification, first_name]
+    assert predictions.where(
+        review_in={auto_review, ReviewType.MANUAL}
+    ) == [first_name, last_name]
+    assert predictions.where(review_in={}) == []
 
 
 def test_where_label(predictions: "PredictionList[Prediction]") -> None:
-    classification, first_name, last_name = predictions
+    first_name, _ = predictions.extractions
+    assert predictions.where(label="First Name") == [first_name]
 
-    filtered = predictions.where(label="First Name")
-    assert classification not in filtered
-    assert first_name in filtered
-    assert last_name not in filtered
 
-    filtered = predictions.where(label_in=("First Name", "Last Name"))
-    assert classification not in filtered
-    assert first_name in filtered
-    assert last_name in filtered
+def test_where_label_in(predictions: "PredictionList[Prediction]") -> None:
+    first_name, last_name = predictions.extractions
+    assert predictions.where(
+        label_in=("First Name", "Last Name")
+    ) == [first_name, last_name]
 
 
 def test_where_confidence(predictions: "PredictionList[Prediction]") -> None:
     conf_70, conf_80, conf_90 = predictions
-
-    filtered = predictions.where(min_confidence=0.9)
-    assert conf_70 not in filtered
-    assert conf_80 not in filtered
-    assert conf_90 in filtered
-
-    filtered = predictions.where(min_confidence=0.75, max_confidence=0.85)
-    assert conf_70 not in filtered
-    assert conf_80 in filtered
-    assert conf_90 not in filtered
-
-    filtered = predictions.where(max_confidence=0.7)
-    assert conf_70 in filtered
-    assert conf_80 not in filtered
-    assert conf_90 not in filtered
+    assert predictions.where(min_confidence=0.9) == [conf_90]
+    assert predictions.where(min_confidence=0.75, max_confidence=0.85) == [conf_80]
+    assert predictions.where(max_confidence=0.7) == [conf_70]
 
 
 def test_where_page(predictions: "PredictionList[Prediction]") -> None:
-    classification, first_name, last_name = predictions
+    first_name, _ = predictions.extractions
+    assert predictions.where(page=0) == [first_name]
 
-    filtered = predictions.where(page=0)
-    assert classification not in filtered
-    assert first_name in filtered
-    assert last_name not in filtered
 
-    filtered = predictions.where(page_in=(0, 1))
-    assert classification not in filtered
-    assert first_name in filtered
-    assert last_name in filtered
+def test_where_page_in(predictions: "PredictionList[Prediction]") -> None:
+    first_name, last_name = predictions.extractions
+    assert predictions.where(page_in=(0, 1)) == [first_name, last_name]
 
 
 def test_where_accepted(predictions: "PredictionList[Prediction]") -> None:
-    _, first_name, last_name = predictions
+    first_name, last_name = predictions.extractions
     predictions.unaccept()
 
-    filtered = predictions.where(accepted=True)
-    assert first_name not in filtered
-    assert last_name not in filtered
-
-    filtered = predictions.where(accepted=False)
-    assert first_name in filtered
-    assert last_name in filtered
+    assert predictions.where(accepted=True) == []
+    assert predictions.where(accepted=False) == [first_name, last_name]
 
     predictions.accept()
 
-    filtered = predictions.where(accepted=False)
-    assert first_name not in filtered
-    assert last_name not in filtered
-
-    filtered = predictions.where(accepted=True)
-    assert first_name in filtered
-    assert last_name in filtered
-
+    assert predictions.where(accepted=False) == []
+    assert predictions.where(accepted=True) == [first_name, last_name]
 
 def test_where_rejected(predictions: "PredictionList[Prediction]") -> None:
-    _, first_name, last_name = predictions
+    first_name, last_name = predictions.extractions
     predictions.unreject()
 
-    filtered = predictions.where(rejected=True)
-    assert first_name not in filtered
-    assert last_name not in filtered
-
-    filtered = predictions.where(rejected=False)
-    assert first_name in filtered
-    assert last_name in filtered
+    assert predictions.where(rejected=True) == []
+    assert predictions.where(rejected=False) == [first_name, last_name]
 
     predictions.reject()
 
-    filtered = predictions.where(rejected=False)
-    assert first_name not in filtered
-    assert last_name not in filtered
-
-    filtered = predictions.where(rejected=True)
-    assert first_name in filtered
-    assert last_name in filtered
+    assert predictions.where(rejected=False) == []
+    assert predictions.where(rejected=True) == [first_name, last_name]
