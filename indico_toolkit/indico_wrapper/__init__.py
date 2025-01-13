@@ -1,4 +1,4 @@
-from .indico_wrapper import IndicoWrapper, retry
+from .indico_wrapper import IndicoWrapper
 from .workflow import Workflow
 from .dataset import Datasets
 from .reviewer import Reviewer

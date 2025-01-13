@@ -3,7 +3,8 @@ from io import StringIO
 import pandas as pd
 from indico.types.export import Export
 from indico import IndicoClient, IndicoRequestError
-from indico_toolkit import retry, ToolkitInputError
+from indico_toolkit import ToolkitInputError
+from indico_toolkit.retry import retry
 from indico.queries import (
     RetrieveStorageObject,
     DownloadExport,
@@ -103,14 +104,14 @@ class Download:
                 return max_files_to_download
         return export_df.shape[0]
 
-    @retry((IndicoRequestError, ConnectionError))
+    @retry(IndicoRequestError, ConnectionError)
     def _download_export(self, export_id: int) -> pd.DataFrame:
         """
         Download a dataframe representation of your dataset export
         """
         return self.client.call(DownloadExport(export_id=export_id))
 
-    @retry((IndicoRequestError, ConnectionError))
+    @retry(IndicoRequestError, ConnectionError)
     def _create_export(
         self,
         dataset_id: int,
@@ -142,7 +143,7 @@ class Download:
             )
         )
 
-    @retry((IndicoRequestError, ConnectionError))
+    @retry(IndicoRequestError, ConnectionError)
     def _retrieve_storage_object(self, url: str):
         return self.client.call(RetrieveStorageObject(url))
 

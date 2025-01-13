@@ -1,8 +1,9 @@
 indico-client>=5.1.4
 python-dateutil==2.8.1
 pytz==2021.1
-pytest==6.2.5
-pytest-dependency==0.5.1
+pytest==8.3.4
+pytest-asyncio==0.25.2
+pytest-dependency==0.6.0
 pytest-mock==3.11.1
 coverage==5.5
 black==22.3
