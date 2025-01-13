@@ -3,30 +3,71 @@ import pytest
 from indico_toolkit.retry import retry, MaxRetriesExceeded
 
 
-@retry(Exception)
-def no_exceptions():
-    return True
+def test_no_errors() -> None:
+    @retry(Exception)
+    def no_errors() -> bool:
+        return True
+
+    assert no_errors()
 
 
-def test_retry_decorator_returns() -> None:
-    assert no_exceptions() is True
-
-
-calls = 0
-
-
-@retry(RuntimeError, count=5, wait=0)
-def raises_exceptions():
-    global calls
-    calls += 1
-    raise RuntimeError()
-
-
-def test_retry_max_exceeded() -> None:
-    global calls
+def test_raises_errors() -> None:
     calls = 0
 
-    with pytest.raises(MaxRetriesExceeded):
-        raises_exceptions()
+    @retry(RuntimeError, count=4, wait=0)
+    def raises_errors() -> None:
+        nonlocal calls
+        calls += 1
+        raise RuntimeError()
 
-    assert calls == 6
+    with pytest.raises(MaxRetriesExceeded):
+        raises_errors()
+
+    assert calls == 5
+
+
+def test_raises_other_errors() -> None:
+    calls = 0
+
+    @retry(RuntimeError, count=4, wait=0)
+    def raises_errors() -> None:
+        nonlocal calls
+        calls += 1
+        raise ValueError()
+
+    with pytest.raises(ValueError):
+        raises_errors()
+
+    assert calls == 1
+
+
+@pytest.mark.asyncio
+async def test_raises_errors_async() -> None:
+    calls = 0
+
+    @retry(RuntimeError, count=4, wait=0)
+    async def raises_errors() -> None:
+        nonlocal calls
+        calls += 1
+        raise RuntimeError()
+
+    with pytest.raises(MaxRetriesExceeded):
+        await raises_errors()
+
+    assert calls == 5
+
+
+@pytest.mark.asyncio
+async def test_raises_other_errors_async() -> None:
+    calls = 0
+
+    @retry(RuntimeError, count=4, wait=0)
+    async def raises_errors() -> None:
+        nonlocal calls
+        calls += 1
+        raise ValueError()
+
+    with pytest.raises(ValueError):
+        await raises_errors()
+
+    assert calls == 1
