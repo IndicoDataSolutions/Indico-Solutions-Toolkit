@@ -1,0 +1,2452 @@
+[
+    {
+        "doc_offset": {
+            "start": 1846,
+            "end": 1849
+        },
+        "page_num": 2,
+        "text": "1.3",
+        "position": {
+            "top": 133,
+            "bottom": 189,
+            "left": 220,
+            "right": 302
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1850,
+            "end": 1860
+        },
+        "page_num": 2,
+        "text": "Submission",
+        "position": {
+            "top": 136,
+            "bottom": 190,
+            "left": 363,
+            "right": 711
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1861,
+            "end": 1867
+        },
+        "page_num": 2,
+        "text": "Column",
+        "position": {
+            "top": 295,
+            "bottom": 336,
+            "left": 262,
+            "right": 415
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1868,
+            "end": 1872
+        },
+        "page_num": 2,
+        "text": "Type",
+        "position": {
+            "top": 295,
+            "bottom": 340,
+            "left": 954,
+            "right": 1045
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1873,
+            "end": 1880
+        },
+        "page_num": 2,
+        "text": "GraphQL",
+        "position": {
+            "top": 293,
+            "bottom": 340,
+            "left": 1310,
+            "right": 1495
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1881,
+            "end": 1887
+        },
+        "page_num": 2,
+        "text": "Source",
+        "position": {
+            "top": 295,
+            "bottom": 340,
+            "left": 1511,
+            "right": 1656
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1888,
+            "end": 1890
+        },
+        "page_num": 2,
+        "text": "id",
+        "position": {
+            "top": 393,
+            "bottom": 432,
+            "left": 257,
+            "right": 290
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1891,
+            "end": 1894
+        },
+        "page_num": 2,
+        "text": "int",
+        "position": {
+            "top": 393,
+            "bottom": 431,
+            "left": 946,
+            "right": 999
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1895,
+            "end": 1908
+        },
+        "page_num": 2,
+        "text": "submission.id",
+        "position": {
+            "top": 396,
+            "bottom": 433,
+            "left": 1326,
+            "right": 1611
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1909,
+            "end": 1919
+        },
+        "page_num": 2,
+        "text": "created_at",
+        "position": {
+            "top": 489,
+            "bottom": 531,
+            "left": 259,
+            "right": 469
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1920,
+            "end": 1928
+        },
+        "page_num": 2,
+        "text": "datetime",
+        "position": {
+            "top": 489,
+            "bottom": 529,
+            "left": 948,
+            "right": 1120
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1929,
+            "end": 1940
+        },
+        "page_num": 2,
+        "text": "submission.",
+        "position": {
+            "top": 489,
+            "bottom": 528,
+            "left": 1326,
+            "right": 1562
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1941,
+            "end": 1950
+        },
+        "page_num": 2,
+        "text": "createdAt",
+        "position": {
+            "top": 489,
+            "bottom": 528,
+            "left": 1571,
+            "right": 1769
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1951,
+            "end": 1963
+        },
+        "page_num": 2,
+        "text": "processed_at",
+        "position": {
+            "top": 588,
+            "bottom": 631,
+            "left": 257,
+            "right": 528
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1964,
+            "end": 1972
+        },
+        "page_num": 2,
+        "text": "datetime",
+        "position": {
+            "top": 587,
+            "bottom": 625,
+            "left": 948,
+            "right": 1120
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1973,
+            "end": 1991
+        },
+        "page_num": 2,
+        "text": "submission.review.",
+        "position": {
+            "top": 592,
+            "bottom": 638,
+            "left": 1323,
+            "right": 1716
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 1992,
+            "end": 2003
+        },
+        "page_num": 2,
+        "text": "completedAt",
+        "position": {
+            "top": 592,
+            "bottom": 640,
+            "left": 1726,
+            "right": 1975
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2004,
+            "end": 2015
+        },
+        "page_num": 2,
+        "text": "reviewer_id",
+        "position": {
+            "top": 688,
+            "bottom": 731,
+            "left": 257,
+            "right": 478
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2016,
+            "end": 2019
+        },
+        "page_num": 2,
+        "text": "int",
+        "position": {
+            "top": 688,
+            "bottom": 726,
+            "left": 948,
+            "right": 999
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2020,
+            "end": 2031
+        },
+        "page_num": 2,
+        "text": "submission.",
+        "position": {
+            "top": 698,
+            "bottom": 737,
+            "left": 1323,
+            "right": 1561
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2032,
+            "end": 2039
+        },
+        "page_num": 2,
+        "text": "review.",
+        "position": {
+            "top": 698,
+            "bottom": 739,
+            "left": 1568,
+            "right": 1717
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2040,
+            "end": 2049
+        },
+        "page_num": 2,
+        "text": "createdBy",
+        "position": {
+            "top": 697,
+            "bottom": 740,
+            "left": 1726,
+            "right": 1928
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2050,
+            "end": 2051
+        },
+        "page_num": 2,
+        "text": "2",
+        "position": {
+            "top": 693,
+            "bottom": 724,
+            "left": 1944,
+            "right": 1959
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2052,
+            "end": 2069
+        },
+        "page_num": 2,
+        "text": "review_started_at",
+        "position": {
+            "top": 792,
+            "bottom": 836,
+            "left": 257,
+            "right": 607
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2070,
+            "end": 2078
+        },
+        "page_num": 2,
+        "text": "datetime",
+        "position": {
+            "top": 792,
+            "bottom": 833,
+            "left": 948,
+            "right": 1117
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2079,
+            "end": 2097
+        },
+        "page_num": 2,
+        "text": "submission.review.",
+        "position": {
+            "top": 803,
+            "bottom": 840,
+            "left": 1323,
+            "right": 1717
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2098,
+            "end": 2107
+        },
+        "page_num": 2,
+        "text": "startedAt",
+        "position": {
+            "top": 800,
+            "bottom": 839,
+            "left": 1726,
+            "right": 1925
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2108,
+            "end": 2109
+        },
+        "page_num": 2,
+        "text": "2",
+        "position": {
+            "top": 797,
+            "bottom": 826,
+            "left": 1944,
+            "right": 1958
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2110,
+            "end": 2129
+        },
+        "page_num": 2,
+        "text": "review_completed_at",
+        "position": {
+            "top": 890,
+            "bottom": 941,
+            "left": 253,
+            "right": 679
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2130,
+            "end": 2138
+        },
+        "page_num": 2,
+        "text": "datetime",
+        "position": {
+            "top": 893,
+            "bottom": 933,
+            "left": 951,
+            "right": 1118
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2139,
+            "end": 2157
+        },
+        "page_num": 2,
+        "text": "submission.review.",
+        "position": {
+            "top": 905,
+            "bottom": 943,
+            "left": 1323,
+            "right": 1716
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2158,
+            "end": 2169
+        },
+        "page_num": 2,
+        "text": "completedAt",
+        "position": {
+            "top": 903,
+            "bottom": 946,
+            "left": 1724,
+            "right": 1971
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2170,
+            "end": 2171
+        },
+        "page_num": 2,
+        "text": "2",
+        "position": {
+            "top": 896,
+            "bottom": 929,
+            "left": 1986,
+            "right": 2004
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2172,
+            "end": 2180
+        },
+        "page_num": 2,
+        "text": "rejected",
+        "position": {
+            "top": 998,
+            "bottom": 1042,
+            "left": 259,
+            "right": 412
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2181,
+            "end": 2185
+        },
+        "page_num": 2,
+        "text": "bool",
+        "position": {
+            "top": 992,
+            "bottom": 1039,
+            "left": 948,
+            "right": 1037
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2186,
+            "end": 2197
+        },
+        "page_num": 2,
+        "text": "submission.",
+        "position": {
+            "top": 1009,
+            "bottom": 1045,
+            "left": 1325,
+            "right": 1560
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2198,
+            "end": 2205
+        },
+        "page_num": 2,
+        "text": "review.",
+        "position": {
+            "top": 1006,
+            "bottom": 1049,
+            "left": 1568,
+            "right": 1716
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2206,
+            "end": 2214
+        },
+        "page_num": 2,
+        "text": "rejected",
+        "position": {
+            "top": 1006,
+            "bottom": 1049,
+            "left": 1724,
+            "right": 1902
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2215,
+            "end": 2216
+        },
+        "page_num": 2,
+        "text": "2",
+        "position": {
+            "top": 999,
+            "bottom": 1035,
+            "left": 1921,
+            "right": 1938
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2217,
+            "end": 2233
+        },
+        "page_num": 2,
+        "text": "rejection_reason",
+        "position": {
+            "top": 1100,
+            "bottom": 1147,
+            "left": 257,
+            "right": 578
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2234,
+            "end": 2237
+        },
+        "page_num": 2,
+        "text": "str",
+        "position": {
+            "top": 1094,
+            "bottom": 1144,
+            "left": 946,
+            "right": 1001
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2238,
+            "end": 2256
+        },
+        "page_num": 2,
+        "text": "submission.review.",
+        "position": {
+            "top": 1110,
+            "bottom": 1148,
+            "left": 1326,
+            "right": 1716
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2257,
+            "end": 2262
+        },
+        "page_num": 2,
+        "text": "notes",
+        "position": {
+            "top": 1110,
+            "bottom": 1147,
+            "left": 1723,
+            "right": 1838
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2263,
+            "end": 2264
+        },
+        "page_num": 2,
+        "text": "2",
+        "position": {
+            "top": 1102,
+            "bottom": 1134,
+            "left": 1855,
+            "right": 1872
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2265,
+            "end": 2277
+        },
+        "page_num": 2,
+        "text": "completed_at",
+        "position": {
+            "top": 1198,
+            "bottom": 1241,
+            "left": 257,
+            "right": 528
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2278,
+            "end": 2286
+        },
+        "page_num": 2,
+        "text": "datetime",
+        "position": {
+            "top": 1198,
+            "bottom": 1237,
+            "left": 951,
+            "right": 1117
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2287,
+            "end": 2298
+        },
+        "page_num": 2,
+        "text": "submission.",
+        "position": {
+            "top": 1198,
+            "bottom": 1238,
+            "left": 1325,
+            "right": 1560
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2299,
+            "end": 2310
+        },
+        "page_num": 2,
+        "text": "completedAt",
+        "position": {
+            "top": 1198,
+            "bottom": 1238,
+            "left": 1570,
+            "right": 1813
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2311,
+            "end": 2323
+        },
+        "page_num": 2,
+        "text": "retrieved_at",
+        "position": {
+            "top": 1294,
+            "bottom": 1336,
+            "left": 257,
+            "right": 491
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2324,
+            "end": 2332
+        },
+        "page_num": 2,
+        "text": "datetime",
+        "position": {
+            "top": 1294,
+            "bottom": 1336,
+            "left": 951,
+            "right": 1118
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2333,
+            "end": 2344
+        },
+        "page_num": 2,
+        "text": "submission.",
+        "position": {
+            "top": 1306,
+            "bottom": 1347,
+            "left": 1323,
+            "right": 1560
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2345,
+            "end": 2354
+        },
+        "page_num": 2,
+        "text": "updatedAt",
+        "position": {
+            "top": 1306,
+            "bottom": 1344,
+            "left": 1568,
+            "right": 1770
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2355,
+            "end": 2356
+        },
+        "page_num": 2,
+        "text": "3",
+        "position": {
+            "top": 1301,
+            "bottom": 1343,
+            "left": 1785,
+            "right": 1807
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2357,
+            "end": 2363
+        },
+        "page_num": 2,
+        "text": "failed",
+        "position": {
+            "top": 1396,
+            "bottom": 1436,
+            "left": 257,
+            "right": 361
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2364,
+            "end": 2368
+        },
+        "page_num": 2,
+        "text": "bool",
+        "position": {
+            "top": 1392,
+            "bottom": 1440,
+            "left": 946,
+            "right": 1038
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2369,
+            "end": 2386
+        },
+        "page_num": 2,
+        "text": "submission.status",
+        "position": {
+            "top": 1407,
+            "bottom": 1446,
+            "left": 1323,
+            "right": 1701
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2387,
+            "end": 2388
+        },
+        "page_num": 2,
+        "text": "4",
+        "position": {
+            "top": 1402,
+            "bottom": 1435,
+            "left": 1717,
+            "right": 1736
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2389,
+            "end": 2395
+        },
+        "page_num": 2,
+        "text": "status",
+        "position": {
+            "top": 1498,
+            "bottom": 1533,
+            "left": 260,
+            "right": 378
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2396,
+            "end": 2400
+        },
+        "page_num": 2,
+        "text": "enum",
+        "position": {
+            "top": 1499,
+            "bottom": 1535,
+            "left": 949,
+            "right": 1040
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2401,
+            "end": 2418
+        },
+        "page_num": 2,
+        "text": "submission.status",
+        "position": {
+            "top": 1496,
+            "bottom": 1533,
+            "left": 1323,
+            "right": 1701
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2419,
+            "end": 2430
+        },
+        "page_num": 2,
+        "text": "workflow_id",
+        "position": {
+            "top": 1589,
+            "bottom": 1631,
+            "left": 257,
+            "right": 488
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2431,
+            "end": 2434
+        },
+        "page_num": 2,
+        "text": "int",
+        "position": {
+            "top": 1586,
+            "bottom": 1627,
+            "left": 946,
+            "right": 999
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2435,
+            "end": 2456
+        },
+        "page_num": 2,
+        "text": "submission.workflowId",
+        "position": {
+            "top": 1588,
+            "bottom": 1627,
+            "left": 1325,
+            "right": 1790
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2457,
+            "end": 2458
+        },
+        "page_num": 2,
+        "text": "1",
+        "position": {
+            "top": 1717,
+            "bottom": 1763,
+            "left": 212,
+            "right": 234
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2459,
+            "end": 2462
+        },
+        "page_num": 2,
+        "text": "The",
+        "position": {
+            "top": 1717,
+            "bottom": 1763,
+            "left": 246,
+            "right": 313
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2463,
+            "end": 2472
+        },
+        "page_num": 2,
+        "text": "timestamp",
+        "position": {
+            "top": 1718,
+            "bottom": 1764,
+            "left": 328,
+            "right": 521
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2473,
+            "end": 2476
+        },
+        "page_num": 2,
+        "text": "for",
+        "position": {
+            "top": 1718,
+            "bottom": 1766,
+            "left": 535,
+            "right": 593
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2477,
+            "end": 2487
+        },
+        "page_num": 2,
+        "text": "submission",
+        "position": {
+            "top": 1718,
+            "bottom": 1766,
+            "left": 603,
+            "right": 810
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2488,
+            "end": 2498
+        },
+        "page_num": 2,
+        "text": "processing",
+        "position": {
+            "top": 1720,
+            "bottom": 1767,
+            "left": 825,
+            "right": 1027
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2499,
+            "end": 2504
+        },
+        "page_num": 2,
+        "text": "being",
+        "position": {
+            "top": 1720,
+            "bottom": 1767,
+            "left": 1042,
+            "right": 1144
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2505,
+            "end": 2514
+        },
+        "page_num": 2,
+        "text": "completed",
+        "position": {
+            "top": 1720,
+            "bottom": 1767,
+            "left": 1160,
+            "right": 1356
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2515,
+            "end": 2517
+        },
+        "page_num": 2,
+        "text": "is",
+        "position": {
+            "top": 1720,
+            "bottom": 1767,
+            "left": 1368,
+            "right": 1406
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2518,
+            "end": 2521
+        },
+        "page_num": 2,
+        "text": "not",
+        "position": {
+            "top": 1720,
+            "bottom": 1766,
+            "left": 1416,
+            "right": 1485
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2522,
+            "end": 2530
+        },
+        "page_num": 2,
+        "text": "directly",
+        "position": {
+            "top": 1721,
+            "bottom": 1766,
+            "left": 1494,
+            "right": 1630
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2531,
+            "end": 2540
+        },
+        "page_num": 2,
+        "text": "available",
+        "position": {
+            "top": 1721,
+            "bottom": 1763,
+            "left": 1641,
+            "right": 1802
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2541,
+            "end": 2543
+        },
+        "page_num": 2,
+        "text": "on",
+        "position": {
+            "top": 1721,
+            "bottom": 1763,
+            "left": 1817,
+            "right": 1862
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2544,
+            "end": 2547
+        },
+        "page_num": 2,
+        "text": "the",
+        "position": {
+            "top": 1721,
+            "bottom": 1761,
+            "left": 1880,
+            "right": 1941
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2548,
+            "end": 2555
+        },
+        "page_num": 2,
+        "text": "Instead",
+        "position": {
+            "top": 1771,
+            "bottom": 1816,
+            "left": 242,
+            "right": 372
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2556,
+            "end": 2560
+        },
+        "page_num": 2,
+        "text": "it's",
+        "position": {
+            "top": 1771,
+            "bottom": 1816,
+            "left": 382,
+            "right": 441
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2561,
+            "end": 2573
+        },
+        "page_num": 2,
+        "text": "approximated",
+        "position": {
+            "top": 1770,
+            "bottom": 1816,
+            "left": 451,
+            "right": 701
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2574,
+            "end": 2576
+        },
+        "page_num": 2,
+        "text": "by",
+        "position": {
+            "top": 1770,
+            "bottom": 1817,
+            "left": 713,
+            "right": 759
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2577,
+            "end": 2580
+        },
+        "page_num": 2,
+        "text": "the",
+        "position": {
+            "top": 1770,
+            "bottom": 1817,
+            "left": 767,
+            "right": 828
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2581,
+            "end": 2591
+        },
+        "page_num": 2,
+        "text": "completion",
+        "position": {
+            "top": 1770,
+            "bottom": 1816,
+            "left": 838,
+            "right": 1038
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2592,
+            "end": 2596
+        },
+        "page_num": 2,
+        "text": "time",
+        "position": {
+            "top": 1770,
+            "bottom": 1816,
+            "left": 1050,
+            "right": 1130
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2597,
+            "end": 2599
+        },
+        "page_num": 2,
+        "text": "of",
+        "position": {
+            "top": 1770,
+            "bottom": 1816,
+            "left": 1143,
+            "right": 1179
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2600,
+            "end": 2604
+        },
+        "page_num": 2,
+        "text": "Auto",
+        "position": {
+            "top": 1770,
+            "bottom": 1816,
+            "left": 1189,
+            "right": 1272
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2605,
+            "end": 2611
+        },
+        "page_num": 2,
+        "text": "Review",
+        "position": {
+            "top": 1771,
+            "bottom": 1814,
+            "left": 1283,
+            "right": 1406
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2612,
+            "end": 2614
+        },
+        "page_num": 2,
+        "text": "in",
+        "position": {
+            "top": 1771,
+            "bottom": 1813,
+            "left": 1425,
+            "right": 1455
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2615,
+            "end": 2618
+        },
+        "page_num": 2,
+        "text": "the",
+        "position": {
+            "top": 1771,
+            "bottom": 1813,
+            "left": 1468,
+            "right": 1528
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2619,
+            "end": 2626
+        },
+        "page_num": 2,
+        "text": "reviews",
+        "position": {
+            "top": 1773,
+            "bottom": 1811,
+            "left": 1551,
+            "right": 1700
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2627,
+            "end": 2631
+        },
+        "page_num": 2,
+        "text": "list",
+        "position": {
+            "top": 1773,
+            "bottom": 1810,
+            "left": 1719,
+            "right": 1776
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2632,
+            "end": 2638
+        },
+        "page_num": 2,
+        "text": "(where",
+        "position": {
+            "top": 1821,
+            "bottom": 1867,
+            "left": 239,
+            "right": 361
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2639,
+            "end": 2649
+        },
+        "page_num": 2,
+        "text": "reviewType",
+        "position": {
+            "top": 1821,
+            "bottom": 1867,
+            "left": 385,
+            "right": 594
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2650,
+            "end": 2652
+        },
+        "page_num": 2,
+        "text": "==",
+        "position": {
+            "top": 1821,
+            "bottom": 1867,
+            "left": 617,
+            "right": 667
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2653,
+            "end": 2661
+        },
+        "page_num": 2,
+        "text": "\"AUTO\").",
+        "position": {
+            "top": 1821,
+            "bottom": 1867,
+            "left": 677,
+            "right": 845
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2662,
+            "end": 2672
+        },
+        "page_num": 2,
+        "text": "submission",
+        "position": {
+            "top": 1720,
+            "bottom": 1768,
+            "left": 1969,
+            "right": 2178
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2673,
+            "end": 2680
+        },
+        "page_num": 2,
+        "text": "object.",
+        "position": {
+            "top": 1720,
+            "bottom": 1767,
+            "left": 2211,
+            "right": 2336
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2681,
+            "end": 2682
+        },
+        "page_num": 2,
+        "text": "2",
+        "position": {
+            "top": 1922,
+            "bottom": 1966,
+            "left": 209,
+            "right": 232
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2683,
+            "end": 2686
+        },
+        "page_num": 2,
+        "text": "The",
+        "position": {
+            "top": 1922,
+            "bottom": 1967,
+            "left": 243,
+            "right": 308
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2687,
+            "end": 2691
+        },
+        "page_num": 2,
+        "text": "HITL",
+        "position": {
+            "top": 1922,
+            "bottom": 1967,
+            "left": 316,
+            "right": 402
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2692,
+            "end": 2698
+        },
+        "page_num": 2,
+        "text": "review",
+        "position": {
+            "top": 1923,
+            "bottom": 1969,
+            "left": 414,
+            "right": 522
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2699,
+            "end": 2703
+        },
+        "page_num": 2,
+        "text": "data",
+        "position": {
+            "top": 1923,
+            "bottom": 1969,
+            "left": 542,
+            "right": 626
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2704,
+            "end": 2710
+        },
+        "page_num": 2,
+        "text": "points",
+        "position": {
+            "top": 1925,
+            "bottom": 1970,
+            "left": 634,
+            "right": 746
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2711,
+            "end": 2715
+        },
+        "page_num": 2,
+        "text": "must",
+        "position": {
+            "top": 1925,
+            "bottom": 1970,
+            "left": 754,
+            "right": 852
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2716,
+            "end": 2720
+        },
+        "page_num": 2,
+        "text": "come",
+        "position": {
+            "top": 1925,
+            "bottom": 1970,
+            "left": 860,
+            "right": 961
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2721,
+            "end": 2725
+        },
+        "page_num": 2,
+        "text": "from",
+        "position": {
+            "top": 1925,
+            "bottom": 1970,
+            "left": 972,
+            "right": 1041
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2726,
+            "end": 2729
+        },
+        "page_num": 2,
+        "text": "the",
+        "position": {
+            "top": 1926,
+            "bottom": 1970,
+            "left": 1064,
+            "right": 1124
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2730,
+            "end": 2736
+        },
+        "page_num": 2,
+        "text": "Manual",
+        "position": {
+            "top": 1926,
+            "bottom": 1969,
+            "left": 1133,
+            "right": 1272
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2737,
+            "end": 2743
+        },
+        "page_num": 2,
+        "text": "Review",
+        "position": {
+            "top": 1926,
+            "bottom": 1969,
+            "left": 1280,
+            "right": 1403
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2744,
+            "end": 2746
+        },
+        "page_num": 2,
+        "text": "in",
+        "position": {
+            "top": 1926,
+            "bottom": 1967,
+            "left": 1421,
+            "right": 1455
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2747,
+            "end": 2750
+        },
+        "page_num": 2,
+        "text": "the",
+        "position": {
+            "top": 1926,
+            "bottom": 1967,
+            "left": 1464,
+            "right": 1524
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2751,
+            "end": 2758
+        },
+        "page_num": 2,
+        "text": "reviews",
+        "position": {
+            "top": 1926,
+            "bottom": 1966,
+            "left": 1547,
+            "right": 1699
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2759,
+            "end": 2763
+        },
+        "page_num": 2,
+        "text": "list",
+        "position": {
+            "top": 1927,
+            "bottom": 1965,
+            "left": 1716,
+            "right": 1774
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2764,
+            "end": 2770
+        },
+        "page_num": 2,
+        "text": "(where",
+        "position": {
+            "top": 1976,
+            "bottom": 2022,
+            "left": 240,
+            "right": 361
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2771,
+            "end": 2781
+        },
+        "page_num": 2,
+        "text": "reviewType",
+        "position": {
+            "top": 1977,
+            "bottom": 2020,
+            "left": 385,
+            "right": 595
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2782,
+            "end": 2784
+        },
+        "page_num": 2,
+        "text": "==",
+        "position": {
+            "top": 1976,
+            "bottom": 2020,
+            "left": 614,
+            "right": 667
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2785,
+            "end": 2795
+        },
+        "page_num": 2,
+        "text": "\"MANUAL\").",
+        "position": {
+            "top": 1976,
+            "bottom": 2020,
+            "left": 676,
+            "right": 906
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2796,
+            "end": 2797
+        },
+        "page_num": 2,
+        "text": "3",
+        "position": {
+            "top": 2075,
+            "bottom": 2125,
+            "left": 209,
+            "right": 233
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2798,
+            "end": 2801
+        },
+        "page_num": 2,
+        "text": "The",
+        "position": {
+            "top": 2075,
+            "bottom": 2125,
+            "left": 247,
+            "right": 316
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2802,
+            "end": 2806
+        },
+        "page_num": 2,
+        "text": "time",
+        "position": {
+            "top": 2076,
+            "bottom": 2125,
+            "left": 330,
+            "right": 412
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2807,
+            "end": 2809
+        },
+        "page_num": 2,
+        "text": "of",
+        "position": {
+            "top": 2076,
+            "bottom": 2125,
+            "left": 429,
+            "right": 468
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2810,
+            "end": 2819
+        },
+        "page_num": 2,
+        "text": "retrieval",
+        "position": {
+            "top": 2076,
+            "bottom": 2125,
+            "left": 478,
+            "right": 630
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2820,
+            "end": 2822
+        },
+        "page_num": 2,
+        "text": "is",
+        "position": {
+            "top": 2076,
+            "bottom": 2126,
+            "left": 640,
+            "right": 679
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2823,
+            "end": 2826
+        },
+        "page_num": 2,
+        "text": "not",
+        "position": {
+            "top": 2076,
+            "bottom": 2126,
+            "left": 690,
+            "right": 757
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2827,
+            "end": 2835
+        },
+        "page_num": 2,
+        "text": "directly",
+        "position": {
+            "top": 2078,
+            "bottom": 2126,
+            "left": 769,
+            "right": 906
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2836,
+            "end": 2845
+        },
+        "page_num": 2,
+        "text": "available",
+        "position": {
+            "top": 2078,
+            "bottom": 2128,
+            "left": 921,
+            "right": 1081
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2846,
+            "end": 2848
+        },
+        "page_num": 2,
+        "text": "on",
+        "position": {
+            "top": 2078,
+            "bottom": 2128,
+            "left": 1095,
+            "right": 1144
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2849,
+            "end": 2852
+        },
+        "page_num": 2,
+        "text": "the",
+        "position": {
+            "top": 2078,
+            "bottom": 2128,
+            "left": 1158,
+            "right": 1223
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2853,
+            "end": 2863
+        },
+        "page_num": 2,
+        "text": "submission",
+        "position": {
+            "top": 2078,
+            "bottom": 2128,
+            "left": 1250,
+            "right": 1461
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2864,
+            "end": 2871
+        },
+        "page_num": 2,
+        "text": "object.",
+        "position": {
+            "top": 2078,
+            "bottom": 2128,
+            "left": 1491,
+            "right": 1623
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2872,
+            "end": 2879
+        },
+        "page_num": 2,
+        "text": "Instead",
+        "position": {
+            "top": 2078,
+            "bottom": 2128,
+            "left": 1633,
+            "right": 1772
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2880,
+            "end": 2884
+        },
+        "page_num": 2,
+        "text": "it's",
+        "position": {
+            "top": 2078,
+            "bottom": 2129,
+            "left": 1785,
+            "right": 1848
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2885,
+            "end": 2897
+        },
+        "page_num": 2,
+        "text": "approximated",
+        "position": {
+            "top": 2078,
+            "bottom": 2129,
+            "left": 1860,
+            "right": 2114
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2898,
+            "end": 2900
+        },
+        "page_num": 2,
+        "text": "by",
+        "position": {
+            "top": 2078,
+            "bottom": 2129,
+            "left": 2127,
+            "right": 2180
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2901,
+            "end": 2904
+        },
+        "page_num": 2,
+        "text": "the",
+        "position": {
+            "top": 2078,
+            "bottom": 2129,
+            "left": 2193,
+            "right": 2256
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2905,
+            "end": 2909
+        },
+        "page_num": 2,
+        "text": "last",
+        "position": {
+            "top": 2078,
+            "bottom": 2128,
+            "left": 2266,
+            "right": 2343
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2910,
+            "end": 2916
+        },
+        "page_num": 2,
+        "text": "update",
+        "position": {
+            "top": 2132,
+            "bottom": 2175,
+            "left": 240,
+            "right": 369
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2917,
+            "end": 2921
+        },
+        "page_num": 2,
+        "text": "time",
+        "position": {
+            "top": 2131,
+            "bottom": 2175,
+            "left": 379,
+            "right": 458
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2922,
+            "end": 2924
+        },
+        "page_num": 2,
+        "text": "of",
+        "position": {
+            "top": 2131,
+            "bottom": 2175,
+            "left": 469,
+            "right": 507
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2925,
+            "end": 2928
+        },
+        "page_num": 2,
+        "text": "the",
+        "position": {
+            "top": 2131,
+            "bottom": 2174,
+            "left": 515,
+            "right": 571
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2929,
+            "end": 2939
+        },
+        "page_num": 2,
+        "text": "submission",
+        "position": {
+            "top": 2131,
+            "bottom": 2174,
+            "left": 584,
+            "right": 787
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2940,
+            "end": 2944
+        },
+        "page_num": 2,
+        "text": "once",
+        "position": {
+            "top": 2131,
+            "bottom": 2174,
+            "left": 803,
+            "right": 891
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2945,
+            "end": 2948
+        },
+        "page_num": 2,
+        "text": "the",
+        "position": {
+            "top": 2131,
+            "bottom": 2174,
+            "left": 902,
+            "right": 959
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2949,
+            "end": 2958
+        },
+        "page_num": 2,
+        "text": "retrieved",
+        "position": {
+            "top": 2131,
+            "bottom": 2174,
+            "left": 985,
+            "right": 1173
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2959,
+            "end": 2963
+        },
+        "page_num": 2,
+        "text": "flag",
+        "position": {
+            "top": 2132,
+            "bottom": 2174,
+            "left": 1196,
+            "right": 1264
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2964,
+            "end": 2966
+        },
+        "page_num": 2,
+        "text": "is",
+        "position": {
+            "top": 2132,
+            "bottom": 2174,
+            "left": 1273,
+            "right": 1306
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2967,
+            "end": 2971
+        },
+        "page_num": 2,
+        "text": "set.",
+        "position": {
+            "top": 2134,
+            "bottom": 2174,
+            "left": 1315,
+            "right": 1382
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2972,
+            "end": 2973
+        },
+        "page_num": 2,
+        "text": "4",
+        "position": {
+            "top": 2232,
+            "bottom": 2275,
+            "left": 209,
+            "right": 232
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2974,
+            "end": 2977
+        },
+        "page_num": 2,
+        "text": "The",
+        "position": {
+            "top": 2232,
+            "bottom": 2275,
+            "left": 246,
+            "right": 312
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2978,
+            "end": 2985
+        },
+        "page_num": 2,
+        "text": "failure",
+        "position": {
+            "top": 2232,
+            "bottom": 2275,
+            "left": 323,
+            "right": 436
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2986,
+            "end": 2992
+        },
+        "page_num": 2,
+        "text": "status",
+        "position": {
+            "top": 2234,
+            "bottom": 2277,
+            "left": 451,
+            "right": 563
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2993,
+            "end": 2995
+        },
+        "page_num": 2,
+        "text": "is",
+        "position": {
+            "top": 2234,
+            "bottom": 2277,
+            "left": 573,
+            "right": 610
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 2996,
+            "end": 2999
+        },
+        "page_num": 2,
+        "text": "not",
+        "position": {
+            "top": 2234,
+            "bottom": 2277,
+            "left": 620,
+            "right": 684
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3000,
+            "end": 3008
+        },
+        "page_num": 2,
+        "text": "directly",
+        "position": {
+            "top": 2235,
+            "bottom": 2278,
+            "left": 693,
+            "right": 829
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3009,
+            "end": 3018
+        },
+        "page_num": 2,
+        "text": "available",
+        "position": {
+            "top": 2235,
+            "bottom": 2278,
+            "left": 842,
+            "right": 1001
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3019,
+            "end": 3021
+        },
+        "page_num": 2,
+        "text": "on",
+        "position": {
+            "top": 2235,
+            "bottom": 2280,
+            "left": 1017,
+            "right": 1060
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3022,
+            "end": 3025
+        },
+        "page_num": 2,
+        "text": "the",
+        "position": {
+            "top": 2235,
+            "bottom": 2280,
+            "left": 1075,
+            "right": 1137
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3026,
+            "end": 3036
+        },
+        "page_num": 2,
+        "text": "submission",
+        "position": {
+            "top": 2235,
+            "bottom": 2280,
+            "left": 1164,
+            "right": 1370
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3037,
+            "end": 3043
+        },
+        "page_num": 2,
+        "text": "object",
+        "position": {
+            "top": 2235,
+            "bottom": 2280,
+            "left": 1401,
+            "right": 1522
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3044,
+            "end": 3046
+        },
+        "page_num": 2,
+        "text": "as",
+        "position": {
+            "top": 2235,
+            "bottom": 2280,
+            "left": 1531,
+            "right": 1575
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3047,
+            "end": 3048
+        },
+        "page_num": 2,
+        "text": "a",
+        "position": {
+            "top": 2235,
+            "bottom": 2281,
+            "left": 1588,
+            "right": 1611
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3049,
+            "end": 3057
+        },
+        "page_num": 2,
+        "text": "boolean.",
+        "position": {
+            "top": 2235,
+            "bottom": 2281,
+            "left": 1623,
+            "right": 1786
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3058,
+            "end": 3065
+        },
+        "page_num": 2,
+        "text": "Instead",
+        "position": {
+            "top": 2235,
+            "bottom": 2281,
+            "left": 1795,
+            "right": 1931
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3066,
+            "end": 3070
+        },
+        "page_num": 2,
+        "text": "it's",
+        "position": {
+            "top": 2234,
+            "bottom": 2281,
+            "left": 1944,
+            "right": 2005
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3071,
+            "end": 3078
+        },
+        "page_num": 2,
+        "text": "derived",
+        "position": {
+            "top": 2234,
+            "bottom": 2281,
+            "left": 2014,
+            "right": 2150
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3079,
+            "end": 3084
+        },
+        "page_num": 2,
+        "text": "using",
+        "position": {
+            "top": 2232,
+            "bottom": 2281,
+            "left": 2166,
+            "right": 2264
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3085,
+            "end": 3088
+        },
+        "page_num": 2,
+        "text": "the",
+        "position": {
+            "top": 2232,
+            "bottom": 2281,
+            "left": 2277,
+            "right": 2336
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3089,
+            "end": 3095
+        },
+        "page_num": 2,
+        "text": "status",
+        "position": {
+            "top": 2284,
+            "bottom": 2333,
+            "left": 257,
+            "right": 383
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3096,
+            "end": 3098
+        },
+        "page_num": 2,
+        "text": "of",
+        "position": {
+            "top": 2284,
+            "bottom": 2333,
+            "left": 403,
+            "right": 438
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3099,
+            "end": 3102
+        },
+        "page_num": 2,
+        "text": "the",
+        "position": {
+            "top": 2284,
+            "bottom": 2333,
+            "left": 448,
+            "right": 508
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3103,
+            "end": 3113
+        },
+        "page_num": 2,
+        "text": "submission",
+        "position": {
+            "top": 2284,
+            "bottom": 2333,
+            "left": 518,
+            "right": 724
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3114,
+            "end": 3120
+        },
+        "page_num": 2,
+        "text": "(where",
+        "position": {
+            "top": 2284,
+            "bottom": 2333,
+            "left": 734,
+            "right": 858
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3121,
+            "end": 3127
+        },
+        "page_num": 2,
+        "text": "status",
+        "position": {
+            "top": 2284,
+            "bottom": 2333,
+            "left": 881,
+            "right": 1011
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3128,
+            "end": 3130
+        },
+        "page_num": 2,
+        "text": "==",
+        "position": {
+            "top": 2284,
+            "bottom": 2333,
+            "left": 1028,
+            "right": 1078
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 3131,
+            "end": 3141
+        },
+        "page_num": 2,
+        "text": "\"FAILED\").",
+        "position": {
+            "top": 2284,
+            "bottom": 2331,
+            "left": 1088,
+            "right": 1286
+        }
+    }
+]

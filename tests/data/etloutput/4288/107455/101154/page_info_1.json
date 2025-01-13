@@ -1,0 +1,1050 @@
+{
+    "pages": [
+        {
+            "doc_offset": {
+                "start": 1360,
+                "end": 1838
+            },
+            "page_num": 1,
+            "text": "1.2\nModel\nColumn\nType\nGraphQL Source\nid\nint\nmodelGroup.id\nname\nstr\nmodelGroup.name\nworkflow_id\nint\nmodelGroup.workflowId\nExample GraphQL Query\nquery Models {\nmodelGroups(limit: 1000) {\nmodelGroups {\nid\nname\nworkflowId\n}\n}\n}\nScheduled Process Logic\nThis is a lightweight query. All models will be pulled every time the integration is run.\nData Reconciliation\nThe output will include the primary key id needed to update existing rows and insert new rows into the\nMetrics database."
+        }
+    ],
+    "tokens": [
+        {
+            "doc_offset": {
+                "start": 1360,
+                "end": 1363
+            },
+            "page_num": 1,
+            "text": "1.2",
+            "position": {
+                "top": 58,
+                "bottom": 100,
+                "left": 219,
+                "right": 309
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1364,
+                "end": 1369
+            },
+            "page_num": 1,
+            "text": "Model",
+            "position": {
+                "top": 57,
+                "bottom": 101,
+                "left": 368,
+                "right": 546
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1370,
+                "end": 1376
+            },
+            "page_num": 1,
+            "text": "Column",
+            "position": {
+                "top": 216,
+                "bottom": 248,
+                "left": 263,
+                "right": 421
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1377,
+                "end": 1381
+            },
+            "page_num": 1,
+            "text": "Type",
+            "position": {
+                "top": 216,
+                "bottom": 255,
+                "left": 888,
+                "right": 983
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1382,
+                "end": 1389
+            },
+            "page_num": 1,
+            "text": "GraphQL",
+            "position": {
+                "top": 216,
+                "bottom": 255,
+                "left": 1253,
+                "right": 1438
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1390,
+                "end": 1396
+            },
+            "page_num": 1,
+            "text": "Source",
+            "position": {
+                "top": 216,
+                "bottom": 248,
+                "left": 1452,
+                "right": 1597
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1397,
+                "end": 1399
+            },
+            "page_num": 1,
+            "text": "id",
+            "position": {
+                "top": 317,
+                "bottom": 349,
+                "left": 264,
+                "right": 294
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1400,
+                "end": 1403
+            },
+            "page_num": 1,
+            "text": "int",
+            "position": {
+                "top": 317,
+                "bottom": 348,
+                "left": 891,
+                "right": 934
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1404,
+                "end": 1417
+            },
+            "page_num": 1,
+            "text": "modelGroup.id",
+            "position": {
+                "top": 317,
+                "bottom": 354,
+                "left": 1267,
+                "right": 1553
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1418,
+                "end": 1422
+            },
+            "page_num": 1,
+            "text": "name",
+            "position": {
+                "top": 418,
+                "bottom": 441,
+                "left": 264,
+                "right": 369
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1423,
+                "end": 1426
+            },
+            "page_num": 1,
+            "text": "str",
+            "position": {
+                "top": 412,
+                "bottom": 441,
+                "left": 889,
+                "right": 938
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1427,
+                "end": 1442
+            },
+            "page_num": 1,
+            "text": "modelGroup.name",
+            "position": {
+                "top": 410,
+                "bottom": 447,
+                "left": 1267,
+                "right": 1598
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1443,
+                "end": 1454
+            },
+            "page_num": 1,
+            "text": "workflow_id",
+            "position": {
+                "top": 502,
+                "bottom": 539,
+                "left": 262,
+                "right": 492
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1455,
+                "end": 1458
+            },
+            "page_num": 1,
+            "text": "int",
+            "position": {
+                "top": 502,
+                "bottom": 533,
+                "left": 891,
+                "right": 934
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1459,
+                "end": 1480
+            },
+            "page_num": 1,
+            "text": "modelGroup.workflowId",
+            "position": {
+                "top": 502,
+                "bottom": 539,
+                "left": 1267,
+                "right": 1731
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1481,
+                "end": 1488
+            },
+            "page_num": 1,
+            "text": "Example",
+            "position": {
+                "top": 632,
+                "bottom": 671,
+                "left": 215,
+                "right": 391
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1489,
+                "end": 1496
+            },
+            "page_num": 1,
+            "text": "GraphQL",
+            "position": {
+                "top": 631,
+                "bottom": 671,
+                "left": 406,
+                "right": 591
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1497,
+                "end": 1502
+            },
+            "page_num": 1,
+            "text": "Query",
+            "position": {
+                "top": 631,
+                "bottom": 671,
+                "left": 606,
+                "right": 729
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1503,
+                "end": 1508
+            },
+            "page_num": 1,
+            "text": "query",
+            "position": {
+                "top": 755,
+                "bottom": 790,
+                "left": 244,
+                "right": 374
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1509,
+                "end": 1515
+            },
+            "page_num": 1,
+            "text": "Models",
+            "position": {
+                "top": 745,
+                "bottom": 781,
+                "left": 403,
+                "right": 559
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1516,
+                "end": 1517
+            },
+            "page_num": 1,
+            "text": "{",
+            "position": {
+                "top": 744,
+                "bottom": 788,
+                "left": 594,
+                "right": 613
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1518,
+                "end": 1536
+            },
+            "page_num": 1,
+            "text": "modelGroups(limit:",
+            "position": {
+                "top": 807,
+                "bottom": 852,
+                "left": 332,
+                "right": 802
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1537,
+                "end": 1542
+            },
+            "page_num": 1,
+            "text": "1000)",
+            "position": {
+                "top": 807,
+                "bottom": 851,
+                "left": 843,
+                "right": 969
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1543,
+                "end": 1544
+            },
+            "page_num": 1,
+            "text": "{",
+            "position": {
+                "top": 807,
+                "bottom": 851,
+                "left": 1004,
+                "right": 1024
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1545,
+                "end": 1556
+            },
+            "page_num": 1,
+            "text": "modelGroups",
+            "position": {
+                "top": 870,
+                "bottom": 915,
+                "left": 439,
+                "right": 728
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1557,
+                "end": 1558
+            },
+            "page_num": 1,
+            "text": "{",
+            "position": {
+                "top": 869,
+                "bottom": 913,
+                "left": 763,
+                "right": 783
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1559,
+                "end": 1561
+            },
+            "page_num": 1,
+            "text": "id",
+            "position": {
+                "top": 932,
+                "bottom": 968,
+                "left": 548,
+                "right": 595
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1562,
+                "end": 1566
+            },
+            "page_num": 1,
+            "text": "name",
+            "position": {
+                "top": 1005,
+                "bottom": 1031,
+                "left": 548,
+                "right": 649
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1567,
+                "end": 1577
+            },
+            "page_num": 1,
+            "text": "workflowId",
+            "position": {
+                "top": 1057,
+                "bottom": 1093,
+                "left": 545,
+                "right": 809
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1578,
+                "end": 1579
+            },
+            "page_num": 1,
+            "text": "}",
+            "position": {
+                "top": 1119,
+                "bottom": 1163,
+                "left": 440,
+                "right": 460
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1580,
+                "end": 1581
+            },
+            "page_num": 1,
+            "text": "}",
+            "position": {
+                "top": 1182,
+                "bottom": 1226,
+                "left": 333,
+                "right": 352
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1582,
+                "end": 1583
+            },
+            "page_num": 1,
+            "text": "}",
+            "position": {
+                "top": 1244,
+                "bottom": 1288,
+                "left": 226,
+                "right": 245
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1584,
+                "end": 1593
+            },
+            "page_num": 1,
+            "text": "Scheduled",
+            "position": {
+                "top": 1365,
+                "bottom": 1398,
+                "left": 213,
+                "right": 430
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1594,
+                "end": 1601
+            },
+            "page_num": 1,
+            "text": "Process",
+            "position": {
+                "top": 1366,
+                "bottom": 1398,
+                "left": 448,
+                "right": 613
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1602,
+                "end": 1607
+            },
+            "page_num": 1,
+            "text": "Logic",
+            "position": {
+                "top": 1366,
+                "bottom": 1405,
+                "left": 629,
+                "right": 741
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1608,
+                "end": 1612
+            },
+            "page_num": 1,
+            "text": "This",
+            "position": {
+                "top": 1470,
+                "bottom": 1501,
+                "left": 212,
+                "right": 292
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1613,
+                "end": 1615
+            },
+            "page_num": 1,
+            "text": "is",
+            "position": {
+                "top": 1470,
+                "bottom": 1501,
+                "left": 308,
+                "right": 335
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1616,
+                "end": 1617
+            },
+            "page_num": 1,
+            "text": "a",
+            "position": {
+                "top": 1478,
+                "bottom": 1501,
+                "left": 351,
+                "right": 372
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1618,
+                "end": 1629
+            },
+            "page_num": 1,
+            "text": "lightweight",
+            "position": {
+                "top": 1470,
+                "bottom": 1510,
+                "left": 388,
+                "right": 595
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1630,
+                "end": 1636
+            },
+            "page_num": 1,
+            "text": "query.",
+            "position": {
+                "top": 1478,
+                "bottom": 1510,
+                "left": 611,
+                "right": 724
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1637,
+                "end": 1640
+            },
+            "page_num": 1,
+            "text": "All",
+            "position": {
+                "top": 1470,
+                "bottom": 1501,
+                "left": 740,
+                "right": 785
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1641,
+                "end": 1647
+            },
+            "page_num": 1,
+            "text": "models",
+            "position": {
+                "top": 1470,
+                "bottom": 1501,
+                "left": 803,
+                "right": 942
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1648,
+                "end": 1652
+            },
+            "page_num": 1,
+            "text": "will",
+            "position": {
+                "top": 1470,
+                "bottom": 1501,
+                "left": 957,
+                "right": 1015
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1653,
+                "end": 1655
+            },
+            "page_num": 1,
+            "text": "be",
+            "position": {
+                "top": 1470,
+                "bottom": 1501,
+                "left": 1033,
+                "right": 1079
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1656,
+                "end": 1662
+            },
+            "page_num": 1,
+            "text": "pulled",
+            "position": {
+                "top": 1470,
+                "bottom": 1510,
+                "left": 1095,
+                "right": 1208
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1663,
+                "end": 1668
+            },
+            "page_num": 1,
+            "text": "every",
+            "position": {
+                "top": 1478,
+                "bottom": 1510,
+                "left": 1225,
+                "right": 1328
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1669,
+                "end": 1673
+            },
+            "page_num": 1,
+            "text": "time",
+            "position": {
+                "top": 1470,
+                "bottom": 1501,
+                "left": 1341,
+                "right": 1424
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1674,
+                "end": 1677
+            },
+            "page_num": 1,
+            "text": "the",
+            "position": {
+                "top": 1470,
+                "bottom": 1501,
+                "left": 1438,
+                "right": 1498
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1678,
+                "end": 1689
+            },
+            "page_num": 1,
+            "text": "integration",
+            "position": {
+                "top": 1470,
+                "bottom": 1510,
+                "left": 1514,
+                "right": 1716
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1690,
+                "end": 1692
+            },
+            "page_num": 1,
+            "text": "is",
+            "position": {
+                "top": 1470,
+                "bottom": 1501,
+                "left": 1734,
+                "right": 1761
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1693,
+                "end": 1697
+            },
+            "page_num": 1,
+            "text": "run.",
+            "position": {
+                "top": 1478,
+                "bottom": 1501,
+                "left": 1777,
+                "right": 1846
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1698,
+                "end": 1702
+            },
+            "page_num": 1,
+            "text": "Data",
+            "position": {
+                "top": 1576,
+                "bottom": 1608,
+                "left": 215,
+                "right": 308
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1703,
+                "end": 1717
+            },
+            "page_num": 1,
+            "text": "Reconciliation",
+            "position": {
+                "top": 1576,
+                "bottom": 1608,
+                "left": 325,
+                "right": 618
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1718,
+                "end": 1721
+            },
+            "page_num": 1,
+            "text": "The",
+            "position": {
+                "top": 1680,
+                "bottom": 1711,
+                "left": 212,
+                "right": 284
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1722,
+                "end": 1728
+            },
+            "page_num": 1,
+            "text": "output",
+            "position": {
+                "top": 1682,
+                "bottom": 1720,
+                "left": 304,
+                "right": 428
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1729,
+                "end": 1733
+            },
+            "page_num": 1,
+            "text": "will",
+            "position": {
+                "top": 1680,
+                "bottom": 1711,
+                "left": 447,
+                "right": 506
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1734,
+                "end": 1741
+            },
+            "page_num": 1,
+            "text": "include",
+            "position": {
+                "top": 1680,
+                "bottom": 1711,
+                "left": 529,
+                "right": 666
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1742,
+                "end": 1745
+            },
+            "page_num": 1,
+            "text": "the",
+            "position": {
+                "top": 1680,
+                "bottom": 1711,
+                "left": 685,
+                "right": 745
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1746,
+                "end": 1753
+            },
+            "page_num": 1,
+            "text": "primary",
+            "position": {
+                "top": 1680,
+                "bottom": 1720,
+                "left": 766,
+                "right": 910
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1754,
+                "end": 1757
+            },
+            "page_num": 1,
+            "text": "key",
+            "position": {
+                "top": 1680,
+                "bottom": 1720,
+                "left": 931,
+                "right": 995
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1758,
+                "end": 1760
+            },
+            "page_num": 1,
+            "text": "id",
+            "position": {
+                "top": 1681,
+                "bottom": 1711,
+                "left": 1031,
+                "right": 1070
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1761,
+                "end": 1767
+            },
+            "page_num": 1,
+            "text": "needed",
+            "position": {
+                "top": 1680,
+                "bottom": 1711,
+                "left": 1107,
+                "right": 1248
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1768,
+                "end": 1770
+            },
+            "page_num": 1,
+            "text": "to",
+            "position": {
+                "top": 1682,
+                "bottom": 1711,
+                "left": 1269,
+                "right": 1306
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1771,
+                "end": 1777
+            },
+            "page_num": 1,
+            "text": "update",
+            "position": {
+                "top": 1680,
+                "bottom": 1720,
+                "left": 1328,
+                "right": 1461
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1778,
+                "end": 1786
+            },
+            "page_num": 1,
+            "text": "existing",
+            "position": {
+                "top": 1680,
+                "bottom": 1720,
+                "left": 1481,
+                "right": 1627
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1787,
+                "end": 1791
+            },
+            "page_num": 1,
+            "text": "rows",
+            "position": {
+                "top": 1688,
+                "bottom": 1711,
+                "left": 1650,
+                "right": 1740
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1792,
+                "end": 1795
+            },
+            "page_num": 1,
+            "text": "and",
+            "position": {
+                "top": 1680,
+                "bottom": 1711,
+                "left": 1760,
+                "right": 1830
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1796,
+                "end": 1802
+            },
+            "page_num": 1,
+            "text": "insert",
+            "position": {
+                "top": 1680,
+                "bottom": 1711,
+                "left": 1853,
+                "right": 1957
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1803,
+                "end": 1806
+            },
+            "page_num": 1,
+            "text": "new",
+            "position": {
+                "top": 1688,
+                "bottom": 1711,
+                "left": 1978,
+                "right": 2055
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1807,
+                "end": 1811
+            },
+            "page_num": 1,
+            "text": "rows",
+            "position": {
+                "top": 1688,
+                "bottom": 1711,
+                "left": 2076,
+                "right": 2166
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1812,
+                "end": 1816
+            },
+            "page_num": 1,
+            "text": "into",
+            "position": {
+                "top": 1680,
+                "bottom": 1711,
+                "left": 2188,
+                "right": 2256
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1817,
+                "end": 1820
+            },
+            "page_num": 1,
+            "text": "the",
+            "position": {
+                "top": 1680,
+                "bottom": 1711,
+                "left": 2276,
+                "right": 2336
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1821,
+                "end": 1828
+            },
+            "page_num": 1,
+            "text": "Metrics",
+            "position": {
+                "top": 1741,
+                "bottom": 1773,
+                "left": 216,
+                "right": 356
+            }
+        },
+        {
+            "doc_offset": {
+                "start": 1829,
+                "end": 1838
+            },
+            "page_num": 1,
+            "text": "database.",
+            "position": {
+                "top": 1741,
+                "bottom": 1773,
+                "left": 371,
+                "right": 559
+            }
+        }
+    ]
+}

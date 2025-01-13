@@ -1,10 +1,8 @@
-from typing import List, Union
+from typing import List
 
-from indico_toolkit import ToolkitStatusError, ToolkitInputError
+from indico_toolkit import ToolkitInputError
 
 from .predictions import Predictions
-from .extractions import Extractions
-from .classification import Classification, ClassificationMGP
 
 
 class WorkflowResult:

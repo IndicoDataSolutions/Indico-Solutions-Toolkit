@@ -1,0 +1,15 @@
+{
+    "file_version": 1,
+    "submission_id": 107455,
+    "etl_output": "indico-file:///storage/submission/4288/107455/101154/etl_output.json",
+    "results": {
+        "document": {
+            "results": {
+                "Standard Document v2": []
+            },
+            "rejected": {
+                "Standard Document v2": []
+            }
+        }
+    }
+}

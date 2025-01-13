@@ -1,0 +1,54 @@
+{
+    "pages": [
+        {
+            "page_num": 0,
+            "image": "indico-file:///storage/submission/4289/107457/101156/original_page_0.png",
+            "thumbnail": "indico-file:///storage/submission/4289/107457/101156/original_thumbnail_0.png",
+            "doc_start_offset": 0,
+            "doc_end_offset": 1360,
+            "page_info": "indico-file:///storage/submission/4289/107457/101156/page_info_0.json"
+        },
+        {
+            "page_num": 1,
+            "image": "indico-file:///storage/submission/4289/107457/101156/original_page_1.png",
+            "thumbnail": "indico-file:///storage/submission/4289/107457/101156/original_thumbnail_1.png",
+            "doc_start_offset": 1361,
+            "doc_end_offset": 1845,
+            "page_info": "indico-file:///storage/submission/4289/107457/101156/page_info_1.json"
+        },
+        {
+            "page_num": 2,
+            "image": "indico-file:///storage/submission/4289/107457/101156/original_page_2.png",
+            "thumbnail": "indico-file:///storage/submission/4289/107457/101156/original_thumbnail_2.png",
+            "doc_start_offset": 1846,
+            "doc_end_offset": 3141,
+            "page_info": "indico-file:///storage/submission/4289/107457/101156/page_info_2.json"
+        },
+        {
+            "page_num": 3,
+            "image": "indico-file:///storage/submission/4289/107457/101156/original_page_3.png",
+            "thumbnail": "indico-file:///storage/submission/4289/107457/101156/original_thumbnail_3.png",
+            "doc_start_offset": 3142,
+            "doc_end_offset": 4185,
+            "page_info": "indico-file:///storage/submission/4289/107457/101156/page_info_3.json"
+        },
+        {
+            "page_num": 4,
+            "image": "indico-file:///storage/submission/4289/107457/101156/original_page_4.png",
+            "thumbnail": "indico-file:///storage/submission/4289/107457/101156/original_thumbnail_4.png",
+            "doc_start_offset": 4186,
+            "doc_end_offset": 4729,
+            "page_info": "indico-file:///storage/submission/4289/107457/101156/page_info_4.json"
+        },
+        {
+            "page_num": 5,
+            "image": "indico-file:///storage/submission/4289/107457/101156/original_page_5.png",
+            "thumbnail": "indico-file:///storage/submission/4289/107457/101156/original_thumbnail_5.png",
+            "doc_start_offset": 4730,
+            "doc_end_offset": 6494,
+            "page_info": "indico-file:///storage/submission/4289/107457/101156/page_info_5.json"
+        }
+    ],
+    "num_pages": 6,
+    "metadata": {}
+}

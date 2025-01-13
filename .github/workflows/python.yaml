@@ -1,0 +1,68 @@
+name: Python
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  Python:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+    
+    env:
+      API_TOKEN: ${{ secrets.TEST_API_TOKEN }}
+      DATASET_ID: ${{ secrets.DATASET_ID }}
+      PDF_DATASET_ID: ${{ secrets.PDF_DATASET_ID }}
+      MODEL_NAME: ${{ secrets.MODEL_NAME }}
+      WORKFLOW_ID: ${{ secrets.WORKFLOW_ID }}
+      MODEL_ID: ${{ secrets.MODEL_ID }} 
+      MODEL_GROUP_ID: ${{ secrets.MODEL_GROUP_ID }}
+      TEACH_TASK_ID: ${{ secrets.TEACH_TASK_ID }}
+      HOST_URL: try.indico.io
+    
+    steps:
+    - name: Checkout Commit
+      uses: actions/checkout@v3
+
+    - name: Install Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+        python -m pip install -e .[full]
+        python -m pip install flake8 pytest pytest-cov
+
+    - name: Run Tests And Build Coverage File
+      run: |
+        pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=indico_toolkit tests/ | tee pytest-coverage.txt
+
+    - name: Pytest Coverage Comment
+      id: coverageComment
+      uses: MishaKav/pytest-coverage-comment@main
+      with:
+        pytest-coverage-path: ./pytest-coverage.txt
+        junitxml-path: ./pytest.xml
+        title: Indico Toolkit Coverage Report
+        badge-title: Test Coverage
+        default-branch: main
+
+    - name: Check The Output Coverage
+      run: |
+        echo "Coverage Percentage - ${{ steps.coverageComment.outputs.coverage }}"
+        echo "Coverage Warnings - ${{ steps.coverageComment.outputs.warnings }}"
+        echo "Coverage Errors - ${{ steps.coverageComment.outputs.errors }}"
+        echo "Coverage Failures - ${{ steps.coverageComment.outputs.failures }}"
+        echo "Coverage Skipped - ${{ steps.coverageComment.outputs.skipped }}"
+        echo "Coverage Tests - ${{ steps.coverageComment.outputs.tests }}"
+        echo "Coverage Time - ${{ steps.coverageComment.outputs.time }}"
+        echo "Not Success Test Info - ${{ steps.coverageComment.outputs.notSuccessTestInfo }}"

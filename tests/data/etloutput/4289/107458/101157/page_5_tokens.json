@@ -1,0 +1,3796 @@
+[
+    {
+        "doc_offset": {
+            "start": 4730,
+            "end": 4733
+        },
+        "page_num": 5,
+        "text": "1.6",
+        "position": {
+            "top": 136,
+            "bottom": 193,
+            "left": 220,
+            "right": 302
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4734,
+            "end": 4744
+        },
+        "page_num": 5,
+        "text": "Prediction",
+        "position": {
+            "top": 137,
+            "bottom": 190,
+            "left": 362,
+            "right": 676
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4745,
+            "end": 4751
+        },
+        "page_num": 5,
+        "text": "Column",
+        "position": {
+            "top": 296,
+            "bottom": 336,
+            "left": 262,
+            "right": 415
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4752,
+            "end": 4756
+        },
+        "page_num": 5,
+        "text": "Type",
+        "position": {
+            "top": 296,
+            "bottom": 342,
+            "left": 1015,
+            "right": 1107
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4757,
+            "end": 4763
+        },
+        "page_num": 5,
+        "text": "Result",
+        "position": {
+            "top": 295,
+            "bottom": 339,
+            "left": 1328,
+            "right": 1461
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4764,
+            "end": 4768
+        },
+        "page_num": 5,
+        "text": "File",
+        "position": {
+            "top": 295,
+            "bottom": 338,
+            "left": 1471,
+            "right": 1542
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4769,
+            "end": 4775
+        },
+        "page_num": 5,
+        "text": "Source",
+        "position": {
+            "top": 295,
+            "bottom": 339,
+            "left": 1561,
+            "right": 1704
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4776,
+            "end": 4778
+        },
+        "page_num": 5,
+        "text": "id",
+        "position": {
+            "top": 403,
+            "bottom": 439,
+            "left": 259,
+            "right": 289
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4779,
+            "end": 4783
+        },
+        "page_num": 5,
+        "text": "uuid",
+        "position": {
+            "top": 403,
+            "bottom": 442,
+            "left": 1009,
+            "right": 1091
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4784,
+            "end": 4793
+        },
+        "page_num": 5,
+        "text": "Generated",
+        "position": {
+            "top": 409,
+            "bottom": 456,
+            "left": 1328,
+            "right": 1532
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4794,
+            "end": 4796
+        },
+        "page_num": 5,
+        "text": "by",
+        "position": {
+            "top": 409,
+            "bottom": 458,
+            "left": 1542,
+            "right": 1590
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4797,
+            "end": 4809
+        },
+        "page_num": 5,
+        "text": "integration5",
+        "position": {
+            "top": 409,
+            "bottom": 456,
+            "left": 1600,
+            "right": 1836
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4810,
+            "end": 4815
+        },
+        "page_num": 5,
+        "text": "label",
+        "position": {
+            "top": 508,
+            "bottom": 545,
+            "left": 257,
+            "right": 349
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4816,
+            "end": 4819
+        },
+        "page_num": 5,
+        "text": "str",
+        "position": {
+            "top": 509,
+            "bottom": 548,
+            "left": 1011,
+            "right": 1061
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4820,
+            "end": 4831
+        },
+        "page_num": 5,
+        "text": "Prediction.",
+        "position": {
+            "top": 518,
+            "bottom": 555,
+            "left": 1340,
+            "right": 1577
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4832,
+            "end": 4837
+        },
+        "page_num": 5,
+        "text": "Label",
+        "position": {
+            "top": 514,
+            "bottom": 552,
+            "left": 1585,
+            "right": 1701
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4838,
+            "end": 4841
+        },
+        "page_num": 5,
+        "text": "6,7",
+        "position": {
+            "top": 511,
+            "bottom": 548,
+            "left": 1714,
+            "right": 1764
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4842,
+            "end": 4857
+        },
+        "page_num": 5,
+        "text": "predicted_value",
+        "position": {
+            "top": 613,
+            "bottom": 657,
+            "left": 259,
+            "right": 570
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4858,
+            "end": 4861
+        },
+        "page_num": 5,
+        "text": "str",
+        "position": {
+            "top": 615,
+            "bottom": 648,
+            "left": 1012,
+            "right": 1060
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4862,
+            "end": 4873
+        },
+        "page_num": 5,
+        "text": "Prediction.",
+        "position": {
+            "top": 621,
+            "bottom": 657,
+            "left": 1342,
+            "right": 1583
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4874,
+            "end": 4878
+        },
+        "page_num": 5,
+        "text": "Text",
+        "position": {
+            "top": 620,
+            "bottom": 657,
+            "left": 1590,
+            "right": 1676
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4879,
+            "end": 4882
+        },
+        "page_num": 5,
+        "text": "8,7",
+        "position": {
+            "top": 608,
+            "bottom": 653,
+            "left": 1693,
+            "right": 1742
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4883,
+            "end": 4897
+        },
+        "page_num": 5,
+        "text": "reviewed_value",
+        "position": {
+            "top": 714,
+            "bottom": 756,
+            "left": 257,
+            "right": 560
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4898,
+            "end": 4901
+        },
+        "page_num": 5,
+        "text": "str",
+        "position": {
+            "top": 716,
+            "bottom": 751,
+            "left": 1011,
+            "right": 1061
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4902,
+            "end": 4913
+        },
+        "page_num": 5,
+        "text": "Prediction.",
+        "position": {
+            "top": 724,
+            "bottom": 761,
+            "left": 1340,
+            "right": 1584
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4914,
+            "end": 4918
+        },
+        "page_num": 5,
+        "text": "Text",
+        "position": {
+            "top": 723,
+            "bottom": 760,
+            "left": 1591,
+            "right": 1674
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4919,
+            "end": 4922
+        },
+        "page_num": 5,
+        "text": "8,7",
+        "position": {
+            "top": 711,
+            "bottom": 754,
+            "left": 1693,
+            "right": 1742
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4923,
+            "end": 4941
+        },
+        "page_num": 5,
+        "text": "submission_file_id",
+        "position": {
+            "top": 816,
+            "bottom": 859,
+            "left": 260,
+            "right": 614
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4942,
+            "end": 4945
+        },
+        "page_num": 5,
+        "text": "int",
+        "position": {
+            "top": 814,
+            "bottom": 853,
+            "left": 1007,
+            "right": 1060
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4946,
+            "end": 4957
+        },
+        "page_num": 5,
+        "text": "Prediction.",
+        "position": {
+            "top": 827,
+            "bottom": 865,
+            "left": 1343,
+            "right": 1577
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4958,
+            "end": 4967
+        },
+        "page_num": 5,
+        "text": "Document.",
+        "position": {
+            "top": 826,
+            "bottom": 863,
+            "left": 1585,
+            "right": 1783
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4968,
+            "end": 4970
+        },
+        "page_num": 5,
+        "text": "Id",
+        "position": {
+            "top": 825,
+            "bottom": 863,
+            "left": 1790,
+            "right": 1830
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4971,
+            "end": 4972
+        },
+        "page_num": 5,
+        "text": "7",
+        "position": {
+            "top": 823,
+            "bottom": 863,
+            "left": 1849,
+            "right": 1869
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4973,
+            "end": 4981
+        },
+        "page_num": 5,
+        "text": "model_id",
+        "position": {
+            "top": 919,
+            "bottom": 962,
+            "left": 257,
+            "right": 436
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4982,
+            "end": 4985
+        },
+        "page_num": 5,
+        "text": "int",
+        "position": {
+            "top": 918,
+            "bottom": 958,
+            "left": 1007,
+            "right": 1060
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4986,
+            "end": 4997
+        },
+        "page_num": 5,
+        "text": "Prediction.",
+        "position": {
+            "top": 928,
+            "bottom": 966,
+            "left": 1340,
+            "right": 1575
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 4998,
+            "end": 5004
+        },
+        "page_num": 5,
+        "text": "Model.",
+        "position": {
+            "top": 926,
+            "bottom": 966,
+            "left": 1584,
+            "right": 1716
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5005,
+            "end": 5007
+        },
+        "page_num": 5,
+        "text": "Id",
+        "position": {
+            "top": 926,
+            "bottom": 966,
+            "left": 1724,
+            "right": 1766
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5008,
+            "end": 5009
+        },
+        "page_num": 5,
+        "text": "7",
+        "position": {
+            "top": 925,
+            "bottom": 965,
+            "left": 1782,
+            "right": 1800
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5010,
+            "end": 5011
+        },
+        "page_num": 5,
+        "text": "5",
+        "position": {
+            "top": 1054,
+            "bottom": 1100,
+            "left": 210,
+            "right": 232
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5012,
+            "end": 5023
+        },
+        "page_num": 5,
+        "text": "Predictions",
+        "position": {
+            "top": 1054,
+            "bottom": 1100,
+            "left": 243,
+            "right": 449
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5024,
+            "end": 5026
+        },
+        "page_num": 5,
+        "text": "do",
+        "position": {
+            "top": 1055,
+            "bottom": 1101,
+            "left": 464,
+            "right": 508
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5027,
+            "end": 5030
+        },
+        "page_num": 5,
+        "text": "not",
+        "position": {
+            "top": 1055,
+            "bottom": 1101,
+            "left": 522,
+            "right": 585
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5031,
+            "end": 5035
+        },
+        "page_num": 5,
+        "text": "have",
+        "position": {
+            "top": 1055,
+            "bottom": 1101,
+            "left": 597,
+            "right": 689
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5036,
+            "end": 5037
+        },
+        "page_num": 5,
+        "text": "a",
+        "position": {
+            "top": 1055,
+            "bottom": 1101,
+            "left": 701,
+            "right": 726
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5038,
+            "end": 5053
+        },
+        "page_num": 5,
+        "text": "system-assigned",
+        "position": {
+            "top": 1057,
+            "bottom": 1101,
+            "left": 739,
+            "right": 1048
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5054,
+            "end": 5060
+        },
+        "page_num": 5,
+        "text": "unique",
+        "position": {
+            "top": 1057,
+            "bottom": 1102,
+            "left": 1061,
+            "right": 1189
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5061,
+            "end": 5072
+        },
+        "page_num": 5,
+        "text": "identifier.",
+        "position": {
+            "top": 1057,
+            "bottom": 1102,
+            "left": 1197,
+            "right": 1368
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5073,
+            "end": 5084
+        },
+        "page_num": 5,
+        "text": "Recommended",
+        "position": {
+            "top": 1057,
+            "bottom": 1104,
+            "left": 1378,
+            "right": 1657
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5085,
+            "end": 5089
+        },
+        "page_num": 5,
+        "text": "that",
+        "position": {
+            "top": 1057,
+            "bottom": 1104,
+            "left": 1673,
+            "right": 1747
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5090,
+            "end": 5093
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 1057,
+            "bottom": 1104,
+            "left": 1756,
+            "right": 1817
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5094,
+            "end": 5105
+        },
+        "page_num": 5,
+        "text": "integration",
+        "position": {
+            "top": 1057,
+            "bottom": 1104,
+            "left": 1827,
+            "right": 2022
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5106,
+            "end": 5113
+        },
+        "page_num": 5,
+        "text": "pulling",
+        "position": {
+            "top": 1055,
+            "bottom": 1104,
+            "left": 2038,
+            "right": 2158
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5114,
+            "end": 5118
+        },
+        "page_num": 5,
+        "text": "this",
+        "position": {
+            "top": 1055,
+            "bottom": 1104,
+            "left": 2171,
+            "right": 2243
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5119,
+            "end": 5123
+        },
+        "page_num": 5,
+        "text": "data",
+        "position": {
+            "top": 1055,
+            "bottom": 1104,
+            "left": 2253,
+            "right": 2336
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5124,
+            "end": 5133
+        },
+        "page_num": 5,
+        "text": "generates",
+        "position": {
+            "top": 1107,
+            "bottom": 1151,
+            "left": 242,
+            "right": 422
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5134,
+            "end": 5135
+        },
+        "page_num": 5,
+        "text": "a",
+        "position": {
+            "top": 1105,
+            "bottom": 1151,
+            "left": 432,
+            "right": 455
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5136,
+            "end": 5142
+        },
+        "page_num": 5,
+        "text": "unique",
+        "position": {
+            "top": 1104,
+            "bottom": 1151,
+            "left": 465,
+            "right": 588
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5143,
+            "end": 5149
+        },
+        "page_num": 5,
+        "text": "UUIDv7",
+        "position": {
+            "top": 1104,
+            "bottom": 1151,
+            "left": 598,
+            "right": 740
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5150,
+            "end": 5153
+        },
+        "page_num": 5,
+        "text": "for",
+        "position": {
+            "top": 1104,
+            "bottom": 1150,
+            "left": 749,
+            "right": 800
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5154,
+            "end": 5158
+        },
+        "page_num": 5,
+        "text": "each",
+        "position": {
+            "top": 1104,
+            "bottom": 1150,
+            "left": 810,
+            "right": 898
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5159,
+            "end": 5170
+        },
+        "page_num": 5,
+        "text": "prediction.",
+        "position": {
+            "top": 1105,
+            "bottom": 1150,
+            "left": 909,
+            "right": 1104
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5171,
+            "end": 5172
+        },
+        "page_num": 5,
+        "text": "6",
+        "position": {
+            "top": 1204,
+            "bottom": 1250,
+            "left": 209,
+            "right": 229
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5173,
+            "end": 5176
+        },
+        "page_num": 5,
+        "text": "For",
+        "position": {
+            "top": 1204,
+            "bottom": 1250,
+            "left": 237,
+            "right": 302
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5177,
+            "end": 5188
+        },
+        "page_num": 5,
+        "text": "performance",
+        "position": {
+            "top": 1205,
+            "bottom": 1250,
+            "left": 310,
+            "right": 542
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5189,
+            "end": 5197
+        },
+        "page_num": 5,
+        "text": "reasons,",
+        "position": {
+            "top": 1205,
+            "bottom": 1250,
+            "left": 551,
+            "right": 710
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5198,
+            "end": 5202
+        },
+        "page_num": 5,
+        "text": "this",
+        "position": {
+            "top": 1205,
+            "bottom": 1250,
+            "left": 719,
+            "right": 789
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5203,
+            "end": 5209
+        },
+        "page_num": 5,
+        "text": "column",
+        "position": {
+            "top": 1205,
+            "bottom": 1251,
+            "left": 797,
+            "right": 932
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5210,
+            "end": 5216
+        },
+        "page_num": 5,
+        "text": "should",
+        "position": {
+            "top": 1205,
+            "bottom": 1251,
+            "left": 948,
+            "right": 1068
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5217,
+            "end": 5221
+        },
+        "page_num": 5,
+        "text": "have",
+        "position": {
+            "top": 1205,
+            "bottom": 1251,
+            "left": 1078,
+            "right": 1168
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5222,
+            "end": 5224
+        },
+        "page_num": 5,
+        "text": "an",
+        "position": {
+            "top": 1205,
+            "bottom": 1251,
+            "left": 1179,
+            "right": 1224
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5225,
+            "end": 5231
+        },
+        "page_num": 5,
+        "text": "index.",
+        "position": {
+            "top": 1205,
+            "bottom": 1251,
+            "left": 1233,
+            "right": 1349
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5232,
+            "end": 5241
+        },
+        "page_num": 5,
+        "text": "Depending",
+        "position": {
+            "top": 1205,
+            "bottom": 1251,
+            "left": 1359,
+            "right": 1558
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5242,
+            "end": 5246
+        },
+        "page_num": 5,
+        "text": "upon",
+        "position": {
+            "top": 1205,
+            "bottom": 1251,
+            "left": 1568,
+            "right": 1660
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5247,
+            "end": 5250
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 1205,
+            "bottom": 1251,
+            "left": 1671,
+            "right": 1733
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5251,
+            "end": 5256
+        },
+        "page_num": 5,
+        "text": "DBMS,",
+        "position": {
+            "top": 1205,
+            "bottom": 1253,
+            "left": 1742,
+            "right": 1872
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5257,
+            "end": 5261
+        },
+        "page_num": 5,
+        "text": "this",
+        "position": {
+            "top": 1205,
+            "bottom": 1253,
+            "left": 1882,
+            "right": 1952
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5262,
+            "end": 5268
+        },
+        "page_num": 5,
+        "text": "column",
+        "position": {
+            "top": 1204,
+            "bottom": 1253,
+            "left": 1961,
+            "right": 2094
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5269,
+            "end": 5272
+        },
+        "page_num": 5,
+        "text": "may",
+        "position": {
+            "top": 1204,
+            "bottom": 1253,
+            "left": 2107,
+            "right": 2186
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5273,
+            "end": 5277
+        },
+        "page_num": 5,
+        "text": "need",
+        "position": {
+            "top": 1204,
+            "bottom": 1253,
+            "left": 2196,
+            "right": 2286
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5278,
+            "end": 5280
+        },
+        "page_num": 5,
+        "text": "to",
+        "position": {
+            "top": 1204,
+            "bottom": 1253,
+            "left": 2299,
+            "right": 2337
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5281,
+            "end": 5283
+        },
+        "page_num": 5,
+        "text": "be",
+        "position": {
+            "top": 1254,
+            "bottom": 1297,
+            "left": 240,
+            "right": 285
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5284,
+            "end": 5294
+        },
+        "page_num": 5,
+        "text": "normalized",
+        "position": {
+            "top": 1254,
+            "bottom": 1297,
+            "left": 295,
+            "right": 497
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5295,
+            "end": 5299
+        },
+        "page_num": 5,
+        "text": "out,",
+        "position": {
+            "top": 1254,
+            "bottom": 1297,
+            "left": 508,
+            "right": 578
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5300,
+            "end": 5307
+        },
+        "page_num": 5,
+        "text": "hashed,",
+        "position": {
+            "top": 1253,
+            "bottom": 1297,
+            "left": 587,
+            "right": 737
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5308,
+            "end": 5310
+        },
+        "page_num": 5,
+        "text": "or",
+        "position": {
+            "top": 1253,
+            "bottom": 1299,
+            "left": 746,
+            "right": 783
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5311,
+            "end": 5320
+        },
+        "page_num": 5,
+        "text": "otherwise",
+        "position": {
+            "top": 1253,
+            "bottom": 1299,
+            "left": 793,
+            "right": 971
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5321,
+            "end": 5330
+        },
+        "page_num": 5,
+        "text": "converted",
+        "position": {
+            "top": 1254,
+            "bottom": 1299,
+            "left": 979,
+            "right": 1161
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5331,
+            "end": 5333
+        },
+        "page_num": 5,
+        "text": "to",
+        "position": {
+            "top": 1254,
+            "bottom": 1299,
+            "left": 1174,
+            "right": 1211
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5334,
+            "end": 5336
+        },
+        "page_num": 5,
+        "text": "an",
+        "position": {
+            "top": 1254,
+            "bottom": 1299,
+            "left": 1223,
+            "right": 1264
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5337,
+            "end": 5346
+        },
+        "page_num": 5,
+        "text": "indexable",
+        "position": {
+            "top": 1254,
+            "bottom": 1299,
+            "left": 1273,
+            "right": 1455
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5347,
+            "end": 5352
+        },
+        "page_num": 5,
+        "text": "type.",
+        "position": {
+            "top": 1254,
+            "bottom": 1300,
+            "left": 1464,
+            "right": 1558
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5353,
+            "end": 5354
+        },
+        "page_num": 5,
+        "text": "7",
+        "position": {
+            "top": 1352,
+            "bottom": 1396,
+            "left": 212,
+            "right": 229
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5355,
+            "end": 5360
+        },
+        "page_num": 5,
+        "text": "Based",
+        "position": {
+            "top": 1353,
+            "bottom": 1396,
+            "left": 237,
+            "right": 353
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5361,
+            "end": 5363
+        },
+        "page_num": 5,
+        "text": "on",
+        "position": {
+            "top": 1353,
+            "bottom": 1396,
+            "left": 365,
+            "right": 411
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5364,
+            "end": 5367
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 1353,
+            "bottom": 1397,
+            "left": 422,
+            "right": 481
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5368,
+            "end": 5374
+        },
+        "page_num": 5,
+        "text": "Result",
+        "position": {
+            "top": 1353,
+            "bottom": 1397,
+            "left": 491,
+            "right": 607
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5375,
+            "end": 5379
+        },
+        "page_num": 5,
+        "text": "File",
+        "position": {
+            "top": 1354,
+            "bottom": 1397,
+            "left": 616,
+            "right": 684
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5380,
+            "end": 5387
+        },
+        "page_num": 5,
+        "text": "classes",
+        "position": {
+            "top": 1354,
+            "bottom": 1399,
+            "left": 693,
+            "right": 826
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5388,
+            "end": 5390
+        },
+        "page_num": 5,
+        "text": "in",
+        "position": {
+            "top": 1354,
+            "bottom": 1399,
+            "left": 836,
+            "right": 872
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5391,
+            "end": 5394
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 1354,
+            "bottom": 1399,
+            "left": 881,
+            "right": 939
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5395,
+            "end": 5401
+        },
+        "page_num": 5,
+        "text": "Indico",
+        "position": {
+            "top": 1354,
+            "bottom": 1399,
+            "left": 949,
+            "right": 1062
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5402,
+            "end": 5409
+        },
+        "page_num": 5,
+        "text": "Toolkit",
+        "position": {
+            "top": 1354,
+            "bottom": 1400,
+            "left": 1077,
+            "right": 1190
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5410,
+            "end": 5420
+        },
+        "page_num": 5,
+        "text": "(available",
+        "position": {
+            "top": 1354,
+            "bottom": 1400,
+            "left": 1199,
+            "right": 1372
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5421,
+            "end": 5423
+        },
+        "page_num": 5,
+        "text": "in",
+        "position": {
+            "top": 1354,
+            "bottom": 1400,
+            "left": 1381,
+            "right": 1413
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5424,
+            "end": 5430
+        },
+        "page_num": 5,
+        "text": "Python",
+        "position": {
+            "top": 1354,
+            "bottom": 1400,
+            "left": 1428,
+            "right": 1552
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5431,
+            "end": 5434
+        },
+        "page_num": 5,
+        "text": "and",
+        "position": {
+            "top": 1354,
+            "bottom": 1400,
+            "left": 1565,
+            "right": 1633
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5435,
+            "end": 5437
+        },
+        "page_num": 5,
+        "text": "C#",
+        "position": {
+            "top": 1354,
+            "bottom": 1400,
+            "left": 1646,
+            "right": 1696
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5438,
+            "end": 5448
+        },
+        "page_num": 5,
+        "text": "versions).",
+        "position": {
+            "top": 1354,
+            "bottom": 1400,
+            "left": 1707,
+            "right": 1880
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5449,
+            "end": 5450
+        },
+        "page_num": 5,
+        "text": "8",
+        "position": {
+            "top": 1459,
+            "bottom": 1502,
+            "left": 212,
+            "right": 233
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5451,
+            "end": 5453
+        },
+        "page_num": 5,
+        "text": "As",
+        "position": {
+            "top": 1459,
+            "bottom": 1502,
+            "left": 246,
+            "right": 293
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5454,
+            "end": 5465
+        },
+        "page_num": 5,
+        "text": "predictions",
+        "position": {
+            "top": 1459,
+            "bottom": 1502,
+            "left": 306,
+            "right": 514
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5466,
+            "end": 5468
+        },
+        "page_num": 5,
+        "text": "do",
+        "position": {
+            "top": 1459,
+            "bottom": 1503,
+            "left": 527,
+            "right": 577
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5469,
+            "end": 5472
+        },
+        "page_num": 5,
+        "text": "not",
+        "position": {
+            "top": 1459,
+            "bottom": 1505,
+            "left": 590,
+            "right": 657
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5473,
+            "end": 5477
+        },
+        "page_num": 5,
+        "text": "have",
+        "position": {
+            "top": 1459,
+            "bottom": 1505,
+            "left": 667,
+            "right": 757
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5478,
+            "end": 5479
+        },
+        "page_num": 5,
+        "text": "a",
+        "position": {
+            "top": 1459,
+            "bottom": 1505,
+            "left": 773,
+            "right": 796
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5480,
+            "end": 5495
+        },
+        "page_num": 5,
+        "text": "system-assigned",
+        "position": {
+            "top": 1459,
+            "bottom": 1505,
+            "left": 812,
+            "right": 1121
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5496,
+            "end": 5502
+        },
+        "page_num": 5,
+        "text": "unique",
+        "position": {
+            "top": 1459,
+            "bottom": 1506,
+            "left": 1137,
+            "right": 1262
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5503,
+            "end": 5514
+        },
+        "page_num": 5,
+        "text": "identifier,",
+        "position": {
+            "top": 1459,
+            "bottom": 1506,
+            "left": 1275,
+            "right": 1449
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5515,
+            "end": 5524
+        },
+        "page_num": 5,
+        "text": "predicted",
+        "position": {
+            "top": 1459,
+            "bottom": 1506,
+            "left": 1458,
+            "right": 1633
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5525,
+            "end": 5531
+        },
+        "page_num": 5,
+        "text": "values",
+        "position": {
+            "top": 1459,
+            "bottom": 1506,
+            "left": 1648,
+            "right": 1767
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5532,
+            "end": 5535
+        },
+        "page_num": 5,
+        "text": "and",
+        "position": {
+            "top": 1459,
+            "bottom": 1505,
+            "left": 1783,
+            "right": 1852
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5536,
+            "end": 5544
+        },
+        "page_num": 5,
+        "text": "reviewed",
+        "position": {
+            "top": 1459,
+            "bottom": 1505,
+            "left": 1868,
+            "right": 2029
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5545,
+            "end": 5551
+        },
+        "page_num": 5,
+        "text": "values",
+        "position": {
+            "top": 1459,
+            "bottom": 1503,
+            "left": 2048,
+            "right": 2167
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5552,
+            "end": 5556
+        },
+        "page_num": 5,
+        "text": "must",
+        "position": {
+            "top": 1458,
+            "bottom": 1503,
+            "left": 2180,
+            "right": 2279
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5557,
+            "end": 5559
+        },
+        "page_num": 5,
+        "text": "be",
+        "position": {
+            "top": 1458,
+            "bottom": 1502,
+            "left": 2289,
+            "right": 2336
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5560,
+            "end": 5567
+        },
+        "page_num": 5,
+        "text": "matched",
+        "position": {
+            "top": 1506,
+            "bottom": 1551,
+            "left": 240,
+            "right": 398
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5568,
+            "end": 5570
+        },
+        "page_num": 5,
+        "text": "by",
+        "position": {
+            "top": 1506,
+            "bottom": 1551,
+            "left": 422,
+            "right": 474
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5571,
+            "end": 5581
+        },
+        "page_num": 5,
+        "text": "similarity",
+        "position": {
+            "top": 1506,
+            "bottom": 1551,
+            "left": 495,
+            "right": 657
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5582,
+            "end": 5588
+        },
+        "page_num": 5,
+        "text": "within",
+        "position": {
+            "top": 1506,
+            "bottom": 1551,
+            "left": 679,
+            "right": 787
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5589,
+            "end": 5592
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 1506,
+            "bottom": 1551,
+            "left": 810,
+            "right": 871
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5593,
+            "end": 5605
+        },
+        "page_num": 5,
+        "text": "integration.",
+        "position": {
+            "top": 1506,
+            "bottom": 1551,
+            "left": 892,
+            "right": 1110
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5606,
+            "end": 5608
+        },
+        "page_num": 5,
+        "text": "An",
+        "position": {
+            "top": 1506,
+            "bottom": 1551,
+            "left": 1127,
+            "right": 1173
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5609,
+            "end": 5616
+        },
+        "page_num": 5,
+        "text": "example",
+        "position": {
+            "top": 1506,
+            "bottom": 1551,
+            "left": 1200,
+            "right": 1356
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5617,
+            "end": 5619
+        },
+        "page_num": 5,
+        "text": "of",
+        "position": {
+            "top": 1505,
+            "bottom": 1551,
+            "left": 1381,
+            "right": 1425
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5620,
+            "end": 5625
+        },
+        "page_num": 5,
+        "text": "doing",
+        "position": {
+            "top": 1505,
+            "bottom": 1551,
+            "left": 1441,
+            "right": 1542
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5626,
+            "end": 5628
+        },
+        "page_num": 5,
+        "text": "so",
+        "position": {
+            "top": 1505,
+            "bottom": 1552,
+            "left": 1570,
+            "right": 1613
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5629,
+            "end": 5631
+        },
+        "page_num": 5,
+        "text": "is",
+        "position": {
+            "top": 1505,
+            "bottom": 1552,
+            "left": 1633,
+            "right": 1673
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5632,
+            "end": 5641
+        },
+        "page_num": 5,
+        "text": "available",
+        "position": {
+            "top": 1505,
+            "bottom": 1552,
+            "left": 1693,
+            "right": 1853
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5642,
+            "end": 5644
+        },
+        "page_num": 5,
+        "text": "in",
+        "position": {
+            "top": 1505,
+            "bottom": 1552,
+            "left": 1873,
+            "right": 1908
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5645,
+            "end": 5648
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 1505,
+            "bottom": 1552,
+            "left": 1931,
+            "right": 1995
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5649,
+            "end": 5665
+        },
+        "page_num": 5,
+        "text": "Indico-developed",
+        "position": {
+            "top": 1505,
+            "bottom": 1552,
+            "left": 2015,
+            "right": 2335
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5666,
+            "end": 5677
+        },
+        "page_num": 5,
+        "text": "groundtruth",
+        "position": {
+            "top": 1555,
+            "bottom": 1601,
+            "left": 242,
+            "right": 462
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5678,
+            "end": 5686
+        },
+        "page_num": 5,
+        "text": "program.",
+        "position": {
+            "top": 1556,
+            "bottom": 1601,
+            "left": 472,
+            "right": 640
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5687,
+            "end": 5696
+        },
+        "page_num": 5,
+        "text": "Scheduled",
+        "position": {
+            "top": 1651,
+            "bottom": 1695,
+            "left": 212,
+            "right": 429
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5697,
+            "end": 5704
+        },
+        "page_num": 5,
+        "text": "Process",
+        "position": {
+            "top": 1650,
+            "bottom": 1698,
+            "left": 442,
+            "right": 617
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5705,
+            "end": 5710
+        },
+        "page_num": 5,
+        "text": "Logic",
+        "position": {
+            "top": 1650,
+            "bottom": 1700,
+            "left": 626,
+            "right": 742
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5711,
+            "end": 5715
+        },
+        "page_num": 5,
+        "text": "This",
+        "position": {
+            "top": 1754,
+            "bottom": 1804,
+            "left": 212,
+            "right": 292
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5716,
+            "end": 5718
+        },
+        "page_num": 5,
+        "text": "is",
+        "position": {
+            "top": 1754,
+            "bottom": 1804,
+            "left": 306,
+            "right": 348
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5719,
+            "end": 5720
+        },
+        "page_num": 5,
+        "text": "a",
+        "position": {
+            "top": 1754,
+            "bottom": 1804,
+            "left": 365,
+            "right": 389
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5721,
+            "end": 5732
+        },
+        "page_num": 5,
+        "text": "heavyweight",
+        "position": {
+            "top": 1754,
+            "bottom": 1804,
+            "left": 403,
+            "right": 660
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5733,
+            "end": 5738
+        },
+        "page_num": 5,
+        "text": "query",
+        "position": {
+            "top": 1754,
+            "bottom": 1804,
+            "left": 674,
+            "right": 787
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5739,
+            "end": 5743
+        },
+        "page_num": 5,
+        "text": "tied",
+        "position": {
+            "top": 1754,
+            "bottom": 1804,
+            "left": 802,
+            "right": 876
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5744,
+            "end": 5746
+        },
+        "page_num": 5,
+        "text": "to",
+        "position": {
+            "top": 1754,
+            "bottom": 1804,
+            "left": 896,
+            "right": 938
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5747,
+            "end": 5759
+        },
+        "page_num": 5,
+        "text": "submissions.",
+        "position": {
+            "top": 1755,
+            "bottom": 1804,
+            "left": 958,
+            "right": 1224
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5760,
+            "end": 5767
+        },
+        "page_num": 5,
+        "text": "Because",
+        "position": {
+            "top": 1755,
+            "bottom": 1804,
+            "left": 1234,
+            "right": 1408
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5768,
+            "end": 5779
+        },
+        "page_num": 5,
+        "text": "predictions",
+        "position": {
+            "top": 1755,
+            "bottom": 1804,
+            "left": 1423,
+            "right": 1648
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5780,
+            "end": 5784
+        },
+        "page_num": 5,
+        "text": "have",
+        "position": {
+            "top": 1755,
+            "bottom": 1804,
+            "left": 1661,
+            "right": 1760
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5785,
+            "end": 5787
+        },
+        "page_num": 5,
+        "text": "no",
+        "position": {
+            "top": 1755,
+            "bottom": 1804,
+            "left": 1776,
+            "right": 1827
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5788,
+            "end": 5803
+        },
+        "page_num": 5,
+        "text": "system-assigned",
+        "position": {
+            "top": 1755,
+            "bottom": 1804,
+            "left": 1850,
+            "right": 2184
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5804,
+            "end": 5810
+        },
+        "page_num": 5,
+        "text": "unique",
+        "position": {
+            "top": 1755,
+            "bottom": 1806,
+            "left": 2203,
+            "right": 2337
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5811,
+            "end": 5822
+        },
+        "page_num": 5,
+        "text": "identifier,",
+        "position": {
+            "top": 1817,
+            "bottom": 1864,
+            "left": 210,
+            "right": 391
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5823,
+            "end": 5826
+        },
+        "page_num": 5,
+        "text": "and",
+        "position": {
+            "top": 1817,
+            "bottom": 1864,
+            "left": 401,
+            "right": 475
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5827,
+            "end": 5830
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 1817,
+            "bottom": 1866,
+            "left": 488,
+            "right": 557
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5831,
+            "end": 5841
+        },
+        "page_num": 5,
+        "text": "identifier",
+        "position": {
+            "top": 1817,
+            "bottom": 1866,
+            "left": 567,
+            "right": 746
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5842,
+            "end": 5850
+        },
+        "page_num": 5,
+        "text": "assigned",
+        "position": {
+            "top": 1816,
+            "bottom": 1866,
+            "left": 756,
+            "right": 931
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5851,
+            "end": 5853
+        },
+        "page_num": 5,
+        "text": "by",
+        "position": {
+            "top": 1816,
+            "bottom": 1866,
+            "left": 948,
+            "right": 999
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5854,
+            "end": 5857
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 1816,
+            "bottom": 1866,
+            "left": 1009,
+            "right": 1077
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5858,
+            "end": 5869
+        },
+        "page_num": 5,
+        "text": "integration",
+        "position": {
+            "top": 1816,
+            "bottom": 1866,
+            "left": 1087,
+            "right": 1299
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5870,
+            "end": 5872
+        },
+        "page_num": 5,
+        "text": "is",
+        "position": {
+            "top": 1816,
+            "bottom": 1867,
+            "left": 1312,
+            "right": 1350
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5873,
+            "end": 5876
+        },
+        "page_num": 5,
+        "text": "not",
+        "position": {
+            "top": 1816,
+            "bottom": 1867,
+            "left": 1360,
+            "right": 1435
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5877,
+            "end": 5884
+        },
+        "page_num": 5,
+        "text": "stable,",
+        "position": {
+            "top": 1816,
+            "bottom": 1867,
+            "left": 1445,
+            "right": 1578
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5885,
+            "end": 5896
+        },
+        "page_num": 5,
+        "text": "predictions",
+        "position": {
+            "top": 1816,
+            "bottom": 1867,
+            "left": 1588,
+            "right": 1813
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5897,
+            "end": 5901
+        },
+        "page_num": 5,
+        "text": "must",
+        "position": {
+            "top": 1817,
+            "bottom": 1867,
+            "left": 1823,
+            "right": 1926
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5902,
+            "end": 5904
+        },
+        "page_num": 5,
+        "text": "be",
+        "position": {
+            "top": 1817,
+            "bottom": 1867,
+            "left": 1936,
+            "right": 1992
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5905,
+            "end": 5911
+        },
+        "page_num": 5,
+        "text": "pulled",
+        "position": {
+            "top": 1817,
+            "bottom": 1867,
+            "left": 2005,
+            "right": 2125
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5912,
+            "end": 5916
+        },
+        "page_num": 5,
+        "text": "only",
+        "position": {
+            "top": 1817,
+            "bottom": 1867,
+            "left": 2143,
+            "right": 2226
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5917,
+            "end": 5921
+        },
+        "page_num": 5,
+        "text": "once",
+        "position": {
+            "top": 1817,
+            "bottom": 1866,
+            "left": 2240,
+            "right": 2336
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5922,
+            "end": 5925
+        },
+        "page_num": 5,
+        "text": "per",
+        "position": {
+            "top": 1880,
+            "bottom": 1926,
+            "left": 210,
+            "right": 276
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5926,
+            "end": 5937
+        },
+        "page_num": 5,
+        "text": "submission.",
+        "position": {
+            "top": 1879,
+            "bottom": 1926,
+            "left": 287,
+            "right": 527
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5938,
+            "end": 5942
+        },
+        "page_num": 5,
+        "text": "This",
+        "position": {
+            "top": 1879,
+            "bottom": 1926,
+            "left": 538,
+            "right": 617
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5943,
+            "end": 5949
+        },
+        "page_num": 5,
+        "text": "should",
+        "position": {
+            "top": 1879,
+            "bottom": 1926,
+            "left": 628,
+            "right": 757
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5950,
+            "end": 5955
+        },
+        "page_num": 5,
+        "text": "occur",
+        "position": {
+            "top": 1879,
+            "bottom": 1926,
+            "left": 775,
+            "right": 889
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5956,
+            "end": 5958
+        },
+        "page_num": 5,
+        "text": "at",
+        "position": {
+            "top": 1879,
+            "bottom": 1926,
+            "left": 899,
+            "right": 936
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5959,
+            "end": 5962
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 1879,
+            "bottom": 1926,
+            "left": 946,
+            "right": 1011
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5963,
+            "end": 5971
+        },
+        "page_num": 5,
+        "text": "terminal",
+        "position": {
+            "top": 1879,
+            "bottom": 1926,
+            "left": 1021,
+            "right": 1183
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5972,
+            "end": 5977
+        },
+        "page_num": 5,
+        "text": "state",
+        "position": {
+            "top": 1877,
+            "bottom": 1926,
+            "left": 1193,
+            "right": 1289
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5978,
+            "end": 5980
+        },
+        "page_num": 5,
+        "text": "of",
+        "position": {
+            "top": 1877,
+            "bottom": 1926,
+            "left": 1303,
+            "right": 1342
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5981,
+            "end": 5984
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 1877,
+            "bottom": 1926,
+            "left": 1352,
+            "right": 1418
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5985,
+            "end": 5995
+        },
+        "page_num": 5,
+        "text": "submission",
+        "position": {
+            "top": 1877,
+            "bottom": 1926,
+            "left": 1431,
+            "right": 1648
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 5996,
+            "end": 6000
+        },
+        "page_num": 5,
+        "text": "just",
+        "position": {
+            "top": 1877,
+            "bottom": 1926,
+            "left": 1661,
+            "right": 1736
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6001,
+            "end": 6007
+        },
+        "page_num": 5,
+        "text": "before",
+        "position": {
+            "top": 1877,
+            "bottom": 1926,
+            "left": 1746,
+            "right": 1873
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6008,
+            "end": 6012
+        },
+        "page_num": 5,
+        "text": "it's",
+        "position": {
+            "top": 1877,
+            "bottom": 1926,
+            "left": 1883,
+            "right": 1949
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6013,
+            "end": 6020
+        },
+        "page_num": 5,
+        "text": "omitted",
+        "position": {
+            "top": 1879,
+            "bottom": 1926,
+            "left": 1958,
+            "right": 2105
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6021,
+            "end": 6025
+        },
+        "page_num": 5,
+        "text": "from",
+        "position": {
+            "top": 1879,
+            "bottom": 1926,
+            "left": 2118,
+            "right": 2196
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6026,
+            "end": 6032
+        },
+        "page_num": 5,
+        "text": "future",
+        "position": {
+            "top": 1879,
+            "bottom": 1926,
+            "left": 2220,
+            "right": 2336
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6033,
+            "end": 6044
+        },
+        "page_num": 5,
+        "text": "processing:",
+        "position": {
+            "top": 1942,
+            "bottom": 1988,
+            "left": 210,
+            "right": 441
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6045,
+            "end": 6049
+        },
+        "page_num": 5,
+        "text": "i.e.",
+        "position": {
+            "top": 1940,
+            "bottom": 1988,
+            "left": 451,
+            "right": 522
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6050,
+            "end": 6054
+        },
+        "page_num": 5,
+        "text": "when",
+        "position": {
+            "top": 1940,
+            "bottom": 1988,
+            "left": 532,
+            "right": 636
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6055,
+            "end": 6058
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 1939,
+            "bottom": 1986,
+            "left": 656,
+            "right": 717
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6059,
+            "end": 6069
+        },
+        "page_num": 5,
+        "text": "submission",
+        "position": {
+            "top": 1939,
+            "bottom": 1986,
+            "left": 737,
+            "right": 956
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6070,
+            "end": 6072
+        },
+        "page_num": 5,
+        "text": "is",
+        "position": {
+            "top": 1939,
+            "bottom": 1986,
+            "left": 975,
+            "right": 1014
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6073,
+            "end": 6079
+        },
+        "page_num": 5,
+        "text": "marked",
+        "position": {
+            "top": 1939,
+            "bottom": 1986,
+            "left": 1027,
+            "right": 1177
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6080,
+            "end": 6082
+        },
+        "page_num": 5,
+        "text": "as",
+        "position": {
+            "top": 1937,
+            "bottom": 1986,
+            "left": 1196,
+            "right": 1243
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6083,
+            "end": 6093
+        },
+        "page_num": 5,
+        "text": "retrieved.",
+        "position": {
+            "top": 1937,
+            "bottom": 1986,
+            "left": 1259,
+            "right": 1454
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6094,
+            "end": 6098
+        },
+        "page_num": 5,
+        "text": "Once",
+        "position": {
+            "top": 1937,
+            "bottom": 1986,
+            "left": 1464,
+            "right": 1567
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6099,
+            "end": 6100
+        },
+        "page_num": 5,
+        "text": "a",
+        "position": {
+            "top": 1937,
+            "bottom": 1986,
+            "left": 1585,
+            "right": 1611
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6101,
+            "end": 6111
+        },
+        "page_num": 5,
+        "text": "submission",
+        "position": {
+            "top": 1937,
+            "bottom": 1986,
+            "left": 1630,
+            "right": 1849
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6112,
+            "end": 6114
+        },
+        "page_num": 5,
+        "text": "is",
+        "position": {
+            "top": 1937,
+            "bottom": 1986,
+            "left": 1866,
+            "right": 1903
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6115,
+            "end": 6121
+        },
+        "page_num": 5,
+        "text": "marked",
+        "position": {
+            "top": 1939,
+            "bottom": 1986,
+            "left": 1919,
+            "right": 2067
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6122,
+            "end": 6124
+        },
+        "page_num": 5,
+        "text": "as",
+        "position": {
+            "top": 1939,
+            "bottom": 1986,
+            "left": 2090,
+            "right": 2135
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6125,
+            "end": 6135
+        },
+        "page_num": 5,
+        "text": "retrieved,",
+        "position": {
+            "top": 1939,
+            "bottom": 1988,
+            "left": 2148,
+            "right": 2335
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6136,
+            "end": 6141
+        },
+        "page_num": 5,
+        "text": "there",
+        "position": {
+            "top": 1999,
+            "bottom": 2048,
+            "left": 207,
+            "right": 309
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6142,
+            "end": 6148
+        },
+        "page_num": 5,
+        "text": "should",
+        "position": {
+            "top": 2000,
+            "bottom": 2048,
+            "left": 325,
+            "right": 454
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6149,
+            "end": 6151
+        },
+        "page_num": 5,
+        "text": "be",
+        "position": {
+            "top": 2000,
+            "bottom": 2048,
+            "left": 469,
+            "right": 522
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6152,
+            "end": 6154
+        },
+        "page_num": 5,
+        "text": "no",
+        "position": {
+            "top": 2000,
+            "bottom": 2048,
+            "left": 535,
+            "right": 584
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6155,
+            "end": 6162
+        },
+        "page_num": 5,
+        "text": "further",
+        "position": {
+            "top": 2000,
+            "bottom": 2048,
+            "left": 600,
+            "right": 736
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6163,
+            "end": 6170
+        },
+        "page_num": 5,
+        "text": "updates",
+        "position": {
+            "top": 2002,
+            "bottom": 2048,
+            "left": 746,
+            "right": 909
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6171,
+            "end": 6173
+        },
+        "page_num": 5,
+        "text": "to",
+        "position": {
+            "top": 2002,
+            "bottom": 2048,
+            "left": 919,
+            "right": 959
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6174,
+            "end": 6177
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 2002,
+            "bottom": 2049,
+            "left": 975,
+            "right": 1040
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6178,
+            "end": 6188
+        },
+        "page_num": 5,
+        "text": "submission",
+        "position": {
+            "top": 2002,
+            "bottom": 2049,
+            "left": 1055,
+            "right": 1275
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6189,
+            "end": 6198
+        },
+        "page_num": 5,
+        "text": "resetting",
+        "position": {
+            "top": 2002,
+            "bottom": 2048,
+            "left": 1290,
+            "right": 1461
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6199,
+            "end": 6202
+        },
+        "page_num": 5,
+        "text": "its",
+        "position": {
+            "top": 2002,
+            "bottom": 2048,
+            "left": 1474,
+            "right": 1525
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6203,
+            "end": 6212
+        },
+        "page_num": 5,
+        "text": "updatedAt",
+        "position": {
+            "top": 2002,
+            "bottom": 2048,
+            "left": 1554,
+            "right": 1757
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6213,
+            "end": 6223
+        },
+        "page_num": 5,
+        "text": "attribute,",
+        "position": {
+            "top": 2000,
+            "bottom": 2048,
+            "left": 1786,
+            "right": 1965
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6224,
+            "end": 6233
+        },
+        "page_num": 5,
+        "text": "therefore",
+        "position": {
+            "top": 2000,
+            "bottom": 2048,
+            "left": 1975,
+            "right": 2154
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6234,
+            "end": 6236
+        },
+        "page_num": 5,
+        "text": "it",
+        "position": {
+            "top": 1999,
+            "bottom": 2046,
+            "left": 2164,
+            "right": 2197
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6237,
+            "end": 6241
+        },
+        "page_num": 5,
+        "text": "will",
+        "position": {
+            "top": 1999,
+            "bottom": 2046,
+            "left": 2207,
+            "right": 2274
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6242,
+            "end": 6244
+        },
+        "page_num": 5,
+        "text": "be",
+        "position": {
+            "top": 1999,
+            "bottom": 2046,
+            "left": 2284,
+            "right": 2337
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6245,
+            "end": 6252
+        },
+        "page_num": 5,
+        "text": "omitted",
+        "position": {
+            "top": 2062,
+            "bottom": 2106,
+            "left": 210,
+            "right": 356
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6253,
+            "end": 6257
+        },
+        "page_num": 5,
+        "text": "from",
+        "position": {
+            "top": 2062,
+            "bottom": 2108,
+            "left": 369,
+            "right": 445
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6258,
+            "end": 6261
+        },
+        "page_num": 5,
+        "text": "all",
+        "position": {
+            "top": 2062,
+            "bottom": 2108,
+            "left": 472,
+            "right": 515
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6262,
+            "end": 6268
+        },
+        "page_num": 5,
+        "text": "future",
+        "position": {
+            "top": 2062,
+            "bottom": 2108,
+            "left": 525,
+            "right": 641
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6269,
+            "end": 6273
+        },
+        "page_num": 5,
+        "text": "runs",
+        "position": {
+            "top": 2062,
+            "bottom": 2108,
+            "left": 650,
+            "right": 742
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6274,
+            "end": 6276
+        },
+        "page_num": 5,
+        "text": "of",
+        "position": {
+            "top": 2062,
+            "bottom": 2109,
+            "left": 750,
+            "right": 790
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6277,
+            "end": 6280
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 2062,
+            "bottom": 2109,
+            "left": 800,
+            "right": 860
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6281,
+            "end": 6293
+        },
+        "page_num": 5,
+        "text": "integration.",
+        "position": {
+            "top": 2062,
+            "bottom": 2109,
+            "left": 871,
+            "right": 1094
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6294,
+            "end": 6298
+        },
+        "page_num": 5,
+        "text": "Data",
+        "position": {
+            "top": 2168,
+            "bottom": 2212,
+            "left": 212,
+            "right": 309
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6299,
+            "end": 6313
+        },
+        "page_num": 5,
+        "text": "Reconciliation",
+        "position": {
+            "top": 2168,
+            "bottom": 2212,
+            "left": 320,
+            "right": 613
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6314,
+            "end": 6317
+        },
+        "page_num": 5,
+        "text": "The",
+        "position": {
+            "top": 2273,
+            "bottom": 2320,
+            "left": 213,
+            "right": 283
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6318,
+            "end": 6324
+        },
+        "page_num": 5,
+        "text": "output",
+        "position": {
+            "top": 2273,
+            "bottom": 2321,
+            "left": 296,
+            "right": 426
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6325,
+            "end": 6329
+        },
+        "page_num": 5,
+        "text": "does",
+        "position": {
+            "top": 2273,
+            "bottom": 2321,
+            "left": 438,
+            "right": 534
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6330,
+            "end": 6333
+        },
+        "page_num": 5,
+        "text": "not",
+        "position": {
+            "top": 2271,
+            "bottom": 2321,
+            "left": 544,
+            "right": 611
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6334,
+            "end": 6341
+        },
+        "page_num": 5,
+        "text": "include",
+        "position": {
+            "top": 2271,
+            "bottom": 2321,
+            "left": 621,
+            "right": 769
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6342,
+            "end": 6343
+        },
+        "page_num": 5,
+        "text": "a",
+        "position": {
+            "top": 2271,
+            "bottom": 2323,
+            "left": 782,
+            "right": 805
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6344,
+            "end": 6351
+        },
+        "page_num": 5,
+        "text": "primary",
+        "position": {
+            "top": 2271,
+            "bottom": 2323,
+            "left": 816,
+            "right": 966
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6352,
+            "end": 6355
+        },
+        "page_num": 5,
+        "text": "key",
+        "position": {
+            "top": 2271,
+            "bottom": 2323,
+            "left": 977,
+            "right": 1050
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6356,
+            "end": 6362
+        },
+        "page_num": 5,
+        "text": "needed",
+        "position": {
+            "top": 2271,
+            "bottom": 2323,
+            "left": 1060,
+            "right": 1210
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6363,
+            "end": 6365
+        },
+        "page_num": 5,
+        "text": "to",
+        "position": {
+            "top": 2270,
+            "bottom": 2323,
+            "left": 1221,
+            "right": 1264
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6366,
+            "end": 6372
+        },
+        "page_num": 5,
+        "text": "update",
+        "position": {
+            "top": 2270,
+            "bottom": 2323,
+            "left": 1277,
+            "right": 1418
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6373,
+            "end": 6381
+        },
+        "page_num": 5,
+        "text": "existing",
+        "position": {
+            "top": 2270,
+            "bottom": 2323,
+            "left": 1428,
+            "right": 1578
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6382,
+            "end": 6387
+        },
+        "page_num": 5,
+        "text": "rows.",
+        "position": {
+            "top": 2270,
+            "bottom": 2323,
+            "left": 1590,
+            "right": 1703
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6388,
+            "end": 6390
+        },
+        "page_num": 5,
+        "text": "As",
+        "position": {
+            "top": 2270,
+            "bottom": 2323,
+            "left": 1713,
+            "right": 1770
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6391,
+            "end": 6395
+        },
+        "page_num": 5,
+        "text": "such",
+        "position": {
+            "top": 2271,
+            "bottom": 2323,
+            "left": 1780,
+            "right": 1873
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6396,
+            "end": 6398
+        },
+        "page_num": 5,
+        "text": "it",
+        "position": {
+            "top": 2271,
+            "bottom": 2323,
+            "left": 1883,
+            "right": 1913
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6399,
+            "end": 6403
+        },
+        "page_num": 5,
+        "text": "will",
+        "position": {
+            "top": 2271,
+            "bottom": 2323,
+            "left": 1923,
+            "right": 1991
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6404,
+            "end": 6408
+        },
+        "page_num": 5,
+        "text": "only",
+        "position": {
+            "top": 2271,
+            "bottom": 2323,
+            "left": 2001,
+            "right": 2085
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6409,
+            "end": 6416
+        },
+        "page_num": 5,
+        "text": "contain",
+        "position": {
+            "top": 2271,
+            "bottom": 2321,
+            "left": 2095,
+            "right": 2241
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6417,
+            "end": 6420
+        },
+        "page_num": 5,
+        "text": "new",
+        "position": {
+            "top": 2271,
+            "bottom": 2321,
+            "left": 2252,
+            "right": 2329
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6421,
+            "end": 6425
+        },
+        "page_num": 5,
+        "text": "rows",
+        "position": {
+            "top": 2334,
+            "bottom": 2379,
+            "left": 209,
+            "right": 305
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6426,
+            "end": 6428
+        },
+        "page_num": 5,
+        "text": "to",
+        "position": {
+            "top": 2334,
+            "bottom": 2380,
+            "left": 315,
+            "right": 355
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6429,
+            "end": 6431
+        },
+        "page_num": 5,
+        "text": "be",
+        "position": {
+            "top": 2333,
+            "bottom": 2380,
+            "left": 365,
+            "right": 415
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6432,
+            "end": 6440
+        },
+        "page_num": 5,
+        "text": "inserted",
+        "position": {
+            "top": 2333,
+            "bottom": 2380,
+            "left": 425,
+            "right": 583
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6441,
+            "end": 6445
+        },
+        "page_num": 5,
+        "text": "into",
+        "position": {
+            "top": 2331,
+            "bottom": 2380,
+            "left": 593,
+            "right": 671
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6446,
+            "end": 6449
+        },
+        "page_num": 5,
+        "text": "the",
+        "position": {
+            "top": 2331,
+            "bottom": 2380,
+            "left": 681,
+            "right": 743
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6450,
+            "end": 6457
+        },
+        "page_num": 5,
+        "text": "Metrics",
+        "position": {
+            "top": 2331,
+            "bottom": 2380,
+            "left": 753,
+            "right": 905
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6458,
+            "end": 6467
+        },
+        "page_num": 5,
+        "text": "database.",
+        "position": {
+            "top": 2331,
+            "bottom": 2381,
+            "left": 915,
+            "right": 1111
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6468,
+            "end": 6477
+        },
+        "page_num": 5,
+        "text": "formatted",
+        "position": {
+            "top": 2694,
+            "bottom": 2727,
+            "left": 1922,
+            "right": 2045
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6478,
+            "end": 6480
+        },
+        "page_num": 5,
+        "text": "by",
+        "position": {
+            "top": 2694,
+            "bottom": 2727,
+            "left": 2052,
+            "right": 2082
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6481,
+            "end": 6489
+        },
+        "page_num": 5,
+        "text": "Markdeep",
+        "position": {
+            "top": 2694,
+            "bottom": 2725,
+            "left": 2090,
+            "right": 2216
+        }
+    },
+    {
+        "doc_offset": {
+            "start": 6490,
+            "end": 6494
+        },
+        "page_num": 5,
+        "text": "1.17",
+        "position": {
+            "top": 2694,
+            "bottom": 2725,
+            "left": 2227,
+            "right": 2283
+        }
+    }
+]

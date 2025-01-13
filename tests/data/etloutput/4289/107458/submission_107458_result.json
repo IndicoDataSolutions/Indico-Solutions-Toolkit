@@ -1,0 +1,39 @@
+{
+    "file_version": 3,
+    "submission_id": 107458,
+    "modelgroup_metadata": {
+        "4631": {
+            "id": 4631,
+            "task_type": "form_extraction",
+            "name": "Standard Document v3",
+            "selected_model": {
+                "id": 8229,
+                "model_type": "form_extraction"
+            }
+        }
+    },
+    "submission_results": [
+        {
+            "submissionfile_id": 101157,
+            "etl_output": "indico-file:///storage/submission/4289/107458/101157/etl_output.json",
+            "input_filename": "data_model.pdf",
+            "input_filepath": "indico-file:///storage/submission/4289/107458/101157.pdf",
+            "input_filesize": 130938,
+            "model_results": {
+                "ORIGINAL": {
+                    "4631": []
+                }
+            },
+            "component_results": {
+                "ORIGINAL": {}
+            },
+            "rejected": {
+                "models": {
+                    "4631": []
+                },
+                "components": {}
+            }
+        }
+    ],
+    "reviews": {}
+}

@@ -28,5 +28,5 @@ test = [
     "requests-mock>=1.7.0-7"
 ]
 full = [
-    "PyMuPDF==1.19.6", "spacy>=3.1.4,<4"
+    "spacy>=3.1.4,<4"
 ]
