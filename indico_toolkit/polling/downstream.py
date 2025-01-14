@@ -52,10 +52,10 @@ class DownstreamPoller:
 
         self._retry = retry(
             IndicoError,
-            retry_count,
-            retry_wait,
-            retry_backoff,
-            retry_jitter,
+            count=retry_count,
+            wait=retry_wait,
+            backoff=retry_backoff,
+            jitter=retry_jitter,
         )
         self._worker_slots = asyncio.Semaphore(concurrency)
         self._worker_queue: WorkerQueue = asyncio.Queue(1)
