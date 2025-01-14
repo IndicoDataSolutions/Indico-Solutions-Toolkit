@@ -20,7 +20,7 @@ from .queries import SubmissionIdsPendingAutoReview
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
-    from typing import Any, TypeAlias
+    from typing import Any, NoReturn, TypeAlias
 
     SubmissionId: TypeAlias = int
     Worker: TypeAlias = asyncio.Task[None]
@@ -81,7 +81,7 @@ class AutoReviewPoller:
         self._worker_queue: WorkerQueue = asyncio.Queue(1)
         self._processing_submission_ids: set[SubmissionId] = set()
 
-    async def run(self) -> None:
+    async def poll_forever(self) -> "NoReturn":  # type: ignore[misc]
         logger.info(
             "Starting auto review poller for: "
             f"host={self._config.host} "

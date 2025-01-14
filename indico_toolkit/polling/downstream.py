@@ -15,7 +15,7 @@ from .queries import SubmissionIdsPendingDownstream
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
-    from typing import TypeAlias
+    from typing import NoReturn, TypeAlias
 
     SubmissionId: TypeAlias = int
     Worker: TypeAlias = asyncio.Task[None]
@@ -61,7 +61,7 @@ class DownstreamPoller:
         self._worker_queue: WorkerQueue = asyncio.Queue(1)
         self._processing_submission_ids: set[SubmissionId] = set()
 
-    async def run(self) -> None:
+    async def poll_forever(self) -> "NoReturn":  # type: ignore[misc]
         logger.info(
             "Starting downstream poller for: "
             f"host={self._config.host} "
