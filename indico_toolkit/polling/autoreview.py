@@ -19,7 +19,7 @@ from ..retry import retry
 from .queries import SubmissionIdsPendingAutoReview
 
 if TYPE_CHECKING:
-    from collections.abc import Awaitable, Callable, Mapping
+    from collections.abc import Awaitable, Callable
     from typing import Any, TypeAlias
 
     SubmissionId: TypeAlias = int
@@ -45,7 +45,7 @@ class AutoReviewPoller:
         self,
         config: IndicoConfig,
         workflow_id: int,
-        auto_review: "Callable[[Result, Mapping[Document, EtlOutput]], Awaitable[AutoReviewed]]",  # noqa: E501
+        auto_review: "Callable[[Result, dict[Document, EtlOutput]], Awaitable[AutoReviewed]]",  # noqa: E501
         *,
         concurrency: int = 8,
         enqueue_delay: float = 1,
