@@ -26,7 +26,8 @@ logger = logging.getLogger(__name__)
 
 class DownstreamPoller:
     """
-    Polls for submissions pending downstream egestion and processes them concurrently.
+    Polls for completed and failed submissions pending downstream egestion, processes
+    them concurrently, and marks them as retrieved.
     """
 
     def __init__(
