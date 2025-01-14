@@ -35,8 +35,8 @@ class DownstreamPoller:
         workflow_id: int,
         downstream: "Callable[[Submission], Awaitable[None]]",
         *,
-        concurrency: int = 8,
-        enqueue_delay: float = 1,
+        worker_count: int = 8,
+        spawn_rate: float = 1,
         poll_delay: float = 30,
         retry_count: int = 4,
         retry_wait: float = 1,
@@ -45,9 +45,9 @@ class DownstreamPoller:
     ):
         self._config = config
         self._workflow_id = workflow_id
-        self._concurrency = concurrency
         self._downstream = downstream
-        self._enqueue_delay = enqueue_delay
+        self._worker_count = worker_count
+        self._spawn_rate = spawn_rate
         self._poll_delay = poll_delay
 
         self._retry = retry(
@@ -57,7 +57,7 @@ class DownstreamPoller:
             backoff=retry_backoff,
             jitter=retry_jitter,
         )
-        self._worker_slots = asyncio.Semaphore(concurrency)
+        self._worker_slots = asyncio.Semaphore(worker_count)
         self._worker_queue: WorkerQueue = asyncio.Queue(1)
         self._processing_submission_ids: set[SubmissionId] = set()
 
@@ -65,15 +65,15 @@ class DownstreamPoller:
         logger.info(
             "Starting downstream poller for: "
             f"host={self._config.host} "
-            f"workflow_id={self._workflow_id}"
-            f"concurrency={self._concurrency}"
+            f"workflow_id={self._workflow_id} "
+            f"worker_count={self._worker_count}"
         )
 
         async with AsyncIndicoClient(self._config) as client:
             self._client_call = self._retry(client.call)
             await asyncio.gather(
                 self._spawn_workers(),
-                *(self._reap_workers() for _ in range(self._concurrency)),
+                *(self._reap_workers() for _ in range(self._worker_count)),
             )
 
     async def _spawn_workers(self) -> None:
@@ -109,7 +109,7 @@ class DownstreamPoller:
                 self._processing_submission_ids.add(submission_id)
                 worker = asyncio.create_task(self._worker(submission_id))
                 await self._worker_queue.put((submission_id, worker))
-                await asyncio.sleep(self._enqueue_delay)
+                await asyncio.sleep(1 / self._spawn_rate)
 
     async def _worker(self, submission_id: SubmissionId) -> None:
         """
