@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from indico import AsyncIndicoClient, IndicoConfig  # type: ignore[import-untyped]
-from indico.errors import IndicoError  # type: ignore[import-untyped]
 from indico.queries import (  # type: ignore[import-untyped]
     GetSubmission,
     JobStatus,
@@ -71,7 +70,7 @@ class AutoReviewPoller:
         self._load_tables = load_tables
 
         self._retry = retry(
-            IndicoError,
+            Exception,
             count=retry_count,
             wait=retry_wait,
             backoff=retry_backoff,

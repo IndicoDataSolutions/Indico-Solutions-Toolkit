@@ -3,7 +3,6 @@ import logging
 from typing import TYPE_CHECKING
 
 from indico import AsyncIndicoClient, IndicoConfig  # type: ignore[import-untyped]
-from indico.errors import IndicoError  # type: ignore[import-untyped]
 from indico.queries import (  # type: ignore[import-untyped]
     GetSubmission,
     UpdateSubmission,
@@ -52,7 +51,7 @@ class DownstreamPoller:
         self._poll_delay = poll_delay
 
         self._retry = retry(
-            IndicoError,
+            Exception,
             count=retry_count,
             wait=retry_wait,
             backoff=retry_backoff,
