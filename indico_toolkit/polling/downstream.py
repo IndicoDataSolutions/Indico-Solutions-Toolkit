@@ -125,6 +125,8 @@ class DownstreamPoller:
         logger.info(f"Marking {submission_id=} retrieved")
         await self._client_call(UpdateSubmission(submission_id, retrieved=True))
 
+        logger.info(f"Completed dowstream of {submission_id=}")
+
     async def _reap_workers(self) -> None:
         """
         Reap completed workers, releasing their slots for new tasks. Log errors for
