@@ -30,7 +30,7 @@ async def auto_review(
 
     return AutoReviewed(
         changes=predictions.to_changes(result),
-        stp=False,  # Defaults to `False` and can be omitted.
+        stp=True,  # Defaults to `False` and may be omitted.
     )
 
 
@@ -49,7 +49,10 @@ if __name__ == "__main__":
     workflow_id = int(sys.argv[1])
     asyncio.run(
         AutoReviewPoller(
-            IndicoConfig(),  # Host and token read from environment variables.
+            IndicoConfig(
+                host="try.indico.io",
+                api_token_path="indico_api_token.txt",
+            ),
             workflow_id,
             auto_review,
         ).poll_forever()
