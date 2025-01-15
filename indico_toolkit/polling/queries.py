@@ -1,6 +1,9 @@
-from typing import Any
+from typing import TYPE_CHECKING
 
 from indico.queries import GraphQLRequest  # type: ignore[import-untyped]
+
+if TYPE_CHECKING:
+    from typing import Any
 
 
 class SubmissionIdsPendingAutoReview(GraphQLRequest):  # type: ignore[misc]
@@ -23,7 +26,7 @@ class SubmissionIdsPendingAutoReview(GraphQLRequest):  # type: ignore[misc]
     def __init__(self, workflow_id: int):
         super().__init__(self.QUERY, {"workflowIds": [workflow_id]})
 
-    def process_response(self, response: Any) -> set[int]:
+    def process_response(self, response: "Any") -> set[int]:
         response = super().process_response(response)
         return {
             submission["id"] for submission in response["submissions"]["submissions"]
@@ -58,7 +61,7 @@ class SubmissionIdsPendingDownstream(GraphQLRequest):  # type: ignore[misc]
     def __init__(self, workflow_id: int):
         super().__init__(self.QUERY, {"workflowIds": [workflow_id]})
 
-    def process_response(self, response: Any) -> set[int]:
+    def process_response(self, response: "Any") -> set[int]:
         response = super().process_response(response)
         return {
             submission["id"] for submission in response["submissions"]["submissions"]

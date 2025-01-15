@@ -78,8 +78,8 @@ class AutoReviewPoller:
             jitter=retry_jitter,
         )
         self._worker_slots = asyncio.Semaphore(worker_count)
-        self._worker_queue: WorkerQueue = asyncio.Queue(1)
-        self._processing_submission_ids: set[SubmissionId] = set()
+        self._worker_queue: "WorkerQueue" = asyncio.Queue(1)
+        self._processing_submission_ids: "set[SubmissionId]" = set()
 
     async def poll_forever(self) -> "NoReturn":  # type: ignore[misc]
         logger.info(
@@ -111,7 +111,7 @@ class AutoReviewPoller:
 
         while True:
             try:
-                submission_ids: set[int] = await self._client_call(
+                submission_ids: "set[SubmissionId]" = await self._client_call(
                     SubmissionIdsPendingAutoReview(self._workflow_id)
                 )
             except Exception:
@@ -133,7 +133,7 @@ class AutoReviewPoller:
                 await self._worker_queue.put((submission_id, worker))
                 await asyncio.sleep(1 / self._spawn_rate)
 
-    async def _worker(self, submission_id: SubmissionId) -> None:
+    async def _worker(self, submission_id: "SubmissionId") -> None:
         """
         Process a single submission by retrieving submission metadata, the result file,
         etl output, calling `self._auto_review`, and submitting changes.
