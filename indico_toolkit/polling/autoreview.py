@@ -31,6 +31,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class AutoReviewed:
     changes: "dict[str, Any] | list[dict[str, Any]]"
+    reject: bool = False
     stp: bool = False
 
 
@@ -170,6 +171,7 @@ class AutoReviewPoller:
             SubmitReview(
                 submission_id,
                 changes=auto_reviewed.changes,
+                rejected=auto_reviewed.reject,
                 force_complete=auto_reviewed.stp,
             )
         )

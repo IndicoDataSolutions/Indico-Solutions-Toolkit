@@ -30,7 +30,8 @@ async def auto_review(
 
     return AutoReviewed(
         changes=predictions.to_changes(result),
-        stp=True,  # Defaults to `False` and may be omitted.
+        reject=False,  # Defaults to `False` and may be omitted.
+        stp=False,  # Defaults to `False` and may be omitted.
     )
 
 
