@@ -7,7 +7,7 @@ from .utilities import get
 class Document:
     id: int
     name: str
-    etl_output_url: str
+    etl_output_uri: str
 
     # Auto review changes must reproduce all model sections that were present in the
     # original result file. This may not be possible from the predictions alone--if a
@@ -24,13 +24,13 @@ class Document:
         """
         document_results = get(result, dict, "results", "document", "results")
         model_names = frozenset(document_results.keys())
-        etl_output_url = get(result, str, "etl_output")
+        etl_output_uri = get(result, str, "etl_output")
 
         return Document(
             # v1 result files don't include document IDs or filenames.
             id=None,  # type: ignore[arg-type]
             name=None,  # type: ignore[arg-type]
-            etl_output_url=etl_output_url,
+            etl_output_uri=etl_output_uri,
             _model_sections=model_names,
         )
 
@@ -41,11 +41,11 @@ class Document:
         """
         model_results = get(document, dict, "model_results", "ORIGINAL")
         model_ids = frozenset(model_results.keys())
-        etl_output_url = get(document, str, "etl_output")
+        etl_output_uri = get(document, str, "etl_output")
 
         return Document(
             id=get(document, int, "submissionfile_id"),
             name=get(document, str, "input_filename"),
-            etl_output_url=etl_output_url,
+            etl_output_uri=etl_output_uri,
             _model_sections=model_ids,
         )

@@ -151,7 +151,7 @@ class AutoReviewPoller:
             logger.info(f"Retrieving etl output for {submission_id=}")
             etl_outputs = {
                 document: await etloutput.load_async(
-                    document.etl_output_url,
+                    document.etl_output_uri,
                     reader=self._retrieve_storage_object,
                     text=self._load_text,
                     tokens=self._load_tokens,
