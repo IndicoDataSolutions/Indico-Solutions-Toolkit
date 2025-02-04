@@ -6,6 +6,9 @@ from .errors import ResultError
 from .model import ModelGroup, TaskType
 from .predictionlist import PredictionList
 from .predictions import (
+    NULL_BOX,
+    NULL_SPAN,
+    Box,
     Classification,
     DocumentExtraction,
     Extraction,
@@ -13,6 +16,7 @@ from .predictions import (
     FormExtractionType,
     Group,
     Prediction,
+    Span,
     Unbundling,
 )
 from .result import Result
@@ -24,6 +28,7 @@ if TYPE_CHECKING:
 
 
 __all__ = (
+    "Box",
     "Classification",
     "Document",
     "DocumentExtraction",
@@ -34,12 +39,15 @@ __all__ = (
     "load",
     "load_async",
     "ModelGroup",
+    "NULL_BOX",
+    "NULL_SPAN",
     "Prediction",
     "PredictionList",
     "Result",
     "ResultError",
     "Review",
     "ReviewType",
+    "Span",
     "TaskType",
     "Unbundling",
 )

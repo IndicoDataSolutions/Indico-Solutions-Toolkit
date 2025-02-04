@@ -43,17 +43,10 @@ def normalize_v1_result(result: "Any") -> None:
             if "confidence" not in prediction:
                 prediction["confidence"] = {prediction["label"]: 0}
 
-            # Document Extractions added in review may lack spans.
-            if (
-                "text" in prediction
-                and "type" not in prediction
-                and "start" not in prediction
-            ):
-                prediction["start"] = 0
-                prediction["end"] = 0
-
             # Form Extractions added in review may lack bounding boxes.
+            # Set values that will equal `NULL_BOX`.
             if "type" in prediction and "top" not in prediction:
+                prediction["page_num"] = 0
                 prediction["top"] = 0
                 prediction["left"] = 0
                 prediction["right"] = 0
@@ -110,16 +103,12 @@ def normalize_v3_result(result: "Any") -> None:
             and "type" not in prediction
             and "spans" not in prediction
         ):
-            prediction["spans"] = [
-                {
-                    "page_num": prediction["page_num"],
-                    "start": 0,
-                    "end": 0,
-                }
-            ]
+            prediction["spans"] = []
 
         # Form Extractions added in review may lack bounding boxes.
+        # Set values that will equal `NULL_BOX`.
         if "type" in prediction and "top" not in prediction:
+            prediction["page_num"] = 0
             prediction["top"] = 0
             prediction["left"] = 0
             prediction["right"] = 0

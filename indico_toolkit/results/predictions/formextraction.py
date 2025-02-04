@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from ..review import Review
 from ..utilities import get, has, omit
+from .box import Box
 from .extraction import Extraction
 
 if TYPE_CHECKING:
@@ -22,13 +23,9 @@ class FormExtractionType(Enum):
 @dataclass
 class FormExtraction(Extraction):
     type: FormExtractionType
+    box: Box
     checked: bool
     signed: bool
-
-    top: int
-    left: int
-    right: int
-    bottom: int
 
     @staticmethod
     def _from_dict(
@@ -46,6 +43,7 @@ class FormExtraction(Extraction):
             review=review,
             label=get(prediction, str, "label"),
             confidences=get(prediction, dict, "confidence"),
+            text=get(prediction, str, "normalized", "formatted"),
             accepted=(
                 has(prediction, bool, "accepted") and get(prediction, bool, "accepted")
             ),
@@ -53,6 +51,7 @@ class FormExtraction(Extraction):
                 has(prediction, bool, "rejected") and get(prediction, bool, "rejected")
             ),
             type=FormExtractionType(get(prediction, str, "type")),
+            box=Box.from_dict(prediction),
             checked=(
                 has(prediction, bool, "normalized", "structured", "checked")
                 and get(prediction, bool, "normalized", "structured", "checked")
@@ -61,12 +60,6 @@ class FormExtraction(Extraction):
                 has(prediction, bool, "normalized", "structured", "signed")
                 and get(prediction, bool, "normalized", "structured", "signed")
             ),
-            text=get(prediction, str, "normalized", "formatted"),
-            page=get(prediction, int, "page_num"),
-            top=get(prediction, int, "top"),
-            left=get(prediction, int, "left"),
-            right=get(prediction, int, "right"),
-            bottom=get(prediction, int, "bottom"),
             extras=omit(
                 prediction,
                 "label",
@@ -96,11 +89,11 @@ class FormExtraction(Extraction):
             "label": self.label,
             "confidence": self.confidences,
             "type": self.type.value,
-            "page_num": self.page,
-            "top": self.top,
-            "left": self.left,
-            "right": self.right,
-            "bottom": self.bottom,
+            "page_num": self.box.page,
+            "top": self.box.top,
+            "left": self.box.left,
+            "right": self.box.right,
+            "bottom": self.box.bottom,
         }
 
         if self.type == FormExtractionType.CHECKBOX:

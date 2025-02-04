@@ -12,6 +12,7 @@ from indico_toolkit.results import (
     PredictionList,
     Review,
     ReviewType,
+    Span,
     TaskType,
 )
 
@@ -91,13 +92,11 @@ def predictions(
                 label="First Name",
                 confidences={"First Name": 0.8},
                 extras={},
+                text="John",
                 accepted=False,
                 rejected=False,
-                text="John",
-                start=352,
-                end=356,
-                page=0,
                 groups={group_alpha},
+                spans=[Span(page=0, start=352, end=356)],
             ),
             DocumentExtraction(
                 document=document,
@@ -106,13 +105,11 @@ def predictions(
                 label="Last Name",
                 confidences={"Last Name": 0.9},
                 extras={},
+                text="Doe",
                 accepted=False,
                 rejected=False,
-                text="Doe",
-                start=357,
-                end=360,
-                page=1,
                 groups={group_alpha, group_bravo},
+                spans=[Span(page=1, start=357, end=360)],
             ),
         ]
     )

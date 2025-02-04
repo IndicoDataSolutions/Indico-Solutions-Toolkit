@@ -23,9 +23,8 @@ def test_extractions() -> None:
         review=None,
         label="Label",
         confidences={"Label": 0.5},
-        text="Value",
-        page=0,
         extras=None,  # type: ignore[arg-type]
+        text="Value",
         accepted=False,
         rejected=False,
     )

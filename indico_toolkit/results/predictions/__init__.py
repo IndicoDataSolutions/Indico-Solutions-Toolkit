@@ -1,12 +1,14 @@
 from typing import TYPE_CHECKING
 
 from ..model import TaskType
+from .box import NULL_BOX, Box
 from .classification import Classification
 from .documentextraction import DocumentExtraction
 from .extraction import Extraction
 from .formextraction import FormExtraction, FormExtractionType
 from .group import Group
 from .prediction import Prediction
+from .span import NULL_SPAN, Span
 from .unbundling import Unbundling
 
 if TYPE_CHECKING:
@@ -16,13 +18,17 @@ if TYPE_CHECKING:
     from ..review import Review
 
 __all__ = (
+    "Box",
     "Classification",
     "DocumentExtraction",
     "Extraction",
     "FormExtraction",
     "FormExtractionType",
     "Group",
+    "NULL_BOX",
+    "NULL_SPAN",
     "Prediction",
+    "Span",
     "Unbundling",
 )
 
