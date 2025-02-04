@@ -16,7 +16,7 @@ from .utilities import nfilter
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Collection, Container, Iterable
-    from typing import Any, SupportsIndex
+    from typing import Any, Final, SupportsIndex
 
     from typing_extensions import Self
 
@@ -29,7 +29,7 @@ OfType = TypeVar("OfType", bound=Prediction)
 KeyType = TypeVar("KeyType")
 
 # Non-None sentinel value to support `PredictionList.where(review=None)`.
-ReviewUnspecified = Review(
+REVIEW_UNSPECIFIED: "Final" = Review(
     id=None, reviewer_id=None, notes=None, rejected=None, type=None  # type: ignore[arg-type]
 )
 
@@ -146,8 +146,8 @@ class PredictionList(List[PredictionType]):
         document_in: "Container[Document] | None" = None,
         model: "ModelGroup | TaskType | str | None" = None,
         model_in: "Container[ModelGroup | TaskType | str] | None" = None,
-        review: "Review | ReviewType | None" = ReviewUnspecified,
-        review_in: "Container[Review | ReviewType | None]" = {ReviewUnspecified},
+        review: "Review | ReviewType | None" = REVIEW_UNSPECIFIED,
+        review_in: "Container[Review | ReviewType | None]" = {REVIEW_UNSPECIFIED},
         label: "str | None" = None,
         label_in: "Container[str] | None" = None,
         page: "int | None" = None,
@@ -210,7 +210,7 @@ class PredictionList(List[PredictionType]):
                 )
             )
 
-        if review is not ReviewUnspecified:
+        if review is not REVIEW_UNSPECIFIED:
             predicates.append(
                 lambda prediction: (
                     prediction.review == review
@@ -221,7 +221,7 @@ class PredictionList(List[PredictionType]):
                 )
             )
 
-        if review_in != {ReviewUnspecified}:
+        if review_in != {REVIEW_UNSPECIFIED}:
             predicates.append(
                 lambda prediction: (
                     prediction.review in review_in
