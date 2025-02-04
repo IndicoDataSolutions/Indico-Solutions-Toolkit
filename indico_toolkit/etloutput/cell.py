@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from ..results.utilities import get, has
+from ..results import NULL_SPAN, Box, Span
+from ..results.utilities import get
+from .range import Range
 
 
 class CellType(Enum):
@@ -13,60 +15,33 @@ class CellType(Enum):
 class Cell:
     type: CellType
     text: str
-    # Span
-    start: int
-    end: int
-    # Bounding box
-    page: int
-    top: int
-    left: int
-    right: int
-    bottom: int
-    # Table coordinates
-    row: int
-    rowspan: int
-    rows: "tuple[int, ...]"
-    column: int
-    columnspan: int
-    columns: "tuple[int, ...]"
+    box: Box
+    range: Range
+    spans: "tuple[Span, ...]"
 
-    def __lt__(self, other: "Cell") -> bool:
+    @property
+    def span(self) -> Span:
         """
-        By default, cells are sorted in table order (by row, then column).
-        Cells can also be sorted in span order: `tokens.sort(key=attrgetter("start"))`.
+        Return the first `Span` the cell covers or `NULL_SPAN` otherwise.
+
+        Empty cells have no spans.
         """
-        return self.row < other.row or (
-            self.row == other.row and self.column < other.column
-        )
+        return self.spans[0] if self.spans else NULL_SPAN
 
     @staticmethod
     def from_dict(cell: object, page: int) -> "Cell":
         """
         Create a `Cell` from a v1 or v3 cell dictionary.
         """
+        get(cell, dict, "position")["page_num"] = page
+
+        for doc_offset in get(cell, list, "doc_offsets"):
+            doc_offset["page_num"] = page
+
         return Cell(
             type=CellType(get(cell, str, "cell_type")),
             text=get(cell, str, "text"),
-            # Empty cells have no start and end; so use [0:0] for a valid slice.
-            start=(
-                get(cell, int, "doc_offsets", 0, "start")
-                if has(cell, int, "doc_offsets", 0, "start")
-                else 0
-            ),
-            end=(
-                get(cell, int, "doc_offsets", 0, "end")
-                if has(cell, int, "doc_offsets", 0, "end")
-                else 0
-            ),
-            page=page,
-            top=get(cell, int, "position", "top"),
-            left=get(cell, int, "position", "left"),
-            right=get(cell, int, "position", "right"),
-            bottom=get(cell, int, "position", "bottom"),
-            row=get(cell, int, "rows", 0),
-            rowspan=len(get(cell, list, "rows")),
-            rows=tuple(get(cell, list, "rows")),
-            column=get(cell, int, "columns", 0),
-            columnspan=len(get(cell, list, "columns")),
-            columns=tuple(get(cell, list, "columns")),
+            box=Box.from_dict(get(cell, dict, "position")),
+            range=Range.from_dict(cell),
+            spans=tuple(map(Span.from_dict, get(cell, list, "doc_offsets"))),
         )

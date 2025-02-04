@@ -1,9 +1,11 @@
 from typing import TYPE_CHECKING
 
+from ..results import NULL_BOX, NULL_SPAN, Box, Span
 from ..results.utilities import get, has
 from .cell import Cell, CellType
 from .errors import EtlOutputError, TableCellNotFoundError, TokenNotFoundError
 from .etloutput import EtlOutput
+from .range import Range
 from .table import Table
 from .token import Token
 
@@ -12,12 +14,17 @@ if TYPE_CHECKING:
     from typing import Any
 
 __all__ = (
+    "Box",
     "Cell",
     "CellType",
     "EtlOutput",
     "EtlOutputError",
     "load",
     "load_async",
+    "NULL_BOX",
+    "NULL_SPAN",
+    "Range",
+    "Span",
     "Table",
     "TableCellNotFoundError",
     "Token",
