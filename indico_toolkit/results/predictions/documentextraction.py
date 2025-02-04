@@ -27,7 +27,7 @@ class DocumentExtraction(Extraction):
         prediction: object,
     ) -> "DocumentExtraction":
         """
-        Create n `DocumentExtraction` from a v1 prediction dictionary.
+        Create a `DocumentExtraction` from a v1 prediction dictionary.
         """
         return DocumentExtraction(
             document=document,

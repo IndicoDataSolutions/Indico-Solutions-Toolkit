@@ -57,8 +57,10 @@ class PredictionList(List[PredictionType]):
 
     @overload
     def __getitem__(self, index: "SupportsIndex", /) -> PredictionType: ...
+
     @overload
     def __getitem__(self, index: slice, /) -> "PredictionList[PredictionType]": ...
+
     def __getitem__(
         self, index: "SupportsIndex | slice"
     ) -> "PredictionType | PredictionList[PredictionType]":

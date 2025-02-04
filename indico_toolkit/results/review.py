@@ -21,7 +21,7 @@ class Review:
     @staticmethod
     def from_dict(review: object) -> "Review":
         """
-        Create a `Review` from a result file review dictionary.
+        Create a `Review` from a review dictionary.
         """
         return Review(
             id=get(review, int, "review_id"),

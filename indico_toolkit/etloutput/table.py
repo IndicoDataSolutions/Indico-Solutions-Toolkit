@@ -35,7 +35,7 @@ class Table:
     @staticmethod
     def from_dict(table: object) -> "Table":
         """
-        Create a `Table` from a v1 or v3 ETL Ouput table dictionary.
+        Create a `Table` from a v1 or v3 table dictionary.
         """
         page = get(table, int, "page_num")
         cells = tuple(

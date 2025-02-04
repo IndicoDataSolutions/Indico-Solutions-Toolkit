@@ -42,7 +42,7 @@ class Cell:
     @staticmethod
     def from_dict(cell: object, page: int) -> "Cell":
         """
-        Create a `Cell` from a v1 or v3 ETL Ouput cell dictionary.
+        Create a `Cell` from a v1 or v3 cell dictionary.
         """
         return Cell(
             type=CellType(get(cell, str, "cell_type")),

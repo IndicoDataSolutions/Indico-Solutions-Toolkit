@@ -33,7 +33,7 @@ class EtlOutput:
         table_dicts_by_page: "Iterable[Iterable[object]]",
     ) -> "EtlOutput":
         """
-        Create an `EtlOutput` from v1 or v3 ETL Ouput pages.
+        Create an `EtlOutput` from v1 or v3 page lists.
         """
         text_by_page = tuple(text_by_page)
         tokens_by_page = tuple(

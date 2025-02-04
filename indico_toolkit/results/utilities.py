@@ -66,7 +66,6 @@ def omit(dictionary: object, *keys: str) -> "dict[str, Value]":
     """
     if not isinstance(dictionary, dict):
         return {}
-
     return {
         key: value
         for key, value in dictionary.items()

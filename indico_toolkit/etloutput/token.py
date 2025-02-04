@@ -37,7 +37,7 @@ class Token:
     @staticmethod
     def from_dict(token: object) -> "Token":
         """
-        Create a `Token` from a v1 or v3 ETL Ouput token dictionary.
+        Create a `Token` from a v1 or v3 token dictionary.
         """
         return Token(
             text=get(token, str, "text"),

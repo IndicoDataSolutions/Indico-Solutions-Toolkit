@@ -209,16 +209,17 @@ def test_where_review(
     assert predictions.where(review=auto_review) == [first_name]
     assert predictions.where(review=ReviewType.MANUAL) == [last_name]
 
+
 def test_where_review_in(
     predictions: "PredictionList[Prediction]", auto_review: Review
 ) -> None:
     classification, first_name, last_name = predictions
     assert predictions.where(review_in={None}) == [classification]
     assert predictions.where(
-        review_in={None, auto_review}
+        review_in={None, auto_review},
     ) == [classification, first_name]
     assert predictions.where(
-        review_in={auto_review, ReviewType.MANUAL}
+        review_in={auto_review, ReviewType.MANUAL},
     ) == [first_name, last_name]
     assert predictions.where(review_in={}) == []
 
@@ -231,7 +232,7 @@ def test_where_label(predictions: "PredictionList[Prediction]") -> None:
 def test_where_label_in(predictions: "PredictionList[Prediction]") -> None:
     first_name, last_name = predictions.extractions
     assert predictions.where(
-        label_in=("First Name", "Last Name")
+        label_in=("First Name", "Last Name"),
     ) == [first_name, last_name]
 
 
@@ -263,6 +264,7 @@ def test_where_accepted(predictions: "PredictionList[Prediction]") -> None:
 
     assert predictions.where(accepted=False) == []
     assert predictions.where(accepted=True) == [first_name, last_name]
+
 
 def test_where_rejected(predictions: "PredictionList[Prediction]") -> None:
     first_name, last_name = predictions.extractions
