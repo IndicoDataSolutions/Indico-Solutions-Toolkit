@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
 
+from ..results.utilities import get, has
 from .cell import Cell, CellType
 from .errors import EtlOutputError, TableCellNotFoundError, TokenNotFoundError
 from .etloutput import EtlOutput
 from .table import Table
 from .token import Token
-from .utilities import get, has
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable

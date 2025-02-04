@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
+from ..results.utilities import get
 from .cell import Cell
-from .utilities import get
 
 
 @dataclass(frozen=True)

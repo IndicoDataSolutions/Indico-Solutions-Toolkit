@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from .utilities import get, has
+from ..results.utilities import get, has
 
 
 class CellType(Enum):

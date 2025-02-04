@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .utilities import get
+from ..results.utilities import get
 
 
 @dataclass(frozen=True)
