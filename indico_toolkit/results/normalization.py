@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from .utilities import get, has
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from typing import Any
 
 
@@ -84,30 +85,33 @@ def normalize_v3_result(result: "Any") -> None:
     """
     Fix inconsistencies observed in v3 result files.
     """
-    predictions: "Any" = (
-        prediction
+    task_type_by_model_group_id = {
+        model_group_id: model_group["task_type"]
+        for model_group_id, model_group in result["modelgroup_metadata"].items()
+    }
+    predictions_with_task_type: "Iterator[tuple[Any, str]]" = (
+        (prediction, task_type_by_model_group_id[model_group_id])
         for submission_result in get(result, list, "submission_results")
-        for model_result in get(submission_result, dict, "model_results").values()
-        for review_result in model_result.values()
-        for prediction in review_result
+        for review_result in get(submission_result, dict, "model_results").values()
+        for model_group_id, model_results in review_result.items()
+        for prediction in model_results
     )
 
-    for prediction in predictions:
-        # Predictions added in review lack a `confidence` section.
+    for prediction, task_type in predictions_with_task_type:
+        # Predictions added in review may lack a `confidence` section.
         if "confidence" not in prediction:
             prediction["confidence"] = {prediction["label"]: 0}
 
         # Document Extractions added in review may lack spans.
         if (
-            "text" in prediction
-            and "type" not in prediction
+            task_type in ("annotation", "genai_annotation")
             and "spans" not in prediction
         ):
             prediction["spans"] = []
 
         # Form Extractions added in review may lack bounding boxes.
         # Set values that will equal `NULL_BOX`.
-        if "type" in prediction and "top" not in prediction:
+        if task_type == "form_extraction" and "top" not in prediction:
             prediction["page_num"] = 0
             prediction["top"] = 0
             prediction["left"] = 0
@@ -116,14 +120,16 @@ def normalize_v3_result(result: "Any") -> None:
 
         # Prior to 6.11, some Extractions lack a `normalized` section after
         # review.
-        if "text" in prediction and "normalized" not in prediction:
+        if (
+            task_type in ("annotation", "form_extraction", "genai_annotation")
+            and "normalized" not in prediction
+        ):
             prediction["normalized"] = {"formatted": prediction["text"]}
 
         # Document Extractions that didn't go through a linked labels
         # transformer lack a `groupings` section.
         if (
-            "text" in prediction
-            and "type" not in prediction
+            task_type in ("annotation", "genai_annotation")
             and "groupings" not in prediction
         ):
             prediction["groupings"] = []
