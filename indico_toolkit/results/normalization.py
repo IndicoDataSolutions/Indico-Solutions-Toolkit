@@ -134,6 +134,10 @@ def normalize_v3_result(result: "Any") -> None:
         ):
             prediction["groupings"] = []
 
+        # Summarizations may lack citations after review.
+        if task_type == "summarization" and "citations" not in prediction:
+            prediction["citations"] = []
+
     # Prior to 6.8, v3 result files don't include a `reviews` section.
     if not has(result, dict, "reviews"):
         result["reviews"] = {}

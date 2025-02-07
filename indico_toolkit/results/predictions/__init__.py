@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from ..model import TaskType
 from .box import NULL_BOX, Box
+from .citation import NULL_CITATION, Citation
 from .classification import Classification
 from .documentextraction import DocumentExtraction
 from .extraction import Extraction
@@ -9,6 +10,7 @@ from .formextraction import FormExtraction, FormExtractionType
 from .group import Group
 from .prediction import Prediction
 from .span import NULL_SPAN, Span
+from .summarization import Summarization
 from .unbundling import Unbundling
 
 if TYPE_CHECKING:
@@ -19,6 +21,7 @@ if TYPE_CHECKING:
 
 __all__ = (
     "Box",
+    "Citation",
     "Classification",
     "DocumentExtraction",
     "Extraction",
@@ -26,9 +29,11 @@ __all__ = (
     "FormExtractionType",
     "Group",
     "NULL_BOX",
+    "NULL_CITATION",
     "NULL_SPAN",
     "Prediction",
     "Span",
+    "Summarization",
     "Unbundling",
 )
 
@@ -67,6 +72,8 @@ def from_v3_dict(
         return DocumentExtraction.from_v3_dict(document, model, review, prediction)
     elif model.task_type == TaskType.FORM_EXTRACTION:
         return FormExtraction.from_v3_dict(document, model, review, prediction)
+    elif model.task_type == TaskType.GENAI_SUMMARIZATION:
+        return Summarization.from_v3_dict(document, model, review, prediction)
     elif model.task_type == TaskType.UNBUNDLING:
         return Unbundling.from_v3_dict(document, model, review, prediction)
     else:

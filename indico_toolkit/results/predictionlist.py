@@ -9,6 +9,7 @@ from .predictions import (
     Extraction,
     FormExtraction,
     Prediction,
+    Summarization,
     Unbundling,
 )
 from .review import Review, ReviewType
@@ -50,6 +51,10 @@ class PredictionList(List[PredictionType]):
     @property
     def form_extractions(self) -> "PredictionList[FormExtraction]":
         return self.oftype(FormExtraction)
+
+    @property
+    def summarizations(self) -> "PredictionList[Summarization]":
+        return self.oftype(Summarization)
 
     @property
     def unbundlings(self) -> "PredictionList[Unbundling]":

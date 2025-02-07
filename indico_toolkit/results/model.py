@@ -10,6 +10,7 @@ class TaskType(Enum):
     FORM_EXTRACTION = "form_extraction"
     GENAI_CLASSIFICATION = "genai_classification"
     GENAI_EXTRACTION = "genai_annotation"
+    GENAI_SUMMARIZATION = "summarization"
     UNBUNDLING = "classification_unbundling"
 
 

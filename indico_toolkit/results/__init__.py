@@ -7,6 +7,7 @@ from .model import ModelGroup, TaskType
 from .predictionlist import PredictionList
 from .predictions import (
     NULL_BOX,
+    NULL_CITATION,
     NULL_SPAN,
     Box,
     Classification,
@@ -17,6 +18,7 @@ from .predictions import (
     Group,
     Prediction,
     Span,
+    Summarization,
     Unbundling,
 )
 from .result import Result
@@ -40,6 +42,7 @@ __all__ = (
     "load_async",
     "ModelGroup",
     "NULL_BOX",
+    "NULL_CITATION",
     "NULL_SPAN",
     "Prediction",
     "PredictionList",
@@ -48,6 +51,7 @@ __all__ = (
     "Review",
     "ReviewType",
     "Span",
+    "Summarization",
     "TaskType",
     "Unbundling",
 )
