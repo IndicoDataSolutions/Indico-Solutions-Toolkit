@@ -61,9 +61,9 @@ def from_v3_dict(
     """
     Create a `Prediction` subclass from a v3 prediction dictionary.
     """
-    if model.task_type == TaskType.CLASSIFICATION:
+    if model.task_type in (TaskType.CLASSIFICATION, TaskType.GENAI_CLASSIFICATION):
         return Classification.from_v3_dict(document, model, review, prediction)
-    elif model.task_type == TaskType.DOCUMENT_EXTRACTION:
+    elif model.task_type in (TaskType.DOCUMENT_EXTRACTION, TaskType.GENAI_EXTRACTION):
         return DocumentExtraction.from_v3_dict(document, model, review, prediction)
     elif model.task_type == TaskType.FORM_EXTRACTION:
         return FormExtraction.from_v3_dict(document, model, review, prediction)

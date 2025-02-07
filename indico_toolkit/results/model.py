@@ -8,6 +8,8 @@ class TaskType(Enum):
     CLASSIFICATION = "classification"
     DOCUMENT_EXTRACTION = "annotation"
     FORM_EXTRACTION = "form_extraction"
+    GENAI_CLASSIFICATION = "genai_classification"
+    GENAI_EXTRACTION = "genai_annotation"
     UNBUNDLING = "classification_unbundling"
 
 
