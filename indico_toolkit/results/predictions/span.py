@@ -17,6 +17,9 @@ class Span:
     def slice(self) -> slice:
         return slice(self.start, self.end)
 
+    def __bool__(self) -> bool:
+        return self != NULL_SPAN
+
     @staticmethod
     def from_dict(span: object) -> "Span":
         return Span(
@@ -36,5 +39,5 @@ class Span:
 # It's more ergonomic to represent the lack of spans with a special null span object
 # rather than using `None` or raising an error. This lets you e.g. sort by the `span`
 # attribute without having to constantly check for `None`, while still allowing you do
-# a "None check" with `extraction.span == NULL_SPAN`.
+# a "None check" with `extraction.span == NULL_SPAN` or `bool(extraction.span)`.
 NULL_SPAN: "Final" = Span(page=0, start=0, end=0)
