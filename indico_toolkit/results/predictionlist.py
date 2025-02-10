@@ -2,7 +2,7 @@ from collections import defaultdict
 from operator import attrgetter
 from typing import TYPE_CHECKING, List, TypeVar, overload
 
-from .model import TaskType
+from .model import ModelGroupType
 from .predictions import (
     Classification,
     DocumentExtraction,
@@ -149,8 +149,8 @@ class PredictionList(List[PredictionType]):
         *,
         document: "Document | None" = None,
         document_in: "Container[Document] | None" = None,
-        model: "ModelGroup | TaskType | str | None" = None,
-        model_in: "Container[ModelGroup | TaskType | str] | None" = None,
+        model: "ModelGroup | ModelGroupType | str | None" = None,
+        model_in: "Container[ModelGroup | ModelGroupType | str] | None" = None,
         review: "Review | ReviewType | None" = REVIEW_UNSPECIFIED,
         review_in: "Container[Review | ReviewType | None]" = {REVIEW_UNSPECIFIED},
         label: "str | None" = None,
@@ -201,7 +201,7 @@ class PredictionList(List[PredictionType]):
             predicates.append(
                 lambda prediction: (
                     prediction.model == model
-                    or prediction.model.task_type == model
+                    or prediction.model.type == model
                     or prediction.model.name == model
                 )
             )
@@ -210,7 +210,7 @@ class PredictionList(List[PredictionType]):
             predicates.append(
                 lambda prediction: (
                     prediction.model in model_in
-                    or prediction.model.task_type in model_in
+                    or prediction.model.type in model_in
                     or prediction.model.name in model_in
                 )
             )
@@ -346,7 +346,7 @@ class PredictionList(List[PredictionType]):
         changes: "dict[str, Any]" = {}
 
         for model, predictions in self.groupby(attrgetter("model")).items():
-            if model.task_type == TaskType.CLASSIFICATION:
+            if model.type == ModelGroupType.CLASSIFICATION:
                 changes[model.name] = predictions[0].to_v1_dict()
             else:
                 changes[model.name] = [

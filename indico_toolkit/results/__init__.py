@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from .document import Document
 from .errors import ResultError
-from .model import ModelGroup, TaskType
+from .model import ModelGroup, ModelGroupType
 from .predictionlist import PredictionList
 from .predictions import (
     NULL_BOX,
@@ -41,6 +41,7 @@ __all__ = (
     "load",
     "load_async",
     "ModelGroup",
+    "ModelGroupType",
     "NULL_BOX",
     "NULL_CITATION",
     "NULL_SPAN",
@@ -52,7 +53,6 @@ __all__ = (
     "ReviewType",
     "Span",
     "Summarization",
-    "TaskType",
     "Unbundling",
 )
 

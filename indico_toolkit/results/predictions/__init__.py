@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from ..model import TaskType
+from ..model import ModelGroupType
 from .box import NULL_BOX, Box
 from .citation import NULL_CITATION, Citation
 from .classification import Classification
@@ -37,6 +37,14 @@ __all__ = (
     "Unbundling",
 )
 
+CLASSIFICATION = ModelGroupType.CLASSIFICATION
+DOCUMENT_EXTRACTION = ModelGroupType.DOCUMENT_EXTRACTION
+FORM_EXTRACTION = ModelGroupType.FORM_EXTRACTION
+GENAI_CLASSIFICATION = ModelGroupType.GENAI_CLASSIFICATION
+GENAI_EXTRACTION = ModelGroupType.GENAI_EXTRACTION
+GENAI_SUMMARIZATION = ModelGroupType.GENAI_SUMMARIZATION
+UNBUNDLING = ModelGroupType.UNBUNDLING
+
 
 def from_v1_dict(
     document: "Document",
@@ -47,14 +55,14 @@ def from_v1_dict(
     """
     Create a `Prediction` subclass from a v1 prediction dictionary.
     """
-    if model.task_type == TaskType.CLASSIFICATION:
+    if model.type == CLASSIFICATION:
         return Classification.from_v1_dict(document, model, review, prediction)
-    elif model.task_type == TaskType.DOCUMENT_EXTRACTION:
+    elif model.type == DOCUMENT_EXTRACTION:
         return DocumentExtraction.from_v1_dict(document, model, review, prediction)
-    elif model.task_type == TaskType.FORM_EXTRACTION:
+    elif model.type == FORM_EXTRACTION:
         return FormExtraction.from_v1_dict(document, model, review, prediction)
     else:
-        raise ResultError(f"unsupported v1 task type `{model.task_type!r}`")
+        raise ResultError(f"unsupported v1 model type `{model.type!r}`")
 
 
 def from_v3_dict(
@@ -66,15 +74,15 @@ def from_v3_dict(
     """
     Create a `Prediction` subclass from a v3 prediction dictionary.
     """
-    if model.task_type in (TaskType.CLASSIFICATION, TaskType.GENAI_CLASSIFICATION):
+    if model.type in (CLASSIFICATION, GENAI_CLASSIFICATION):
         return Classification.from_v3_dict(document, model, review, prediction)
-    elif model.task_type in (TaskType.DOCUMENT_EXTRACTION, TaskType.GENAI_EXTRACTION):
+    elif model.type in (DOCUMENT_EXTRACTION, GENAI_EXTRACTION):
         return DocumentExtraction.from_v3_dict(document, model, review, prediction)
-    elif model.task_type == TaskType.FORM_EXTRACTION:
+    elif model.type == FORM_EXTRACTION:
         return FormExtraction.from_v3_dict(document, model, review, prediction)
-    elif model.task_type == TaskType.GENAI_SUMMARIZATION:
+    elif model.type == GENAI_SUMMARIZATION:
         return Summarization.from_v3_dict(document, model, review, prediction)
-    elif model.task_type == TaskType.UNBUNDLING:
+    elif model.type == UNBUNDLING:
         return Unbundling.from_v3_dict(document, model, review, prediction)
     else:
-        raise ResultError(f"unsupported v3 task type `{model.task_type!r}`")
+        raise ResultError(f"unsupported v3 model type `{model.type!r}`")

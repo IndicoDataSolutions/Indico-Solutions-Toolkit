@@ -4,7 +4,7 @@ from enum import Enum
 from .utilities import get, has
 
 
-class TaskType(Enum):
+class ModelGroupType(Enum):
     CLASSIFICATION = "classification"
     DOCUMENT_EXTRACTION = "annotation"
     FORM_EXTRACTION = "form_extraction"
@@ -18,7 +18,7 @@ class TaskType(Enum):
 class ModelGroup:
     id: int
     name: str
-    task_type: TaskType
+    type: ModelGroupType
 
     @staticmethod
     def from_v1_section(section: "tuple[str, object]") -> "ModelGroup":
@@ -32,20 +32,20 @@ class ModelGroup:
             prediction = get(predictions, dict, "pre_review", 0)
 
             if has(prediction, str, "type"):
-                task_type = TaskType.FORM_EXTRACTION
+                type = ModelGroupType.FORM_EXTRACTION
             elif has(prediction, str, "text"):
-                task_type = TaskType.DOCUMENT_EXTRACTION
+                type = ModelGroupType.DOCUMENT_EXTRACTION
             else:
-                task_type = TaskType.CLASSIFICATION
+                type = ModelGroupType.CLASSIFICATION
         else:
             # Likely an extraction model that produced no predictions.
-            task_type = TaskType.DOCUMENT_EXTRACTION
+            type = ModelGroupType.DOCUMENT_EXTRACTION
 
         return ModelGroup(
             # v1 result files don't include model IDs.
             id=None,  # type: ignore[arg-type]
             name=name,
-            task_type=task_type,
+            type=type,
         )
 
     @staticmethod
@@ -56,5 +56,5 @@ class ModelGroup:
         return ModelGroup(
             id=get(model_group, int, "id"),
             name=get(model_group, str, "name"),
-            task_type=TaskType(get(model_group, str, "task_type")),
+            type=ModelGroupType(get(model_group, str, "task_type")),
         )
