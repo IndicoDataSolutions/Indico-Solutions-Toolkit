@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from functools import partial
+from itertools import chain
 from typing import TYPE_CHECKING
 
 from . import predictions as prediction
@@ -107,7 +108,10 @@ class Result:
         modelgroup_metadata = get(result, dict, "modelgroup_metadata")
         review_metadata = get(result, dict, "reviews")
 
-        documents = sorted(map(Document.from_v3_dict, submission_results))
+        processed_documents = map(Document.from_v3_dict, submission_results)
+        errored_files = get(result, dict, "errored_files").values()
+        failed_documents = map(Document.from_v3_errored_file, errored_files)
+        documents = sorted(chain(processed_documents, failed_documents))
         models = sorted(map(ModelGroup.from_v3_dict, modelgroup_metadata.values()))
         predictions: "PredictionList[Prediction]" = PredictionList()
         reviews = sorted(map(Review.from_dict, review_metadata.values()))

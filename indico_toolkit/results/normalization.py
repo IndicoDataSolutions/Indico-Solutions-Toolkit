@@ -1,3 +1,4 @@
+import re
 from typing import TYPE_CHECKING
 
 from .utilities import get, has
@@ -146,3 +147,13 @@ def normalize_v3_result(result: "Any") -> None:
     for review_dict in get(result, dict, "reviews").values():
         if not has(review_dict, str, "review_notes"):
             review_dict["review_notes"] = ""
+
+    # Prior to 7.0, v3 result files don't include an `errored_files` section.
+    if not has(result, dict, "errored_files"):
+        result["errored_files"] = {}
+
+    # Prior to 7.X, errored files may lack filenames.
+    for file in get(result, dict, "errored_files").values():
+        if not has(file, str, "input_filename") and has(file, str, "reason"):
+            match = re.search(r"file '([^']*)' with id", get(file, str, "reason"))
+            file["input_filename"] = match.group(1) if match else ""

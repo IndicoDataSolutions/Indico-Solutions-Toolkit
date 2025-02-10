@@ -366,6 +366,9 @@ class PredictionList(List[PredictionType]):
         changes: "list[dict[str, Any]]" = []
 
         for document in documents:
+            if document.failed:
+                continue
+
             model_results: "dict[str, Any]" = {}
             changes.append(
                 {

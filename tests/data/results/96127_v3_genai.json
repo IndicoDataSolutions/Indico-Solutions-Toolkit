@@ -190,5 +190,11 @@
             "review_type": "manual"
         }
     },
-    "errored_files": {}
+    "errored_files": {
+        "89245": {
+            "submissionfile_id": 89245,
+            "error": "Traceback (most recent call last):\n\n  File \"/venv/.venv/lib/python3.10/site-packages/mediocris/pdfconverter/converter.py\", line 92, in libre_to_pdf\n    raise FileProcessingFailed()\n\nmediocris.pdfconverter.errors.FileProcessingFailed\n\n\nDuring handling of the above exception, another exception occurred:\n\n\nTraceback (most recent call last):\n\n  File \"/venv/.venv/lib/python3.10/site-packages/mediocris/pdfconverter/converter.py\", line 92, in libre_to_pdf\n    raise FileProcessingFailed()\n\nmediocris.pdfconverter.errors.FileProcessingFailed\n\n\nDuring handling of the above exception, another exception occurred:\n\n\nTraceback (most recent call last):\n\n  File \"/readapi/readapi/celery_tasks/submission.py\", line 87, in _\n    readapi_input: dict = await get_readapi_client().prepare_for_ocr(\n\n  File \"/readapi/readapi/read/readapi.py\", line 193, in prepare_for_ocr\n    pdf_path: str = await async_convert_file(\n\n  File \"/readapi/readapi/read/readapi.py\", line 127, in async_convert_file\n    filename: str = await asyncio.wait_for(\n\n  File \"/usr/lib/python3.10/asyncio/tasks.py\", line 445, in wait_for\n    return fut.result()\n\n  File \"/usr/lib/python3.10/asyncio/threads.py\", line 25, in to_thread\n    return await loop.run_in_executor(None, func_call)\n\n  File \"/usr/lib/python3.10/concurrent/futures/thread.py\", line 58, in run\n    result = self.fn(*self.args, **self.kwargs)\n\n  File \"/venv/.venv/lib/python3.10/site-packages/mediocris/pdfconverter/convert.py\", line 82, in write_and_convert_file\n    convert_to_pdf(\n\n  File \"/venv/.venv/lib/python3.10/site-packages/mediocris/pdfconverter/convert.py\", line 278, in convert_to_pdf\n    libre_to_pdf(file_path, pdf_file_path, timeout=timeout)\n\n  File \"/venv/.venv/lib/python3.10/site-packages/mediocris/pdfconverter/converter.py\", line 105, in libre_to_pdf\n    result = libre_to_pdf(\n\n  File \"/venv/.venv/lib/python3.10/site-packages/mediocris/pdfconverter/converter.py\", line 114, in libre_to_pdf\n    raise InvalidFile(\"Failed to process input file.\")\n\nmediocris.pdfconverter.errors.InvalidFile: Failed to process input file.",
+            "reason": "Error preparing for OCR, skipping submission file 'technical_questions.docx' with id '89245'"
+        }
+    }
 }

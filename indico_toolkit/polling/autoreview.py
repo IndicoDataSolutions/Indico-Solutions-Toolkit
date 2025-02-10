@@ -158,6 +158,7 @@ class AutoReviewPoller:
                     tables=self._load_tables,
                 )
                 for document in result.documents
+                if not document.failed
             }
         else:
             logger.info(f"Skipping etl output for {submission_id=}")
