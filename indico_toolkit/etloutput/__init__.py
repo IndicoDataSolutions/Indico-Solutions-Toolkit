@@ -51,6 +51,7 @@ def load(
     etl_outputs = {
         document: etloutput.load(document.etl_output_uri, reader=read_uri)
         for document in result.documents
+        if not document.failed
     }
     ```
     """
@@ -82,6 +83,7 @@ async def load_async(
     etl_outputs = {
         document: await etloutput.load_async(document.etl_output_uri, reader=read_uri)
         for document in result.documents
+        if not document.failed
     }
     ```
     """
