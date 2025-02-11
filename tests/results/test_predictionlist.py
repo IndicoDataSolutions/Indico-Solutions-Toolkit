@@ -8,11 +8,12 @@ from indico_toolkit.results import (
     DocumentExtraction,
     Group,
     ModelGroup,
+    ModelGroupType,
     Prediction,
     PredictionList,
     Review,
     ReviewType,
-    TaskType,
+    Span,
 )
 
 
@@ -21,7 +22,10 @@ def document() -> Document:
     return Document(
         id=2922,
         name="1040_filled.tiff",
-        etl_output_url="indico-file:///storage/submission/2922/etl_output.json",
+        etl_output_uri="indico-file:///storage/submission/2922/etl_output.json",
+        failed=False,
+        error="",
+        traceback="",
         _model_sections=frozenset({"124", "123", "122", "121"}),
     )
 
@@ -29,14 +33,14 @@ def document() -> Document:
 @pytest.fixture
 def classification_model() -> ModelGroup:
     return ModelGroup(
-        id=121, name="Tax Classification", task_type=TaskType.CLASSIFICATION
+        id=121, name="Tax Classification", type=ModelGroupType.CLASSIFICATION
     )
 
 
 @pytest.fixture
 def extraction_model() -> ModelGroup:
     return ModelGroup(
-        id=122, name="1040 Document Extraction", task_type=TaskType.DOCUMENT_EXTRACTION
+        id=122, name="1040 Document Extraction", type=ModelGroupType.DOCUMENT_EXTRACTION
     )
 
 
@@ -91,13 +95,11 @@ def predictions(
                 label="First Name",
                 confidences={"First Name": 0.8},
                 extras={},
+                text="John",
                 accepted=False,
                 rejected=False,
-                text="John",
-                start=352,
-                end=356,
-                page=0,
                 groups={group_alpha},
+                spans=[Span(page=0, start=352, end=356)],
             ),
             DocumentExtraction(
                 document=document,
@@ -106,13 +108,11 @@ def predictions(
                 label="Last Name",
                 confidences={"Last Name": 0.9},
                 extras={},
+                text="Doe",
                 accepted=False,
                 rejected=False,
-                text="Doe",
-                start=357,
-                end=360,
-                page=1,
                 groups={group_alpha, group_bravo},
+                spans=[Span(page=1, start=357, end=360)],
             ),
         ]
     )
@@ -181,7 +181,7 @@ def test_where_model(
 ) -> None:
     (classification,) = predictions.classifications
     assert predictions.where(model=classification_model) == [classification]
-    assert predictions.where(model=TaskType.CLASSIFICATION) == [classification]
+    assert predictions.where(model=ModelGroupType.CLASSIFICATION) == [classification]
     assert predictions.where(model="Tax Classification") == [classification]
 
 
@@ -190,9 +190,11 @@ def test_where_model_in(
 ) -> None:
     classification, first_name, last_name = predictions
     assert predictions.where(model_in={classification_model}) == [classification]
-    assert predictions.where(model_in={TaskType.CLASSIFICATION}) == [classification]
+    assert predictions.where(model_in={ModelGroupType.CLASSIFICATION}) == [
+        classification
+    ]
     assert predictions.where(
-        model_in={TaskType.CLASSIFICATION, TaskType.DOCUMENT_EXTRACTION}
+        model_in={ModelGroupType.CLASSIFICATION, ModelGroupType.DOCUMENT_EXTRACTION}
     ) == [classification, first_name, last_name]
     assert predictions.where(model_in={"Tax Classification"}) == [classification]
     assert predictions.where(
@@ -209,16 +211,17 @@ def test_where_review(
     assert predictions.where(review=auto_review) == [first_name]
     assert predictions.where(review=ReviewType.MANUAL) == [last_name]
 
+
 def test_where_review_in(
     predictions: "PredictionList[Prediction]", auto_review: Review
 ) -> None:
     classification, first_name, last_name = predictions
     assert predictions.where(review_in={None}) == [classification]
     assert predictions.where(
-        review_in={None, auto_review}
+        review_in={None, auto_review},
     ) == [classification, first_name]
     assert predictions.where(
-        review_in={auto_review, ReviewType.MANUAL}
+        review_in={auto_review, ReviewType.MANUAL},
     ) == [first_name, last_name]
     assert predictions.where(review_in={}) == []
 
@@ -231,7 +234,7 @@ def test_where_label(predictions: "PredictionList[Prediction]") -> None:
 def test_where_label_in(predictions: "PredictionList[Prediction]") -> None:
     first_name, last_name = predictions.extractions
     assert predictions.where(
-        label_in=("First Name", "Last Name")
+        label_in=("First Name", "Last Name"),
     ) == [first_name, last_name]
 
 
@@ -263,6 +266,7 @@ def test_where_accepted(predictions: "PredictionList[Prediction]") -> None:
 
     assert predictions.where(accepted=False) == []
     assert predictions.where(accepted=True) == [first_name, last_name]
+
 
 def test_where_rejected(predictions: "PredictionList[Prediction]") -> None:
     first_name, last_name = predictions.extractions

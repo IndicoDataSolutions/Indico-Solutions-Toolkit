@@ -5,6 +5,7 @@ from ..review import Review
 from ..utilities import get, has, omit
 from .extraction import Extraction
 from .group import Group
+from .span import NULL_SPAN, Span
 
 if TYPE_CHECKING:
     from typing import Any
@@ -15,9 +16,28 @@ if TYPE_CHECKING:
 
 @dataclass
 class DocumentExtraction(Extraction):
-    start: int
-    end: int
     groups: "set[Group]"
+    spans: "list[Span]"
+
+    @property
+    def span(self) -> Span:
+        """
+        Return the first `Span` the document extraction covers else `NULL_SPAN`.
+
+        Post-review, document extractions have no spans.
+        """
+        return self.spans[0] if self.spans else NULL_SPAN
+
+    @span.setter
+    def span(self, span: Span) -> None:
+        """
+        Overwrite all `spans` with the one provided.
+
+        This is implemented under the assumption that if you're setting the single span,
+        you want it to be the only one. And if you're working in a context that's
+        multiple-span sensetive, you'll set `extraction.spans` instead.
+        """
+        self.spans = [span]
 
     @staticmethod
     def from_v1_dict(
@@ -27,7 +47,7 @@ class DocumentExtraction(Extraction):
         prediction: object,
     ) -> "DocumentExtraction":
         """
-        Create n `DocumentExtraction` from a v1 prediction dictionary.
+        Create a `DocumentExtraction` from a v1 prediction dictionary.
         """
         return DocumentExtraction(
             document=document,
@@ -35,27 +55,25 @@ class DocumentExtraction(Extraction):
             review=review,
             label=get(prediction, str, "label"),
             confidences=get(prediction, dict, "confidence"),
+            text=get(prediction, str, "normalized", "formatted"),
             accepted=(
                 has(prediction, bool, "accepted") and get(prediction, bool, "accepted")
             ),
             rejected=(
                 has(prediction, bool, "rejected") and get(prediction, bool, "rejected")
             ),
-            text=get(prediction, str, "normalized", "formatted"),
-            page=get(prediction, int, "page_num"),
-            start=get(prediction, int, "start"),
-            end=get(prediction, int, "end"),
             groups=set(map(Group.from_dict, get(prediction, list, "groupings"))),
+            spans=[Span.from_dict(prediction)] if has(prediction, int, "start") else [],
             extras=omit(
                 prediction,
                 "label",
                 "confidence",
-                "start",
-                "end",
-                "page_num",
-                "groupings",
                 "accepted",
                 "rejected",
+                "groupings",
+                "page_num",
+                "start",
+                "end",
             ),
         )
 
@@ -75,24 +93,23 @@ class DocumentExtraction(Extraction):
             review=review,
             label=get(prediction, str, "label"),
             confidences=get(prediction, dict, "confidence"),
+            text=get(prediction, str, "normalized", "formatted"),
             accepted=(
                 has(prediction, bool, "accepted") and get(prediction, bool, "accepted")
             ),
             rejected=(
                 has(prediction, bool, "rejected") and get(prediction, bool, "rejected")
             ),
-            text=get(prediction, str, "normalized", "formatted"),
-            page=get(prediction, int, "spans", 0, "page_num"),
-            start=get(prediction, int, "spans", 0, "start"),
-            end=get(prediction, int, "spans", 0, "end"),
             groups=set(map(Group.from_dict, get(prediction, list, "groupings"))),
+            spans=sorted(map(Span.from_dict, get(prediction, list, "spans"))),
             extras=omit(
                 prediction,
                 "label",
                 "confidence",
-                "groupings",
                 "accepted",
                 "rejected",
+                "groupings",
+                "spans",
             ),
         )
 
@@ -104,10 +121,10 @@ class DocumentExtraction(Extraction):
             **self.extras,
             "label": self.label,
             "confidence": self.confidences,
-            "page_num": self.page,
-            "start": self.start,
-            "end": self.end,
             "groupings": [group.to_dict() for group in self.groups],
+            "page_num": self.span.page,
+            "start": self.span.start,
+            "end": self.span.end,
         }
 
         prediction["normalized"]["formatted"] = self.text
@@ -129,14 +146,11 @@ class DocumentExtraction(Extraction):
             "label": self.label,
             "confidence": self.confidences,
             "groupings": [group.to_dict() for group in self.groups],
+            "spans": [span.to_dict() for span in self.spans],
         }
 
         prediction["normalized"]["formatted"] = self.text
         prediction["text"] = self.text  # 6.10 sometimes reverts to raw text in review.
-
-        prediction["spans"][0]["page_num"] = self.page
-        prediction["spans"][0]["start"] = self.start
-        prediction["spans"][0]["end"] = self.end
 
         if self.accepted:
             prediction["accepted"] = True

@@ -1,0 +1,200 @@
+{
+    "file_version": 3,
+    "submission_id": 96127,
+    "modelgroup_metadata": {
+        "5561": {
+            "id": 5561,
+            "task_type": "genai_classification",
+            "name": "GenAI Classification",
+            "selected_model": { "id": 9045, "model_type": "genai" }
+        },
+        "5562": {
+            "id": 5562,
+            "task_type": "genai_annotation",
+            "name": "GenAI Invoice Extraction",
+            "selected_model": { "id": 9048, "model_type": "genai" }
+        },
+        "5563": {
+            "id": 5563,
+            "task_type": "summarization",
+            "name": "GenAI Purchase Order Summarization",
+            "selected_model": { "id": 9050, "model_type": "summarization" }
+        }
+    },
+    "submission_results": [
+        {
+            "submissionfile_id": 89243,
+            "etl_output": "indico-file:///storage/submission/5216/96127/89243/etl_output.json",
+            "input_filename": "Invoice.pdf",
+            "input_filepath": "indico-file:///storage/submission/5216/96127/89243.pdf",
+            "input_filesize": 426157,
+            "model_results": {
+                "ORIGINAL": {
+                    "5562": [
+                        {
+                            "label": "Invoice Number",
+                            "spans": [
+                                { "start": 113, "end": 119, "page_num": 0 }
+                            ],
+                            "span_id": "89243:c:18030:idx:0",
+                            "confidence": {
+                                "Invoice Number": 0.23762473235648304
+                            },
+                            "field_id": 590168,
+                            "location_type": "exact",
+                            "text": "579266",
+                            "normalized": {
+                                "text": "579266",
+                                "start": 113,
+                                "end": 119,
+                                "structured": null,
+                                "formatted": "579266",
+                                "status": "SUCCESS",
+                                "comparison_type": "string",
+                                "comparison_value": "579266",
+                                "validation": [
+                                    {
+                                        "validation_type": "TYPE_CONVERSION",
+                                        "error_message": null,
+                                        "validation_status": "SUCCESS"
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "5561": [
+                        {
+                            "field_id": 590167,
+                            "confidence": {
+                                "Invoice": 0.9999999857970121
+                            },
+                            "label": "Invoice"
+                        }
+                    ]
+                },
+                "FINAL": {
+                    "5562": [
+                        {
+                            "text": "579266",
+                            "label": "Invoice Number",
+                            "field_id": 590168,
+                            "page_num": 0,
+                            "normalized": {
+                                "end": null,
+                                "text": "579266",
+                                "start": null,
+                                "status": "SUCCESS",
+                                "formatted": "579266",
+                                "structured": {},
+                                "validation": [
+                                    {
+                                        "error_message": null,
+                                        "validation_type": "TYPE_CONVERSION",
+                                        "validation_status": "SUCCESS"
+                                    }
+                                ],
+                                "comparison_type": "string",
+                                "comparison_value": "579266"
+                            }
+                        }
+                    ],
+                    "5561": [
+                        {
+                            "field_id": 590167,
+                            "confidence": {
+                                "Invoice": 0.9999999857970121
+                            },
+                            "label": "Invoice"
+                        }
+                    ],
+                    "5563": []
+                }
+            },
+            "component_results": { "ORIGINAL": {}, "FINAL": {} },
+            "rejected": {
+                "models": { "5562": [], "5561": [] },
+                "components": {}
+            }
+        },
+        {
+            "submissionfile_id": 89244,
+            "etl_output": "indico-file:///storage/submission/5216/96127/89244/etl_output.json",
+            "input_filename": "purchase_order.pdf",
+            "input_filepath": "indico-file:///storage/submission/5216/96127/89244.pdf",
+            "input_filesize": 80950,
+            "model_results": {
+                "ORIGINAL": {
+                    "5563": [
+                        {
+                            "field_id": 590169,
+                            "confidence": { "Purchase Order Number": 1.0 },
+                            "label": "Purchase Order Number",
+                            "text": "29111525 [1]",
+                            "citations": [
+                                {
+                                    "document": {
+                                        "start": 0,
+                                        "end": 1329,
+                                        "page_num": 0
+                                    },
+                                    "response": { "start": 9, "end": 12 }
+                                }
+                            ]
+                        }
+                    ],
+                    "5561": [
+                        {
+                            "field_id": 590167,
+                            "confidence": {
+                                "Purchase Order": 0.9999999846134298
+                            },
+                            "label": "Purchase Order"
+                        }
+                    ]
+                },
+                "FINAL": {
+                    "5563": [
+                        {
+                            "text": "29111525",
+                            "label": "Purchase Order Number",
+                            "field_id": 590169,
+                            "page_num": 0,
+                            "confidence": { "Purchase Order Number": 1 }
+                        }
+                    ],
+                    "5561": [
+                        {
+                            "field_id": 590167,
+                            "confidence": {
+                                "Purchase Order": 0.9999999846134298
+                            },
+                            "label": "Purchase Order"
+                        }
+                    ],
+                    "5562": []
+                }
+            },
+            "component_results": { "ORIGINAL": {}, "FINAL": {} },
+            "rejected": {
+                "models": { "5563": [], "5561": [] },
+                "components": {}
+            }
+        }
+    ],
+    "reviews": {
+        "68458": {
+            "review_id": 68458,
+            "reviewer_id": 422,
+            "review_notes": null,
+            "review_rejected": false,
+            "review_type": "manual"
+        }
+    },
+    "errored_files": {
+        "89245": {
+            "submissionfile_id": 89245,
+            "error": "Traceback (most recent call last):\n\n  File \"/venv/.venv/lib/python3.10/site-packages/mediocris/pdfconverter/converter.py\", line 92, in libre_to_pdf\n    raise FileProcessingFailed()\n\nmediocris.pdfconverter.errors.FileProcessingFailed\n\n\nDuring handling of the above exception, another exception occurred:\n\n\nTraceback (most recent call last):\n\n  File \"/venv/.venv/lib/python3.10/site-packages/mediocris/pdfconverter/converter.py\", line 92, in libre_to_pdf\n    raise FileProcessingFailed()\n\nmediocris.pdfconverter.errors.FileProcessingFailed\n\n\nDuring handling of the above exception, another exception occurred:\n\n\nTraceback (most recent call last):\n\n  File \"/readapi/readapi/celery_tasks/submission.py\", line 87, in _\n    readapi_input: dict = await get_readapi_client().prepare_for_ocr(\n\n  File \"/readapi/readapi/read/readapi.py\", line 193, in prepare_for_ocr\n    pdf_path: str = await async_convert_file(\n\n  File \"/readapi/readapi/read/readapi.py\", line 127, in async_convert_file\n    filename: str = await asyncio.wait_for(\n\n  File \"/usr/lib/python3.10/asyncio/tasks.py\", line 445, in wait_for\n    return fut.result()\n\n  File \"/usr/lib/python3.10/asyncio/threads.py\", line 25, in to_thread\n    return await loop.run_in_executor(None, func_call)\n\n  File \"/usr/lib/python3.10/concurrent/futures/thread.py\", line 58, in run\n    result = self.fn(*self.args, **self.kwargs)\n\n  File \"/venv/.venv/lib/python3.10/site-packages/mediocris/pdfconverter/convert.py\", line 82, in write_and_convert_file\n    convert_to_pdf(\n\n  File \"/venv/.venv/lib/python3.10/site-packages/mediocris/pdfconverter/convert.py\", line 278, in convert_to_pdf\n    libre_to_pdf(file_path, pdf_file_path, timeout=timeout)\n\n  File \"/venv/.venv/lib/python3.10/site-packages/mediocris/pdfconverter/converter.py\", line 105, in libre_to_pdf\n    result = libre_to_pdf(\n\n  File \"/venv/.venv/lib/python3.10/site-packages/mediocris/pdfconverter/converter.py\", line 114, in libre_to_pdf\n    raise InvalidFile(\"Failed to process input file.\")\n\nmediocris.pdfconverter.errors.InvalidFile: Failed to process input file.",
+            "reason": "Error preparing for OCR, skipping submission file 'technical_questions.docx' with id '89245'"
+        }
+    }
+}

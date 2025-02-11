@@ -48,11 +48,13 @@ result.final.extractions.where(predicate=lambda pred: pred.page == 5)
 
 
 """
-Dataclass Reference
+Dataclass Reference Summary
+
+See class definitions for complete reference.
 """
 
 # Result Dataclass
-result.id  # Submission ID
+result.submission_id  # Submission ID
 result.version  # Result file version
 result.documents  # List of documents in this submission
 result.models  # List of documents in this submission
@@ -81,8 +83,7 @@ if result.reviews:
 document = result.documents[0]
 document.id
 document.name
-document.etl_output_url
-document.full_text_url
+document.etl_output_uri
 
 
 # Prediction list Dataclass
@@ -130,9 +131,9 @@ extraction.unreject()  # Mark this extraction as not rejected for auto review
 # DocumentExtraction Dataclass (Subclass of Extraction)
 document_extraction = predictions.document_extractions[0]
 document_extraction.text
-document_extraction.page
-document_extraction.start
-document_extraction.end
+document_extraction.span.page
+document_extraction.span.start
+document_extraction.span.end
 document_extraction.groups  # Any linked label groups this prediction is a part of
 document_extraction.accepted
 document_extraction.rejected
@@ -145,12 +146,15 @@ document_extraction.unreject()  # Mark this extraction as not rejected for auto 
 
 # FormExtraction Dataclass (Subclass of Extraction)
 form_extraction = predictions.form_extractions[0]
+form_extraction.type
 form_extraction.text
-form_extraction.page
-form_extraction.top
-form_extraction.left
-form_extraction.right
-form_extraction.bottom
+form_extraction.checked
+form_extraction.signed
+form_extraction.box.page
+form_extraction.box.top
+form_extraction.box.left
+form_extraction.box.right
+form_extraction.box.bottom
 form_extraction.accepted
 form_extraction.rejected
 

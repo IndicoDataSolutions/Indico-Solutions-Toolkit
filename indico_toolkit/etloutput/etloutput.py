@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from operator import attrgetter
 from typing import TYPE_CHECKING
 
+from ..results import Box, Span
 from .errors import TableCellNotFoundError, TokenNotFoundError
 from .table import Table
 from .token import Token
@@ -11,7 +12,6 @@ from .token import Token
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from ..results import DocumentExtraction
     from .cell import Cell
 
 
@@ -33,15 +33,15 @@ class EtlOutput:
         table_dicts_by_page: "Iterable[Iterable[object]]",
     ) -> "EtlOutput":
         """
-        Create an `EtlOutput` from v1 or v3 ETL Ouput pages.
+        Create an `EtlOutput` from v1 or v3 page lists.
         """
         text_by_page = tuple(text_by_page)
         tokens_by_page = tuple(
-            tuple(map(Token.from_dict, token_dict_page))
+            tuple(sorted(map(Token.from_dict, token_dict_page), key=attrgetter("span")))
             for token_dict_page in token_dicts_by_page
         )
         tables_by_page = tuple(
-            tuple(map(Table.from_dict, table_dict_page))
+            tuple(sorted(map(Table.from_dict, table_dict_page), key=attrgetter("box")))
             for table_dict_page in table_dicts_by_page
         )
 
@@ -54,51 +54,55 @@ class EtlOutput:
             tables_on_page=tables_by_page,
         )
 
-    def token_for(self, extraction: "DocumentExtraction") -> Token:
+    def token_for(self, span: Span) -> Token:
         """
-        Return a `Token` that contains every character from `extraction`.
+        Return a `Token` that contains every character from `span`.
         Raise `TokenNotFoundError` if one can't be produced.
         """
         try:
-            tokens = self.tokens_on_page[extraction.page]
-            first = bisect_right(tokens, extraction.start, key=attrgetter("end"))
-            last = bisect_left(tokens, extraction.end, lo=first, key=attrgetter("start"))  # fmt: skip # noqa: E501
+            tokens = self.tokens_on_page[span.page]
+            first = bisect_right(tokens, span.start, key=attrgetter("span.end"))
+            last = bisect_left(tokens, span.end, lo=first, key=attrgetter("span.start"))
             tokens = tokens[first:last]
 
             return Token(
-                text=self.text[extraction.start : extraction.end],
-                start=extraction.start,
-                end=extraction.end,
-                page=min(token.page for token in tokens),
-                top=min(token.top for token in tokens),
-                left=min(token.left for token in tokens),
-                right=max(token.right for token in tokens),
-                bottom=max(token.bottom for token in tokens),
+                text=self.text[span.slice],
+                span=span,
+                box=Box(
+                    page=min(token.box.page for token in tokens),
+                    top=min(token.box.top for token in tokens),
+                    left=min(token.box.left for token in tokens),
+                    right=max(token.box.right for token in tokens),
+                    bottom=max(token.box.bottom for token in tokens),
+                ),
             )
         except (IndexError, ValueError) as error:
-            raise TokenNotFoundError(f"no token contains {extraction!r}") from error
+            raise TokenNotFoundError(f"no token contains {span!r}") from error
 
     def table_cell_for(self, token: Token) -> "tuple[Table, Cell]":
         """
         Return the `Table` and `Cell` that contain the midpoint of `token`.
         Raise `TableCellNotFoundError` if it's not inside a table cell.
         """
-        token_vmid = (token.top + token.bottom) // 2
-        token_hmid = (token.left + token.right) // 2
+        token_vmid = (token.box.top + token.box.bottom) // 2
+        token_hmid = (token.box.left + token.box.right) // 2
 
-        for table in self.tables_on_page[token.page]:
-            if (table.top <= token_vmid <= table.bottom) and (
-                table.left <= token_hmid <= table.right
-            ):
+        for table in self.tables_on_page[token.box.page]:
+            if (
+                (table.box.top  <= token_vmid <= table.box.bottom) and
+                (table.box.left <= token_hmid <= table.box.right)
+            ):  # fmt: skip
                 break
         else:
             raise TableCellNotFoundError(f"no table contains {token!r}")
 
         try:
-            row_index = bisect_left(table.rows, token_vmid, key=lambda row: row[0].bottom)  # fmt: skip # noqa: E501
+            row_index = bisect_left(
+                table.rows, token_vmid, key=lambda row: row[0].box.bottom
+            )
             row = table.rows[row_index]
 
-            cell_index = bisect_left(row, token_hmid, key=attrgetter("right"))
+            cell_index = bisect_left(row, token_hmid, key=attrgetter("box.right"))
             cell = row[cell_index]
         except (IndexError, ValueError) as error:
             raise TableCellNotFoundError(f"no cell contains {token!r}") from error

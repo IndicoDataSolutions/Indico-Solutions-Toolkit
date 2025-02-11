@@ -2,13 +2,14 @@ from collections import defaultdict
 from operator import attrgetter
 from typing import TYPE_CHECKING, List, TypeVar, overload
 
-from .model import TaskType
+from .model import ModelGroupType
 from .predictions import (
     Classification,
     DocumentExtraction,
     Extraction,
     FormExtraction,
     Prediction,
+    Summarization,
     Unbundling,
 )
 from .review import Review, ReviewType
@@ -16,7 +17,7 @@ from .utilities import nfilter
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Collection, Container, Iterable
-    from typing import Any, SupportsIndex
+    from typing import Any, Final, SupportsIndex
 
     from typing_extensions import Self
 
@@ -29,7 +30,7 @@ OfType = TypeVar("OfType", bound=Prediction)
 KeyType = TypeVar("KeyType")
 
 # Non-None sentinel value to support `PredictionList.where(review=None)`.
-ReviewUnspecified = Review(
+REVIEW_UNSPECIFIED: "Final" = Review(
     id=None, reviewer_id=None, notes=None, rejected=None, type=None  # type: ignore[arg-type]
 )
 
@@ -52,13 +53,19 @@ class PredictionList(List[PredictionType]):
         return self.oftype(FormExtraction)
 
     @property
+    def summarizations(self) -> "PredictionList[Summarization]":
+        return self.oftype(Summarization)
+
+    @property
     def unbundlings(self) -> "PredictionList[Unbundling]":
         return self.oftype(Unbundling)
 
     @overload
     def __getitem__(self, index: "SupportsIndex", /) -> PredictionType: ...
+
     @overload
     def __getitem__(self, index: slice, /) -> "PredictionList[PredictionType]": ...
+
     def __getitem__(
         self, index: "SupportsIndex | slice"
     ) -> "PredictionType | PredictionList[PredictionType]":
@@ -142,10 +149,10 @@ class PredictionList(List[PredictionType]):
         *,
         document: "Document | None" = None,
         document_in: "Container[Document] | None" = None,
-        model: "ModelGroup | TaskType | str | None" = None,
-        model_in: "Container[ModelGroup | TaskType | str] | None" = None,
-        review: "Review | ReviewType | None" = ReviewUnspecified,
-        review_in: "Container[Review | ReviewType | None]" = {ReviewUnspecified},
+        model: "ModelGroup | ModelGroupType | str | None" = None,
+        model_in: "Container[ModelGroup | ModelGroupType | str] | None" = None,
+        review: "Review | ReviewType | None" = REVIEW_UNSPECIFIED,
+        review_in: "Container[Review | ReviewType | None]" = {REVIEW_UNSPECIFIED},
         label: "str | None" = None,
         label_in: "Container[str] | None" = None,
         page: "int | None" = None,
@@ -194,7 +201,7 @@ class PredictionList(List[PredictionType]):
             predicates.append(
                 lambda prediction: (
                     prediction.model == model
-                    or prediction.model.task_type == model
+                    or prediction.model.type == model
                     or prediction.model.name == model
                 )
             )
@@ -203,12 +210,12 @@ class PredictionList(List[PredictionType]):
             predicates.append(
                 lambda prediction: (
                     prediction.model in model_in
-                    or prediction.model.task_type in model_in
+                    or prediction.model.type in model_in
                     or prediction.model.name in model_in
                 )
             )
 
-        if review is not ReviewUnspecified:
+        if review is not REVIEW_UNSPECIFIED:
             predicates.append(
                 lambda prediction: (
                     prediction.review == review
@@ -219,7 +226,7 @@ class PredictionList(List[PredictionType]):
                 )
             )
 
-        if review_in != {ReviewUnspecified}:
+        if review_in != {REVIEW_UNSPECIFIED}:
             predicates.append(
                 lambda prediction: (
                     prediction.review in review_in
@@ -339,7 +346,7 @@ class PredictionList(List[PredictionType]):
         changes: "dict[str, Any]" = {}
 
         for model, predictions in self.groupby(attrgetter("model")).items():
-            if model.task_type == TaskType.CLASSIFICATION:
+            if model.type == ModelGroupType.CLASSIFICATION:
                 changes[model.name] = predictions[0].to_v1_dict()
             else:
                 changes[model.name] = [
@@ -359,6 +366,9 @@ class PredictionList(List[PredictionType]):
         changes: "list[dict[str, Any]]" = []
 
         for document in documents:
+            if document.failed:
+                continue
+
             model_results: "dict[str, Any]" = {}
             changes.append(
                 {

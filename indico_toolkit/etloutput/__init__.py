@@ -1,23 +1,30 @@
 from typing import TYPE_CHECKING
 
+from ..results import NULL_BOX, NULL_SPAN, Box, Span
+from ..results.utilities import get, has
 from .cell import Cell, CellType
 from .errors import EtlOutputError, TableCellNotFoundError, TokenNotFoundError
 from .etloutput import EtlOutput
+from .range import Range
 from .table import Table
 from .token import Token
-from .utilities import get, has
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
     from typing import Any
 
 __all__ = (
+    "Box",
     "Cell",
     "CellType",
     "EtlOutput",
     "EtlOutputError",
     "load",
     "load_async",
+    "NULL_BOX",
+    "NULL_SPAN",
+    "Range",
+    "Span",
     "Table",
     "TableCellNotFoundError",
     "Token",
@@ -26,7 +33,7 @@ __all__ = (
 
 
 def load(
-    etl_output_url: str,
+    etl_output_uri: str,
     *,
     reader: "Callable[..., Any]",
     text: bool = True,
@@ -34,30 +41,31 @@ def load(
     tables: bool = False,
 ) -> EtlOutput:
     """
-    Load `etl_output_url` as an ETL Output dataclass. A `reader` function must be
+    Load `etl_output_uri` as an ETL Output dataclass. A `reader` function must be
     supplied to read JSON files from disk, storage API, or Indico client.
 
     Use `text`, `tokens`, and `tables` to specify what to load.
 
     ```
-    result = results.load(submission.result_file, reader=read_url)
+    result = results.load(submission.result_file, reader=read_uri)
     etl_outputs = {
-        document: etloutput.load(document.etl_output_url, reader=read_url)
+        document: etloutput.load(document.etl_output_uri, reader=read_uri)
         for document in result.documents
+        if not document.failed
     }
     ```
     """
-    etl_output = reader(etl_output_url)
-    tables_url = etl_output_url.replace("etl_output.json", "tables.json")
+    etl_output = reader(etl_output_uri)
+    tables_uri = etl_output_uri.replace("etl_output.json", "tables.json")
 
     if has(etl_output, str, "pages", 0, "page_info"):
-        return _load_v1(etl_output, tables_url, reader, text, tokens, tables)
+        return _load_v1(etl_output, tables_uri, reader, text, tokens, tables)
     else:
-        return _load_v3(etl_output, tables_url, reader, text, tokens, tables)
+        return _load_v3(etl_output, tables_uri, reader, text, tokens, tables)
 
 
 async def load_async(
-    etl_output_url: str,
+    etl_output_uri: str,
     *,
     reader: "Callable[..., Awaitable[Any]]",
     text: bool = True,
@@ -65,35 +73,36 @@ async def load_async(
     tables: bool = False,
 ) -> EtlOutput:
     """
-    Load `etl_output_url` as an ETL Output dataclass. A `reader` coroutine must be
+    Load `etl_output_uri` as an ETL Output dataclass. A `reader` coroutine must be
     supplied to read JSON files from disk, storage API, or Indico client.
 
     Use `text`, `tokens`, and `tables` to specify what to load.
 
     ```
-    result = await results.load_async(submission.result_file, reader=read_url)
+    result = await results.load_async(submission.result_file, reader=read_uri)
     etl_outputs = {
-        document: await etloutput.load_async(document.etl_output_url, reader=read_url)
+        document: await etloutput.load_async(document.etl_output_uri, reader=read_uri)
         for document in result.documents
+        if not document.failed
     }
     ```
     """
-    etl_output = await reader(etl_output_url)
-    tables_url = etl_output_url.replace("etl_output.json", "tables.json")
+    etl_output = await reader(etl_output_uri)
+    tables_uri = etl_output_uri.replace("etl_output.json", "tables.json")
 
     if has(etl_output, str, "pages", 0, "page_info"):
         return await _load_v1_async(
-            etl_output, tables_url, reader, text, tokens, tables
+            etl_output, tables_uri, reader, text, tokens, tables
         )
     else:
         return await _load_v3_async(
-            etl_output, tables_url, reader, text, tokens, tables
+            etl_output, tables_uri, reader, text, tokens, tables
         )
 
 
 def _load_v1(
     etl_output: "Any",
-    tables_url: str,
+    tables_uri: str,
     reader: "Callable[..., Any]",
     text: bool,
     tokens: bool,
@@ -111,7 +120,7 @@ def _load_v1(
         tokens_by_page = ()  # type: ignore[assignment]
 
     if tables:
-        tables_by_page = reader(tables_url)
+        tables_by_page = reader(tables_uri)
     else:
         tables_by_page = ()
 
@@ -120,7 +129,7 @@ def _load_v1(
 
 def _load_v3(
     etl_output: "Any",
-    tables_url: str,
+    tables_uri: str,
     reader: "Callable[..., Any]",
     text: bool,
     tokens: bool,
@@ -139,7 +148,7 @@ def _load_v3(
         tokens_by_page = ()  # type: ignore[assignment]
 
     if tables:
-        tables_by_page = reader(tables_url)
+        tables_by_page = reader(tables_uri)
     else:
         tables_by_page = ()
 
@@ -148,7 +157,7 @@ def _load_v3(
 
 async def _load_v1_async(
     etl_output: "Any",
-    tables_url: str,
+    tables_uri: str,
     reader: "Callable[..., Awaitable[Any]]",
     text: bool,
     tokens: bool,
@@ -166,7 +175,7 @@ async def _load_v1_async(
         tokens_by_page = ()  # type: ignore[assignment]
 
     if tables:
-        tables_by_page = await reader(tables_url)
+        tables_by_page = await reader(tables_uri)
     else:
         tables_by_page = ()
 
@@ -175,7 +184,7 @@ async def _load_v1_async(
 
 async def _load_v3_async(
     etl_output: "Any",
-    tables_url: str,
+    tables_uri: str,
     reader: "Callable[..., Awaitable[Any]]",
     text: bool,
     tokens: bool,
@@ -194,7 +203,7 @@ async def _load_v3_async(
         tokens_by_page = ()  # type: ignore[assignment]
 
     if tables:
-        tables_by_page = await reader(tables_url)
+        tables_by_page = await reader(tables_uri)
     else:
         tables_by_page = ()
 

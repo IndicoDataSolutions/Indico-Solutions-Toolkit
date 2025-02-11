@@ -3,9 +3,13 @@ from typing import TYPE_CHECKING
 
 from .document import Document
 from .errors import ResultError
-from .model import ModelGroup, TaskType
+from .model import ModelGroup, ModelGroupType
 from .predictionlist import PredictionList
 from .predictions import (
+    NULL_BOX,
+    NULL_CITATION,
+    NULL_SPAN,
+    Box,
     Classification,
     DocumentExtraction,
     Extraction,
@@ -13,6 +17,8 @@ from .predictions import (
     FormExtractionType,
     Group,
     Prediction,
+    Span,
+    Summarization,
     Unbundling,
 )
 from .result import Result
@@ -24,6 +30,7 @@ if TYPE_CHECKING:
 
 
 __all__ = (
+    "Box",
     "Classification",
     "Document",
     "DocumentExtraction",
@@ -34,13 +41,18 @@ __all__ = (
     "load",
     "load_async",
     "ModelGroup",
+    "ModelGroupType",
+    "NULL_BOX",
+    "NULL_CITATION",
+    "NULL_SPAN",
     "Prediction",
     "PredictionList",
     "Result",
     "ResultError",
     "Review",
     "ReviewType",
-    "TaskType",
+    "Span",
+    "Summarization",
     "Unbundling",
 )
 
